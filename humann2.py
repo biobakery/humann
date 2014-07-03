@@ -16,10 +16,10 @@ def parse_arguments (args):
 			 		 + "Authors: " + __authors__ + '\n' 
 					 + "\n\nNOTE: This is a " + __status__ + " version with limited function.\n", 
 					 formatter_class=argparse.RawTextHelpFormatter)
-	parser.add_argument("--input", help="fastq/fasta input file.\n[REQUIRED]", metavar="<input.fastq>", required=True)
-	parser.add_argument("--metaphlan", help="Location of the MetaPhlAn software.\n[REQUIRED]", 
+	parser.add_argument("-i", "--input", help="fastq/fasta input file.\n[REQUIRED]", metavar="<input.fastq>", required=True)
+	parser.add_argument("-m", "--metaphlan", help="Location of the MetaPhlAn software.\n[REQUIRED]", 
 			    metavar="<metaplhan_dir/>", required=True)
-	parser.add_argument("--chocophlan", help="Location of the ChocoPhlAn database.\n[REQUIRED]", 
+	parser.add_argument("-c", "--chocophlan", help="Location of the ChocoPhlAn database.\n[REQUIRED]", 
 			    metavar="<chocoplhan_dir/>", required=True)
 	parser.add_argument("--o_pathabundance", help="Output file for pathway abundance.\n[DEFAULT: $input_dir/pathabundance.tsv]", 
 			    metavar="<pathabundance.tsv>")
