@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__title__ = "HUMAnN2 : HMP Unified Metabolic Analysis Network"
+__title__ = "HUMAnN2 : HMP Unified Metabolic Analysis Network 2"
 __authors__ = "Lauren McIver, George Weingart, Curtis Huttenhower"
 __version__ = "0.1"
 __date__ = "3 July 2014"
@@ -99,6 +99,8 @@ def check_requirements(args):
 	if ( not ( os.access(input_dir, os.W_OK) ) ):
 		sys.exit("ERROR: The directory which holds the input file is not writeable. This software needs to write files to this directory.\n" +
 			 "Please use another directory to hold your input file.") 
+	else:
+		return input_dir	
 
 def main(argv):
 
@@ -106,8 +108,17 @@ def main(argv):
 	args=parse_arguments(argv)
 
 	# Check for required files, software, databases, and also permissions
-	check_requirements(args)
+	# If all pass, return location of input_dir to write output to
+	output_dir=check_requirements(args)
 
+	#### TO DO ####
+	# Run metaphlan (from run_metaphlan.py)
+	# run_metaphlan(args.metaphlan, args.bowtie2, args.threads, args.input, output_dir)
+	#
+	# Run other modules ...
+	#
+	# If $debug is false, remove all files in directory $output_dir/debug/*
+	#### TO DO ####
 
 if __name__ == "__main__":
 	main(sys.argv)
