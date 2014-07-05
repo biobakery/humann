@@ -97,8 +97,7 @@ def check_requirements(args):
 		+ args.chocophlan + " does not exist. Please select another directory.")	
 
 	# Check that the input file entered is a fastq or fasta file
-	if not ( args.input.endswith(".fq") or args.input.endswith(".fastq") 
-		or args.input.endswith(".fasta") or args.input.endswith(".fa") ):
+	if not os.path.splitext(args.input)[1] in [".fq",".fastq",".fa",".fasta"]:
 		sys.exit("ERROR: The input file is not valid. " + 
 			"Please provide a fastq or fasta file. " + 
 			"Recognized file extensions are " + 
