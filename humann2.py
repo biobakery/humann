@@ -82,23 +82,23 @@ def check_requirements(args):
 	"""
 
 	# Check that the input file exists
-	if ( not ( os.path.isfile(args.input) ) ):
+	if not os.path.isfile(args.input):
 		sys.exit("ERROR: The input file provided does not exist at " 
 			+ args.input + ". Please select another input file.")
 
 	# Check that the metphlan directory exists
-	if ( not ( os.path.isdir(args.metaphlan) ) ):
+	if not os.path.isdir(args.metaphlan):
 		sys.exit("ERROR: The directory provided for MetaPhlAn at " 
 		+ args.metaphlan + " does not exist. Please select another directory.")	
 
 	# Check that the chocophlan directory exists
-	if ( not ( os.path.isdir(args.chocophlan) ) ):
+	if not os.path.isdir(args.chocophlan):
 		sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
 		+ args.chocophlan + " does not exist. Please select another directory.")	
 
 	# Check that the input file entered is a fastq or fasta file
-	if ( not ( args.input.endswith(".fq") or args.input.endswith(".fastq") 
-		or args.input.endswith(".fasta") or args.input.endswith(".fa") )):
+	if not ( args.input.endswith(".fq") or args.input.endswith(".fastq") 
+		or args.input.endswith(".fasta") or args.input.endswith(".fa") ):
 		sys.exit("ERROR: The input file is not valid. " + 
 			"Please provide a fastq or fasta file. " + 
 			"Recognized file extensions are " + 
@@ -108,14 +108,14 @@ def check_requirements(args):
 	if args.bowtie2:
 		try:
 			p = subprocess.check_output([args.bowtie2,"-h"])
-		except OSError as e:
+		except OSError:
 			sys.exit("ERROR: The bowtie2 executable provided at " 
 				+ args.bowtie2 + " is not executing properly. " + 
 				"Please check the install.")
 	else:
 		try:
 			p = subprocess.check_output(["bowtie2","-h"])
-		except OSError as e:
+		except OSError:
 			sys.exit("ERROR: The bowtie2 executable expected to be in your " + 
 				"$PATH is not executing properly. \nPlease check the install " +
 				"or provide another path to bowtie2 using the " + 
@@ -125,14 +125,14 @@ def check_requirements(args):
 	if args.usearch:
 		try:
 			p = subprocess.check_output([args.usearch,"-h"])
-		except OSError as e:
+		except OSError:
 			sys.exit("ERROR: The usearch executable provided at " + 
 			args.usearch + " is not executing properly. " + 
 			"Please check the install.")
 	else:
 		try:
 			p = subprocess.check_output(["usearch","-h"])
-		except OSError as e:
+		except OSError:
 			sys.exit("ERROR: The usearch executable expected to be in your " + 
 				"$PATH is not executing properly. \nPlease check the install " +
 				 "or provide another path to usearch using the " + 
@@ -142,14 +142,14 @@ def check_requirements(args):
 	if args.samtools:
 		try:
 			p = subprocess.check_output([args.samtools,"-h"])
-		except OSError as e:
+		except OSError:
 			sys.exit("ERROR: The samtools executable provided at " 
 			+ args.samtools + " is not executing properly. " + 
 			"Please check the install.")
 	else:
 		try:
 			p = subprocess.check_output(["samtools","-h"])
-		except OSError as e:
+		except OSError:
 			sys.exit("ERROR: The samtools executable expected to be in your " + 
 				"$PATH is not executing properly. \nPlease check the install " +
 				"or provide another path to samtools using the " + 
@@ -157,17 +157,17 @@ def check_requirements(args):
 
 	# Check that the directory that holds the input file is writeable
 	input_dir = os.path.dirname(args.input)
-	if ( not ( os.access(input_dir, os.W_OK) ) ):
+	if not os.access(input_dir, os.W_OK):
 		sys.exit("ERROR: The directory which holds the input file is not " + 
 			"writeable. This software needs to write files to this directory.\n" +
 			 "Please use another directory to hold your input file.") 
-	else:
-		return input_dir	
+	
+	return input_dir	
 
-def main(argv):
+def main():
 
 	# Parse arguments from command line
-	args=parse_arguments(argv)
+	args=parse_arguments(sys.argv)
 
 	# Check for required files, software, databases, and also permissions
 	# If all pass, return location of input_dir to write output to
@@ -175,5 +175,5 @@ def main(argv):
 
 
 if __name__ == "__main__":
-	main(sys.argv)
+	main()
 	
