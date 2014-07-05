@@ -56,7 +56,8 @@ def parse_arguments (args):
 		"--debug", 
 		help="Print debug output files to $input_dir/debug/*.\n" + 
 			"[DEFAULT: false]", 
-		metavar="<false>", type=bool)
+		metavar="<false>", 
+		type=bool)
 	parser.add_argument(
 		"--bowtie2",
 		help="Location of the bowtie2 executable.\n[DEFAULT: $PATH/bowtie2]", 
@@ -76,11 +77,24 @@ def parse_arguments (args):
 		metavar="<samtools>")
 	return parser.parse_args()
 
+
+def find_exe_in_path(exe):
+	"""
+	Check that an executable exists in the users path
+	"""
+	paths = os.environ["PATH"].split(os.pathsep)
+	for path in paths:
+		fullexe = os.path.join(path,exe)
+		if os.path.exists(fullexe):
+			if os.access(fullexe,os.X_OK):
+				return True
+	return False	
+	
+	 
 def check_requirements(args):
 	"""
 	Check requirements (file format, dependencies, permissions)
 	"""
-
 	# Check that the input file exists
 	if not os.path.isfile(args.input):
 		sys.exit("ERROR: The input file provided does not exist at " 
@@ -104,56 +118,20 @@ def check_requirements(args):
 			"*.fq, *.fastq, *.fasta, and *.fa .")  
 
 	# Check that the bowtie2 executable can be found
-	if args.bowtie2:
-		try:
-			p = subprocess.check_output([args.bowtie2,"-h"])
-		except OSError:
-			sys.exit("ERROR: The bowtie2 executable provided at " 
-				+ args.bowtie2 + " is not executing properly. " + 
+	if not find_exe_in_path("bowtie2"): 
+		sys.exit("ERROR: The bowtie2 executable can not be found. "  
 				"Please check the install.")
-	else:
-		try:
-			p = subprocess.check_output(["bowtie2","-h"])
-		except OSError:
-			sys.exit("ERROR: The bowtie2 executable expected to be in your " + 
-				"$PATH is not executing properly. \nPlease check the install " +
-				"or provide another path to bowtie2 using the " + 
-				"--bowtie2 argument.")
 
 	# Check that the usearch executable can be found
-	if args.usearch:
-		try:
-			p = subprocess.check_output([args.usearch,"-h"])
-		except OSError:
-			sys.exit("ERROR: The usearch executable provided at " + 
-			args.usearch + " is not executing properly. " + 
+	if not find_exe_in_path("usearch"):
+		sys.exit("ERROR: The usearch executable can not be found. " +  
 			"Please check the install.")
-	else:
-		try:
-			p = subprocess.check_output(["usearch","-h"])
-		except OSError:
-			sys.exit("ERROR: The usearch executable expected to be in your " + 
-				"$PATH is not executing properly. \nPlease check the install " +
-				 "or provide another path to usearch using the " + 
-				 "--usearch argument.")
-
+	
 	# Check that the samtools executable can be found
-	if args.samtools:
-		try:
-			p = subprocess.check_output([args.samtools,"-h"])
-		except OSError:
-			sys.exit("ERROR: The samtools executable provided at " 
-			+ args.samtools + " is not executing properly. " + 
+	if not find_exe_in_path("samtools"):
+		sys.exit("ERROR: The samtools executable can not be found. " +  
 			"Please check the install.")
-	else:
-		try:
-			p = subprocess.check_output(["samtools","-h"])
-		except OSError:
-			sys.exit("ERROR: The samtools executable expected to be in your " + 
-				"$PATH is not executing properly. \nPlease check the install " +
-				"or provide another path to samtools using the " + 
-				"--samtools argument.")
-
+	
 	# Check that the directory that holds the input file is writeable
 	input_dir = os.path.dirname(args.input)
 	if not os.access(input_dir, os.W_OK):
@@ -163,11 +141,25 @@ def check_requirements(args):
 	
 	return input_dir	
 
-def main():
 
+def main():
 	# Parse arguments from command line
 	args=parse_arguments(sys.argv)
 
+	# Append pythonpath with metaphlan location
+	if args.metaphlan:
+		sys.path.append(args.metaphlan)
+
+	# If set, append paths with alternative executable locations
+	if args.bowtie2:
+		os.environ["PATH"] += os.pathsep + args.bowtie2
+	
+	if args.usearch:
+		os.environ["PATH"] += os.pathsep + args.usearch
+		
+	if args.samtools:
+		os.environ["PATH"] += os.pathsep + args.samtools
+				
 	# Check for required files, software, databases, and also permissions
 	# If all pass, return location of input_dir to write output to
 	output_dir=check_requirements(args)
@@ -175,4 +167,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-	
