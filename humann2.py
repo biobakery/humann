@@ -60,8 +60,8 @@ def parse_arguments (args):
 		type=bool)
 	parser.add_argument(
 		"--bowtie2",
-		help="Location of the bowtie2 executable.\n[DEFAULT: $PATH/bowtie2]", 
-		metavar="<bowtie2>")
+		help="The directory of the bowtie2 executable.\n[DEFAULT: $PATH]", 
+		metavar="<bowtie2/>")
 	parser.add_argument(
 		"--threads", 
 		help="Number of threads to use with bowtie2.\n[DEFAULT: 1]", 
@@ -69,12 +69,12 @@ def parse_arguments (args):
 		type=int) 
 	parser.add_argument(
 		"--usearch", 
-		help="Location of the usearch executable.\n[DEFAULT: $PATH/usearch]", 
-		metavar="<userach>")
+		help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
+		metavar="<userach/>")
 	parser.add_argument(
 		"--samtools", 
-		help="Location of the samtools executable.\n[DEAFULT: $PATH/samtools]", 
-		metavar="<samtools>")
+		help="The directory of the samtools executable.\n[DEAFULT: $PATH]", 
+		metavar="<samtools/>")
 	return parser.parse_args()
 
 
