@@ -2,3 +2,6 @@ HUMAnN2 is a pipeline for efficiently and accurately determining the presence/ab
 
 For information on how to run: 
 https://bitbucket.org/biobakery/humann2/wiki/Home
+
+For additional documentation:
+https://bitbucket.org/biobakery/humann2_test/wiki/Home
