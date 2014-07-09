@@ -15,6 +15,8 @@ To Run: ./humann2.py -i <input.fastq> -m <metaphlan_dir> -c <chocophlan_dir>
 
 import argparse, sys, subprocess, os
 
+from src import utilities
+
 def parse_arguments (args):
 	""" 
 	Parse the arguments from the user
@@ -76,19 +78,6 @@ def parse_arguments (args):
 		help="The directory of the samtools executable.\n[DEAFULT: $PATH]", 
 		metavar="<samtools/>")
 	return parser.parse_args()
-
-
-def find_exe_in_path(exe):
-	"""
-	Check that an executable exists in the users path
-	"""
-	paths = os.environ["PATH"].split(os.pathsep)
-	for path in paths:
-		fullexe = os.path.join(path,exe)
-		if os.path.exists(fullexe):
-			if os.access(fullexe,os.X_OK):
-				return True
-	return False	
 	
 	 
 def check_requirements(args):
@@ -111,24 +100,25 @@ def check_requirements(args):
 		+ args.chocophlan + " does not exist. Please select another directory.")	
 
 	# Check that the input file entered is a fastq or fasta file
-	if not os.path.splitext(args.input)[1] in [".fq",".fastq",".fa",".fasta"]:
+	valid_extensions = [".fq",".fastq",".fa",".fasta", ".fna"]
+	if not os.path.splitext(args.input)[1] in valid_extensions:
 		sys.exit("ERROR: The input file is not valid. " + 
 			"Please provide a fastq or fasta file. " + 
 			"Recognized file extensions are " + 
-			"*.fq, *.fastq, *.fasta, and *.fa .")  
+			", ".join(valid_extensions) + " .")  
 
 	# Check that the bowtie2 executable can be found
-	if not find_exe_in_path("bowtie2"): 
+	if not utilities.find_exe_in_path("bowtie2"): 
 		sys.exit("ERROR: The bowtie2 executable can not be found. "  
 				"Please check the install.")
 
 	# Check that the usearch executable can be found
-	if not find_exe_in_path("usearch"):
+	if not utilities.find_exe_in_path("usearch"):
 		sys.exit("ERROR: The usearch executable can not be found. " +  
 			"Please check the install.")
 	
 	# Check that the samtools executable can be found
-	if not find_exe_in_path("samtools"):
+	if not utilities.find_exe_in_path("samtools"):
 		sys.exit("ERROR: The samtools executable can not be found. " +  
 			"Please check the install.")
 	
