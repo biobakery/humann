@@ -15,7 +15,7 @@ To Run: ./humann2.py -i <input.fastq> -m <metaphlan_dir> -c <chocophlan_dir>
 
 import argparse, sys, subprocess, os
 
-from src import utilities
+from src import utilities, prescreen
 
 def parse_arguments (args):
 	""" 
@@ -68,7 +68,8 @@ def parse_arguments (args):
 		"--threads", 
 		help="Number of threads to use with bowtie2.\n[DEFAULT: 1]", 
 		metavar="<1>", 
-		type=int) 
+		type=int,
+		default=1) 
 	parser.add_argument(
 		"--usearch", 
 		help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
@@ -84,10 +85,9 @@ def check_requirements(args):
 	"""
 	Check requirements (file format, dependencies, permissions)
 	"""
-	# Check that the input file exists
-	if not os.path.isfile(args.input):
-		sys.exit("ERROR: The input file provided does not exist at " 
-			+ args.input + ". Please select another input file.")
+	# Check that the input file exists, is readable, and is fasta/fastq
+	if utilities.fasta_or_fastq(args.input) == "error":
+		sys.exit("ERROR: The input file is not of a fasta or fastq format.")
 
 	# Check that the metphlan directory exists
 	if not os.path.isdir(args.metaphlan):
@@ -99,26 +99,18 @@ def check_requirements(args):
 		sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
 		+ args.chocophlan + " does not exist. Please select another directory.")	
 
-	# Check that the input file entered is a fastq or fasta file
-	valid_extensions = [".fq",".fastq",".fa",".fasta", ".fna"]
-	if not os.path.splitext(args.input)[1] in valid_extensions:
-		sys.exit("ERROR: The input file is not valid. " + 
-			"Please provide a fastq or fasta file. " + 
-			"Recognized file extensions are " + 
-			", ".join(valid_extensions) + " .")  
-
 	# Check that the bowtie2 executable can be found
-	if not utilities.find_exe_in_path("bowtie2"): 
+	if not utilities.find_exe_in_path("bowtie2", os.environ["PATH"]): 
 		sys.exit("ERROR: The bowtie2 executable can not be found. "  
 				"Please check the install.")
 
 	# Check that the usearch executable can be found
-	if not utilities.find_exe_in_path("usearch"):
+	if not utilities.find_exe_in_path("usearch", os.environ["PATH"]):
 		sys.exit("ERROR: The usearch executable can not be found. " +  
 			"Please check the install.")
 	
 	# Check that the samtools executable can be found
-	if not utilities.find_exe_in_path("samtools"):
+	if not utilities.find_exe_in_path("samtools", os.environ["PATH"]):
 		sys.exit("ERROR: The samtools executable can not be found. " +  
 			"Please check the install.")
 	
@@ -154,6 +146,12 @@ def main():
 	# If all pass, return location of input_dir to write output to
 	output_dir=check_requirements(args)
 
+	# set the location of the debug dir
+	debug_dir=output_dir + "/debug"
+
+	# Run prescreen to identify bugs
+	bug_file = prescreen.run_alignment(args.metaphlan, args.input, 
+		args.threads, debug_dir)
 
 if __name__ == "__main__":
 	main()
