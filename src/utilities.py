@@ -49,20 +49,19 @@ def execute_software(exe, args, infiles, outfiles):
 	# check that the files exist and are readable
 	for file in infiles:
 		file_exists_readable(file)
-	
-	# add optional arguments as subprocess.call does not like additional spaces
+		
 	if args:
-		cmd = exe + " " + args
+		cmd=[exe,args]
 	else:
-		cmd = exe
+		cmd=[exe]
 	
-	print "Running: " + cmd + " ........"
+	print "Running: " + exe + " " + args + " ........"
 	
 	try:
 		p = subprocess.call(cmd)
 	
 	except OSError as e:
-		sys.exit("Error: Problem executing " + exe + " using command " + cmd + "\n" +
+		sys.exit("Error: Problem executing " + exe + " " + args + "\n" +
 			e.strerror)
 		
 	# check that the output files exist and are readable
