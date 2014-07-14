@@ -34,6 +34,6 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
     if threads >1:
         params=params + " --nproc " + threads
 
-    #utilities.execute_software(exe,params + " " + opts, infiles, outfiles)
+    utilities.execute_software(exe,params + " " + opts, infiles, outfiles)
     
     return bug_file

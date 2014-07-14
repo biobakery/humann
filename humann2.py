@@ -100,17 +100,17 @@ def check_requirements(args):
 		+ args.chocophlan + " does not exist. Please select another directory.")	
 
 	# Check that the bowtie2 executable can be found
-	if not utilities.find_exe_in_path("bowtie2", os.environ["PATH"]): 
+	if not utilities.find_exe_in_path("bowtie2"): 
 		sys.exit("ERROR: The bowtie2 executable can not be found. "  
 				"Please check the install.")
 
 	# Check that the usearch executable can be found
-	if not utilities.find_exe_in_path("usearch", os.environ["PATH"]):
+	if not utilities.find_exe_in_path("usearch"):
 		sys.exit("ERROR: The usearch executable can not be found. " +  
 			"Please check the install.")
 	
 	# Check that the samtools executable can be found
-	if not utilities.find_exe_in_path("samtools", os.environ["PATH"]):
+	if not utilities.find_exe_in_path("samtools"):
 		sys.exit("ERROR: The samtools executable can not be found. " +  
 			"Please check the install.")
 	
@@ -128,9 +128,9 @@ def main():
 	# Parse arguments from command line
 	args=parse_arguments(sys.argv)
 
-	# Append pythonpath with metaphlan location
+	# Append path with metaphlan location
 	if args.metaphlan:
-		sys.path.append(args.metaphlan)
+		os.environ["PATH"] += os.pathsep + args.metaphlan	
 
 	# If set, append paths with alternative executable locations
 	if args.bowtie2:

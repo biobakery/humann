@@ -17,13 +17,11 @@ def file_exists_readable(file):
 		sys.exit("ERROR: Not able to read file " + file)
 
 
-def find_exe_in_path(exe, user_path):
+def find_exe_in_path(exe):
 	"""
-	Check that an executable exists in the provided path
-	
-	Path provided should be of the same format as $PATH
+	Check that an executable exists in $PATH
 	"""
-	paths = user_path.split(os.pathsep)
+	paths = os.environ["PATH"].split(os.pathsep)
 	for path in paths:
 		fullexe = os.path.join(path,exe)
 		if os.path.exists(fullexe):
@@ -36,14 +34,8 @@ def execute_software(exe, args, infiles, outfiles):
 	Execute third party software
 	"""
 	
-	# determine which path to check for the software
-	# if the exe is a .py, check the python path
-	path = os.environ["PATH"]
-	if os.path.splitext(exe)[1] in [".py"]:
-		path = os.pathsep.join(sys.path)
-	
 	# check that the executable can be found
-	if not find_exe_in_path(exe, path):
+	if not find_exe_in_path(exe):
 		sys.exit("ERROR: Can not find executable " + exe)
 	
 	# check that the files exist and are readable
