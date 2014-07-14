@@ -42,26 +42,7 @@ def remove_if_exists(file):
 	"""
 
 	if os.path.isfile(file):
-		execute_command("rm",file)
-
-
-def execute_command(exe, args):
-	"""
-	Execute shell command
-	"""
-
-	if args:
-		cmd=[exe,args]
-	else:
-		cmd=[exe]
-
-	try:
-		p = subprocess.call(cmd)
-	
-	except OSError as e:
-		sys.exit("Error: Problem executing " + exe + " " + args + "\n" +
-			e.strerror)
-
+		os.unlink(file)
 
 def execute_software(exe, args, infiles, outfiles):
 	"""
@@ -82,7 +63,7 @@ def execute_software(exe, args, infiles, outfiles):
 
 	cmd = exe + " " + args		
 	
-	print "Running: " + cmd + " ........"
+	print "Running: " + cmd 
 	
 	try:
 		p = subprocess.call(cmd,shell=True)

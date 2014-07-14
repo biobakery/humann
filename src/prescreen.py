@@ -19,14 +19,14 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
     
     # outfile name
     sample_name = os.path.splitext(os.path.basename(input))[0]
-    bug_file = debug_dir + "/" + sample_name + "_bugs_list.tsv"
-    bowtie2_out = debug_dir + "/" + sample_name + "_bowtie2_out.txt"   
+    bug_file = os.path.join(debug_dir, sample_name + "_bugs_list.tsv")
+    bowtie2_out = os.path.join(debug_dir, sample_name + "_bowtie2_out.txt") 
 
  
-    infiles=[input, metaphlan_dir + "/db_v20/mpa_v20_m200.pkl"]
+    infiles=[input, os.path.join(metaphlan_dir, "db_v20/mpa_v20_m200.pkl")]
     
     # location of the index name to multiple files
-    infiles_index=[metaphlan_dir + "/db_v20/mpa_v20_m200"]
+    infiles_index=[os.path.join(metaphlan_dir, "db_v20/mpa_v20_m200")]
     
     outfiles=[bug_file, bowtie2_out]
     
@@ -40,3 +40,13 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
     utilities.execute_software(exe, params + " " + opts, infiles, outfiles)
     
     return bug_file
+
+def create_custom_database(chocophlan_dir, bug_file, debug_dir):
+	"""
+	Using ChocoPhlAn creates a custom database based on the bug_file
+	"""
+
+	custom_database=""
+
+	return custom_database
+

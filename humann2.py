@@ -145,16 +145,19 @@ def main():
 	# If all pass, return location of input_dir to write output to
 	output_dir=check_requirements(args)
 
-	# set the location of the debug dir
-	debug_dir=output_dir + "/debug"
+	# Set the location of the debug dir
+	debug_dir=os.path.join(output_dir, "debug")
 
-	# create the debug directory
+	# Create the debug directory
 	if not os.path.isdir(debug_dir):
-		utilities.execute_command("mkdir",debug_dir)	
+		os.makedirs(debug_dir)	
 
 	# Run prescreen to identify bugs
 	bug_file = prescreen.run_alignment(args.metaphlan, args.input, 
 		args.threads, debug_dir)
+
+	# Create the custom database from the bugs list
+	custom_database = prescreen.create_custom_database(args.chocophlan, bug_file, debug_dir)
 
 if __name__ == "__main__":
 	main()
