@@ -17,6 +17,13 @@ def file_exists_readable(file):
 		sys.exit("ERROR: Not able to read file " + file)
 
 
+def add_exe_to_path(exe_dir):
+	""" 
+	Add path to executable to $PATH
+	"""
+	os.environ["PATH"] += os.pathsep + exe_dir	
+
+
 def find_exe_in_path(exe):
 	"""
 	Check that an executable exists in $PATH
@@ -29,6 +36,33 @@ def find_exe_in_path(exe):
 				return True
 	return False	
 
+def remove_if_exists(file):
+	"""
+	If file exists, then remove
+	"""
+
+	if os.path.isfile(file):
+		execute_command("rm",file)
+
+
+def execute_command(exe, args):
+	"""
+	Execute shell command
+	"""
+
+	if args:
+		cmd=[exe,args]
+	else:
+		cmd=[exe]
+
+	try:
+		p = subprocess.call(cmd)
+	
+	except OSError as e:
+		sys.exit("Error: Problem executing " + exe + " " + args + "\n" +
+			e.strerror)
+
+
 def execute_software(exe, args, infiles, outfiles):
 	"""
 	Execute third party software
@@ -38,27 +72,29 @@ def execute_software(exe, args, infiles, outfiles):
 	if not find_exe_in_path(exe):
 		sys.exit("ERROR: Can not find executable " + exe)
 	
-	# check that the files exist and are readable
+	# check that the input files exist and are readable
 	for file in infiles:
 		file_exists_readable(file)
-		
-	if args:
-		cmd=[exe,args]
-	else:
-		cmd=[exe]
+        
+	# if outfiles already exist, then remove
+        for file in outfiles:
+                remove_if_exists(file)
+
+	cmd = exe + " " + args		
 	
-	print "Running: " + exe + " " + args + " ........"
+	print "Running: " + cmd + " ........"
 	
 	try:
-		p = subprocess.call(cmd)
+		p = subprocess.call(cmd,shell=True)
 	
 	except OSError as e:
-		sys.exit("Error: Problem executing " + exe + " " + args + "\n" +
+		sys.exit("Error: Problem executing " + cmd + "\n" +
 			e.strerror)
 		
 	# check that the output files exist and are readable
 	for file in outfiles:
 		file_exists_readable(file)
+
 	
 def fasta_or_fastq(file):
 	"""

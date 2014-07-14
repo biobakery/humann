@@ -128,19 +128,18 @@ def main():
 	# Parse arguments from command line
 	args=parse_arguments(sys.argv)
 
-	# Append path with metaphlan location
+	# If set, append paths executable locations
 	if args.metaphlan:
-		os.environ["PATH"] += os.pathsep + args.metaphlan	
-
-	# If set, append paths with alternative executable locations
+		utilities.add_exe_to_path(args.metaphlan)	
+	
 	if args.bowtie2:
-		os.environ["PATH"] += os.pathsep + args.bowtie2
+		utilities.add_exe_to_path(args.bowtie2)
 	
 	if args.usearch:
-		os.environ["PATH"] += os.pathsep + args.usearch
+		utilities.add_exe_to_path(args.usearch)
 		
 	if args.samtools:
-		os.environ["PATH"] += os.pathsep + args.samtools
+		utilities.add_exe_to_path(args.samtools)
 				
 	# Check for required files, software, databases, and also permissions
 	# If all pass, return location of input_dir to write output to
@@ -148,6 +147,10 @@ def main():
 
 	# set the location of the debug dir
 	debug_dir=output_dir + "/debug"
+
+	# create the debug directory
+	if not os.path.isdir(debug_dir):
+		utilities.execute_command("mkdir",debug_dir)	
 
 	# Run prescreen to identify bugs
 	bug_file = prescreen.run_alignment(args.metaphlan, args.input, 

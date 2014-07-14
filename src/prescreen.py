@@ -20,20 +20,23 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
     # outfile name
     sample_name = os.path.splitext(os.path.basename(input))[0]
     bug_file = debug_dir + "/" + sample_name + "_bugs_list.tsv"
-    
+    bowtie2_out = debug_dir + "/" + sample_name + "_bowtie2_out.txt"   
+
+ 
     infiles=[input, metaphlan_dir + "/db_v20/mpa_v20_m200.pkl"]
     
     # location of the index name to multiple files
     infiles_index=[metaphlan_dir + "/db_v20/mpa_v20_m200"]
     
-    outfiles=[bug_file]
+    outfiles=[bug_file, bowtie2_out]
     
     params=infiles[0] + " --bowtie2db " + infiles_index[0] + " --mpa_pkl " + \
-        infiles[1] + " --input_type " + input_type + " -o " + outfiles[0]
+        infiles[1] + " --input_type " + input_type + " -o " + outfiles[0] + \
+        " --bowtie2out " + bowtie2_out
     
     if threads >1:
         params=params + " --nproc " + threads
 
-    utilities.execute_software(exe,params + " " + opts, infiles, outfiles)
+    utilities.execute_software(exe, params + " " + opts, infiles, outfiles)
     
     return bug_file
