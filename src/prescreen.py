@@ -49,6 +49,10 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, debug_dir):
     # Identify the species that pass the threshold
     file_handle = open(bug_file, "r")
 
+    # outfile name
+    bug_sample_name = os.path.splitext(os.path.basename(bug_file))[0]
+    custom_database = os.path.join(debug_dir, bug_sample_name + "_custom_database.ffn")
+    
     species_found = []
     total_reads_covered = 0
     line = file_handle.readline()
@@ -76,8 +80,6 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, debug_dir):
     print "\n\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
     print "Species cover " + str(total_reads_covered) + "% of all reads in input\n"
 
-
-    custom_database=""
-
+    print custom_database
     return custom_database
 
