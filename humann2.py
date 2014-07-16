@@ -71,6 +71,12 @@ def parse_arguments (args):
 		type=int,
 		default=1) 
 	parser.add_argument(
+		"--prescreen_threshold", 
+		help="The minimum percentage of reads matching a species.\n[DEFAULT: 0.01]", 
+		metavar="<0.01>", 
+		type=float,
+		default=0.01) 
+	parser.add_argument(
 		"--usearch", 
 		help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
 		metavar="<userach/>")
@@ -157,7 +163,7 @@ def main():
 		args.threads, debug_dir)
 
 	# Create the custom database from the bugs list
-	custom_database = prescreen.create_custom_database(args.chocophlan, bug_file, debug_dir)
+	custom_database = prescreen.create_custom_database(args.chocophlan, args.prescreen_threshold, bug_file, debug_dir)
 
 if __name__ == "__main__":
 	main()

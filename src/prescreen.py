@@ -3,7 +3,7 @@
 Identify initial list of bugs from user supplied fasta/fastq
 """
 
-import os
+import os, re
 import utilities
 
 def run_alignment(metaphlan_dir, input, threads, debug_dir):
@@ -37,16 +37,47 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
     if threads >1:
         params=params + " --nproc " + threads
 
-    utilities.execute_software(exe, params + " " + opts, infiles, outfiles)
+    #utilities.execute_software(exe, params + " " + opts, infiles, outfiles)
     
     return bug_file
 
-def create_custom_database(chocophlan_dir, bug_file, debug_dir):
-	"""
-	Using ChocoPhlAn creates a custom database based on the bug_file
-	"""
+def create_custom_database(chocophlan_dir, threshold, bug_file, debug_dir):
+    """
+    Using ChocoPhlAn creates a custom database based on the bug_file
+    """
 
-	custom_database=""
+    # Identify the species that pass the threshold
+    file_handle = open(bug_file, "r")
 
-	return custom_database
+    species_found = []
+    total_reads_covered = 0
+    line = file_handle.readline()
+    while line:
+
+        # if we see taxon-level we are done processing
+        if re.search("t__", line):
+            break
+        
+        # search for the lines that have the species-level information
+        if re.search("s__", line):
+            # check threshold
+            read_percent=float(line.split("\t")[1])
+            if read_percent >= threshold:
+                total_reads_covered += read_percent
+                organism_info=line.split("\t")[0]
+                species_name=organism_info.split("s__")[1]
+                print "Found species " + species_name + ": " + \
+                    str(read_percent) + "% of reads"
+                species_found.append(species_name)
+
+        line = file_handle.readline()
+    
+    # compute total species found
+    print "\n\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
+    print "Species cover " + str(total_reads_covered) + "% of all reads in input\n"
+
+
+    custom_database=""
+
+    return custom_database
 
