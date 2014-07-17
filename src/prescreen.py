@@ -3,7 +3,7 @@
 Identify initial list of bugs from user supplied fasta/fastq
 """
 
-import os, re
+import os, re, sys
 import utilities
 
 def run_alignment(metaphlan_dir, input, threads, debug_dir):
@@ -37,7 +37,8 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
     if threads >1:
         params=params + " --nproc " + threads
 
-    #utilities.execute_software(exe, params + " " + opts, infiles, outfiles)
+    print "\nRunning " + exe + " ........\n"
+    utilities.execute_command(exe, params + " " + opts, infiles, outfiles)
     
     return bug_file
 
@@ -77,9 +78,24 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, debug_dir):
         line = file_handle.readline()
     
     # compute total species found
-    print "\n\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
+    print "\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
     print "Species cover " + str(total_reads_covered) + "% of all reads in input\n"
 
-    print custom_database
+    # identify the files to be used from the ChocoPhlAn database
+    species_file_list = []
+    for species_file in os.listdir(chocophlan_dir):
+        for species in species_found:
+            if re.search("s__"+species, species_file): 
+                species_file_list.append(os.path.join(chocophlan_dir,species_file))
+                print "Adding file to database: " + species_file   
+
+    # create new fasta file containing only those species found
+    if not species_file_list:
+        sys.exit("ERROR: The custom ChocoPhlAn database is empty.\n")   
+    
+    print "\nCreating custom ChocoPhlAn database ........\n"   
+    args = (" ").join(species_file_list) + " > " + custom_database
+    utilities.execute_command("cat",args,species_file_list,[custom_database])
+
     return custom_database
 

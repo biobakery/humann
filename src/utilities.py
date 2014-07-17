@@ -44,9 +44,9 @@ def remove_if_exists(file):
 	if os.path.isfile(file):
 		os.unlink(file)
 
-def execute_software(exe, args, infiles, outfiles):
+def execute_command(exe, args, infiles, outfiles):
 	"""
-	Execute third party software
+	Execute third party software or shell command with files
 	"""
 	
 	# check that the executable can be found
@@ -63,14 +63,13 @@ def execute_software(exe, args, infiles, outfiles):
 
 	cmd = exe + " " + args		
 	
-	print "Running: " + cmd 
+	#print "\n\nRunning: " + cmd 
 	
 	try:
 		p = subprocess.call(cmd,shell=True)
 	
 	except OSError as e:
-		sys.exit("Error: Problem executing " + cmd + "\n" +
-			e.strerror)
+		sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
 		
 	# check that the output files exist and are readable
 	for file in outfiles:
