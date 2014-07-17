@@ -38,7 +38,7 @@ def run_alignment(metaphlan_dir, input, threads, debug_dir):
         params=params + " --nproc " + threads
 
     print "\nRunning " + exe + " ........\n"
-    #utilities.execute_command(exe, params + " " + opts, infiles, outfiles)
+    utilities.execute_command(exe, params + " " + opts, infiles, outfiles)
     
     return bug_file
 

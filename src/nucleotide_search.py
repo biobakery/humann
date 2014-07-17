@@ -22,7 +22,7 @@ def alignment(custom_database, user_fastq, debug_dir, threads):
 
     # index the database
     print "\nRunning " + exe + " ........\n"
-    #utilities.execute_command(exe,args,[custom_database],outfiles)
+    utilities.execute_command(exe,args,[custom_database],outfiles)
 
     # name the alignment file
     sample_name = os.path.splitext(os.path.basename(user_fastq))[0]
@@ -49,7 +49,7 @@ def alignment(custom_database, user_fastq, debug_dir, threads):
 
     # run the bowtie2 alignment
     print "\nRunning " + exe + " ........\n"
-    #utilities.execute_command(exe,args,[user_fastq],[alignment_file])
+    utilities.execute_command(exe,args,[user_fastq],[alignment_file])
 
     return alignment_file
 
