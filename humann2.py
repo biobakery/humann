@@ -15,7 +15,7 @@ To Run: ./humann2.py -i <input.fastq> -m <metaphlan_dir> -c <chocophlan_dir>
 
 import argparse, sys, subprocess, os
 
-from src import utilities, prescreen
+from src import utilities, prescreen, nucleotide_search
 
 def parse_arguments (args):
 	""" 
@@ -131,39 +131,47 @@ def check_requirements(args):
 
 
 def main():
-	# Parse arguments from command line
-	args=parse_arguments(sys.argv)
+    # Parse arguments from command line
+    args=parse_arguments(sys.argv)
 
-	# If set, append paths executable locations
-	if args.metaphlan:
-		utilities.add_exe_to_path(args.metaphlan)	
+    # If set, append paths executable locations
+    if args.metaphlan:
+        utilities.add_exe_to_path(args.metaphlan)	
 	
-	if args.bowtie2:
-		utilities.add_exe_to_path(args.bowtie2)
+    if args.bowtie2:
+        utilities.add_exe_to_path(args.bowtie2)
 	
-	if args.usearch:
-		utilities.add_exe_to_path(args.usearch)
+    if args.usearch:
+        utilities.add_exe_to_path(args.usearch)
 		
-	if args.samtools:
-		utilities.add_exe_to_path(args.samtools)
+    if args.samtools:
+        utilities.add_exe_to_path(args.samtools)
 				
-	# Check for required files, software, databases, and also permissions
-	# If all pass, return location of input_dir to write output to
-	output_dir=check_requirements(args)
+    # Check for required files, software, databases, and also permissions
+    # If all pass, return location of input_dir to write output to
+    output_dir=check_requirements(args)
 
-	# Set the location of the debug dir
-	debug_dir=os.path.join(output_dir, "debug")
+    # Set the location of the debug dir
+    debug_dir=os.path.join(output_dir, "debug")
 
-	# Create the debug directory
-	if not os.path.isdir(debug_dir):
-		os.makedirs(debug_dir)	
+    # Create the debug directory
+    if not os.path.isdir(debug_dir):
+        os.makedirs(debug_dir)	
 
-	# Run prescreen to identify bugs
-	bug_file = prescreen.run_alignment(args.metaphlan, args.input, 
-		args.threads, debug_dir)
+    # Run prescreen to identify bugs
+    bug_file = prescreen.run_alignment(args.metaphlan, args.input, 
+        args.threads, debug_dir)
 
-	# Create the custom database from the bugs list
-	custom_database = prescreen.create_custom_database(args.chocophlan, args.prescreen_threshold, bug_file, debug_dir)
+    # Create the custom database from the bugs list
+    custom_database = prescreen.create_custom_database(args.chocophlan, 
+        args.prescreen_threshold, bug_file, debug_dir)
+
+    # Run nucleotide search on custom database
+    alignment_file = nucleotide_search.alignment(custom_database, args.input, 
+        debug_dir, args.threads)
+
+    # Determine which reads are unaligned
+    unaligned_reads_fastq = nucleotide_search.unaligned_reads(alignment_file, debug_dir)
 
 if __name__ == "__main__":
 	main()
