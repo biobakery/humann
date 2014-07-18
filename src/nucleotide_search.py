@@ -78,9 +78,4 @@ def unaligned_reads(input_fastq, alignment_file, debug_dir):
     #convert sam to fastq
     utilities.sam_to_fastq(unaligned_reads_file_sam, utilities.fasta_or_fastq(input_fastq), unaligned_reads_file_fastq)
 
-    #estimate amount of reads unaligned
-    unaligned_percent=int(os.path.getsize(unaligned_reads_file_fastq)/float(os.path.getsize(input_fastq))*100)
-
-    print "Estimate of reads unaligned: " + str(unaligned_percent) + "%\n"
-
     return unaligned_reads_file_fastq

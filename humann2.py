@@ -79,15 +79,15 @@ def parse_arguments (args):
     parser.add_argument(
         "--usearch", 
         help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
-        metavar="<userach/>")
+        metavar="<usearch/>")
     parser.add_argument(
         "--samtools", 
         help="The directory of the samtools executable.\n[DEAFULT: $PATH]", 
         metavar="<samtools/>")
     parser.add_argument(
         "--metaphlan_output", 
-        help="The output file created by metaphlan.\n[DEAFULT: Metaphlan will be run.]", 
-        metavar="<bugs_list.tsv/>")
+        help="The output file created by metaphlan.\n[DEAFULT: Metaphlan will be run to create file.]", 
+        metavar="<bugs_list.tsv>")
 
     return parser.parse_args()
 	

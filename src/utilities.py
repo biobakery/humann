@@ -60,7 +60,7 @@ def execute_command(exe, args, infiles, outfiles):
 
     cmd = exe + " " + args		
 	
-    #print "\n\nRunning: " + cmd 
+    print "\n" + cmd + "\n"
 	
     try:
         p = subprocess.call(cmd,shell=True)
