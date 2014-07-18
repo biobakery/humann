@@ -53,20 +53,30 @@ def alignment(custom_database, user_fastq, debug_dir, threads):
 
     return alignment_file
 
-def unaligned_reads(alignment_file, debug_dir):
+def unaligned_reads(input_fastq, alignment_file, debug_dir):
     """ 
     Return file of just the unaligned reads
     """
 
-    # name the index
+    #name the index
     alignment_file_name = os.path.splitext(os.path.basename(alignment_file))[0]
-    unaligned_reads_file = os.path.join(debug_dir, alignment_file_name + "_unaligned_reads.sam")
+    unaligned_reads_file_sam = os.path.join(debug_dir, alignment_file_name + "_unaligned_reads.sam")
+    unaligned_reads_file_fastq = os.path.join(debug_dir, alignment_file_name + "_unaligned_reads")
 
-    # pull out the unaligned reads from the sam file
+    #pull out the unaligned reads from the sam file
     exe = "samtools"
-    args = " view -Sf 4 " + alignment_file + " -o " + unaligned_reads_file
+    args = " view -Sf 4 " + alignment_file + " -o " + unaligned_reads_file_sam
 
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe,args,[alignment_file],[unaligned_reads_file])
+    utilities.execute_command(exe,args,[alignment_file],[unaligned_reads_file_sam])
 
-    return unaligned_reads_file
+    #determine the index to use for the fastq/fasta file
+    #use the same as that that was used by the user for the input file
+    original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
+    unaligned_reads_file_fastq+= original_extension
+
+    #convert sam to fastq
+    print unaligned_reads_file_fastq
+    utilities.sam_to_fastq(unaligned_reads_file_sam, utilities.fasta_or_fastq(input_fastq), unaligned_reads_file_fastq)
+
+    return unaligned_reads_file_fastq

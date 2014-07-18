@@ -180,7 +180,8 @@ def main():
         debug_dir, args.threads)
 
     # Determine which reads are unaligned
-    unaligned_reads_fastq = nucleotide_search.unaligned_reads(alignment_file, debug_dir)
+    unaligned_reads_fastq = nucleotide_search.unaligned_reads(args.input,
+        alignment_file, debug_dir)
 
 if __name__ == "__main__":
 	main()

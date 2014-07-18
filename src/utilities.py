@@ -108,5 +108,40 @@ def fasta_or_fastq(file):
         if re.search("^>",first_line):
             format="fasta"
 			
+    file_handle.close()
+
     return format
+
+def sam_to_fastq(sam_file, output_type, fastq_file):	
+    """
+    Convert the sam file to a fastq/fasta file
+    """
+    sam_read_name_index=0
+    sam_read_index=9
+    sam_read_quality=10
 	
+
+    file_handle_read=open(sam_file, "r")
+    file_handle_write=open(fastq_file, "w")
+
+    # read through the file line by line
+    line = file_handle_read.readline()
+
+    while line:
+        # ignore headers ^@ 
+        if not re.search("^@",line):
+            info=line.split("\t")
+            if output_type == "fastq":
+                file_handle_write.write("@"+info[sam_read_name_index]+"\n")
+                file_handle_write.write(info[sam_read_index]+"\n")
+                file_handle_write.write("+\n")
+                file_handle_write.write(info[sam_read_quality]+"\n")            
+            #default is fasta
+            else:
+                file_handle_write.write(">"+info[sam_read_name_index]+"\n")
+                file_handle_write.write(info[sam_read_index]+"\n")
+        line=file_handle_read.readline()
+
+    file_handle_read.close()
+    file_handle_write.close()   
+
