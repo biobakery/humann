@@ -73,10 +73,12 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, debug_dir):
             if read_percent >= threshold:
                 total_reads_covered += read_percent
                 organism_info=line.split("\t")[0]
-                species_name=organism_info.split("s__")[1]
-                print "Found species " + species_name + ": " + \
+                # use the genus and species
+                species=organism_info.split("|")[-1]
+                genus=organism_info.split("|")[-2]
+                print "Found " + genus + "|" + species + " : " + \
                     str(read_percent) + "% of reads"
-                species_found.append(species_name)
+                species_found.append(genus + "." + species)
 
         line = file_handle.readline()
     
@@ -88,7 +90,7 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, debug_dir):
     species_file_list = []
     for species_file in os.listdir(chocophlan_dir):
         for species in species_found:
-            if re.search("s__"+species, species_file): 
+            if re.search(species, species_file): 
                 species_file_list.append(os.path.join(chocophlan_dir,species_file))
                 print "Adding file to database: " + species_file   
 
