@@ -10,7 +10,7 @@ of short DNA/RNA reads.
 
 Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch, Samtools
 
-To Run: ./humann2.py -i <input.fastq> -m <metaphlan_dir> -c <chocophlan_dir>
+To Run: ./humann2.py -i <input.fastq> -c <chocophlan_dir>
 """
 
 import argparse, sys, subprocess, os
@@ -30,15 +30,14 @@ def parse_arguments (args):
         metavar="<input.fastq>", 
         required=True)
     parser.add_argument(
-        "-m", "--metaphlan",
-        help="Location of the MetaPhlAn software.\n[REQUIRED]", 
-        metavar="<metaplhan_dir>",
-        required=True)
-    parser.add_argument(
         "-c", "--chocophlan",
         help="Location of the ChocoPhlAn database.\n[REQUIRED]", 
         metavar="<chocoplhan_dir>",
         required=True)
+    parser.add_argument(
+        "--metaphlan",
+        help="Location of the MetaPhlAn software.\n[DEFAULT: $PATH]", 
+        metavar="<metaplhan_dir>")
     parser.add_argument(
         "--o_pathabundance", 
         help="Output file for pathway abundance.\n" + 
@@ -100,15 +99,15 @@ def check_requirements(args):
     if utilities.fasta_or_fastq(args.input) == "error":
         sys.exit("ERROR: The input file is not of a fasta or fastq format.")
 
-    # Check that the metphlan directory exists
-    if not os.path.isdir(args.metaphlan):
-        sys.exit("ERROR: The directory provided for MetaPhlAn at " 
-            + args.metaphlan + " does not exist. Please select another directory.")	
-
     # Check that the chocophlan directory exists
     if not os.path.isdir(args.chocophlan):
         sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
             + args.chocophlan + " does not exist. Please select another directory.")	
+    
+    # Check that the metaphlan2 executable can be found
+    if not utilities.find_exe_in_path("metaphlan2.py"): 
+        sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
+            "Please check the install.")
 
     # Check that the bowtie2 executable can be found
     if not utilities.find_exe_in_path("bowtie2"): 
@@ -168,7 +167,7 @@ def main():
     if args.metaphlan_output:
         bug_file = args.metaphlan_output
     else:
-        bug_file = prescreen.run_alignment(args.metaphlan, args.input, 
+        bug_file = prescreen.run_alignment(args.input, 
             args.threads, debug_dir)
 
     # Create the custom database from the bugs list

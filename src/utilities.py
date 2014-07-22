@@ -34,6 +34,18 @@ def find_exe_in_path(exe):
                 return True
     return False	
 
+def return_exe_path(exe):
+    """
+    Return the location of the exe in $PATH
+    """
+    paths = os.environ["PATH"].split(os.pathsep)
+    for path in paths:
+        fullexe = os.path.join(path,exe)
+        if os.path.exists(fullexe):
+            if os.access(fullexe,os.X_OK):
+                return path
+    return "Error"	
+
 def remove_if_exists(file):
     """
     If file exists, then remove
