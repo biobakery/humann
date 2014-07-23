@@ -13,7 +13,7 @@ Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch, Samtools
 To Run: ./humann2.py -i <input.fastq> -c <chocophlan_dir>
 """
 
-import argparse, sys, subprocess, os
+import argparse, sys, subprocess, os, time
 
 from src import utilities, prescreen, nucleotide_search
 
@@ -31,13 +31,13 @@ def parse_arguments (args):
         required=True)
     parser.add_argument(
         "-c", "--chocophlan",
-        help="Location of the ChocoPhlAn database.\n[REQUIRED]", 
-        metavar="<chocoplhan_dir>",
+        help="The directory containing the ChocoPhlAn database.\n[REQUIRED]", 
+        metavar="<chocoplhan/>",
         required=True)
     parser.add_argument(
         "--metaphlan",
-        help="Location of the MetaPhlAn software.\n[DEFAULT: $PATH]", 
-        metavar="<metaplhan_dir>")
+        help="The directory containing the MetaPhlAn software.\n[DEFAULT: $PATH]", 
+        metavar="<metaplhan/>")
     parser.add_argument(
         "--o_pathabundance", 
         help="Output file for pathway abundance.\n" + 
@@ -54,11 +54,10 @@ def parse_arguments (args):
         "[DEFAULT: $input_dir/genefamilies.tsv]", 
         metavar="<genefamilies.tsv>")
     parser.add_argument(
-        "--debug", 
-        help="Print debug output files to $input_dir/debug/*.\n" + 
-            "[DEFAULT: false]", 
-        metavar="<false>", 
-        type=bool)
+        "--temp", 
+        help="The directory to store temp output files.\n" + 
+            "[DEFAULT: Temp files are removed]", 
+        metavar="<temp/>")
     parser.add_argument(
         "--bowtie2",
         help="The directory of the bowtie2 executable.\n[DEFAULT: $PATH]", 
@@ -130,7 +129,23 @@ def check_requirements(args):
         sys.exit("ERROR: The directory which holds the input file is not " + 
             "writeable. This software needs to write files to this directory.\n" +
             "Please use another directory to hold your input file.") 
-	
+
+    # if set, check that the temp directory location is writeable
+    if args.temp:
+        if os.path.isdir(args.temp):
+            if not os.access(args.temp, os.W_OK):
+                sys.exit("ERROR: The directory set to hold the temp files " + 
+                    "is not writeable. Please change the permissions or select " +
+                    " another directory.")
+        else:
+            path_to_temp_dir=os.path.dirname(args.temp)
+            if os.path.basename == "":
+                path_to_temp_dir=os.path.dirname(os.path.dirname(args.temp))
+            if not os.access(path_to_temp_dir, os.W_OK):
+                sys.exit("ERROR: The directory set to hold the temp files " + 
+                    "is not writeable. Please change the permissions or select " +
+                    " another directory.")
+                
     return input_dir	
 
 
@@ -155,12 +170,16 @@ def main():
     # If all pass, return location of input_dir to write output to
     output_dir=check_requirements(args)
 
-    # Set the location of the debug dir
-    debug_dir=os.path.join(output_dir, "debug")
+    # Set the location of the temp dir
+    temp_dir=os.path.join(output_dir, "temp_" + str(int(time.time())))
 
-    # Create the debug directory
-    if not os.path.isdir(debug_dir):
-        os.makedirs(debug_dir)	
+    # if the temp_dir is set by the user then use that directory
+    if args.temp:
+        temp_dir=args.temp
+
+    # Create the temp directory
+    if not os.path.isdir(temp_dir):
+        os.mkdir(temp_dir)	
 
     # Run prescreen to identify bugs
     bug_file = ""
@@ -168,19 +187,19 @@ def main():
         bug_file = args.metaphlan_output
     else:
         bug_file = prescreen.run_alignment(args.input, 
-            args.threads, debug_dir)
+            args.threads, temp_dir)
 
     # Create the custom database from the bugs list
     custom_database = prescreen.create_custom_database(args.chocophlan, 
-        args.prescreen_threshold, bug_file, debug_dir)
+        args.prescreen_threshold, bug_file, temp_dir)
 
     # Run nucleotide search on custom database
     alignment_file = nucleotide_search.alignment(custom_database, args.input, 
-        debug_dir, args.threads)
+        temp_dir, args.threads)
 
     # Determine which reads are unaligned
     unaligned_reads_fastq = nucleotide_search.unaligned_reads(args.input,
-        alignment_file, debug_dir)
+        alignment_file, temp_dir)
 
 if __name__ == "__main__":
 	main()

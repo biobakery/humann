@@ -6,13 +6,13 @@ Index database, run alignment, find unused reads
 import os
 import utilities
 
-def alignment(custom_database, user_fastq, debug_dir, threads):
+def alignment(custom_database, user_fastq, temp_dir, threads):
     """
     Index database and run alignment with bowtie2
     """
     # name the index
     custom_database_name = os.path.splitext(os.path.basename(custom_database))[0]
-    index_name = os.path.join(debug_dir, custom_database_name + "_bowtie2_index")
+    index_name = os.path.join(temp_dir, custom_database_name + "_bowtie2_index")
   
     # if indexes are ever large (>4G) then use the --large-index flag
     exe="bowtie2-build"
@@ -26,7 +26,7 @@ def alignment(custom_database, user_fastq, debug_dir, threads):
 
     # name the alignment file
     sample_name = os.path.splitext(os.path.basename(user_fastq))[0]
-    alignment_file = os.path.join(debug_dir, custom_database_name + "_chocophlan_align.sam")
+    alignment_file = os.path.join(temp_dir, custom_database_name + "_chocophlan_align.sam")
 
 
     # align user input to database
@@ -53,15 +53,15 @@ def alignment(custom_database, user_fastq, debug_dir, threads):
 
     return alignment_file
 
-def unaligned_reads(input_fastq, alignment_file, debug_dir):
+def unaligned_reads(input_fastq, alignment_file, temp_dir):
     """ 
     Return file of just the unaligned reads
     """
 
     #name the index
     alignment_file_name = os.path.splitext(os.path.basename(alignment_file))[0]
-    unaligned_reads_file_sam = os.path.join(debug_dir, alignment_file_name + "_unaligned_reads.sam")
-    unaligned_reads_file_fastq = os.path.join(debug_dir, alignment_file_name + "_unaligned_reads")
+    unaligned_reads_file_sam = os.path.join(temp_dir, alignment_file_name + "_unaligned_reads.sam")
+    unaligned_reads_file_fastq = os.path.join(temp_dir, alignment_file_name + "_unaligned_reads")
 
     #pull out the unaligned reads from the sam file
     exe = "samtools"
