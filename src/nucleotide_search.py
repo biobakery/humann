@@ -14,12 +14,16 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     custom_database_name = os.path.splitext(os.path.basename(custom_database))[0]
     index_name = os.path.join(temp_dir, custom_database_name + "_bowtie2_index")
   
-    # if indexes are ever large (>4G) then use the --large-index flag
     exe="bowtie2-build"
     args=" -f " + custom_database + " " + index_name
 
     outfiles=[index_name + ".1.bt2"]
 
+    # if custom_database is large (>4G) then use the --large-index flag
+    if os.path.getsize(custom_database) > 4000000000:
+        args+= " --large-index "
+        outfiles=[index_name + ".1.bt2l"]
+        
     # index the database
     print "\nRunning " + exe + " ........\n"
     utilities.execute_command(exe,args,[custom_database],outfiles)
