@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Identify initial list of bugs from user supplied fasta/fastq
 """
@@ -10,10 +9,10 @@ def run_alignment(input, threads, temp_dir):
     """
     Runs metaphlan to identify initial list of bugs
     """
-    
-    exe="metaphlan2.py"
-    opts="-t rel_ab"
    
+    exe="metaphlan2.py"
+    opts=["-t","rel_ab"]   
+
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)
  
@@ -33,15 +32,18 @@ def run_alignment(input, threads, temp_dir):
     
     outfiles=[bug_file, bowtie2_out]
     
-    params=infiles[0] + " --bowtie2db " + infiles_index[0] + " --mpa_pkl " + \
-        infiles[1] + " --input_type " + input_type + " -o " + outfiles[0] + \
-        " --bowtie2out " + bowtie2_out
+    args=[infiles[0],"--bowtie2db",infiles_index[0],
+        "-o",outfiles[0],"--input_type",input_type,
+        "--bowtie2out",bowtie2_out,
+        "--mpa_pkl",infiles[1]]
     
     if threads >1:
-        params=params + " --nproc " + threads
+        args+=["--nproc",threads]
+
+    args+=opts
 
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe, params + " " + opts, infiles, outfiles)
+    utilities.execute_command(exe,args, infiles, outfiles,"")
     
     return bug_file
 
@@ -99,8 +101,8 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
         sys.exit("ERROR: The custom ChocoPhlAn database is empty.\n")   
     
     print "\nCreating custom ChocoPhlAn database ........\n"   
-    args = (" ").join(species_file_list) + " > " + custom_database
-    utilities.execute_command("cat",args,species_file_list,[custom_database])
+ 
+    utilities.execute_command("cat",species_file_list,species_file_list,[custom_database],custom_database)
 
     return custom_database
 

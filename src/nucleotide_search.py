@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Index database, run alignment, find unused reads
 """
@@ -15,18 +14,19 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     index_name = os.path.join(temp_dir, custom_database_name + "_bowtie2_index")
   
     exe="bowtie2-build"
-    args=" -f " + custom_database + " " + index_name
+    args=["-f",custom_database,index_name]
 
     outfiles=[index_name + ".1.bt2"]
 
     # if custom_database is large (>4G) then use the --large-index flag
     if os.path.getsize(custom_database) > 4000000000:
-        args+= " --large-index "
+        args+=["--large-index"]
         outfiles=[index_name + ".1.bt2l"]
         
     # index the database
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe,args,[custom_database],outfiles)
+    
+    utilities.execute_command(exe,args,[custom_database],outfiles,"")
 
     # name the alignment file
     sample_name = os.path.splitext(os.path.basename(user_fastq))[0]
@@ -45,15 +45,16 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     if input_type == "fasta":
         input_type_flag=" -f "
 
-    args=input_type_flag + " -x " + index_name + " -U " + user_fastq + " -S " + alignment_file
+    args=[input_type_flag,"-x",index_name,"-U",user_fastq,"-S",alignment_file]
     
     #add threads
     if threads > 1:
-        args+=" -p " + threads
+        args+=["-p",threads]
 
     # run the bowtie2 alignment
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe,args,[user_fastq],[alignment_file])
+    
+    utilities.execute_command(exe,args,[user_fastq],[alignment_file],"")
 
     return alignment_file
 
@@ -69,10 +70,11 @@ def unaligned_reads(input_fastq, alignment_file, temp_dir):
 
     #pull out the unaligned reads from the sam file
     exe = "samtools"
-    args = " view -Sf 4 " + alignment_file + " -o " + unaligned_reads_file_sam
+    args = ["view","-Sf","4",alignment_file,"-o",unaligned_reads_file_sam]
 
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe,args,[alignment_file],[unaligned_reads_file_sam])
+    
+    utilities.execute_command(exe,args,[alignment_file],[unaligned_reads_file_sam],"")
 
     #determine the index to use for the fastq/fasta file
     #use the same as that that was used by the user for the input file

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Utilities relating to executing third party software, file permissions,
 and file formats
@@ -53,7 +52,7 @@ def remove_if_exists(file):
     if os.path.isfile(file):
         os.unlink(file)
 
-def execute_command(exe, args, infiles, outfiles):
+def execute_command(exe, args, infiles, outfiles, stdout_file):
     """
     Execute third party software or shell command with files
     """
@@ -70,12 +69,18 @@ def execute_command(exe, args, infiles, outfiles):
     for file in outfiles:
         remove_if_exists(file)
 
-    cmd = exe + " " + args		
-	
-    print "\n" + cmd + "\n"
+    # convert numbers to strings
+    args=[str(i) for i in args]
+
+    print "\n" + exe + " " + " ".join(args) + "\n"
+
+    cmd=[exe]+args
 	
     try:
-        p = subprocess.call(cmd,shell=True)
+        if stdout_file:
+            p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
+        else:
+            p = subprocess.call(cmd)
 	
     except OSError as e:
         sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
