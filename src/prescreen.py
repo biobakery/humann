@@ -101,8 +101,15 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
         sys.exit("ERROR: The custom ChocoPhlAn database is empty.\n")   
     
     print "\nCreating custom ChocoPhlAn database ........\n"   
+
+    # determine if the files are compressed with gzip
+    ext=os.path.splitext(species_file_list[0])[1]
+
+    exe="cat"
+    if ext == ".gz":
+        exe="zcat"
  
-    utilities.execute_command("cat",species_file_list,species_file_list,[custom_database],custom_database)
+    utilities.execute_command(exe,species_file_list,species_file_list,[custom_database],custom_database)
 
     return custom_database
 
