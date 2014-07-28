@@ -68,20 +68,16 @@ def unaligned_reads(input_fastq, alignment_file, temp_dir):
     unaligned_reads_file_sam = os.path.join(temp_dir, alignment_file_name + "_unaligned_reads.sam")
     unaligned_reads_file_fastq = os.path.join(temp_dir, alignment_file_name + "_unaligned_reads")
 
-    #pull out the unaligned reads from the sam file
-    exe = "samtools"
-    args = ["view","-Sf","4",alignment_file,"-o",unaligned_reads_file_sam]
-
-    print "\nRunning " + exe + " ........\n"
-    
-    utilities.execute_command(exe,args,[alignment_file],[unaligned_reads_file_sam],"")
-
     #determine the index to use for the fastq/fasta file
     #use the same as that that was used by the user for the input file
     original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
     unaligned_reads_file_fastq+= original_extension
 
-    #convert sam to fastq
-    utilities.sam_to_fastq(unaligned_reads_file_sam, utilities.fasta_or_fastq(input_fastq), unaligned_reads_file_fastq)
+    #name the reduced aligned reads file with tsv extension
+    reduced_aligned_reads_file=os.path.join(temp_dir,alignment_file_name + "_aligned_reads.tsv")
 
-    return unaligned_reads_file_fastq
+    #create two files of aligned and unaligned reads
+    utilities.sam_aligned_reads(alignment_file, utilities.fasta_or_fastq(input_fastq), 
+        unaligned_reads_file_fastq, reduced_aligned_reads_file)
+
+    return [ unaligned_reads_file_fastq, reduced_aligned_reads_file ]

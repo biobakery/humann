@@ -129,17 +129,22 @@ def fasta_or_fastq(file):
 
     return format
 
-def sam_to_fastq(sam_file, output_type, fastq_file):	
+def sam_aligned_reads(sam_alignment_file, output_type, unaligned_fastq_file, aligned_tsv_file):	
     """
-    Convert the sam file to a fastq/fasta file
+    Create two files of aligned and unaligned reads in fasta/fastq and tsv format
     """
     sam_read_name_index=0
+    sam_flag_index=1
+    sam_reference_index=2
+    sam_mapq_index=4
     sam_read_index=9
     sam_read_quality=10
 	
+    sam_unmapped_flag=0x4
 
-    file_handle_read=open(sam_file, "r")
-    file_handle_write=open(fastq_file, "w")
+    file_handle_read=open(sam_alignment_file, "r")
+    file_handle_write_unaligned=open(unaligned_fastq_file, "w")
+    file_handle_write_aligned=open(aligned_tsv_file, "w")
 
     # read through the file line by line
     line = file_handle_read.readline()
@@ -148,17 +153,23 @@ def sam_to_fastq(sam_file, output_type, fastq_file):
         # ignore headers ^@ 
         if not re.search("^@",line):
             info=line.split("\t")
-            if output_type == "fastq":
-                file_handle_write.write("@"+info[sam_read_name_index]+"\n")
-                file_handle_write.write(info[sam_read_index]+"\n")
-                file_handle_write.write("+\n")
-                file_handle_write.write(info[sam_read_quality]+"\n")            
-            #default is fasta
+            # check flag to determine if unaligned
+            if int(info[sam_flag_index]) & sam_unmapped_flag != 0:
+                if output_type == "fastq":
+                    file_handle_write_unaligned.write("@"+info[sam_read_name_index]+"\n")
+                    file_handle_write_unaligned.write(info[sam_read_index]+"\n")
+                    file_handle_write_unaligned.write("+\n")
+                    file_handle_write_unaligned.write(info[sam_read_quality]+"\n")            
+                #default is fasta
+                else:
+                    file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
+                    file_handle_write_unaligned.write(info[sam_read_index]+"\n")
             else:
-                file_handle_write.write(">"+info[sam_read_name_index]+"\n")
-                file_handle_write.write(info[sam_read_index]+"\n")
+                newline=("\t").join([info[sam_read_name_index],info[sam_reference_index],
+                    info[sam_mapq_index]])
+                file_handle_write_aligned.write(newline+"\n")
         line=file_handle_read.readline()
 
     file_handle_read.close()
-    file_handle_write.close()   
-
+    file_handle_write_unaligned.close()   
+    file_handle_write_aligned.close()

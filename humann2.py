@@ -8,7 +8,7 @@ the presence/absence and abundance of microbial pathways in a community
 from metagenomic data. Sequencing a metagenome typically produces millions 
 of short DNA/RNA reads.
 
-Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch, Samtools
+Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch
 
 To Run: ./humann2.py -i <input.fastq> -c <chocophlan_dir>
 """
@@ -79,10 +79,6 @@ def parse_arguments (args):
         help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
         metavar="<usearch/>")
     parser.add_argument(
-        "--samtools", 
-        help="The directory of the samtools executable.\n[DEAFULT: $PATH]", 
-        metavar="<samtools/>")
-    parser.add_argument(
         "--metaphlan_output", 
         help="The output file created by metaphlan.\n[DEAFULT: Metaphlan will be run to create file.]", 
         metavar="<bugs_list.tsv>")
@@ -116,11 +112,6 @@ def check_requirements(args):
     # Check that the usearch executable can be found
     if not utilities.find_exe_in_path("usearch"):
         sys.exit("ERROR: The usearch executable can not be found. " +  
-            "Please check the install.")
-	
-    # Check that the samtools executable can be found
-    if not utilities.find_exe_in_path("samtools"):
-        sys.exit("ERROR: The samtools executable can not be found. " +  
             "Please check the install.")
 	
     # Check that the directory that holds the input file is writeable
@@ -163,9 +154,6 @@ def main():
     if args.usearch:
         utilities.add_exe_to_path(args.usearch)
 		
-    if args.samtools:
-        utilities.add_exe_to_path(args.samtools)
-				
     # Check for required files, software, databases, and also permissions
     # If all pass, return location of input_dir to write output to
     output_dir=check_requirements(args)
@@ -197,9 +185,12 @@ def main():
     alignment_file = nucleotide_search.alignment(custom_database, args.input, 
         temp_dir, args.threads)
 
-    # Determine which reads are unaligned
-    unaligned_reads_fastq = nucleotide_search.unaligned_reads(args.input,
-        alignment_file, temp_dir)
+    # Determine which reads are unaligned and reduce aligned reads file
+    [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+        args.input, alignment_file, temp_dir)
+
+    # remove the large alignment_file and just use the reduced aligned reads file
+    utilities.remove_if_exists(alignment_file) 
 
 if __name__ == "__main__":
 	main()
