@@ -5,6 +5,8 @@ and file formats
 
 import os, sys, subprocess, re
 
+import config
+
 def file_exists_readable(file):
     """
     Exit with error if file does not exist or is not readable
@@ -52,6 +54,31 @@ def remove_if_exists(file):
     if os.path.isfile(file):
         os.unlink(file)
 
+def remove_temp_file(file):
+    """
+    If file exists, then remove
+    If debug mode, do not remove
+    """
+    if os.path.isfile(file):
+        if not "debug" == config.run_mode:
+            os.unlink(file)
+
+def check_outfiles(outfiles):
+    """
+    If outfiles already_exist, then remove or bypass
+    """
+
+    bypass=False
+    for file in outfiles:
+        if os.path.isfile(file):
+            if "debug" == config.run_mode:
+                bypass=True
+                break
+            else:
+                os.unlink(file)
+
+    return bypass
+
 def execute_command(exe, args, infiles, outfiles, stdout_file):
     """
     Execute third party software or shell command with files
@@ -65,29 +92,32 @@ def execute_command(exe, args, infiles, outfiles, stdout_file):
     for file in infiles:
         file_exists_readable(file)
         
-    # if outfiles already exist, then remove
-    for file in outfiles:
-        remove_if_exists(file)
+    # check if outfiles already exist
+    bypass=check_outfiles(outfiles)
 
     # convert numbers to strings
     args=[str(i) for i in args]
 
-    print "\n" + exe + " " + " ".join(args) + "\n"
+    if not bypass:
 
-    cmd=[exe]+args
+        print "\n" + exe + " " + " ".join(args) + "\n"
+
+        cmd=[exe]+args
 	
-    try:
-        if stdout_file:
-            p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
-        else:
-            p = subprocess.call(cmd)
+        try:
+            if stdout_file:
+                p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
+            else:
+                p = subprocess.call(cmd)
 	
-    except OSError as e:
-        sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
+        except OSError as e:
+            sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
 		
-    # check that the output files exist and are readable
-    for file in outfiles:
-        file_exists_readable(file)
+        # check that the output files exist and are readable
+        for file in outfiles:
+            file_exists_readable(file)
+    else:
+        print "Bypass: \n" + exe + " " + " ".join(args) + "\n"
 
 def fasta_or_fastq(file):
     """
@@ -142,34 +172,43 @@ def sam_aligned_reads(sam_alignment_file, output_type, unaligned_fastq_file, ali
 	
     sam_unmapped_flag=0x4
 
-    file_handle_read=open(sam_alignment_file, "r")
-    file_handle_write_unaligned=open(unaligned_fastq_file, "w")
-    file_handle_write_aligned=open(aligned_tsv_file, "w")
+    # check input and output files
+    bypass=check_outfiles([unaligned_fastq_file, aligned_tsv_file])
+  
+    if not bypass:
+        file_exists_readable(sam_alignment_file)
 
-    # read through the file line by line
-    line = file_handle_read.readline()
+        file_handle_read=open(sam_alignment_file, "r")
+        file_handle_write_unaligned=open(unaligned_fastq_file, "w")
+        file_handle_write_aligned=open(aligned_tsv_file, "w")
 
-    while line:
-        # ignore headers ^@ 
-        if not re.search("^@",line):
-            info=line.split("\t")
-            # check flag to determine if unaligned
-            if int(info[sam_flag_index]) & sam_unmapped_flag != 0:
-                if output_type == "fastq":
-                    file_handle_write_unaligned.write("@"+info[sam_read_name_index]+"\n")
-                    file_handle_write_unaligned.write(info[sam_read_index]+"\n")
-                    file_handle_write_unaligned.write("+\n")
-                    file_handle_write_unaligned.write(info[sam_read_quality]+"\n")            
-                #default is fasta
+        # read through the file line by line
+        line = file_handle_read.readline()
+
+        while line:
+            # ignore headers ^@ 
+            if not re.search("^@",line):
+                info=line.split("\t")
+                # check flag to determine if unaligned
+                if int(info[sam_flag_index]) & sam_unmapped_flag != 0:
+                    if output_type == "fastq":
+                        file_handle_write_unaligned.write("@"+info[sam_read_name_index]+"\n")
+                        file_handle_write_unaligned.write(info[sam_read_index]+"\n")
+                        file_handle_write_unaligned.write("+\n")
+                        file_handle_write_unaligned.write(info[sam_read_quality]+"\n")            
+                    #default is fasta
+                    else:
+                        file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
+                        file_handle_write_unaligned.write(info[sam_read_index]+"\n")
                 else:
-                    file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
-                    file_handle_write_unaligned.write(info[sam_read_index]+"\n")
-            else:
-                newline=("\t").join([info[sam_read_name_index],info[sam_reference_index],
-                    info[sam_mapq_index]])
-                file_handle_write_aligned.write(newline+"\n")
-        line=file_handle_read.readline()
+                    newline=("\t").join([info[sam_read_name_index],info[sam_reference_index],
+                        info[sam_mapq_index]])
+                    file_handle_write_aligned.write(newline+"\n")
+            line=file_handle_read.readline()
 
-    file_handle_read.close()
-    file_handle_write_unaligned.close()   
-    file_handle_write_aligned.close()
+        file_handle_read.close()
+        file_handle_write_unaligned.close()   
+        file_handle_write_aligned.close()
+
+        # remove the alignment file as it will be replaced by the two files created
+        remove_temp_file(sam_alignment_file)

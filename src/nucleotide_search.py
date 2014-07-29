@@ -3,7 +3,7 @@ Index database, run alignment, find unused reads
 """
 
 import os
-import utilities
+import utilities, config
 
 def alignment(custom_database, user_fastq, temp_dir, threads):
     """
@@ -19,7 +19,7 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     outfiles=[index_name + ".1.bt2"]
 
     # if custom_database is large (>4G) then use the --large-index flag
-    if os.path.getsize(custom_database) > 4000000000:
+    if os.path.getsize(custom_database) > config.bowtie2_large_index_threshold:
         args+=["--large-index"]
         outfiles=[index_name + ".1.bt2l"]
         

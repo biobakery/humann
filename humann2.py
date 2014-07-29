@@ -10,12 +10,12 @@ of short DNA/RNA reads.
 
 Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch
 
-To Run: ./humann2.py -i <input.fastq> -c <chocophlan_dir>
+To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 """
 
 import argparse, sys, subprocess, os, time
 
-from src import utilities, prescreen, nucleotide_search
+from src import utilities, prescreen, nucleotide_search, translated_search
 
 def parse_arguments (args):
     """ 
@@ -33,6 +33,11 @@ def parse_arguments (args):
         "-c", "--chocophlan",
         help="The directory containing the ChocoPhlAn database.\n[REQUIRED]", 
         metavar="<chocoplhan/>",
+        required=True)
+    parser.add_argument(
+        "-u", "--uniref",
+        help="The directory containing the UniRef database.\n[REQUIRED]", 
+        metavar="<uniref/>",
         required=True)
     parser.add_argument(
         "--metaphlan",
@@ -75,6 +80,12 @@ def parse_arguments (args):
         type=float,
         default=0.01) 
     parser.add_argument(
+        "--identity_threshold", 
+        help="The identity threshold to use with the translated search.\n[DEFAULT: 0.5]", 
+        metavar="<0.5>", 
+        type=float,
+        default=0.5) 
+    parser.add_argument(
         "--usearch", 
         help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
         metavar="<usearch/>")
@@ -98,6 +109,11 @@ def check_requirements(args):
     if not os.path.isdir(args.chocophlan):
         sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
             + args.chocophlan + " does not exist. Please select another directory.")	
+    
+    # Check that the uniref directory exists
+    if not os.path.isdir(args.uniref):
+        sys.exit("ERROR: The directory provided for the UniRef database at " 
+            + args.uniref + " does not exist. Please select another directory.")	
     
     # Check that the metaphlan2 executable can be found
     if not utilities.find_exe_in_path("metaphlan2.py"): 
@@ -174,7 +190,7 @@ def main():
     if args.metaphlan_output:
         bug_file = args.metaphlan_output
     else:
-        bug_file = prescreen.run_alignment(args.input, 
+        bug_file = prescreen.alignment(args.input, 
             args.threads, temp_dir)
 
     # Create the custom database from the bugs list
@@ -182,15 +198,17 @@ def main():
         args.prescreen_threshold, bug_file, temp_dir)
 
     # Run nucleotide search on custom database
-    alignment_file = nucleotide_search.alignment(custom_database, args.input, 
+    nucleotide_alignment_file = nucleotide_search.alignment(custom_database, args.input, 
         temp_dir, args.threads)
 
     # Determine which reads are unaligned and reduce aligned reads file
+    # Remove the alignment_file as we only need the reduced aligned reads file
     [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-        args.input, alignment_file, temp_dir)
+        args.input, nucleotide_alignment_file, temp_dir)
 
-    # remove the large alignment_file and just use the reduced aligned reads file
-    utilities.remove_if_exists(alignment_file) 
+    # Run translated search on UniRef database
+    translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fastq,
+        args.identity_threshold, temp_dir, args.threads)
 
 if __name__ == "__main__":
 	main()

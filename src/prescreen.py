@@ -3,15 +3,15 @@ Identify initial list of bugs from user supplied fasta/fastq
 """
 
 import os, re, sys
-import utilities
+import utilities, config
 
-def run_alignment(input, threads, temp_dir):
+def alignment(input, threads, temp_dir):
     """
     Runs metaphlan to identify initial list of bugs
     """
    
     exe="metaphlan2.py"
-    opts=["-t","rel_ab"]   
+    opts=config.metaphlan_opts  
 
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)
