@@ -24,7 +24,7 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     if threads > 1:
         args+=["-threads",threads]
 
-    print "\nRunning " + exe + " ........\n"
+    print "\nRunning muliple " + exe + " ........\n"
 
     args+=opts
 
@@ -57,3 +57,24 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
         utilities.remove_temp_file(temp_file)
 
     return alignment_file
+
+def unaligned_reads(input_fastq, alignment_file, temp_dir):
+    """
+    Create a fasta/fastq file of the unaligned reads
+    """
+
+    #name the index
+    alignment_file_name = os.path.splitext(os.path.basename(alignment_file))[0]
+    unaligned_reads_file_fastq = os.path.join(temp_dir,
+        alignment_file_name + config.unaligned_reads_name_no_ext)
+
+    #determine the index to use for the fastq/fasta file
+    #use the same as that that was used by the user for the input file
+    original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
+    unaligned_reads_file_fastq+= original_extension
+
+    utilities.unaligned_reads_from_tsv(input_fastq, alignment_file, 
+        unaligned_reads_file_fastq)
+
+    return unaligned_reads_file_fastq
+

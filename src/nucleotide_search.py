@@ -87,7 +87,7 @@ def unaligned_reads(input_fastq, alignment_file, temp_dir):
         alignment_file_name + config.aligned_reads_name_tsv)
 
     #create two files of aligned and unaligned reads
-    utilities.sam_aligned_reads(alignment_file, utilities.fasta_or_fastq(input_fastq), 
+    utilities.unaligned_reads_from_sam(alignment_file, utilities.fasta_or_fastq(input_fastq), 
         unaligned_reads_file_fastq, reduced_aligned_reads_file)
 
     return [ unaligned_reads_file_fastq, reduced_aligned_reads_file ]

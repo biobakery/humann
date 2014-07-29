@@ -167,7 +167,7 @@ def fasta_or_fastq(file):
 
     return format
 
-def sam_aligned_reads(sam_alignment_file, output_type, unaligned_fastq_file, aligned_tsv_file):	
+def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_file, aligned_tsv_file):	
     """
     Create two files of aligned and unaligned reads in fasta/fastq and tsv format
     """
@@ -220,3 +220,32 @@ def sam_aligned_reads(sam_alignment_file, output_type, unaligned_fastq_file, ali
 
         # remove the alignment file as it will be replaced by the two files created
         remove_temp_file(sam_alignment_file)
+
+def estimate_unaligned_reads(input_fastq, unaligned_fastq):
+    """
+    Calculate an estimate of the percent of reads unaligned
+    """
+
+    # check files exist and are readable
+    file_exists_readable(input_fastq)
+    file_exists_readable(unaligned_fastq)
+
+    aligned_size=os.path.getsize(input_fastq)
+    unaligned_size=os.path.getsize(unaligned_fastq)
+
+    percent=int(unaligned_size/float(aligned_size) * 100)
+
+    return str(percent)
+
+def unaligned_reads_from_tsv(input_fastq, alignment_file_tsv, unaligned_file_fastq):
+    """
+    Create a fasta/fastq file of the unaligned reads
+    """
+
+    # check input and output files
+    bypass=check_outfiles(unaligned_file_fastq)
+
+    if not bypass:
+        file_exists_readable(input_fastq)
+        file_exists_readable(alignment_file_tsv)
+

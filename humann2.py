@@ -228,9 +228,21 @@ def main():
     [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
         args.input, nucleotide_alignment_file, temp_dir)
 
+    # Report reads unaligned
+    print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+        args.input, unaligned_reads_file_fastq) + "%\n"  
+
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fastq,
         args.identity_threshold, temp_dir, args.threads)
+
+    # Determine which reads are unaligned
+    translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+        args.input, translated_alignment_file, temp_dir)
+
+    # Report reads unaligned
+    #print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+    #    args.input, translated_unaligned_reads_file_fastq) + "%\n"  
 
 if __name__ == "__main__":
 	main()
