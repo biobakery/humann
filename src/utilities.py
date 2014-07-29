@@ -100,24 +100,32 @@ def execute_command(exe, args, infiles, outfiles, stdout_file):
 
     if not bypass:
 
-        print "\n" + exe + " " + " ".join(args) + "\n"
+        if config.verbose:
+            print "\n" + exe + " " + " ".join(args) + "\n"
 
         cmd=[exe]+args
 	
-        try:
-            if stdout_file:
+        if stdout_file:
+            try:
                 p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
-            else:
-                p = subprocess.call(cmd)
-	
-        except OSError as e:
-            sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
-		
+            except OSError as e:
+                sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
+        else:
+            try:
+                p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+                if config.verbose:
+                    print p_out
+            except OSError as e:
+                sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
+
         # check that the output files exist and are readable
         for file in outfiles:
             file_exists_readable(file)
     else:
-        print "Bypass: \n" + exe + " " + " ".join(args) + "\n"
+        if config.verbose:
+            print "Bypass: \n" + exe + " " + " ".join(args) + "\n"
+        else:
+            print "Bypass\n"
 
 def fasta_or_fastq(file):
     """

@@ -24,7 +24,6 @@ def alignment(input, threads, temp_dir):
     bug_file = os.path.join(temp_dir, sample_name + "_bugs_list.tsv")
     bowtie2_out = os.path.join(temp_dir, sample_name + "_bowtie2_out.txt") 
 
- 
     infiles=[input, os.path.join(metaphlan_dir, "db_v20/mpa_v20_m200.pkl")]
     
     # location of the index name to multiple files
@@ -43,7 +42,7 @@ def alignment(input, threads, temp_dir):
     args+=opts
 
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe,args, infiles, outfiles,"")
+    utilities.execute_command(exe, args, infiles, outfiles,"")
     
     return bug_file
 
@@ -78,8 +77,9 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
                 # use the genus and species
                 species=organism_info.split("|")[-1]
                 genus=organism_info.split("|")[-2]
-                print "Found " + genus + "|" + species + " : " + \
-                    str(read_percent) + "% of reads"
+                if config.verbose:
+                    print "Found " + genus + "|" + species + " : " + \
+                        str(read_percent) + "% of reads"
                 species_found.append(genus + "." + species)
 
         line = file_handle.readline()
@@ -94,7 +94,8 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
         for species in species_found:
             if re.search(species, species_file): 
                 species_file_list.append(os.path.join(chocophlan_dir,species_file))
-                print "Adding file to database: " + species_file   
+                if config.verbose:
+                    print "Adding file to database: " + species_file   
 
     # create new fasta file containing only those species found
     if not species_file_list:

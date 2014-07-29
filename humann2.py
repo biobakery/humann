@@ -26,9 +26,15 @@ def parse_arguments (args):
         description= "HUMAnN2 : HMP Unified Metabolic Analysis Network 2\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
+        "-v","--verbose", 
+        help="additional output is printed\n", 
+        action="store_true",
+        default=False)
+    parser.add_argument(
         "-d","--debug", 
         help="bypass commands if the output files exist\n", 
-        action="store_true")
+        action="store_true",
+        default=False)
     parser.add_argument(
         "-i", "--input", 
         help="fastq/fasta input file\n[REQUIRED]", 
@@ -157,10 +163,15 @@ def check_requirements(args):
                 sys.exit("ERROR: The directory set to hold the temp files " + 
                     "is not writeable. Please change the permissions or select " +
                     " another directory.")
+
     # if set, update the config run mode to debug
     if args.debug:
         config.debug=True  
             
+    # if set, update the config run mode to debug
+    if args.verbose:
+        config.verbose=True  
+    
     return input_dir	
 
 
@@ -192,6 +203,9 @@ def main():
     # Create the temp directory
     if not os.path.isdir(temp_dir):
         os.mkdir(temp_dir)	
+
+    if config.verbose:
+        print "Writing temp files to: " + temp_dir
 
     # Run prescreen to identify bugs
     bug_file = ""

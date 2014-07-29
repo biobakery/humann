@@ -4,6 +4,7 @@ Configuration settings
 
 # software run modes
 debug = False
+verbose = False
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]
