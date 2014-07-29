@@ -15,7 +15,8 @@ To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 
 import argparse, sys, subprocess, os, time
 
-from src import utilities, prescreen, nucleotide_search, translated_search
+from src import utilities, prescreen, nucleotide_search
+from src import translated_search, config
 
 def parse_arguments (args):
     """ 
@@ -93,6 +94,10 @@ def parse_arguments (args):
         "--metaphlan_output", 
         help="The output file created by metaphlan.\n[DEAFULT: Metaphlan will be run to create file.]", 
         metavar="<bugs_list.tsv>")
+    parser.add_argument(
+        "--debug", 
+        help="Turns on debug mode to bypass commands if the output files exist.\n[DEAFULT: OFF.]", 
+        action="store_true")
 
     return parser.parse_args()
 	
@@ -152,7 +157,10 @@ def check_requirements(args):
                 sys.exit("ERROR: The directory set to hold the temp files " + 
                     "is not writeable. Please change the permissions or select " +
                     " another directory.")
-                
+    # if set, update the config run mode to debug
+    if args.debug:
+        config.run_mode="debug"    
+            
     return input_dir	
 
 

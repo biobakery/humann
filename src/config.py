@@ -3,7 +3,7 @@ Configuration settings
 """
 
 # software run mode
-run_mode = "debug"
+run_mode = "standard"
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]
