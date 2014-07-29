@@ -11,19 +11,20 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     """
     # name the index
     custom_database_name = os.path.splitext(os.path.basename(custom_database))[0]
-    index_name = os.path.join(temp_dir, custom_database_name + "_bowtie2_index")
+    index_name = os.path.join(temp_dir, 
+        custom_database_name + config.bowtie2_index_name)
   
     exe="bowtie2-build"
     opts=config.bowtie2_build_opts
 
     args=["-f",custom_database,index_name]
 
-    outfiles=[index_name + ".1.bt2"]
+    outfiles=[index_name + config.bowtie2_index_ext]
 
     # if custom_database is large (>4G) then use the --large-index flag
     if os.path.getsize(custom_database) > config.bowtie2_large_index_threshold:
         args+=["--large-index"]
-        outfiles=[index_name + ".1.bt2l"]
+        outfiles=[index_name + config.bowtie2_large_index_ext]
         
     # index the database
     print "\nRunning " + exe + " ........\n"
@@ -34,7 +35,8 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
 
     # name the alignment file
     sample_name = os.path.splitext(os.path.basename(user_fastq))[0]
-    alignment_file = os.path.join(temp_dir, custom_database_name + "_chocophlan_align.sam")
+    alignment_file = os.path.join(temp_dir, 
+        custom_database_name + config.chocophlan_alignment_name)
 
 
     # align user input to database
@@ -72,8 +74,8 @@ def unaligned_reads(input_fastq, alignment_file, temp_dir):
 
     #name the index
     alignment_file_name = os.path.splitext(os.path.basename(alignment_file))[0]
-    unaligned_reads_file_sam = os.path.join(temp_dir, alignment_file_name + "_unaligned_reads.sam")
-    unaligned_reads_file_fastq = os.path.join(temp_dir, alignment_file_name + "_unaligned_reads")
+    unaligned_reads_file_fastq = os.path.join(temp_dir, 
+        alignment_file_name + config.unaligned_reads_name_no_ext)
 
     #determine the index to use for the fastq/fasta file
     #use the same as that that was used by the user for the input file
@@ -81,7 +83,8 @@ def unaligned_reads(input_fastq, alignment_file, temp_dir):
     unaligned_reads_file_fastq+= original_extension
 
     #name the reduced aligned reads file with tsv extension
-    reduced_aligned_reads_file=os.path.join(temp_dir,alignment_file_name + "_aligned_reads.tsv")
+    reduced_aligned_reads_file=os.path.join(temp_dir,
+        alignment_file_name + config.aligned_reads_name_tsv)
 
     #create two files of aligned and unaligned reads
     utilities.sam_aligned_reads(alignment_file, utilities.fasta_or_fastq(input_fastq), 

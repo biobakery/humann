@@ -21,13 +21,14 @@ def alignment(input, threads, temp_dir):
     
     # outfile name
     sample_name = os.path.splitext(os.path.basename(input))[0]
-    bug_file = os.path.join(temp_dir, sample_name + "_bugs_list.tsv")
-    bowtie2_out = os.path.join(temp_dir, sample_name + "_bowtie2_out.txt") 
+    bug_file = os.path.join(temp_dir, sample_name + config.bugs_list_name)
+    bowtie2_out = os.path.join(temp_dir, 
+        sample_name + config.metaphlan_bowtie2_name) 
 
-    infiles=[input, os.path.join(metaphlan_dir, "db_v20/mpa_v20_m200.pkl")]
+    infiles=[input, os.path.join(metaphlan_dir, config.metaphlan_pkl_file)]
     
     # location of the index name to multiple files
-    infiles_index=[os.path.join(metaphlan_dir, "db_v20/mpa_v20_m200")]
+    infiles_index=[os.path.join(metaphlan_dir, config.metaphlan_mpa_index)]
     
     outfiles=[bug_file, bowtie2_out]
     
@@ -56,7 +57,8 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
 
     # outfile name
     bug_sample_name = os.path.splitext(os.path.basename(bug_file))[0]
-    custom_database = os.path.join(temp_dir, bug_sample_name + "_custom_database.ffn")
+    custom_database = os.path.join(temp_dir, 
+        bug_sample_name + config.chocophlan_custom_database_name)
     
     species_found = []
     total_reads_covered = 0

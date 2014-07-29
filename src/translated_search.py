@@ -12,7 +12,8 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     """
 
     unaligned_name = os.path.splitext(os.path.basename(unaligned_reads_file_fastq))[0]
-    alignment_file_base = os.path.join(temp_dir, unaligned_name + "_translated_aligned")
+    alignment_file_base = os.path.join(temp_dir, 
+        unaligned_name + config.translated_alignment_name)
 
     exe="usearch"
     opts=config.usearch_opts
@@ -35,7 +36,7 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
         full_args=args+["-db",input_database]
 
         # name temp output file
-        ext= "." + str(index)+ ".usearch.tmp"
+        ext= "." + str(index)+ config.usearch_name_temp
         temp_out_file=alignment_file_base + ext
         temp_out_files.append(temp_out_file)
 
