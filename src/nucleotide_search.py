@@ -14,6 +14,8 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     index_name = os.path.join(temp_dir, custom_database_name + "_bowtie2_index")
   
     exe="bowtie2-build"
+    opts=config.bowtie2_build_opts
+
     args=["-f",custom_database,index_name]
 
     outfiles=[index_name + ".1.bt2"]
@@ -25,6 +27,8 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
         
     # index the database
     print "\nRunning " + exe + " ........\n"
+
+    args+=opts
     
     utilities.execute_command(exe,args,[custom_database],outfiles,"")
 
@@ -35,6 +39,7 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
 
     # align user input to database
     exe="bowtie2"
+    opts=config.bowtie2_align_opts
 
     #determine input type as fastq or fasta
     input_type = utilities.fasta_or_fastq(user_fastq)
@@ -54,6 +59,8 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
     # run the bowtie2 alignment
     print "\nRunning " + exe + " ........\n"
     
+    args+=opts
+
     utilities.execute_command(exe,args,[user_fastq],[alignment_file],"")
 
     return alignment_file

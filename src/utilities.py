@@ -60,7 +60,7 @@ def remove_temp_file(file):
     If debug mode, do not remove
     """
     if os.path.isfile(file):
-        if not "debug" == config.run_mode:
+        if not config.debug:
             os.unlink(file)
 
 def check_outfiles(outfiles):
@@ -71,7 +71,7 @@ def check_outfiles(outfiles):
     bypass=False
     for file in outfiles:
         if os.path.isfile(file):
-            if "debug" == config.run_mode:
+            if config.debug:
                 bypass=True
                 break
             else:

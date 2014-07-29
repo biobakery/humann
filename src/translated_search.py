@@ -3,7 +3,7 @@ Run alignment, find unused reads
 """
 
 import os
-import utilities
+import utilities, config
 
 def alignment(uniref, unaligned_reads_file_fastq, identity_threshold, 
     temp_dir, threads):
@@ -15,6 +15,8 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     alignment_file_base = os.path.join(temp_dir, unaligned_name + "_translated_aligned")
 
     exe="usearch"
+    opts=config.usearch_opts
+
     args=["-usearch_global",unaligned_reads_file_fastq,"-id",identity_threshold,
         "-userfields","query+target+id"]
 
@@ -22,6 +24,8 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
         args+=["-threads",threads]
 
     print "\nRunning " + exe + " ........\n"
+
+    args+=opts
 
     #run the search on each of the databases in the directory
     index=1

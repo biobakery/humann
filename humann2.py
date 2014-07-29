@@ -26,78 +26,78 @@ def parse_arguments (args):
         description= "HUMAnN2 : HMP Unified Metabolic Analysis Network 2\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
+        "-d","--debug", 
+        help="bypass commands if the output files exist\n", 
+        action="store_true")
+    parser.add_argument(
         "-i", "--input", 
-        help="fastq/fasta input file.\n[REQUIRED]", 
+        help="fastq/fasta input file\n[REQUIRED]", 
         metavar="<input.fastq>", 
         required=True)
     parser.add_argument(
         "-c", "--chocophlan",
-        help="The directory containing the ChocoPhlAn database.\n[REQUIRED]", 
+        help="directory containing the ChocoPhlAn database\n[REQUIRED]", 
         metavar="<chocoplhan/>",
         required=True)
     parser.add_argument(
         "-u", "--uniref",
-        help="The directory containing the UniRef database.\n[REQUIRED]", 
+        help="directory containing the UniRef database\n[REQUIRED]", 
         metavar="<uniref/>",
         required=True)
     parser.add_argument(
         "--metaphlan",
-        help="The directory containing the MetaPhlAn software.\n[DEFAULT: $PATH]", 
+        help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaplhan/>")
     parser.add_argument(
         "--o_pathabundance", 
-        help="Output file for pathway abundance.\n" + 
+        help="output file for pathway abundance\n" + 
         "[DEFAULT: $input_dir/pathabundance.tsv]", 
         metavar="<pathabundance.tsv>")
     parser.add_argument(
         "--o_pathpresence",
-        help="Output file for pathway presence/absence.\n" + 
+        help="output file for pathway presence/absence\n" + 
         "[DEFAULT: $input_dir/pathpresence.tsv]", 
         metavar="<pathpresence.tsv>")
     parser.add_argument(
         "--o_genefamilies", 
-        help="Output file for gene families.\n" + 
+        help="output file for gene families\n" + 
         "[DEFAULT: $input_dir/genefamilies.tsv]", 
         metavar="<genefamilies.tsv>")
     parser.add_argument(
         "--temp", 
-        help="The directory to store temp output files.\n" + 
-            "[DEFAULT: Temp files are removed]", 
+        help="directory to store temp output files\n" + 
+            "[DEFAULT: temp files are removed]", 
         metavar="<temp/>")
     parser.add_argument(
         "--bowtie2",
-        help="The directory of the bowtie2 executable.\n[DEFAULT: $PATH]", 
+        help="directory of the bowtie2 executable\n[DEFAULT: $PATH]", 
         metavar="<bowtie2/>")
     parser.add_argument(
         "--threads", 
-        help="Number of threads to use with bowtie2.\n[DEFAULT: 1]", 
+        help="number of threads to use with bowtie2\n[DEFAULT: 1]", 
         metavar="<1>", 
         type=int,
         default=1) 
     parser.add_argument(
         "--prescreen_threshold", 
-        help="The minimum percentage of reads matching a species.\n[DEFAULT: 0.01]", 
+        help="minimum percentage of reads matching a species\n[DEFAULT: 0.01]", 
         metavar="<0.01>", 
         type=float,
         default=0.01) 
     parser.add_argument(
         "--identity_threshold", 
-        help="The identity threshold to use with the translated search.\n[DEFAULT: 0.5]", 
+        help="identity threshold to use with the translated search\n[DEFAULT: 0.5]", 
         metavar="<0.5>", 
         type=float,
         default=0.5) 
     parser.add_argument(
         "--usearch", 
-        help="The directory of the usearch executable.\n[DEFAULT: $PATH]", 
+        help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
         metavar="<usearch/>")
     parser.add_argument(
         "--metaphlan_output", 
-        help="The output file created by metaphlan.\n[DEAFULT: Metaphlan will be run to create file.]", 
+        help="output file created by metaphlan\n[DEFAULT: file will be created]", 
         metavar="<bugs_list.tsv>")
-    parser.add_argument(
-        "--debug", 
-        help="Turns on debug mode to bypass commands if the output files exist.\n[DEAFULT: OFF.]", 
-        action="store_true")
 
     return parser.parse_args()
 	
@@ -159,7 +159,7 @@ def check_requirements(args):
                     " another directory.")
     # if set, update the config run mode to debug
     if args.debug:
-        config.run_mode="debug"    
+        config.debug=True  
             
     return input_dir	
 
