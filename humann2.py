@@ -238,11 +238,11 @@ def main():
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-        args.input, translated_alignment_file, temp_dir)
+        unaligned_reads_file_fastq, translated_alignment_file, temp_dir)
 
     # Report reads unaligned
-    #print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-    #    args.input, translated_unaligned_reads_file_fastq) + "%\n"  
+    print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+        args.input, translated_unaligned_reads_file_fastq) + "%\n"  
 
 if __name__ == "__main__":
 	main()

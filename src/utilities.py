@@ -243,9 +243,55 @@ def unaligned_reads_from_tsv(input_fastq, alignment_file_tsv, unaligned_file_fas
     """
 
     # check input and output files
-    bypass=check_outfiles(unaligned_file_fastq)
+    bypass=check_outfiles([unaligned_file_fastq])
 
     if not bypass:
         file_exists_readable(input_fastq)
         file_exists_readable(alignment_file_tsv)
+
+        # read through the alignment file to identify ids
+        # that correspond to aligned reads
+
+        file_handle=open(alignment_file_tsv,"r")
+
+        line=file_handle.readline()
+
+        aligned_ids=[]
+        while line:
+            # expected format has the query ids in column 1
+            aligned_ids+=[line.split("\t")[0]]
+            line=file_handle.readline()
+
+        file_handle.close()
+
+        # create unaligned file using list of aligned ids
+        file_handle_read=open(input_fastq,"r")
+        file_handle_write=open(unaligned_file_fastq,"w")
+
+        line=file_handle_read.readline()
+
+        fastq_type=fasta_or_fastq(input_fastq)
+
+        id_indicator="@"
+        if fastq_type == "fasta":
+            id_indicator=">"
+
+        print_flag=False
+        while line:
+            # check for id line which will start with "@" or ">"
+            if re.search("^"+id_indicator,line):
+                id=line.strip(id_indicator+"\n")
+
+                if not id in aligned_ids:
+                    print_flag=True
+                    file_handle_write.write(line)
+                else:
+                    print_flag=False
+            else:
+                if print_flag:
+                    file_handle_write.write(line)
+            line=file_handle_read.readline()
+
+        file_handle_write.close()
+        file_handle_read.close()
 
