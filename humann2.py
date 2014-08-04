@@ -194,7 +194,7 @@ def main():
     output_dir=check_requirements(args)
 
     # Set the location of the temp dir
-    temp_dir=os.path.join(output_dir, "temp_" + str(int(time.time())))
+    temp_dir=os.path.join(output_dir, "temp_" + str(int(time.time()*100)))
 
     # if the temp_dir is set by the user then use that directory
     if args.temp:
@@ -207,6 +207,9 @@ def main():
     if config.verbose:
         print "Writing temp files to: " + temp_dir
 
+    # Start timer
+    start_time=time.time()
+
     # Run prescreen to identify bugs
     bug_file = ""
     if args.metaphlan_output:
@@ -215,13 +218,22 @@ def main():
         bug_file = prescreen.alignment(args.input, 
             args.threads, temp_dir)
 
+    if config.verbose:
+        print str(int(time.time() - start_time)) + " seconds from start"
+
     # Create the custom database from the bugs list
     custom_database = prescreen.create_custom_database(args.chocophlan, 
         args.prescreen_threshold, bug_file, temp_dir)
 
+    if config.verbose:
+        print str(int(time.time() - start_time)) + " seconds from start"
+
     # Run nucleotide search on custom database
     nucleotide_alignment_file = nucleotide_search.alignment(custom_database, args.input, 
         temp_dir, args.threads)
+
+    if config.verbose:
+        print str(int(time.time() - start_time)) + " seconds from start"
 
     # Determine which reads are unaligned and reduce aligned reads file
     # Remove the alignment_file as we only need the reduced aligned reads file
@@ -235,6 +247,9 @@ def main():
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fastq,
         args.identity_threshold, temp_dir, args.threads)
+
+    if config.verbose:
+        print str(int(time.time() - start_time)) + " seconds from start"
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
