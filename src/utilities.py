@@ -71,12 +71,11 @@ def check_outfiles(outfiles):
     bypass=False
     for file in outfiles:
         if os.path.isfile(file):
-            if config.debug:
+            if config.debug and os.path.getsize(file) > 0:
                 bypass=True
                 break
             else:
                 os.unlink(file)
-
     return bypass
 
 def execute_command(exe, args, infiles, outfiles, stdout_file):

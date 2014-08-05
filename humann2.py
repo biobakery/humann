@@ -153,15 +153,15 @@ def check_requirements(args):
         if os.path.isdir(args.temp):
             if not os.access(args.temp, os.W_OK):
                 sys.exit("ERROR: The directory set to hold the temp files " + 
-                    "is not writeable. Please change the permissions or select " +
+                    "is not writeable. Please change the permissions or select" +
                     " another directory.")
         else:
             path_to_temp_dir=os.path.dirname(args.temp)
-            if os.path.basename == "":
+            if os.path.basename(args.temp) == "":
                 path_to_temp_dir=os.path.dirname(os.path.dirname(args.temp))
             if not os.access(path_to_temp_dir, os.W_OK):
                 sys.exit("ERROR: The directory set to hold the temp files " + 
-                    "is not writeable. Please change the permissions or select " +
+                    "is not writeable. Please change the permissions or select" +
                     " another directory.")
 
     # if set, update the config run mode to debug
