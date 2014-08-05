@@ -3,7 +3,7 @@ Utilities relating to executing third party software, file permissions,
 and file formats
 """
 
-import os, sys, subprocess, re
+import os, sys, subprocess, re, shutil
 
 import config
 
@@ -295,3 +295,12 @@ def unaligned_reads_from_tsv(input_fastq, alignment_file_tsv, unaligned_file_fas
         file_handle_write.close()
         file_handle_read.close()
 
+def remove_directory(dir):
+    """
+    Remove directory if exists
+    """
+    if os.path.isdir(dir):
+        try:
+            shutil.rmtree(dir)
+        except OSError: 
+            sys.exit("ERROR: Unable to delete directory " + dir)

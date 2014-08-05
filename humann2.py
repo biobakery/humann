@@ -13,7 +13,7 @@ Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch
 To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 """
 
-import argparse, sys, subprocess, os, time
+import argparse, sys, subprocess, os, time, tempfile
 
 from src import utilities, prescreen, nucleotide_search
 from src import translated_search, config
@@ -193,19 +193,17 @@ def main():
     # If all pass, return location of input_dir to write output to
     output_dir=check_requirements(args)
 
-    # Set the location of the temp dir
-    temp_dir=os.path.join(output_dir, "temp_" + str(int(time.time()*100)))
-
     # if the temp_dir is set by the user then use that directory
     if args.temp:
         temp_dir=args.temp
-
-    # Create the temp directory
-    if not os.path.isdir(temp_dir):
-        os.mkdir(temp_dir)	
+        if not os.path.isdir(temp_dir):
+            os.mkdir(temp_dir)	
+    else:
+        temp_dir=tempfile.mkdtemp( 
+            prefix='humann2_temp_', dir=output_dir)
 
     if config.verbose:
-        print "Writing temp files to: " + temp_dir
+        print "Writing temp files to directory: " + temp_dir
 
     # Start timer
     start_time=time.time()
@@ -258,6 +256,13 @@ def main():
     # Report reads unaligned
     print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
         args.input, translated_unaligned_reads_file_fastq) + "%\n"  
+
+    # Remove temp directory
+    if not args.temp:
+        if not config.debug:
+            if config.verbose:
+                print "Removing temp dir " + temp_dir
+            utilities.remove_directory(temp_dir)
 
 if __name__ == "__main__":
 	main()
