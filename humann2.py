@@ -140,6 +140,9 @@ def check_requirements(args):
     if not utilities.find_exe_in_path("usearch"):
         sys.exit("ERROR: The usearch executable can not be found. " +  
             "Please check the install.")
+
+    # Check for correct usearch version
+    utilities.check_software_version("usearch","-version",config.usearch_version)
 	
     # Check that the directory that holds the input file is writeable
     input_dir = os.path.dirname(args.input)

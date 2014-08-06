@@ -47,6 +47,25 @@ def return_exe_path(exe):
                 return path
     return "Error"	
 
+def check_software_version(exe,version_flag,
+    version_required):
+    """
+    Determine if the software is of the correct version
+    """
+
+    if return_exe_path(exe) == "Error":
+        sys.exit("ERROR: Can not find software " + exe)
+    else:
+        try:
+            p_out = subprocess.check_output([exe,version_flag])
+        except OSError as e:
+            sys.exit("Error: Can not call software version\n" + e.strerror)
+        
+    if not re.search(version_required, p_out):
+        sys.exit("Error: Please update " + exe + " from version " +
+            p_out.rstrip('\n') + " to version " + version_required )
+
+
 def remove_if_exists(file):
     """
     If file exists, then remove
