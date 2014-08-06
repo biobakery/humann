@@ -218,7 +218,8 @@ def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_fi
         file_handle_write_aligned.close()
 
         # remove the alignment file as it will be replaced by the two files created
-        remove_temp_file(sam_alignment_file)
+        if not config.debug:
+            remove_temp_file(sam_alignment_file)
 
 def estimate_unaligned_reads(input_fastq, unaligned_fastq):
     """
