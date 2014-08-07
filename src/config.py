@@ -19,8 +19,6 @@ unaligned_reads_name_no_ext="_unaligned_reads"
 aligned_reads_name_tsv="_aligned_reads.tsv"
 
 translated_alignment_name="_translated_aligned"
-usearch_name_temp=".usearch.tmp"
-
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]

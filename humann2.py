@@ -230,20 +230,23 @@ def main():
         print str(int(time.time() - start_time)) + " seconds from start"
 
     # Run nucleotide search on custom database
-    nucleotide_alignment_file = nucleotide_search.alignment(custom_database, args.input, 
-        temp_dir, args.threads)
+    if custom_database != "Empty":
+        nucleotide_alignment_file = nucleotide_search.alignment(custom_database, args.input, 
+            temp_dir, args.threads)
 
-    if config.verbose:
-        print str(int(time.time() - start_time)) + " seconds from start"
+        if config.verbose:
+            print str(int(time.time() - start_time)) + " seconds from start"
 
-    # Determine which reads are unaligned and reduce aligned reads file
-    # Remove the alignment_file as we only need the reduced aligned reads file
-    [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-        args.input, nucleotide_alignment_file, temp_dir)
+        # Determine which reads are unaligned and reduce aligned reads file
+        # Remove the alignment_file as we only need the reduced aligned reads file
+        [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+            args.input, nucleotide_alignment_file, temp_dir)
 
-    # Report reads unaligned
-    print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-        args.input, unaligned_reads_file_fastq) + "%\n"  
+        # Report reads unaligned
+        print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+            args.input, unaligned_reads_file_fastq) + "%\n"  
+    else:
+        unaligned_reads_file_fastq=args.input
 
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fastq,

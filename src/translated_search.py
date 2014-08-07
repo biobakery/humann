@@ -2,7 +2,7 @@
 Run alignment, find unused reads
 """
 
-import os
+import os, tempfile
 import utilities, config
 
 def alignment(uniref, unaligned_reads_file_fastq, identity_threshold, 
@@ -14,6 +14,10 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     unaligned_name = os.path.splitext(os.path.basename(unaligned_reads_file_fastq))[0]
     alignment_file_base = os.path.join(temp_dir, 
         unaligned_name + config.translated_alignment_name)
+    alignment_file=alignment_file_base + ".tsv"
+
+    bypass=utilities.check_outfiles([alignment_file])
+
 
     exe="usearch"
     opts=config.usearch_opts
@@ -25,47 +29,49 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
 
     print "\nRunning muliple " + exe + " ........\n"
 
-    args+=opts
+    if not bypass:
 
-    #convert unaligned reads file to fasta
-    if utilities.fasta_or_fastq(unaligned_reads_file_fastq) == "fastq":
-         unaligned_reads_file_fasta=utilities.fastq_to_fasta(unaligned_reads_file_fastq)
-    else:
-         unaligned_reads_file_fasta=unaligned_reads_file_fastq
+        args+=opts
+
+        #convert unaligned reads file to fasta
+        temp_fasta_files=[]
+        if utilities.fasta_or_fastq(unaligned_reads_file_fastq) == "fastq":
+            unaligned_reads_file_fasta=utilities.fastq_to_fasta(unaligned_reads_file_fastq)
+            temp_fasta_files.append(unaligned_reads_file_fasta)
+        else:
+            unaligned_reads_file_fasta=unaligned_reads_file_fastq
         
-    #break up input file into smaller files for memory requirement
-    temp_in_files=utilities.break_up_fasta_file(unaligned_reads_file_fasta, 
-        config.usearch_max_seqs)
+        #break up input file into smaller files for memory requirement
+        temp_in_files=utilities.break_up_fasta_file(unaligned_reads_file_fasta, 
+            config.usearch_max_seqs)
 
-    #run the search on each of the databases in the directory
-    index=1
-    temp_out_files=[]
-    for input_file in temp_in_files:
-        for database in os.listdir(uniref):
-            input_database=os.path.join(uniref,database)
-            full_args=["-usearch_global",input_file]+args+["-db",input_database]
+        #run the search on each of the databases in the directory
+        temp_out_files=[]
+        for input_file in temp_in_files:
+            for database in os.listdir(uniref):
+                input_database=os.path.join(uniref,database)
+                full_args=["-usearch_global",input_file]+args+["-db",input_database]
 
-            # name temp output file
-            ext= "." + str(index)+ config.usearch_name_temp
-            temp_out_file=alignment_file_base + ext
-            temp_out_files.append(temp_out_file)
+                # create temp output file
+                file_out, temp_out_file=tempfile.mkstemp()
+                os.close(file_out)
+                temp_out_files.append(temp_out_file)
 
-            full_args+=["-userout",temp_out_file]
+                full_args+=["-userout",temp_out_file]
 
-            utilities.execute_command(exe,full_args,[input_database],[temp_out_file],"")
-            index+=1
+                utilities.execute_command(exe,full_args,[input_database],[],"")
       
-    # merge the temp output files
-    exe="cat"
-    alignment_file=alignment_file_base + ".tsv"
+        # merge the temp output files
+        exe="cat"
 
-    utilities.execute_command(exe,temp_out_files,temp_out_files,[alignment_file],
-        alignment_file)  
+        utilities.execute_command(exe,temp_out_files,temp_out_files,[alignment_file],
+            alignment_file)  
 
-    # remove the temp files which have been merged
-    if not config.debug:
-        for file in temp_in_files + temp_out_files:
-            utilities.remove_temp_file(temp_file)
+        # remove the temp files which have been merged
+        for temp_file in temp_fasta_files + temp_in_files + temp_out_files:
+            utilities.remove_file(temp_file)
+    else:
+        print "Bypass" 
 
     return alignment_file
 

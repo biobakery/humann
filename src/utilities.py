@@ -3,7 +3,7 @@ Utilities relating to executing third party software, file permissions,
 and file formats
 """
 
-import os, sys, subprocess, re, shutil
+import os, sys, subprocess, re, shutil, tempfile
 
 import config
 
@@ -66,21 +66,14 @@ def check_software_version(exe,version_flag,
             p_out.rstrip('\n') + " to version " + version_required )
 
 
-def remove_if_exists(file):
+def remove_file(file):
     """
     If file exists, then remove
     """
     if os.path.isfile(file):
         os.unlink(file)
-
-def remove_temp_file(file):
-    """
-    If file exists, then remove
-    If debug mode, do not remove
-    """
-    if os.path.isfile(file):
-        if not config.debug:
-            os.unlink(file)
+        if config.verbose:
+            print "Remove file: " + file
 
 def check_outfiles(outfiles):
     """
@@ -94,7 +87,7 @@ def check_outfiles(outfiles):
                 bypass=True
                 break
             else:
-                os.unlink(file)
+                remove_file(file)
     return bypass
 
 def execute_command(exe, args, infiles, outfiles, stdout_file):
@@ -127,14 +120,14 @@ def execute_command(exe, args, infiles, outfiles, stdout_file):
             try:
                 p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
             except OSError as e:
-                sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
+                sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
         else:
             try:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 if config.verbose:
                     print p_out
             except OSError as e:
-                sys.exit("Error: Problem executing " + cmd + "\n" + e.strerror)
+                sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
 
         # check that the output files exist and are readable
         for file in outfiles:
@@ -238,7 +231,7 @@ def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_fi
 
         # remove the alignment file as it will be replaced by the two files created
         if not config.debug:
-            remove_temp_file(sam_alignment_file)
+            remove_file(sam_alignment_file)
 
 def estimate_unaligned_reads(input_fastq, unaligned_fastq):
     """
@@ -336,31 +329,27 @@ def break_up_fasta_file(fasta_file, max_seqs):
 
     line=file_handle_read.readline()
 
-    index=1
-    new_file=fasta_file + ".part." + str(index)
-    file_handle_write=open(new_file, "w")
+    file_out, new_file=tempfile.mkstemp()
     fasta_files=[new_file]
 
     current_seq=0
     while line:
         if not re.search("^>",line):
-            file_handle_write.write(line)
+            os.write(file_out,line)
         else:
             if current_seq > max_seqs:
                 # close current file and open new
-                file_handle_write.close()
-                index+=1
-                new_file=fasta_file + ".part." + str(index)
-                file_handle_write=open(new_file, "w")
+                os.close(file_out)
+                file_out, new_file=tempfile.mkstemp()
                 fasta_files+=[new_file]
-                file_handle_write.write(line)
+                os.write(file_out, line)
                 current_seq=1
             else:
                 current_seq+=1
-                file_handle_write.write(line)
+                os.write(file_out, line)
         line=file_handle_read.readline()
 
-    file_handle_write.close()
+    os.close(file_out)
     file_handle_read.close()
 
     return fasta_files
@@ -389,16 +378,15 @@ def fastq_to_fasta(file):
 	
     line = file_handle_read.readline()
 	
-    new_file=file + ".temp.fasta"
-    file_handle_write=open(new_file,"w")
+    file_out, new_file=tempfile.mkstemp()
 
     while line:
         if re.search("^@",line):
-            file_handle_write.write(line.replace("@",">",1))
-            file_handle_write.write(file_handle_read.readline())
+            os.write(file_out,line.replace("@",">",1))
+            os.write(file_out,file_handle_read.readline())
         line=file_handle_read.readline()
   	
-    file_handle_write.close()	
+    os.close(file_out)	
     file_handle_read.close()
 
     return new_file
