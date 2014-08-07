@@ -166,8 +166,8 @@ def fasta_or_fastq(file):
     first_line = file_handle.readline()
     second_line = file_handle.readline()
 	
-    # check that second line is only nucleotides
-    if re.search("^[aATtcCgGN]+$", second_line):
+    # check that second line is only nucleotides or amino acids
+    if re.search("^[A-Z|a-z]+$", second_line):
         # check first line to determine fasta or fastq format
         if re.search("^@",first_line):
             format="fastq"		

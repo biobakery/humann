@@ -13,7 +13,7 @@ Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch
 To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 """
 
-import argparse, sys, subprocess, os, time, tempfile
+import argparse, sys, subprocess, os, time, tempfile, re
 
 from src import utilities, prescreen, nucleotide_search
 from src import translated_search, config
@@ -121,6 +121,16 @@ def check_requirements(args):
         sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
             + args.chocophlan + " does not exist. Please select another directory.")	
     
+    # Check that the files in the chocophlan folder are of the right format
+    valid_format_count=0
+    for file in os.listdir(args.chocophlan):
+        # expect most of the file names to be of the format g__*s__*
+        if re.search("^[g__][s__]",file): 
+            valid_format_count+=1
+    if valid_format_count == 0:
+        sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
+            + "contain files of the expected format.")
+ 
     # Check that the uniref directory exists
     if not os.path.isdir(args.uniref):
         sys.exit("ERROR: The directory provided for the UniRef database at " 
@@ -129,7 +139,7 @@ def check_requirements(args):
     # Check that all files in the uniref folder are of *.udb extension or fasta
     for file in os.listdir(args.uniref):
         if not file.endswith(".udb"):
-            if utilities.fasta_or_fastq(file) != "fasta":
+            if utilities.fasta_or_fastq(os.path.join(args.uniref,file)) != "fasta":
                 sys.exit("ERROR: The directory provided for the UniRef database "
                     + "contains files of an unexpected format. Only files of the"
                     + " udb or fasta format are allowed.")
