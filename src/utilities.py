@@ -323,3 +323,82 @@ def remove_directory(dir):
             shutil.rmtree(dir)
         except OSError: 
             sys.exit("ERROR: Unable to delete directory " + dir)
+
+def break_up_fasta_file(fasta_file, max_seqs):
+    """
+    Break up a fasta file into smaller fasta files with max_seqs
+    """
+
+    # check file exists
+    file_exists_readable(fasta_file)
+    
+    file_handle_read=open(fasta_file,"r")
+
+    line=file_handle_read.readline()
+
+    index=1
+    new_file=fasta_file + ".part." + str(index)
+    file_handle_write=open(new_file, "w")
+    fasta_files=[new_file]
+
+    current_seq=0
+    while line:
+        if not re.search("^>",line):
+            file_handle_write.write(line)
+        else:
+            if current_seq > max_seqs:
+                # close current file and open new
+                file_handle_write.close()
+                index+=1
+                new_file=fasta_file + ".part." + str(index)
+                file_handle_write=open(new_file, "w")
+                fasta_files+=[new_file]
+                file_handle_write.write(line)
+                current_seq=1
+            else:
+                current_seq+=1
+                file_handle_write.write(line)
+        line=file_handle_read.readline()
+
+    file_handle_write.close()
+    file_handle_read.close()
+
+    return fasta_files
+
+def fastq_to_fasta(file):
+    """
+    Convert fastq file to fasta
+	
+    Fastq format short example:
+    @SEQ_ID
+    GATCTGG
+    +
+    !''****
+	
+    Fasta format short example:
+    >SEQ_INFO
+    GATCTGG
+	
+    Returns error if not of fasta or fastq format
+    """
+	
+    # check file exists
+    file_exists_readable(file)
+	
+    file_handle_read = open(file, "r")
+	
+    line = file_handle_read.readline()
+	
+    new_file=file + ".temp.fasta"
+    file_handle_write=open(new_file,"w")
+
+    while line:
+        if re.search("^@",line):
+            file_handle_write.write(line.replace("@",">",1))
+            file_handle_write.write(file_handle_read.readline())
+        line=file_handle_read.readline()
+  	
+    file_handle_write.close()	
+    file_handle_read.close()
+
+    return new_file

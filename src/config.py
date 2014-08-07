@@ -36,5 +36,6 @@ bowtie2_build_opts=[]
 bowtie2_align_opts=["--very-sensitive"]
 
 # usearch options
+usearch_max_seqs=10000
 usearch_version="v7.0.1001"
 usearch_opts=["-target_cov","0.9","-query_cov","0.9","-match","1.0","-mismatch","-1.0","-gapopen","3.0I/0.0E","-gapext","0.5I/0.0E"]

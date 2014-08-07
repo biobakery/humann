@@ -18,8 +18,7 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     exe="usearch"
     opts=config.usearch_opts
 
-    args=["-usearch_global",unaligned_reads_file_fastq,"-id",identity_threshold,
-        "-userfields","query+target+id"]
+    args=["-id",identity_threshold,"-userfields","query+target+id"]
 
     if threads > 1:
         args+=["-threads",threads]
@@ -28,22 +27,33 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
 
     args+=opts
 
+    #convert unaligned reads file to fasta
+    if utilities.fasta_or_fastq(unaligned_reads_file_fastq) == "fastq":
+         unaligned_reads_file_fasta=utilities.fastq_to_fasta(unaligned_reads_file_fastq)
+    else:
+         unaligned_reads_file_fasta=unaligned_reads_file_fastq
+        
+    #break up input file into smaller files for memory requirement
+    temp_in_files=utilities.break_up_fasta_file(unaligned_reads_file_fasta, 
+        config.usearch_max_seqs)
+
     #run the search on each of the databases in the directory
     index=1
     temp_out_files=[]
-    for database in os.listdir(uniref):
-        input_database=os.path.join(uniref,database)
-        full_args=args+["-db",input_database]
+    for input_file in temp_in_files:
+        for database in os.listdir(uniref):
+            input_database=os.path.join(uniref,database)
+            full_args=["-usearch_global",input_file]+args+["-db",input_database]
 
-        # name temp output file
-        ext= "." + str(index)+ config.usearch_name_temp
-        temp_out_file=alignment_file_base + ext
-        temp_out_files.append(temp_out_file)
+            # name temp output file
+            ext= "." + str(index)+ config.usearch_name_temp
+            temp_out_file=alignment_file_base + ext
+            temp_out_files.append(temp_out_file)
 
-        full_args+=["-userout",temp_out_file]
+            full_args+=["-userout",temp_out_file]
 
-        utilities.execute_command(exe,full_args,[input_database],[temp_out_file],"")
-        index+=1
+            utilities.execute_command(exe,full_args,[input_database],[temp_out_file],"")
+            index+=1
       
     # merge the temp output files
     exe="cat"
@@ -53,8 +63,9 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
         alignment_file)  
 
     # remove the temp files which have been merged
-    for temp_file in temp_out_files:
-        utilities.remove_temp_file(temp_file)
+    if not config.debug:
+        for file in temp_in_files + temp_out_files:
+            utilities.remove_temp_file(temp_file)
 
     return alignment_file
 
