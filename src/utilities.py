@@ -227,8 +227,8 @@ def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_fi
                         file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
                         file_handle_write_unaligned.write(info[sam_read_index]+"\n")
                 else:
-                    newline=("\t").join([info[sam_read_name_index],info[sam_reference_index],
-                        info[sam_mapq_index]])
+                    newline=("\t").join([info[sam_read_name_index],"",info[sam_reference_index],
+                        "",info[sam_mapq_index]])
                     file_handle_write_aligned.write(newline+"\n")
             line=file_handle_read.readline()
 
