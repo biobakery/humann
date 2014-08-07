@@ -125,6 +125,14 @@ def check_requirements(args):
     if not os.path.isdir(args.uniref):
         sys.exit("ERROR: The directory provided for the UniRef database at " 
             + args.uniref + " does not exist. Please select another directory.")	
+
+    # Check that all files in the uniref folder are of *.udb extension or fasta
+    for file in os.listdir(args.uniref):
+        if not file.endswith(".udb"):
+            if utilities.fasta_or_fastq(file) != "fasta":
+                sys.exit("ERROR: The directory provided for the UniRef database "
+                    + "contains files of an unexpected format. Only files of the"
+                    + " udb or fasta format are allowed.")
     
     # Check that the metaphlan2 executable can be found
     if not utilities.find_exe_in_path("metaphlan2.py"): 
