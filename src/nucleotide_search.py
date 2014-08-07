@@ -19,7 +19,7 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
 
     args=["-f",custom_database,index_name]
 
-    outfiles=[index_name + config.bowtie2_index_ext]
+    outfiles=[index_name + ext for ext in config.bowtie2_index_ext_list] 
 
     # if custom_database is large (>4G) then use the --large-index flag
     if os.path.getsize(custom_database) > config.bowtie2_large_index_threshold:
@@ -48,9 +48,9 @@ def alignment(custom_database, user_fastq, temp_dir, threads):
 
     #determine input type flag
     #default flag to fastq
-    input_type_flag = " -q "
+    input_type_flag = "-q"
     if input_type == "fasta":
-        input_type_flag=" -f "
+        input_type_flag="-f"
 
     args=[input_type_flag,"-x",index_name,"-U",user_fastq,"-S",alignment_file]
     

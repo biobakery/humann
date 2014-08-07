@@ -79,16 +79,23 @@ def check_outfiles(outfiles):
     """
     If outfiles already_exist, then remove or bypass
     """
-
-    bypass=False
+    bypass=[]
     for file in outfiles:
         if os.path.isfile(file):
             if config.debug and os.path.getsize(file) > 0:
-                bypass=True
-                break
+                bypass.append(True)
             else:
-                remove_file(file)
-    return bypass
+                bypass.append(False)
+        else:
+            bypass.append(False)
+
+    if False in bypass:
+        # remove any existing files
+        for file in outfiles:
+            remove_file(file)
+        return False
+    else:
+        return True
 
 def execute_command(exe, args, infiles, outfiles, stdout_file):
     """
@@ -390,3 +397,67 @@ def fastq_to_fasta(file):
     file_handle_read.close()
 
     return new_file
+
+def usearch_alignment(alignment_file,threads,identity_threshold,
+        uniref, unaligned_reads_file_fastq):
+    """
+    Run usearch alignment with memory management
+    Individual runs can be threaded
+    """
+
+    bypass=check_outfiles([alignment_file])
+
+    exe="usearch"
+    opts=config.usearch_opts
+
+    args=["-id",identity_threshold,"-userfields","query+target+id"]
+
+    if threads > 1:
+        args+=["-threads",threads]
+
+    print "\nRunning muliple " + exe + " ........\n"
+
+    if not bypass:
+
+        args+=opts
+
+        #convert unaligned reads file to fasta
+        temp_fasta_files=[]
+        if fasta_or_fastq(unaligned_reads_file_fastq) == "fastq":
+            unaligned_reads_file_fasta=fastq_to_fasta(unaligned_reads_file_fastq)
+            temp_fasta_files.append(unaligned_reads_file_fasta)
+        else:
+            unaligned_reads_file_fasta=unaligned_reads_file_fastq
+
+        #break up input file into smaller files for memory requirement
+        temp_in_files=break_up_fasta_file(unaligned_reads_file_fasta,
+            config.usearch_max_seqs)
+
+       #run the search on each of the databases in the directory
+        temp_out_files=[]
+        for input_file in temp_in_files:
+            for database in os.listdir(uniref):
+                input_database=os.path.join(uniref,database)
+                full_args=["-usearch_global",input_file]+args+["-db",input_database]
+
+                # create temp output file
+                file_out, temp_out_file=tempfile.mkstemp()
+                os.close(file_out)
+                temp_out_files.append(temp_out_file)
+
+                full_args+=["-userout",temp_out_file]
+
+                execute_command(exe,full_args,[input_database],[],"")
+
+        # merge the temp output files
+        exe="cat"
+
+        execute_command(exe,temp_out_files,temp_out_files,[alignment_file],
+            alignment_file)
+
+        # remove the temp files which have been merged
+        for temp_file in temp_fasta_files + temp_in_files + temp_out_files:
+            remove_file(temp_file)
+    else:
+        print "Bypass"
+
