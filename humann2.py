@@ -283,10 +283,7 @@ def main():
 
     # Remove temp directory
     if not args.temp:
-        if not config.debug:
-            if config.verbose:
-                print "Removing temp dir " + temp_dir
-            utilities.remove_directory(temp_dir)
+        utilities.remove_directory(temp_dir)
 
 if __name__ == "__main__":
 	main()

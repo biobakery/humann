@@ -89,7 +89,7 @@ def check_outfiles(outfiles):
         else:
             bypass.append(False)
 
-    if False in bypass:
+    if False in bypass or not bypass:
         # remove any existing files
         for file in outfiles:
             remove_file(file)
@@ -320,6 +320,8 @@ def remove_directory(dir):
     """
     if os.path.isdir(dir):
         try:
+            if config.verbose:
+                print "Remove directory: " + dir
             shutil.rmtree(dir)
         except OSError: 
             sys.exit("ERROR: Unable to delete directory " + dir)
@@ -410,7 +412,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
     exe="usearch"
     opts=config.usearch_opts
 
-    args=["-id",identity_threshold,"-userfields","query+target+id"]
+    args=["-id",identity_threshold]
 
     if threads > 1:
         args+=["-threads",threads]
@@ -445,7 +447,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
                 os.close(file_out)
                 temp_out_files.append(temp_out_file)
 
-                full_args+=["-userout",temp_out_file]
+                full_args+=["-blast6out",temp_out_file]
 
                 execute_command(exe,full_args,[input_database],[],"")
 
