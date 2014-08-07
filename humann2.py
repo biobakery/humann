@@ -16,7 +16,7 @@ To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 import argparse, sys, subprocess, os, time, tempfile, re
 
 from src import utilities, prescreen, nucleotide_search
-from src import translated_search, config
+from src import translated_search, config, quantify_families
 
 def parse_arguments (args):
     """ 
@@ -192,7 +192,7 @@ def check_requirements(args):
     # if set, update the config run mode to debug
     if args.verbose:
         config.verbose=True  
-    
+   
     return input_dir	
 
 
@@ -209,7 +209,12 @@ def main():
 	
     if args.usearch:
         utilities.add_exe_to_path(args.usearch)
-		
+
+    # Add the location of the humann1 scripts to the path
+    utilities.add_exe_to_path(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            config.humann1_scripts))
+	
     # Check for required files, software, databases, and also permissions
     # If all pass, return location of input_dir to write output to
     output_dir=check_requirements(args)
@@ -264,6 +269,7 @@ def main():
         print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
             args.input, unaligned_reads_file_fastq) + "%\n"  
     else:
+        reduced_aligned_reads_file = "Empty"
         unaligned_reads_file_fastq=args.input
 
     # Run translated search on UniRef database
@@ -280,6 +286,9 @@ def main():
     # Report reads unaligned
     print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
         args.input, translated_unaligned_reads_file_fastq) + "%\n"  
+
+    # Identify the hits from the alignments
+    hits_file=quantify_families.find_hits(reduced_aligned_reads_file, translated_alignment_file)
 
     # Remove temp directory
     if not args.temp:

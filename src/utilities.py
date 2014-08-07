@@ -97,7 +97,7 @@ def check_outfiles(outfiles):
     else:
         return True
 
-def execute_command(exe, args, infiles, outfiles, stdout_file):
+def execute_command(exe, args, infiles, outfiles, stdout_file, stdin_file):
     """
     Execute third party software or shell command with files
     """
@@ -124,10 +124,16 @@ def execute_command(exe, args, infiles, outfiles, stdout_file):
         cmd=[exe]+args
 	
         if stdout_file:
-            try:
-                p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
-            except OSError as e:
-                sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
+            if stdin_file:
+                try:
+                    p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
+                except OSError as e:
+                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
+            else:
+                try:
+                    p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
+                except OSError as e:
+                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
         else:
             try:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
@@ -449,13 +455,13 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
                 full_args+=["-blast6out",temp_out_file]
 
-                execute_command(exe,full_args,[input_database],[],"")
+                execute_command(exe,full_args,[input_database],[],"","")
 
         # merge the temp output files
         exe="cat"
 
         execute_command(exe,temp_out_files,temp_out_files,[alignment_file],
-            alignment_file)
+            alignment_file,"")
 
         # remove the temp files which have been merged
         for temp_file in temp_fasta_files + temp_in_files + temp_out_files:

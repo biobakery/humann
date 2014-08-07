@@ -43,7 +43,7 @@ def alignment(input, threads, temp_dir):
     args+=opts
 
     print "\nRunning " + exe + " ........\n"
-    utilities.execute_command(exe, args, infiles, outfiles,"")
+    utilities.execute_command(exe, args, infiles, outfiles,"","")
     
     return bug_file
 
@@ -112,7 +112,7 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
         if ext == ".gz":
             exe="zcat"
  
-        utilities.execute_command(exe,species_file_list,species_file_list,[custom_database],custom_database)
+        utilities.execute_command(exe,species_file_list,species_file_list,[custom_database],custom_database,"")
 
         return custom_database
 
