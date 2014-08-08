@@ -14,10 +14,18 @@ c_strID		= "%identical"
 
 strType = "blastx" if ( len( sys.argv ) <= 1 ) else sys.argv[1] # strType is the first arguement given in the function call.
 if strType in ("-h", "-help", "--help"): # If user input flags for help, return a usage message
-	raise Exception( "Usage: blast2hits.py [type={blastx,mblastx,mapx}] [filter] < <blast.txt>" )
+	raise Exception( "Usage: blast2hits.py [type={blastx,mblastx,mapx}] [filter] [CHits_file] < <blast.txt>" )
 dFilter = 0 if ( len( sys.argv ) <= 2 ) else float(sys.argv[2]) # dFilter is set equal to the float of the [filter] arguement inputted to the program  if it exists, else 0.
 
+hits_file = "" if (len(sys.argv) <=3) else sys.argv[3] # allow for the input of a CHits object file
+
 pHits = hits.CHits( ) # Instantiate a CHits object (see src/hits.py)
+
+if hits_file:
+	fh=open(hits_file,"r")
+	pHits.open(fh) #Depickle variables from previous step in pipeline
+	fh.close()
+
 iID = 2 if ( strType == "blastx" ) else ( 4 if ( strType == "mblastx" ) else None ) # iID records the type of blast in a number: 2 = "blastx", 4 = "mblastx", or none if no strType is given.
 for strLine in sys.stdin:  # Open the file passed to stdin, loop through the lines
 	astrLine = strLine.rstrip( ).split( "\t" ) # For each line, split it into columns along tabs and remove whitespace.
