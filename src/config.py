@@ -6,7 +6,11 @@ Configuration settings
 debug = False
 verbose = False
 
-# temp file naming
+# translated alignment options
+translated_alignment_choices = ["usearch","rapsearch2"]
+translated_alignment_selected = translated_alignment_choices[1]
+
+# file naming
 bugs_list_name="_bugs_list.tsv"
 metaphlan_bowtie2_name="_bowtie2_out.txt"
 
@@ -21,6 +25,7 @@ aligned_reads_name_tsv="_aligned_reads.tsv"
 translated_alignment_name="_translated_aligned"
 
 # metaphlan options
+prescreen_threshold=0.01
 metaphlan_opts=["-t","rel_ab"]
 metaphlan_pkl_file="db_v20/mpa_v20_m200.pkl"
 metaphlan_mpa_index="db_v20/mpa_v20_m200"
@@ -35,6 +40,7 @@ bowtie2_build_opts=[]
 bowtie2_align_opts=["--very-sensitive"]
 
 # usearch options
+id_threshold_default=0.4
 usearch_max_seqs=10000
 usearch_version="v7.0.1001"
 usearch_opts=[]

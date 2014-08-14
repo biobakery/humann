@@ -43,7 +43,7 @@ def parse_arguments (args):
     parser.add_argument(
         "-c", "--chocophlan",
         help="directory containing the ChocoPhlAn database\n[REQUIRED]", 
-        metavar="<chocoplhan/>",
+        metavar="<chocophlan/>",
         required=True)
     parser.add_argument(
         "-u", "--uniref",
@@ -86,24 +86,36 @@ def parse_arguments (args):
         default=1) 
     parser.add_argument(
         "--prescreen_threshold", 
-        help="minimum percentage of reads matching a species\n[DEFAULT: 0.01]", 
-        metavar="<0.01>", 
+        help="minimum percentage of reads matching a species\n[DEFAULT: "
+            + str(config.prescreen_threshold) + "]", 
+        metavar="<" + str(config.prescreen_threshold) + ">", 
         type=float,
-        default=0.01) 
+        default=config.prescreen_threshold) 
     parser.add_argument(
         "--identity_threshold", 
-        help="identity threshold to use with the translated search\n[DEFAULT: 0.5]", 
-        metavar="<0.5>", 
+        help="identity threshold to use with the translated search\n[DEFAULT: " 
+            + str(config.id_threshold_default) + "]", 
+        metavar="<" + str(config.id_threshold_default) + ">", 
         type=float,
-        default=0.5) 
+        default=config.id_threshold_default) 
     parser.add_argument(
         "--usearch", 
         help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
         metavar="<usearch/>")
     parser.add_argument(
+        "--rapsearch2", 
+        help="directory containing the rapsearch2 executable\n[DEFAULT: $PATH]", 
+        metavar="<rapsearch2/>")
+    parser.add_argument(
         "--metaphlan_output", 
         help="output file created by metaphlan\n[DEFAULT: file will be created]", 
         metavar="<bugs_list.tsv>")
+    parser.add_argument(
+        "--translated_alignment", 
+        help="software to use for translated alignment\n[DEFAULT: " + 
+            config.translated_alignment_selected + "]", 
+        default=config.translated_alignment_selected,
+        choices=config.translated_alignment_choices)
 
     return parser.parse_args()
 	
@@ -112,6 +124,10 @@ def check_requirements(args):
     """
     Check requirements (file format, dependencies, permissions)
     """
+    # Update translated alignment software if set
+    if args.translated_alignment:
+        config.translated_alignment_selected=args.translated_alignment
+
     # Check that the input file exists, is readable, and is fasta/fastq
     if utilities.fasta_or_fastq(args.input) == "error":
         sys.exit("ERROR: The input file is not of a fasta or fastq format.")
@@ -137,12 +153,23 @@ def check_requirements(args):
             + args.uniref + " does not exist. Please select another directory.")	
 
     # Check that all files in the uniref folder are of *.udb extension or fasta
-    for file in os.listdir(args.uniref):
-        if not file.endswith(".udb"):
-            if utilities.fasta_or_fastq(os.path.join(args.uniref,file)) != "fasta":
-                sys.exit("ERROR: The directory provided for the UniRef database "
-                    + "contains files of an unexpected format. Only files of the"
-                    + " udb or fasta format are allowed.")
+    # if translated search selected is usearch
+    if config.translated_alignment_selected == "usearch":
+        for file in os.listdir(args.uniref):
+            if not file.endswith(".udb"):
+                if utilities.fasta_or_fastq(os.path.join(args.uniref,file)) != "fasta":
+                    sys.exit("ERROR: The directory provided for the UniRef database "
+                        + "contains files of an unexpected format. Only files of the"
+                        + " udb or fasta format are allowed.") 
+
+    # Check for correct usearch version
+    if config.translated_alignment_selected == "usearch":
+        utilities.check_software_version("usearch","-version",config.usearch_version)
+    
+    # Check that the translated alignment executable can be found
+    if not utilities.find_exe_in_path(config.translated_alignment_selected):
+        sys.exit("ERROR: The " +  config.translated_alignment_selected + 
+            " executable can not be found. Please check the install.")
     
     # Check that the metaphlan2 executable can be found
     if not utilities.find_exe_in_path("metaphlan2.py"): 
@@ -154,14 +181,6 @@ def check_requirements(args):
         sys.exit("ERROR: The bowtie2 executable can not be found. "  
             "Please check the install.")
 
-    # Check that the usearch executable can be found
-    if not utilities.find_exe_in_path("usearch"):
-        sys.exit("ERROR: The usearch executable can not be found. " +  
-            "Please check the install.")
-
-    # Check for correct usearch version
-    utilities.check_software_version("usearch","-version",config.usearch_version)
-	
     # Check that the directory that holds the input file is writeable
     input_dir = os.path.dirname(args.input)
     if not os.access(input_dir, os.W_OK):
@@ -209,6 +228,9 @@ def main():
 	
     if args.usearch:
         utilities.add_exe_to_path(args.usearch)
+
+    if args.rapsearch2:
+        utilities.add_exe_to_path(args.rapsearch2)
 
     # Add the location of the humann1 scripts to the path
     utilities.add_exe_to_path(
