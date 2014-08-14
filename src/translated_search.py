@@ -16,8 +16,12 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
         unaligned_name + config.translated_alignment_name)
     alignment_file=alignment_file_base + ".tsv"
 
-    utilities.usearch_alignment(alignment_file,threads,identity_threshold,
-        uniref, unaligned_reads_file_fastq)
+    if config.translated_alignment_selected == "usearch":
+        utilities.usearch_alignment(alignment_file,threads,identity_threshold,
+            uniref, unaligned_reads_file_fastq)
+    else:
+        utilities.rapsearch_alignment(alignment_file,threads,uniref,
+            unaligned_reads_file_fastq)
 
     return alignment_file
 

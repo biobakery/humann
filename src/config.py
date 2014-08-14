@@ -7,7 +7,7 @@ debug = False
 verbose = False
 
 # translated alignment options
-translated_alignment_choices = ["usearch","rapsearch2"]
+translated_alignment_choices = ["usearch","rapsearch"]
 translated_alignment_selected = translated_alignment_choices[1]
 
 # file naming
@@ -44,6 +44,9 @@ id_threshold_default=0.4
 usearch_max_seqs=10000
 usearch_version="v7.0.1001"
 usearch_opts=[]
+
+# rapsearch options
+rapsearch_opts=["-v",-1]
 
 # humann1 scripts
 humann1_scripts="src/humann1/"

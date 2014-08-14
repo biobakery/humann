@@ -469,3 +469,58 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
     else:
         print "Bypass"
 
+def rapsearch_alignment(alignment_file,threads, uniref,
+        unaligned_reads_file_fastq):
+    """
+    Run rapsearch alignment on database formatted for rapsearch
+    """
+
+    bypass=check_outfiles([alignment_file])
+
+    exe="rapsearch"
+    opts=config.rapsearch_opts
+
+    args=["-q",unaligned_reads_file_fastq,"-b",0]
+
+    if threads > 1:
+        args+=["-z",threads]
+
+    print "\nRunning muliple " + exe + " ........\n"
+    
+    if not bypass:
+
+        args+=opts
+
+        temp_out_files=[]
+        for database in os.listdir(uniref):
+            input_database=os.path.join(uniref,database)
+            full_args=args+["-d",input_database]
+
+            # create temp output file
+            file_out, temp_out_file=tempfile.mkstemp()
+            os.close(file_out)
+            temp_out_files.append(temp_out_file)
+
+            full_args+=["-o",temp_out_file]
+
+            execute_command(exe,full_args,[input_database],[],"","")
+        # merge the temp output files
+        exe="cat"
+
+        file_out, temp_merge_file=tempfile.mkstemp()
+        os.close(file_out)
+
+        execute_command(exe,temp_out_files,temp_out_files,[temp_merge_file],
+            temp_merge_file,"")
+
+        # reformat output file to fit blast6out format
+        # NOTE: This is a temp call to be replaced by the reformat function
+        # format_rapsearch_output(temp_merge_file,alignment_file)
+        execute_command(exe,temp_merge_file,temp_merge_file,[alignment_file],
+            alignment_file,"")
+
+        # remove the temp files which have been merged
+        for temp_file in temp_out_files + [temp_merge_file]:
+            remove_file(temp_file)
+    else:
+        print "Bypass"

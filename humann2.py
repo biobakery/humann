@@ -103,9 +103,9 @@ def parse_arguments (args):
         help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
         metavar="<usearch/>")
     parser.add_argument(
-        "--rapsearch2", 
-        help="directory containing the rapsearch2 executable\n[DEFAULT: $PATH]", 
-        metavar="<rapsearch2/>")
+        "--rapsearch", 
+        help="directory containing the rapsearch executable\n[DEFAULT: $PATH]", 
+        metavar="<rapsearch/>")
     parser.add_argument(
         "--metaphlan_output", 
         help="output file created by metaphlan\n[DEFAULT: file will be created]", 
@@ -229,8 +229,8 @@ def main():
     if args.usearch:
         utilities.add_exe_to_path(args.usearch)
 
-    if args.rapsearch2:
-        utilities.add_exe_to_path(args.rapsearch2)
+    if args.rapsearch:
+        utilities.add_exe_to_path(args.rapsearch)
 
     # Add the location of the humann1 scripts to the path
     utilities.add_exe_to_path(
