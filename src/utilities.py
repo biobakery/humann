@@ -4,6 +4,9 @@ and file formats
 """
 
 import os, sys, subprocess, re, shutil, tempfile
+import fileinput
+import math
+from decimal import *
 
 import config
 
@@ -546,3 +549,79 @@ def rapsearch_alignment(alignment_file,threads, uniref,
             remove_file(temp_file)
     else:
         print "Bypass"
+
+		
+		
+	
+#********************************************************************************************
+#*   ConvertRapsheach2ToBlastM8Format                                                       *
+#*  <<------------------------------------------------------------------------------->>     *    
+#*  The following three subroutines:                                                        *
+#*  1.  SciStr                                                                              *
+#*  2. ProcessRecord(InputLine)                                                             *
+#*  3. ConvertRapsheach2ToBlastM8Format(InputFileName,OutputFileName)                       *
+#*  Work together.                                                                          *
+#*  Their purpose is to take the output of rapsearch2 and convert it to blast m8 format     *
+#*  Only two items are modified: rapsearch2 returns log of eValue so we convert it to       *
+#*     eValue by calculating 10^^(log(eValue)) and formatting it to a string that contains  *
+#*     its value in Scientific format                                                       *  
+#*                                                                                          *
+#*  The subroutines are invoked as follows:                                                 *
+#*  RC = ConvertRapsheach2ToBlastM8Format(InputFileName,OutputFileName)                     *
+#*  Where:                                                                                  *
+#*  InputFileName = Rapsearch2 output file name  (Input to these modules)                   *   
+#*  OutputFileName = Output of these modules:  Compatible to Blast m8 format                *
+#*                                                                                          *
+#*  If the conversion of the log(eValue) fails - we post spaces for that field              *                                       
+#*                                                                                          *
+#********************************************************************************************
+
+
+#********************************************************************************************
+#*    Convert eValue into a scientific string to comply with blast m8 format                *    
+#*    the routine to convert rapsearch2 file format to blast m8 format                      *
+#******************************************************************************************** 
+def SciStr(dec):
+	ScientificString = '%.1E' % Decimal(math.pow(10, dec))
+	return  ScientificString 
+ 
+#********************************************************************************************
+#*    Process the Input Record - this is part of                                            *    
+#*    the routine to convert rapsearch2 file format to blast m8 format                      *
+#******************************************************************************************** 
+def ProcessRecord(InputLine):
+	SplitLine = InputLine.split('\t')
+ 
+	try:
+		SplitLine[10]  =  SciStr(float(SplitLine[10]))	#Convert the eValue into Scientific format
+	except:
+		SplitLine[10] = " "								#If it did not convert - set up to space
+	ProcessedRecord =  '\t'.join(SplitLine)				#Rebuild the record
+	return ProcessedRecord   
+	
+#********************************************************************************************
+#*    Routine to convert rapsearch2 file format to blast m8 format                          *
+#********************************************************************************************
+def  ConvertRapsheach2ToBlastM8Format(	InputFileName,OutputFileName):
+	OutputFile = open(OutputFileName,'w')
+	
+	for InputLine in fileinput.input(InputFileName):
+		if  InputLine.startswith('#'):			# If it is one of the header lines
+			if  InputLine.startswith('# Fields: Query'):    # If the record starts with #Fields 
+				InputLine = InputLine.replace("log(e-value)", "e-value", 1)   #  Replace log(eValue) with eValue 
+			OutputFile.write(InputLine) 		#     just write it
+		else:
+			ProcessedRecord = ProcessRecord(InputLine)	# Process the Input Record
+			OutputFile.write(ProcessedRecord ) 	 		#    and write it
+
+	OutputFile.close() 						# Finished - close the output file
+	return 0
+	
+
+#********************************************************************************************
+#*   End of ConvertRapsheach2ToBlastM8Format Subroutines                                    *
+#*  <<------------------------------------------------------------------------------->>     *    
+#********************************************************************************************		
+		
+		
+		
