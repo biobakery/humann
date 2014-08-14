@@ -246,6 +246,31 @@ def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_fi
         if not config.debug:
             remove_file(sam_alignment_file)
 
+def count_reads(file):
+    """
+    Count the total number of reads in a file
+    """
+
+    file_handle_read=open(file,"r")
+
+    line=file_handle_read.readline()
+
+    if fasta_or_fastq(file) == "fastq":
+        read_token="@"
+    else:
+        read_token=">"
+
+    sequence_count=0
+    while line:
+        if re.search("^"+read_token,line):
+            sequence_count+=1
+        line=file_handle_read.readline()
+
+    file_handle_read.close()
+
+    return sequence_count
+
+
 def estimate_unaligned_reads(input_fastq, unaligned_fastq):
     """
     Calculate an estimate of the percent of reads unaligned
@@ -255,10 +280,7 @@ def estimate_unaligned_reads(input_fastq, unaligned_fastq):
     file_exists_readable(input_fastq)
     file_exists_readable(unaligned_fastq)
 
-    aligned_size=os.path.getsize(input_fastq)
-    unaligned_size=os.path.getsize(unaligned_fastq)
-
-    percent=int(unaligned_size/float(aligned_size) * 100)
+    percent=int(count_reads(unaligned_fastq)/float(count_reads(input_fastq)) * 100)
 
     return str(percent)
 
