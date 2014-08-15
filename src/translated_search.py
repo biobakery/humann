@@ -116,10 +116,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
             temp_merge_file,"")
 
         # reformat output file to fit blast6out format
-        # NOTE: This is a temp call to be replaced by the reformat function
-        # format_rapsearch_output(temp_merge_file,alignment_file)
-        utilities.execute_command(exe,[temp_merge_file],[temp_merge_file],[alignment_file],
-            alignment_file,"")
+        utilities.ConvertRapsearch2ToBlastM8Format(temp_merge_file,alignment_file)
 
         # remove the temp files which have been merged
         for temp_file in temp_out_files + [temp_merge_file]:

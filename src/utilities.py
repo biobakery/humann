@@ -433,12 +433,12 @@ def fastq_to_fasta(file):
 
 	
 #********************************************************************************************
-#*   ConvertRapsheach2ToBlastM8Format                                                       *
+#*   ConvertRapsearch2ToBlastM8Format                                                       *
 #*  <<------------------------------------------------------------------------------->>     *    
 #*  The following three subroutines:                                                        *
 #*  1.  SciStr                                                                              *
 #*  2. ProcessRecord(InputLine)                                                             *
-#*  3. ConvertRapsheach2ToBlastM8Format(InputFileName,OutputFileName)                       *
+#*  3. ConvertRapsearch2ToBlastM8Format(InputFileName,OutputFileName)                       *
 #*  Work together.                                                                          *
 #*  Their purpose is to take the output of rapsearch2 and convert it to blast m8 format     *
 #*  Only two items are modified: rapsearch2 returns log of eValue so we convert it to       *
@@ -446,7 +446,7 @@ def fastq_to_fasta(file):
 #*     its value in Scientific format                                                       *  
 #*                                                                                          *
 #*  The subroutines are invoked as follows:                                                 *
-#*  RC = ConvertRapsheach2ToBlastM8Format(InputFileName,OutputFileName)                     *
+#*  RC = ConvertRapsearch2ToBlastM8Format(InputFileName,OutputFileName)                     *
 #*  Where:                                                                                  *
 #*  InputFileName = Rapsearch2 output file name  (Input to these modules)                   *   
 #*  OutputFileName = Output of these modules:  Compatible to Blast m8 format                *
@@ -481,7 +481,7 @@ def ProcessRecord(InputLine):
 #********************************************************************************************
 #*    Routine to convert rapsearch2 file format to blast m8 format                          *
 #********************************************************************************************
-def  ConvertRapsheach2ToBlastM8Format(	InputFileName,OutputFileName):
+def  ConvertRapsearch2ToBlastM8Format(	InputFileName,OutputFileName):
 	OutputFile = open(OutputFileName,'w')
 	
 	for InputLine in fileinput.input(InputFileName):
@@ -498,7 +498,7 @@ def  ConvertRapsheach2ToBlastM8Format(	InputFileName,OutputFileName):
 	
 
 #********************************************************************************************
-#*   End of ConvertRapsheach2ToBlastM8Format Subroutines                                    *
+#*   End of ConvertRapsearch2ToBlastM8Format Subroutines                                    *
 #*  <<------------------------------------------------------------------------------->>     *    
 #********************************************************************************************		
 		
