@@ -40,12 +40,14 @@ bowtie2_build_opts=[]
 bowtie2_align_opts=["--very-sensitive"]
 
 # usearch options
+usearch_database_extension=".udb"
 id_threshold_default=0.4
 usearch_max_seqs=10000
-usearch_version="v7.0.1001"
+usearch_version="usearch v7.0.1001"
 usearch_opts=[]
 
 # rapsearch options
+rapsearch_database_extension=".info"
 rapsearch_opts=["-v",-1]
 
 # humann1 scripts

@@ -156,11 +156,23 @@ def check_requirements(args):
     # if translated search selected is usearch
     if config.translated_alignment_selected == "usearch":
         for file in os.listdir(args.uniref):
-            if not file.endswith(".udb"):
+            if not file.endswith(config.usearch_database_extension):
                 if utilities.fasta_or_fastq(os.path.join(args.uniref,file)) != "fasta":
+                    print os.path.join(args.uniref,file)
+                    print utilities.fasta_or_fastq(os.path.join(args.uniref,file))
                     sys.exit("ERROR: The directory provided for the UniRef database "
                         + "contains files of an unexpected format. Only files of the"
                         + " udb or fasta format are allowed.") 
+
+    # Check that some of the database files are of the *.info extension
+    valid_format_count=0
+    if config.translated_alignment_selected == "rapsearch":
+        for file in os.listdir(args.uniref):
+            if file.endswith(config.rapsearch_database_extension):
+                valid_format_count+=1
+        if valid_format_count == 0:
+            sys.exit("ERROR: The UniRef directory provided has not been formatted to run with"
+                " the rapsearch translated alignment software. Please format these files.")
 
     # Check for correct usearch version
     if config.translated_alignment_selected == "usearch":
@@ -288,7 +300,7 @@ def main():
             args.input, nucleotide_alignment_file, temp_dir)
 
         # Report reads unaligned
-        print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+        print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
             args.input, unaligned_reads_file_fastq) + "%\n"  
     else:
         reduced_aligned_reads_file = "Empty"
@@ -306,7 +318,7 @@ def main():
         unaligned_reads_file_fastq, translated_alignment_file, temp_dir)
 
     # Report reads unaligned
-    print "Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+    print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
         args.input, translated_unaligned_reads_file_fastq) + "%\n"  
 
     # Identify the hits from the alignments

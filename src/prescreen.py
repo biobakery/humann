@@ -87,7 +87,7 @@ def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
     
     # compute total species found
     print "\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
-    print "Species cover " + str(total_reads_covered) + "% of all reads in input\n"
+    print "Species cover " + str(total_reads_covered) + "% of all mapped reads\n"
 
     # identify the files to be used from the ChocoPhlAn database
     species_file_list = []
