@@ -5,24 +5,28 @@ Configuration settings
 # software run modes
 debug = False
 verbose = False
+bypass_prescreen = False
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch"]
 translated_alignment_selected = translated_alignment_choices[1]
 
 # file naming
-bugs_list_name="_bugs_list.tsv"
-metaphlan_bowtie2_name="_bowtie2_out.txt"
+temp_dir=""
+file_basename=""
 
+bugs_list_name="_metaphlan_bugs_list.tsv"
+metaphlan_bowtie2_name="_metaphlan_bowtie2_out.txt"
+
+chocophlan_custom_database_name="_custom_chocophlan_database.ffn"
 bowtie2_index_name="_bowtie2_index"
+chocophlan_alignment_name="_bowtie2_chocophlan_align.sam"
 
-chocophlan_custom_database_name="_custom_database.ffn"
-chocophlan_alignment_name="_chocophlan_align.sam"
+nucleotide_unaligned_reads_name_no_ext="_bowtie2_unaligned_reads"
+nucleotide_aligned_reads_name_tsv="_bowtie2_aligned_reads.tsv"
 
-unaligned_reads_name_no_ext="_unaligned_reads"
-aligned_reads_name_tsv="_aligned_reads.tsv"
-
-translated_alignment_name="_translated_aligned"
+translated_alignment_name="_aligned.tsv"
+translated_unaligned_reads_name_no_ext="_unaligned"
 
 # metaphlan options
 prescreen_threshold=0.01

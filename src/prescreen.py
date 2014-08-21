@@ -5,7 +5,7 @@ Identify initial list of bugs from user supplied fasta/fastq
 import os, re, sys
 import utilities, config
 
-def alignment(input, threads, temp_dir):
+def alignment(input, threads):
     """
     Runs metaphlan to identify initial list of bugs
     """
@@ -20,10 +20,10 @@ def alignment(input, threads, temp_dir):
     input_type="multi" + utilities.fasta_or_fastq(input)
     
     # outfile name
-    sample_name = os.path.splitext(os.path.basename(input))[0]
-    bug_file = os.path.join(temp_dir, sample_name + config.bugs_list_name)
-    bowtie2_out = os.path.join(temp_dir, 
-        sample_name + config.metaphlan_bowtie2_name) 
+    bug_file = os.path.join(config.temp_dir, 
+        config.file_basename + config.bugs_list_name)
+    bowtie2_out = os.path.join(config.temp_dir, 
+        config.file_basename + config.metaphlan_bowtie2_name) 
 
     infiles=[input, os.path.join(metaphlan_dir, config.metaphlan_pkl_file)]
     
@@ -47,56 +47,64 @@ def alignment(input, threads, temp_dir):
     
     return bug_file
 
-def create_custom_database(chocophlan_dir, threshold, bug_file, temp_dir):
+def create_custom_database(chocophlan_dir, threshold, bug_file):
     """
     Using ChocoPhlAn creates a custom database based on the bug_file
     """
 
-    # Identify the species that pass the threshold
-    file_handle = open(bug_file, "r")
-
     # outfile name
-    bug_sample_name = os.path.splitext(os.path.basename(bug_file))[0]
-    custom_database = os.path.join(temp_dir, 
-        bug_sample_name + config.chocophlan_custom_database_name)
+    custom_database = os.path.join(config.temp_dir, 
+        config.file_basename + config.chocophlan_custom_database_name)
     
     species_found = []
     total_reads_covered = 0
-    line = file_handle.readline()
-    while line:
-
-        # if we see taxon-level we are done processing
-        if re.search("t__", line):
-            break
-        
-        # search for the lines that have the species-level information
-        if re.search("s__", line):
-            # check threshold
-            read_percent=float(line.split("\t")[1])
-            if read_percent >= threshold:
-                total_reads_covered += read_percent
-                organism_info=line.split("\t")[0]
-                # use the genus and species
-                species=organism_info.split("|")[-1]
-                genus=organism_info.split("|")[-2]
-                print "Found " + genus + "|" + species + " : " + \
-                    str(read_percent) + "% of reads"
-                species_found.append(genus + "." + species)
+    if bug_file != "Empty":
+        # Identify the species that pass the threshold
+        file_handle = open(bug_file, "r")
 
         line = file_handle.readline()
+        while line:
+
+            # if we see taxon-level we are done processing
+            if re.search("t__", line):
+                break
+        
+            # search for the lines that have the species-level information
+            if re.search("s__", line):
+                # check threshold
+                read_percent=float(line.split("\t")[1])
+                if read_percent >= threshold:
+                    total_reads_covered += read_percent
+                    organism_info=line.split("\t")[0]
+                    # use the genus and species
+                    species=organism_info.split("|")[-1]
+                    genus=organism_info.split("|")[-2]
+                    print "Found " + genus + "|" + species + " : " + \
+                        str(read_percent) + "% of reads"
+                    species_found.append(genus + "." + species)
+
+            line = file_handle.readline()
     
     # compute total species found
-    print "\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
-    print "Species cover " + str(total_reads_covered) + "% of all mapped reads\n"
+    if not config.bypass_prescreen:
+        print "\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
+        print "Species cover " + str(total_reads_covered) + "% of all mapped reads\n"
 
     # identify the files to be used from the ChocoPhlAn database
     species_file_list = []
-    for species_file in os.listdir(chocophlan_dir):
-        for species in species_found:
-            if re.search(species, species_file): 
-                species_file_list.append(os.path.join(chocophlan_dir,species_file))
-                if config.verbose:
-                    print "Adding file to database: " + species_file   
+    if not config.bypass_prescreen:
+        for species_file in os.listdir(chocophlan_dir):
+            for species in species_found:
+                if re.search(species, species_file): 
+                    species_file_list.append(os.path.join(chocophlan_dir,species_file))
+                    if config.verbose:
+                        print "Adding file to database: " + species_file   
+    else:
+        for species_file in os.listdir(chocophlan_dir):
+            species_file_list.append(os.path.join(chocophlan_dir,species_file))
+            if config.verbose:
+                print "Adding file to database: " + species_file   
+
 
     # create new fasta file containing only those species found
     if not species_file_list:

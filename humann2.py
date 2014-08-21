@@ -36,6 +36,11 @@ def parse_arguments (args):
         action="store_true",
         default=False)
     parser.add_argument(
+        "-b","--bypass_prescreen", 
+        help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
+        action="store_true",
+        default=False)
+    parser.add_argument(
         "-i", "--input", 
         help="fastq/fasta input file\n[REQUIRED]", 
         metavar="<input.fastq>", 
@@ -220,10 +225,14 @@ def check_requirements(args):
     if args.debug:
         config.debug=True  
             
-    # if set, update the config run mode to debug
+    # if set, update the config run mode to verbose
     if args.verbose:
         config.verbose=True  
    
+    # if set, update the config run mode to bypass prescreen step
+    if args.bypass_prescreen:
+        config.bypass_prescreen=True  
+
     return input_dir	
 
 
@@ -255,33 +264,37 @@ def main():
 
     # if the temp_dir is set by the user then use that directory
     if args.temp:
-        temp_dir=args.temp
-        if not os.path.isdir(temp_dir):
-            os.mkdir(temp_dir)	
+        config.temp_dir=args.temp
+        if not os.path.isdir(config.temp_dir):
+            os.mkdir(config.temp_dir)	
     else:
-        temp_dir=tempfile.mkdtemp( 
+        config.temp_dir=tempfile.mkdtemp( 
             prefix='humann2_temp_', dir=output_dir)
 
     if config.verbose:
-        print "Writing temp files to directory: " + temp_dir
+        print "Writing temp files to directory: " + config.temp_dir
+
+    # Set the basename of the temp files to the sample name
+    config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
 
     # Start timer
     start_time=time.time()
 
     # Run prescreen to identify bugs
-    bug_file = ""
+    bug_file = "Empty"
     if args.metaphlan_output:
         bug_file = args.metaphlan_output
     else:
-        bug_file = prescreen.alignment(args.input, 
-            args.threads, temp_dir)
+        if not config.bypass_prescreen:
+            bug_file = prescreen.alignment(args.input, 
+                args.threads)
 
     if config.verbose:
         print str(int(time.time() - start_time)) + " seconds from start"
 
     # Create the custom database from the bugs list
     custom_database = prescreen.create_custom_database(args.chocophlan, 
-        args.prescreen_threshold, bug_file, temp_dir)
+        args.prescreen_threshold, bug_file)
 
     if config.verbose:
         print str(int(time.time() - start_time)) + " seconds from start"
@@ -289,7 +302,7 @@ def main():
     # Run nucleotide search on custom database
     if custom_database != "Empty":
         nucleotide_alignment_file = nucleotide_search.alignment(custom_database, args.input, 
-            temp_dir, args.threads)
+            args.threads)
 
         if config.verbose:
             print str(int(time.time() - start_time)) + " seconds from start"
@@ -297,7 +310,7 @@ def main():
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
         [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-            args.input, nucleotide_alignment_file, temp_dir)
+            args.input, nucleotide_alignment_file)
 
         # Report reads unaligned
         print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
@@ -308,14 +321,14 @@ def main():
 
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fastq,
-        args.identity_threshold, temp_dir, args.threads)
+        args.identity_threshold, args.threads)
 
     if config.verbose:
         print str(int(time.time() - start_time)) + " seconds from start"
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-        unaligned_reads_file_fastq, translated_alignment_file, temp_dir)
+        unaligned_reads_file_fastq, translated_alignment_file)
 
     # Report reads unaligned
     print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
@@ -326,7 +339,7 @@ def main():
 
     # Remove temp directory
     if not args.temp:
-        utilities.remove_directory(temp_dir)
+        utilities.remove_directory(config.temp_dir)
 
 if __name__ == "__main__":
 	main()

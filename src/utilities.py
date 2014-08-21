@@ -246,8 +246,8 @@ def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_fi
         file_handle_write_aligned.close()
 
         # remove the alignment file as it will be replaced by the two files created
-        if not config.debug:
-            remove_file(sam_alignment_file)
+        #if not config.debug:
+        #    remove_file(sam_alignment_file)
 
 def count_reads(file):
     """
