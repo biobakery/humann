@@ -20,10 +20,8 @@ def alignment(input, threads):
     input_type="multi" + utilities.fasta_or_fastq(input)
     
     # outfile name
-    bug_file = os.path.join(config.temp_dir, 
-        config.file_basename + config.bugs_list_name)
-    bowtie2_out = os.path.join(config.temp_dir, 
-        config.file_basename + config.metaphlan_bowtie2_name) 
+    bug_file = utilities.name_temp_file(config.bugs_list_name)
+    bowtie2_out = utilities.name_temp_file(config.metaphlan_bowtie2_name) 
 
     infiles=[input, os.path.join(metaphlan_dir, config.metaphlan_pkl_file)]
     
@@ -53,8 +51,8 @@ def create_custom_database(chocophlan_dir, threshold, bug_file):
     """
 
     # outfile name
-    custom_database = os.path.join(config.temp_dir, 
-        config.file_basename + config.chocophlan_custom_database_name)
+    custom_database = utilities.name_temp_file( 
+        config.chocophlan_custom_database_name)
     
     species_found = []
     total_reads_covered = 0

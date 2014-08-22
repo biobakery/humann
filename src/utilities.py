@@ -10,6 +10,15 @@ from decimal import *
 
 import config
 
+def name_temp_file(file_name):
+    """
+    Return the full path to a new temp file 
+    using the sample name and temp dir location
+    """
+
+    return os.path.join(config.temp_dir,
+       config.file_basename + file_name) 
+
 def file_exists_readable(file):
     """
     Exit with error if file does not exist or is not readable

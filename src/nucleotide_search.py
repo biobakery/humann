@@ -10,8 +10,8 @@ def index(custom_database):
     Index database and run alignment with bowtie2
     """
     # name the index
-    index_name = os.path.join(config.temp_dir, 
-        config.file_basename + config.bowtie2_index_name)
+    index_name = utilities.name_temp_file( 
+        config.bowtie2_index_name)
   
     exe="bowtie2-build"
     opts=config.bowtie2_build_opts
@@ -40,8 +40,8 @@ def alignment(user_fastq, threads, index_name):
     """
     
     # name the alignment file
-    alignment_file = os.path.join(config.temp_dir, 
-        config.file_basename + config.chocophlan_alignment_name)
+    alignment_file = utilities.name_temp_file(
+        config.chocophlan_alignment_name)
 
 
     # align user input to database
@@ -77,18 +77,15 @@ def unaligned_reads(input_fastq, alignment_file):
     Return file of just the unaligned reads
     """
 
-    #name the index
-    unaligned_reads_file_fastq = os.path.join(config.temp_dir, 
-        config.file_basename + config.nucleotide_unaligned_reads_name_no_ext)
-
     #determine the index to use for the fastq/fasta file
     #use the same as that that was used by the user for the input file
     original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
-    unaligned_reads_file_fastq+= original_extension
+    unaligned_reads_file_fastq= utilities.name_temp_file(
+        config.nucleotide_unaligned_reads_name_no_ext + original_extension)
 
     #name the reduced aligned reads file with tsv extension
-    reduced_aligned_reads_file=os.path.join(config.temp_dir,
-        config.file_basename + config.nucleotide_aligned_reads_name_tsv)
+    reduced_aligned_reads_file=utilities.name_temp_file(
+        config.nucleotide_aligned_reads_name_tsv)
 
     #create two files of aligned and unaligned reads
     utilities.unaligned_reads_from_sam(alignment_file, utilities.fasta_or_fastq(input_fastq), 

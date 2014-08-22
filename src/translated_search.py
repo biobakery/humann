@@ -132,8 +132,8 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     Run usearch for alignment
     """
 
-    alignment_file = os.path.join(config.temp_dir, 
-        config.file_basename + "_" + config.translated_alignment_selected 
+    alignment_file = utilities.name_temp_file( 
+        "_" + config.translated_alignment_selected 
         + config.translated_alignment_name)
 
     if config.translated_alignment_selected == "usearch":
@@ -150,15 +150,12 @@ def unaligned_reads(input_fastq, alignment_file):
     Create a fasta/fastq file of the unaligned reads
     """
 
-    #name the index
-    unaligned_reads_file_fastq = os.path.join(config.temp_dir,
-        config.file_basename + "_" + config.translated_alignment_selected
-         + config.translated_unaligned_reads_name_no_ext)
-
     #determine the index to use for the fastq/fasta file
     #use the same as that that was used by the user for the input file
     original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
-    unaligned_reads_file_fastq+= original_extension
+    unaligned_reads_file_fastq= utilities.name_temp_file(
+        "_" + config.translated_alignment_selected + 
+        config.translated_unaligned_reads_name_no_ext + original_extension)
 
     utilities.unaligned_reads_from_tsv(input_fastq, alignment_file, 
         unaligned_reads_file_fastq)
