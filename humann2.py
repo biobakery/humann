@@ -36,8 +36,13 @@ def parse_arguments (args):
         action="store_true",
         default=False)
     parser.add_argument(
-        "-b","--bypass_prescreen", 
+        "--bypass_prescreen", 
         help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
+        action="store_true",
+        default=False)
+    parser.add_argument(
+        "--bypass_nucleotide_index", 
+        help="bypass the nucleotide index step and run on the indexed ChocoPhlAn database\n", 
         action="store_true",
         default=False)
     parser.add_argument(
@@ -138,19 +143,21 @@ def check_requirements(args):
         sys.exit("ERROR: The input file is not of a fasta or fastq format.")
 
     # Check that the chocophlan directory exists
-    if not os.path.isdir(args.chocophlan):
-        sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
-            + args.chocophlan + " does not exist. Please select another directory.")	
+    if not args.bypass_nucleotide_index:
+        if not os.path.isdir(args.chocophlan):
+            sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
+                + args.chocophlan + " does not exist. Please select another directory.")	
     
     # Check that the files in the chocophlan folder are of the right format
-    valid_format_count=0
-    for file in os.listdir(args.chocophlan):
-        # expect most of the file names to be of the format g__*s__*
-        if re.search("^[g__][s__]",file): 
-            valid_format_count+=1
-    if valid_format_count == 0:
-        sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
-            + "contain files of the expected format.")
+    if not args.bypass_nucleotide_index:
+        valid_format_count=0
+        for file in os.listdir(args.chocophlan):
+            # expect most of the file names to be of the format g__*s__*
+            if re.search("^[g__][s__]",file): 
+                valid_format_count+=1
+        if valid_format_count == 0:
+            sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
+                + "contain files of the expected format.")
  
     # Check that the uniref directory exists
     if not os.path.isdir(args.uniref):
@@ -214,8 +221,10 @@ def check_requirements(args):
                     " another directory.")
         else:
             path_to_temp_dir=os.path.dirname(args.temp)
-            if os.path.basename(args.temp) == "":
+            if not os.path.basename(args.temp):
                 path_to_temp_dir=os.path.dirname(os.path.dirname(args.temp))
+            if not path_to_temp_dir:
+                path_to_temp_dir=os.getcwd()
             if not os.access(path_to_temp_dir, os.W_OK):
                 sys.exit("ERROR: The directory set to hold the temp files " + 
                     "is not writeable. Please change the permissions or select" +
@@ -231,6 +240,11 @@ def check_requirements(args):
    
     # if set, update the config run mode to bypass prescreen step
     if args.bypass_prescreen:
+        config.bypass_prescreen=True  
+    
+    # if set, update the config run mode to bypass nucleotide index step
+    if args.bypass_nucleotide_index:
+        config.bypass_nucleotide_index=True  
         config.bypass_prescreen=True  
 
     return input_dir	
@@ -293,16 +307,24 @@ def main():
         print str(int(time.time() - start_time)) + " seconds from start"
 
     # Create the custom database from the bugs list
-    custom_database = prescreen.create_custom_database(args.chocophlan, 
-        args.prescreen_threshold, bug_file)
+    custom_database = ""
+    if not config.bypass_nucleotide_index:
+        custom_database = prescreen.create_custom_database(args.chocophlan, 
+            args.prescreen_threshold, bug_file)
+    else:
+        custom_database = "Bypass"
 
     if config.verbose:
         print str(int(time.time() - start_time)) + " seconds from start"
 
     # Run nucleotide search on custom database
     if custom_database != "Empty":
-        nucleotide_alignment_file = nucleotide_search.alignment(custom_database, args.input, 
-            args.threads)
+        if not config.bypass_nucleotide_index:
+            nucleotide_index_file = nucleotide_search.index(custom_database)
+        else:
+            nucleotide_index_file = args.chocophlan
+        nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
+            args.threads, nucleotide_index_file)
 
         if config.verbose:
             print str(int(time.time() - start_time)) + " seconds from start"

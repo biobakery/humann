@@ -5,7 +5,7 @@ Index database, run alignment, find unused reads
 import os
 import utilities, config
 
-def alignment(custom_database, user_fastq, threads):
+def index(custom_database):
     """
     Index database and run alignment with bowtie2
     """
@@ -32,6 +32,13 @@ def alignment(custom_database, user_fastq, threads):
     
     utilities.execute_command(exe,args,[custom_database],outfiles,"","")
 
+    return index_name
+
+def alignment(user_fastq, threads, index_name):
+    """
+    Run alignment with bowtie2
+    """
+    
     # name the alignment file
     alignment_file = os.path.join(config.temp_dir, 
         config.file_basename + config.chocophlan_alignment_name)
