@@ -196,9 +196,10 @@ def check_requirements(args):
             " executable can not be found. Please check the install.")
     
     # Check that the metaphlan2 executable can be found
-    if not utilities.find_exe_in_path("metaphlan2.py"): 
-        sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
-            "Please check the install.")
+    if not args.bypass_prescreen and not args.bypass_nucleotide_index:
+        if not utilities.find_exe_in_path("metaphlan2.py"): 
+            sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
+                "Please check the install.")
 
     # Check that the bowtie2 executable can be found
     if not utilities.find_exe_in_path("bowtie2"): 
