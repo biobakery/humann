@@ -129,7 +129,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
 def alignment(uniref, unaligned_reads_file_fastq, identity_threshold, 
     threads):
     """
-    Run usearch for alignment
+    Run rapsearch2 or usearch for alignment
     """
 
     alignment_file = utilities.name_temp_file( 
