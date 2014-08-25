@@ -208,6 +208,8 @@ def check_requirements(args):
 
     # Check that the directory that holds the input file is writeable
     input_dir = os.path.dirname(args.input)
+    if not input_dir:
+        input_dir=os.getcwd()
     if not os.access(input_dir, os.W_OK):
         sys.exit("ERROR: The directory which holds the input file is not " + 
             "writeable. This software needs to write files to this directory.\n" +
