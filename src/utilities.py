@@ -386,7 +386,7 @@ def break_up_fasta_file(fasta_file, max_seqs):
         if not re.search("^>",line):
             os.write(file_out,line)
         else:
-            if current_seq > max_seqs:
+            if current_seq == max_seqs:
                 # close current file and open new
                 os.close(file_out)
                 file_out, new_file=tempfile.mkstemp()
