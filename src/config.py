@@ -2,6 +2,8 @@
 Configuration settings
 """
 
+import os
+
 # software run modes
 debug = False
 verbose = False
@@ -28,6 +30,8 @@ nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 
 translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
+
+reactions_name="_reactions.tsv"
 
 # metaphlan options
 prescreen_threshold=0.01
@@ -57,3 +61,11 @@ rapsearch_opts=["-v",-1]
 
 # humann1 scripts
 humann1_scripts="src/humann1/"
+humann1_script_bam_to_hits="bam2hits.py"
+humann1_script_blast_to_hits="blast2hits.py"
+humann1_script_hits_to_reactions="hits2metacyc.py"
+
+# data files
+data_folder="data/"
+metacyc_gene_to_reactions=os.path.join(data_folder,"mcc")
+metacyc_reactions_to_pathways=os.path.join(data_folder,"mcpc")

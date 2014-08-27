@@ -362,6 +362,9 @@ def main():
     # Identify the hits from the alignments
     hits_file=quantify_families.find_hits(reduced_aligned_reads_file, translated_alignment_file)
 
+    # Identify the reactions from the hits
+    reactions_file=quantify_families.find_reactions(hits_file)
+
     # Remove temp directory
     if not args.temp:
         utilities.remove_directory(config.temp_dir)
