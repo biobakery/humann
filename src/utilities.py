@@ -432,7 +432,13 @@ def fastq_to_fasta(file):
     while line:
         if re.search("^@",line):
             os.write(file_out,line.replace("@",">",1))
-            os.write(file_out,file_handle_read.readline())
+            line=file_handle_read.readline()
+            while line:
+                if re.search("^\\+",line):
+                    break
+                else:
+                    os.write(file_out,line)
+                line=file_handle_read.readline()
         line=file_handle_read.readline()
   	
     os.close(file_out)	
