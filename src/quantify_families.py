@@ -6,15 +6,13 @@ Compute gene family abundance
 import os, tempfile
 import config, utilities
 
-def find_hits(bam_output, blast_output):
+def hits(bam_output, blast_output):
     """
     Identify the hits from the alignment results
     """
 
     file_handle, hits_file=tempfile.mkstemp()
     os.close(file_handle)
-
-    print "Running to find hits ........"
 
     # find hits for the bam output
     if bam_output != "Empty":
@@ -48,17 +46,15 @@ def find_hits(bam_output, blast_output):
         
     return hits_file
 
-def find_reactions(hits_file):
+def gene_families(hits_file):
     """
-    Identify the reactions from the hits found
+    Compute the gene families from the hits
     """
 
-    reactions_file=utilities.name_temp_file(
-        config.reactions_name)
-
+    # Compute abundance
     utilities.execute_command(
-        config.humann1_script_hits_to_reactions,
-        [config.metacyc_gene_to_reactions],[hits_file],[],
-        reactions_file, hits_file)
+        "cat",[],[hits_file],[],
+        config.genefamilies_file, hits_file)
 
-    return reactions_file
+    return config.genefamilies_file
+

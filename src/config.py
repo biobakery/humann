@@ -32,6 +32,11 @@ translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
 
 reactions_name="_reactions.tsv"
+pathways_minpath="_pathways.tsv"
+
+pathabundance_file="_pathabundance.tsv"
+pathcoverage_file="_pathcoverage.tsv"
+genefamilies_file="_genefamilies.tsv"
 
 # metaphlan options
 prescreen_threshold=0.01
@@ -64,8 +69,16 @@ humann1_scripts="src/humann1/"
 humann1_script_bam_to_hits="bam2hits.py"
 humann1_script_blast_to_hits="blast2hits.py"
 humann1_script_hits_to_reactions="hits2metacyc.py"
+humann1_script_minpath="MinPath1.2hmp.py"
+humann1_script_enzymes_to_pathways="enzymes2pathways_mp.py"
 
 # data files
 data_folder="data/"
-metacyc_gene_to_reactions=os.path.join(data_folder,"mcc")
-metacyc_reactions_to_pathways=os.path.join(data_folder,"mcpc")
+metacyc_gene_to_reactions="mcc"
+metacyc_reactions_to_pathways="mcpc"
+
+# MinPath
+minpath_file="minpath1.2.tar.gz"
+minpath_url=("http://omics.informatics.indiana.edu/mg/get.php?" + 
+    "justdoit=yes&software=" + minpath_file)
+minpath_folder="MinPath"

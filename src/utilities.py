@@ -4,7 +4,7 @@ and file formats
 """
 
 import os, sys, subprocess, re, shutil, tempfile
-import fileinput
+import fileinput, urllib, tarfile
 import math
 from decimal import *
 
@@ -77,6 +77,19 @@ def check_software_version(exe,version_flag,
         sys.exit("Error: Please update " + exe + " from version " +
             p_out.rstrip('\n') + " to version " + version_required )
 
+def download_tar_and_extract(url, filename):
+    """
+    Download the file at the url
+    """
+    if config.verbose:
+        print "Download URL:" + url 
+
+    file, headers = urllib.urlretrieve(url,filename)
+
+    if config.verbose:
+        print "Extracting:" + filename
+    tarfile_handle=tarfile.open(filename,'r:gz')
+    tarfile_handle.extractall(path=config.data_folder)
 
 def remove_file(file):
     """

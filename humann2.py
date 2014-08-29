@@ -4,7 +4,7 @@
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 
 HUMAnN2 is a pipeline for efficiently and accurately determining 
-the presence/absence and abundance of microbial pathways in a community 
+the coverage and abundance of microbial pathways in a community 
 from metagenomic data. Sequencing a metagenome typically produces millions 
 of short DNA/RNA reads.
 
@@ -16,7 +16,7 @@ To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 import argparse, sys, subprocess, os, time, tempfile, re
 
 from src import utilities, prescreen, nucleotide_search
-from src import translated_search, config, quantify_families
+from src import translated_search, config, quantify_families, quantify_modules
 
 def parse_arguments (args):
     """ 
@@ -67,17 +67,17 @@ def parse_arguments (args):
     parser.add_argument(
         "--o_pathabundance", 
         help="output file for pathway abundance\n" + 
-        "[DEFAULT: $input_dir/pathabundance.tsv]", 
+        "[DEFAULT: $input_dir/$SAMPLE_pathabundance.tsv]", 
         metavar="<pathabundance.tsv>")
     parser.add_argument(
-        "--o_pathpresence",
-        help="output file for pathway presence/absence\n" + 
-        "[DEFAULT: $input_dir/pathpresence.tsv]", 
-        metavar="<pathpresence.tsv>")
+        "--o_pathcoverage",
+        help="output file for pathway coverage\n" + 
+        "[DEFAULT: $input_dir/$SAMPLE_pathcoverage.tsv]", 
+        metavar="<pathcoverage.tsv>")
     parser.add_argument(
         "--o_genefamilies", 
         help="output file for gene families\n" + 
-        "[DEFAULT: $input_dir/genefamilies.tsv]", 
+        "[DEFAULT: $input_dir/$SAMPLE_genefamilies.tsv]", 
         metavar="<genefamilies.tsv>")
     parser.add_argument(
         "--temp", 
@@ -134,6 +134,23 @@ def check_requirements(args):
     """
     Check requirements (file format, dependencies, permissions)
     """
+    # if set, update the config run mode to debug
+    if args.debug:
+        config.debug=True  
+            
+    # if set, update the config run mode to verbose
+    if args.verbose:
+        config.verbose=True  
+   
+    # if set, update the config run mode to bypass prescreen step
+    if args.bypass_prescreen:
+        config.bypass_prescreen=True  
+    
+    # if set, update the config run mode to bypass nucleotide index step
+    if args.bypass_nucleotide_index:
+        config.bypass_nucleotide_index=True  
+        config.bypass_prescreen=True  
+    
     # Update translated alignment software if set
     if args.translated_alignment:
         config.translated_alignment_selected=args.translated_alignment
@@ -215,6 +232,28 @@ def check_requirements(args):
             "writeable. This software needs to write files to this directory.\n" +
             "Please use another directory to hold your input file.") 
 
+    # Set the basename of the temp files to the sample name
+    config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
+    
+    # Set final output file names
+    if args.o_pathabundance:
+        config.pathabundance_file=args.o_pathabundance
+    else:
+        config.pathabundance_file=os.path.join(input_dir,
+            config.file_basename + config.pathabundance_file)
+
+    if args.o_pathcoverage:
+        config.pathcoverage_file=args.o_pathcoverage
+    else:
+        config.pathcoverage_file=os.path.join(input_dir,
+            config.file_basename + config.pathcoverage_file)
+
+    if args.o_genefamilies:
+        config.genefamilies_file=args.o_genefamilies
+    else:
+        config.genefamilies_file=os.path.join(input_dir,
+            config.file_basename + config.genefamilies_file)
+
     # if set, check that the temp directory location is writeable
     if args.temp:
         if os.path.isdir(args.temp):
@@ -232,23 +271,6 @@ def check_requirements(args):
                 sys.exit("ERROR: The directory set to hold the temp files " + 
                     "is not writeable. Please change the permissions or select" +
                     " another directory.")
-
-    # if set, update the config run mode to debug
-    if args.debug:
-        config.debug=True  
-            
-    # if set, update the config run mode to verbose
-    if args.verbose:
-        config.verbose=True  
-   
-    # if set, update the config run mode to bypass prescreen step
-    if args.bypass_prescreen:
-        config.bypass_prescreen=True  
-    
-    # if set, update the config run mode to bypass nucleotide index step
-    if args.bypass_nucleotide_index:
-        config.bypass_nucleotide_index=True  
-        config.bypass_prescreen=True  
 
     return input_dir	
 
@@ -271,9 +293,14 @@ def main():
         utilities.add_exe_to_path(args.rapsearch)
 
     # Add the location of the humann1 scripts to the path
-    utilities.add_exe_to_path(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)),
-            config.humann1_scripts))
+    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
+    config.humann1_scripts=os.path.join(humann2_fullpath,
+        config.humann1_scripts)
+    utilities.add_exe_to_path(config.humann1_scripts)
+
+    # Update data directory to full path
+    config.data_folder=os.path.join(humann2_fullpath,
+        config.data_folder)
 	
     # Check for required files, software, databases, and also permissions
     # If all pass, return location of input_dir to write output to
@@ -290,9 +317,6 @@ def main():
 
     if config.verbose:
         print "Writing temp files to directory: " + config.temp_dir
-
-    # Set the basename of the temp files to the sample name
-    config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
 
     # Start timer
     start_time=time.time()
@@ -360,10 +384,21 @@ def main():
         args.input, translated_unaligned_reads_file_fastq) + "%\n"  
 
     # Identify the hits from the alignments
-    hits_file=quantify_families.find_hits(reduced_aligned_reads_file, translated_alignment_file)
+    hits_file=quantify_families.hits(reduced_aligned_reads_file, translated_alignment_file)
+
+    # Compute the gene families
+    families_file=quantify_families.gene_families(hits_file)
 
     # Identify the reactions from the hits
-    reactions_file=quantify_families.find_reactions(hits_file)
+    reactions_file=quantify_modules.reactions(hits_file)
+
+    # Identify pathways
+    pathways_file=quantify_modules.pathways(reactions_file)
+
+    # Compute pathway abundance and coverage
+    abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(pathways_file)
+
+    #print "Output written to: " + ",".join([families_file,abundance_file,coverage_file]) + "\n"
 
     # Remove temp directory
     if not args.temp:
