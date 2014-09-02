@@ -358,18 +358,21 @@ def main():
 
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
-        [ unaligned_reads_file_fastq, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+        [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
             args.input, nucleotide_alignment_file)
 
         # Report reads unaligned
         print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-            args.input, unaligned_reads_file_fastq) + "%\n"  
+            args.input, unaligned_reads_file_fasta) + "%\n"  
     else:
         reduced_aligned_reads_file = "Empty"
-        unaligned_reads_file_fastq=args.input
+        if utilities.fasta_or_fastq(args.input)=="fasta":
+            unaligned_reads_file_fasta=args.input
+        else:
+            unaligned_reads_file_fasta=utilities.fastq_to_fasta(args.input)
 
     # Run translated search on UniRef database
-    translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fastq,
+    translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fasta,
         args.identity_threshold, args.threads)
 
     if config.verbose:
@@ -377,7 +380,7 @@ def main():
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-        unaligned_reads_file_fastq, translated_alignment_file)
+        unaligned_reads_file_fasta, translated_alignment_file)
 
     # Report reads unaligned
     print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(

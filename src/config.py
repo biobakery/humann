@@ -17,6 +17,7 @@ translated_alignment_selected = translated_alignment_choices[1]
 # file naming
 temp_dir=""
 file_basename=""
+fasta_extension=".fa"
 
 bugs_list_name="_metaphlan_bugs_list.tsv"
 metaphlan_bowtie2_name="_metaphlan_bowtie2.txt"
@@ -74,7 +75,7 @@ humann1_script_enzymes_to_pathways="enzymes2pathways_mp.py"
 
 # data files
 data_folder="data/"
-metacyc_gene_to_reactions="mcc"
+metacyc_gene_to_reactions="mcc_with_Uniref_Identifiers"
 metacyc_reactions_to_pathways="mcpc"
 
 # MinPath

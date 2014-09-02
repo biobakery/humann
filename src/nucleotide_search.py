@@ -80,15 +80,19 @@ def unaligned_reads(input_fastq, alignment_file):
     #determine the index to use for the fastq/fasta file
     #use the same as that that was used by the user for the input file
     original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
-    unaligned_reads_file_fastq= utilities.name_temp_file(
-        config.nucleotide_unaligned_reads_name_no_ext + original_extension)
+
+    #for translated search create fasta unaligned reads file
+    #even if original reads file is fastq
+    unaligned_reads_file_fasta= utilities.name_temp_file(
+        config.nucleotide_unaligned_reads_name_no_ext + config.fasta_extension)
 
     #name the reduced aligned reads file with tsv extension
     reduced_aligned_reads_file=utilities.name_temp_file(
         config.nucleotide_aligned_reads_name_tsv)
 
     #create two files of aligned and unaligned reads
-    utilities.unaligned_reads_from_sam(alignment_file, utilities.fasta_or_fastq(input_fastq), 
-        unaligned_reads_file_fastq, reduced_aligned_reads_file)
+    #for translated search create fasta unaligned reads file
+    utilities.unaligned_reads_from_sam(alignment_file, "fasta", 
+        unaligned_reads_file_fasta, reduced_aligned_reads_file)
 
-    return [ unaligned_reads_file_fastq, reduced_aligned_reads_file ]
+    return [ unaligned_reads_file_fasta, reduced_aligned_reads_file ]
