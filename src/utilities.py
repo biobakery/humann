@@ -216,9 +216,9 @@ def fasta_or_fastq(file):
 
     return format
 
-def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_file, aligned_tsv_file):	
+def unaligned_reads_from_sam(sam_alignment_file, unaligned_fastq_file, aligned_tsv_file):	
     """
-    Create two files of aligned and unaligned reads in fasta/fastq and tsv format
+    Create two files of aligned and unaligned reads in fasta and tsv format
     """
     sam_read_name_index=0
     sam_flag_index=1
@@ -248,15 +248,8 @@ def unaligned_reads_from_sam(sam_alignment_file, output_type, unaligned_fastq_fi
                 info=line.split("\t")
                 # check flag to determine if unaligned
                 if int(info[sam_flag_index]) & sam_unmapped_flag != 0:
-                    if output_type == "fastq":
-                        file_handle_write_unaligned.write("@"+info[sam_read_name_index]+"\n")
-                        file_handle_write_unaligned.write(info[sam_read_index]+"\n")
-                        file_handle_write_unaligned.write("+\n")
-                        file_handle_write_unaligned.write(info[sam_read_quality]+"\n")            
-                    #default is fasta
-                    else:
-                        file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
-                        file_handle_write_unaligned.write(info[sam_read_index]+"\n")
+                    file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
+                    file_handle_write_unaligned.write(info[sam_read_index]+"\n")
                 else:
                     newline=("\t").join([info[sam_read_name_index],"",info[sam_reference_index],
                         "",info[sam_mapq_index]])

@@ -92,7 +92,7 @@ def unaligned_reads(input_fastq, alignment_file):
 
     #create two files of aligned and unaligned reads
     #for translated search create fasta unaligned reads file
-    utilities.unaligned_reads_from_sam(alignment_file, "fasta", 
+    utilities.unaligned_reads_from_sam(alignment_file, 
         unaligned_reads_file_fasta, reduced_aligned_reads_file)
 
     return [ unaligned_reads_file_fasta, reduced_aligned_reads_file ]
