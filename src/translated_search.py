@@ -126,7 +126,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
 
 
 
-def alignment(uniref, unaligned_reads_file_fastq, identity_threshold, 
+def alignment(uniref, unaligned_reads_file_fasta, identity_threshold, 
     threads):
     """
     Run rapsearch2 or usearch for alignment
@@ -135,13 +135,25 @@ def alignment(uniref, unaligned_reads_file_fastq, identity_threshold,
     alignment_file = utilities.name_temp_file( 
         "_" + config.translated_alignment_selected 
         + config.translated_alignment_name)
+    
+    # Check that the file of reads to align is fasta
+    temp_file=""
+    if utilities.fasta_or_fastq(unaligned_reads_file_fasta) == "fastq":
+        input_fasta=utilities.fastq_to_fasta(unaligned_reads_file_fasta)
+        temp_file=input_fasta
+    else:
+        input_fasta=unaligned_reads_file_fasta
 
     if config.translated_alignment_selected == "usearch":
         usearch_alignment(alignment_file,threads,identity_threshold,
-            uniref, unaligned_reads_file_fastq)
+            uniref, input_fasta)
     else:
         rapsearch_alignment(alignment_file,threads,uniref,
-            unaligned_reads_file_fastq)
+            input_fasta)
+        
+    # Remove the temp fasta file if exists
+    if temp_file:
+        utilities.remove_file(temp_file)
 
     return alignment_file
 

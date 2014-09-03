@@ -45,6 +45,11 @@ metaphlan_opts=["-t","rel_ab"]
 metaphlan_pkl_file="db_v20/mpa_v20_m200.pkl"
 metaphlan_mpa_index="db_v20/mpa_v20_m200"
 
+# chocophlan formatting
+chocophlan_delimiter="|"
+chocophlan_bug_index=-2
+chocophlan_uniref_index=-1
+
 # bowtie2 options and threshold
 bowtie2_large_index_threshold=4000000000
 bowtie2_index_ext_list=[".1.bt2",".2.bt2",".3.bt2",".4.bt2",
@@ -53,6 +58,15 @@ bowtie2_large_index_ext=".1.bt2l"
 
 bowtie2_build_opts=[]
 bowtie2_align_opts=["--very-sensitive"]
+
+#set the locations of data in the sam file
+sam_read_name_index=0
+sam_flag_index=1
+sam_reference_index=2
+sam_mapq_index=4
+sam_read_index=9
+sam_read_quality=10
+sam_unmapped_flag=0x4
 
 # usearch options
 usearch_database_extension=".udb"

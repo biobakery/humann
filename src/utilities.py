@@ -7,6 +7,7 @@ import os, sys, subprocess, re, shutil, tempfile
 import fileinput, urllib, tarfile
 import math
 from decimal import *
+import store
 
 import config
 
@@ -216,53 +217,7 @@ def fasta_or_fastq(file):
 
     return format
 
-def unaligned_reads_from_sam(sam_alignment_file, unaligned_fastq_file, aligned_tsv_file):	
-    """
-    Create two files of aligned and unaligned reads in fasta and tsv format
-    """
-    sam_read_name_index=0
-    sam_flag_index=1
-    sam_reference_index=2
-    sam_mapq_index=4
-    sam_read_index=9
-    sam_read_quality=10
-	
-    sam_unmapped_flag=0x4
 
-    # check input and output files
-    bypass=check_outfiles([unaligned_fastq_file, aligned_tsv_file])
-  
-    if not bypass:
-        file_exists_readable(sam_alignment_file)
-
-        file_handle_read=open(sam_alignment_file, "r")
-        file_handle_write_unaligned=open(unaligned_fastq_file, "w")
-        file_handle_write_aligned=open(aligned_tsv_file, "w")
-
-        # read through the file line by line
-        line = file_handle_read.readline()
-
-        while line:
-            # ignore headers ^@ 
-            if not re.search("^@",line):
-                info=line.split("\t")
-                # check flag to determine if unaligned
-                if int(info[sam_flag_index]) & sam_unmapped_flag != 0:
-                    file_handle_write_unaligned.write(">"+info[sam_read_name_index]+"\n")
-                    file_handle_write_unaligned.write(info[sam_read_index]+"\n")
-                else:
-                    newline=("\t").join([info[sam_read_name_index],"",info[sam_reference_index],
-                        "",info[sam_mapq_index]])
-                    file_handle_write_aligned.write(newline+"\n")
-            line=file_handle_read.readline()
-
-        file_handle_read.close()
-        file_handle_write_unaligned.close()   
-        file_handle_write_aligned.close()
-
-        # remove the alignment file as it will be replaced by the two files created
-        #if not config.debug:
-        #    remove_file(sam_alignment_file)
 
 def count_reads(file):
     """

@@ -15,7 +15,7 @@ To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 
 import argparse, sys, subprocess, os, time, tempfile, re
 
-from src import utilities, prescreen, nucleotide_search
+from src import utilities, prescreen, nucleotide_search, store
 from src import translated_search, config, quantify_families, quantify_modules
 
 def parse_arguments (args):
@@ -318,6 +318,9 @@ def main():
     if config.verbose:
         print "Writing temp files to directory: " + config.temp_dir
 
+    # Initialize alignments
+    alignments=store.alignments()
+
     # Start timer
     start_time=time.time()
 
@@ -359,21 +362,24 @@ def main():
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
         [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-            args.input, nucleotide_alignment_file)
+            args.input, nucleotide_alignment_file, alignments)
+
+        # Print out total alignments per bug
+        print "Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
+        alignments.print_bugs()
+
+        print "\nTotal gene families from nucleotide alignment: " + str(alignments.count_genes())
 
         # Report reads unaligned
         print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
             args.input, unaligned_reads_file_fasta) + "%\n"  
     else:
         reduced_aligned_reads_file = "Empty"
-        if utilities.fasta_or_fastq(args.input)=="fasta":
-            unaligned_reads_file_fasta=args.input
-        else:
-            unaligned_reads_file_fasta=utilities.fastq_to_fasta(args.input)
+        unaligned_reads_file_fasta=args.input
 
     # Run translated search on UniRef database
-    translated_alignment_file = translated_search.alignment(args.uniref, unaligned_reads_file_fasta,
-        args.identity_threshold, args.threads)
+    translated_alignment_file = translated_search.alignment(args.uniref, 
+        unaligned_reads_file_fasta, args.identity_threshold, args.threads)
 
     if config.verbose:
         print str(int(time.time() - start_time)) + " seconds from start"

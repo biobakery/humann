@@ -2,8 +2,8 @@
 Index database, run alignment, find unused reads
 """
 
-import os
-import utilities, config
+import os, re, math
+import utilities, config, store
 
 def index(custom_database):
     """
@@ -72,9 +72,12 @@ def alignment(user_fastq, threads, index_name):
 
     return alignment_file
 
-def unaligned_reads(input_fastq, alignment_file):
+
+
+def unaligned_reads(input_fastq, sam_alignment_file, alignments):
     """ 
     Return file of just the unaligned reads
+    Store the alignments
     """
 
     #determine the index to use for the fastq/fasta file
@@ -90,9 +93,49 @@ def unaligned_reads(input_fastq, alignment_file):
     reduced_aligned_reads_file=utilities.name_temp_file(
         config.nucleotide_aligned_reads_name_tsv)
 
-    #create two files of aligned and unaligned reads
-    #for translated search create fasta unaligned reads file
-    utilities.unaligned_reads_from_sam(alignment_file, 
-        unaligned_reads_file_fasta, reduced_aligned_reads_file)
+  
+    utilities.file_exists_readable(sam_alignment_file)
+
+    file_handle_read=open(sam_alignment_file, "r")
+    file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
+    file_handle_write_aligned=open(reduced_aligned_reads_file, "w")
+
+    # read through the file line by line
+    line = file_handle_read.readline()
+
+    while line:
+        # ignore headers ^@ 
+        if not re.search("^@",line):
+            info=line.split("\t")
+            # check flag to determine if unaligned
+            if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
+                file_handle_write_unaligned.write(">"+
+                    info[config.sam_read_name_index]+"\n")
+                file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
+            else:
+                # convert the e-value from global to local
+                evalue=math.pow(10.0, float(info[config.sam_mapq_index])/-10.0)
+                reference_info=info[config.sam_reference_index].split(
+                    config.chocophlan_delimiter)
+                # identify bug and gene families
+                bug=reference_info[config.chocophlan_bug_index]
+                uniref=reference_info[config.chocophlan_uniref_index]
+                query=info[config.sam_read_name_index]
+                newline=("\t").join([query,"",info[config.sam_reference_index],
+                    "",str(evalue)])
+                file_handle_write_aligned.write(newline+"\n")
+                   
+                # store the alignment data
+                alignments.add(uniref,query,evalue,1,1,bug)
+                    
+        line=file_handle_read.readline()
+
+    file_handle_read.close()
+    file_handle_write_unaligned.close()   
+    file_handle_write_aligned.close()
+
+    # remove the alignment file as it will be replaced by the two files created
+    #if not config.debug:
+    #    remove_file(sam_alignment_file)
 
     return [ unaligned_reads_file_fasta, reduced_aligned_reads_file ]
