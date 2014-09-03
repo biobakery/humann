@@ -386,7 +386,13 @@ def main():
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-        unaligned_reads_file_fasta, translated_alignment_file)
+        unaligned_reads_file_fasta, translated_alignment_file, alignments)
+
+    # Print out total alignments per bug
+    print "Total bugs after translated alignment: " + str(alignments.count_bugs())
+    alignments.print_bugs()
+
+    print "\nTotal gene families after translated alignment: " + str(alignments.count_genes())
 
     # Report reads unaligned
     print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(

@@ -106,7 +106,7 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
     while line:
         # ignore headers ^@ 
         if not re.search("^@",line):
-            info=line.split("\t")
+            info=line.split(config.sam_delimiter)
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 file_handle_write_unaligned.write(">"+
@@ -114,7 +114,10 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
             else:
                 # convert the e-value from global to local
-                evalue=math.pow(10.0, float(info[config.sam_mapq_index])/-10.0)
+                try:
+                    evalue=math.pow(10.0, float(info[config.sam_mapq_index])/-10.0)
+                except:
+                    evalue=1 
                 reference_info=info[config.sam_reference_index].split(
                     config.chocophlan_delimiter)
                 # identify bug and gene families

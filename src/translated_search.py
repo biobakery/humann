@@ -2,8 +2,8 @@
 Run alignment, find unused reads
 """
 
-import os, tempfile
-import utilities, config
+import os, tempfile, re
+import utilities, config, store
 
 def usearch_alignment(alignment_file,threads,identity_threshold,
         uniref, unaligned_reads_file_fastq):
@@ -106,20 +106,13 @@ def rapsearch_alignment(alignment_file,threads, uniref,
                 full_args+=["-o",temp_out_file]
 
                 utilities.execute_command(exe,full_args,[input_database],[],"","")
+        
         # merge the temp output files
-        exe="cat"
-
-        file_out, temp_merge_file=tempfile.mkstemp()
-        os.close(file_out)
-
-        utilities.execute_command(exe,temp_out_files,temp_out_files,[temp_merge_file],
-            temp_merge_file,"")
-
-        # reformat output file to fit blast6out format
-        utilities.ConvertRapsearch2ToBlastM8Format(temp_merge_file,alignment_file)
+        utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
+            alignment_file,"")
 
         # remove the temp files which have been merged
-        for temp_file in temp_out_files + [temp_merge_file]:
+        for temp_file in temp_out_files:
             utilities.remove_file(temp_file)
     else:
         print "Bypass"
@@ -157,20 +150,75 @@ def alignment(uniref, unaligned_reads_file_fasta, identity_threshold,
 
     return alignment_file
 
-def unaligned_reads(input_fastq, alignment_file):
+def unaligned_reads(input_fasta, alignment_file_tsv, alignments):
     """
-    Create a fasta/fastq file of the unaligned reads
+    Create a fasta file of the unaligned reads
+    Store the alignment results
     """
 
-    #determine the index to use for the fastq/fasta file
-    #use the same as that that was used by the user for the input file
-    original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
-    unaligned_reads_file_fastq= utilities.name_temp_file(
+    #create a fasta file of unaligned reads
+    unaligned_file_fasta= utilities.name_temp_file(
         "_" + config.translated_alignment_selected + 
-        config.translated_unaligned_reads_name_no_ext + original_extension)
+        config.translated_unaligned_reads_name_no_ext + 
+        config.fasta_extension)
+    
 
-    utilities.unaligned_reads_from_tsv(input_fastq, alignment_file, 
-        unaligned_reads_file_fastq)
+    utilities.file_exists_readable(input_fasta)
+    utilities.file_exists_readable(alignment_file_tsv)
 
-    return unaligned_reads_file_fastq
+    # read through the alignment file to identify ids
+    # that correspond to aligned reads
+    # all translated alignment files will be of the tabulated blast format
+    file_handle=open(alignment_file_tsv,"r")
+    line=file_handle.readline()
+
+    aligned_ids=[]
+    while line:
+        if not re.search("^#",line):
+            alignment_info=line.split(config.blast_delimiter)
+            queryid=alignment_info[config.blast_query_index]
+            referenceid=alignment_info[config.blast_reference_index]
+            identity=alignment_info[config.blast_identity_index]
+            aligned_length=alignment_info[config.blast_aligned_length_index]
+            evalue=alignment_info[config.blast_evalue_index]
+            if config.translated_alignment_selected == "rapsearch":
+                try:
+                    evalue=math.pow(10.0, float(evalue))
+                except:
+                    evalue=1 
+        
+            alignments.add(referenceid, queryid, evalue, identity, aligned_length,
+                           "unclassified")
+        
+            aligned_ids+=[queryid]
+        line=file_handle.readline()
+
+    file_handle.close()
+
+    # create unaligned file using list of aligned ids
+    file_handle_read=open(input_fasta,"r")
+    file_handle_write=open(unaligned_file_fasta,"w")
+
+    line=file_handle_read.readline()
+
+    print_flag=False
+    while line:
+        # check for id line
+        if re.search("^>",line):
+            id=line.strip(">"+"\n")
+
+            if not id in aligned_ids:
+                print_flag=True
+                file_handle_write.write(line)
+            else:
+                print_flag=False
+        else:
+            if print_flag:
+                file_handle_write.write(line)
+        line=file_handle_read.readline()
+
+    file_handle_write.close()
+    file_handle_read.close()
+
+    return unaligned_file_fasta
 

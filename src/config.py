@@ -67,6 +67,16 @@ sam_mapq_index=4
 sam_read_index=9
 sam_read_quality=10
 sam_unmapped_flag=0x4
+sam_delimiter="\t"
+
+#set the locations of data in a tabulated blast formatted file
+# all translated alignment files will be of the tabulated blast format
+blast_delimiter="\t"
+blast_query_index=0
+blast_reference_index=1
+blast_identity_index=2
+blast_aligned_length_index=3
+blast_evalue_index=10
 
 # usearch options
 usearch_database_extension=".udb"

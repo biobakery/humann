@@ -5,10 +5,6 @@ and file formats
 
 import os, sys, subprocess, re, shutil, tempfile
 import fileinput, urllib, tarfile
-import math
-from decimal import *
-import store
-
 import config
 
 def name_temp_file(file_name):
@@ -257,64 +253,6 @@ def estimate_unaligned_reads(input_fastq, unaligned_fastq):
 
     return str(percent)
 
-def unaligned_reads_from_tsv(input_fastq, alignment_file_tsv, unaligned_file_fastq):
-    """
-    Create a fasta/fastq file of the unaligned reads
-    """
-
-    # check input and output files
-    bypass=check_outfiles([unaligned_file_fastq])
-
-    if not bypass:
-        file_exists_readable(input_fastq)
-        file_exists_readable(alignment_file_tsv)
-
-        # read through the alignment file to identify ids
-        # that correspond to aligned reads
-
-        file_handle=open(alignment_file_tsv,"r")
-
-        line=file_handle.readline()
-
-        aligned_ids=[]
-        while line:
-            # expected format has the query ids in column 1
-            aligned_ids+=[line.split("\t")[0]]
-            line=file_handle.readline()
-
-        file_handle.close()
-
-        # create unaligned file using list of aligned ids
-        file_handle_read=open(input_fastq,"r")
-        file_handle_write=open(unaligned_file_fastq,"w")
-
-        line=file_handle_read.readline()
-
-        fastq_type=fasta_or_fastq(input_fastq)
-
-        id_indicator="@"
-        if fastq_type == "fasta":
-            id_indicator=">"
-
-        print_flag=False
-        while line:
-            # check for id line which will start with "@" or ">"
-            if re.search("^"+id_indicator,line):
-                id=line.strip(id_indicator+"\n")
-
-                if not id in aligned_ids:
-                    print_flag=True
-                    file_handle_write.write(line)
-                else:
-                    print_flag=False
-            else:
-                if print_flag:
-                    file_handle_write.write(line)
-            line=file_handle_read.readline()
-
-        file_handle_write.close()
-        file_handle_read.close()
-
 def remove_directory(dir):
     """
     Remove directory if exists
@@ -405,78 +343,6 @@ def fastq_to_fasta(file):
     os.close(file_out)	
     file_handle_read.close()
 
-    return new_file
-
-	
-#********************************************************************************************
-#*   ConvertRapsearch2ToBlastM8Format                                                       *
-#*  <<------------------------------------------------------------------------------->>     *    
-#*  The following three subroutines:                                                        *
-#*  1.  SciStr                                                                              *
-#*  2. ProcessRecord(InputLine)                                                             *
-#*  3. ConvertRapsearch2ToBlastM8Format(InputFileName,OutputFileName)                       *
-#*  Work together.                                                                          *
-#*  Their purpose is to take the output of rapsearch2 and convert it to blast m8 format     *
-#*  Only two items are modified: rapsearch2 returns log of eValue so we convert it to       *
-#*     eValue by calculating 10^^(log(eValue)) and formatting it to a string that contains  *
-#*     its value in Scientific format                                                       *  
-#*                                                                                          *
-#*  The subroutines are invoked as follows:                                                 *
-#*  RC = ConvertRapsearch2ToBlastM8Format(InputFileName,OutputFileName)                     *
-#*  Where:                                                                                  *
-#*  InputFileName = Rapsearch2 output file name  (Input to these modules)                   *   
-#*  OutputFileName = Output of these modules:  Compatible to Blast m8 format                *
-#*                                                                                          *
-#*  If the conversion of the log(eValue) fails - we post spaces for that field              *                                       
-#*                                                                                          *
-#********************************************************************************************
-
-
-#********************************************************************************************
-#*    Convert eValue into a scientific string to comply with blast m8 format                *    
-#*    the routine to convert rapsearch2 file format to blast m8 format                      *
-#******************************************************************************************** 
-def SciStr(dec):
-	ScientificString = '%.1E' % Decimal(math.pow(10, dec))
-	return  ScientificString 
- 
-#********************************************************************************************
-#*    Process the Input Record - this is part of                                            *    
-#*    the routine to convert rapsearch2 file format to blast m8 format                      *
-#******************************************************************************************** 
-def ProcessRecord(InputLine):
-	SplitLine = InputLine.split('\t')
- 
-	try:
-		SplitLine[10]  =  SciStr(float(SplitLine[10]))	#Convert the eValue into Scientific format
-	except:
-		SplitLine[10] = " "								#If it did not convert - set up to space
-	ProcessedRecord =  '\t'.join(SplitLine)				#Rebuild the record
-	return ProcessedRecord   
-	
-#********************************************************************************************
-#*    Routine to convert rapsearch2 file format to blast m8 format                          *
-#********************************************************************************************
-def  ConvertRapsearch2ToBlastM8Format(	InputFileName,OutputFileName):
-	OutputFile = open(OutputFileName,'w')
-	
-	for InputLine in fileinput.input(InputFileName):
-		if  InputLine.startswith('#'):			# If it is one of the header lines
-			if  InputLine.startswith('# Fields: Query'):    # If the record starts with #Fields 
-				InputLine = InputLine.replace("log(e-value)", "e-value", 1)   #  Replace log(eValue) with eValue 
-			OutputFile.write(InputLine) 		#     just write it
-		else:
-			ProcessedRecord = ProcessRecord(InputLine)	# Process the Input Record
-			OutputFile.write(ProcessedRecord ) 	 		#    and write it
-
-	OutputFile.close() 						# Finished - close the output file
-	return 0
-	
-
-#********************************************************************************************
-#*   End of ConvertRapsearch2ToBlastM8Format Subroutines                                    *
-#*  <<------------------------------------------------------------------------------->>     *    
-#********************************************************************************************		
-		
+    return new_file	
 		
 		
