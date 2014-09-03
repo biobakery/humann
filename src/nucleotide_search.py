@@ -117,7 +117,7 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 try:
                     evalue=math.pow(10.0, float(info[config.sam_mapq_index])/-10.0)
                 except:
-                    evalue=1 
+                    evalue=1.0 
                 reference_info=info[config.sam_reference_index].split(
                     config.chocophlan_delimiter)
                 # identify bug and gene families

@@ -67,6 +67,13 @@ class alignments:
         
         return self.genes.keys()
     
+    def bug_list(self):
+        """
+        Return a list of all of the bugs
+        """
+        
+        return self.bugs.keys()
+    
     def hits_for_gene(self,gene):
         """
         Return the alignments for the selected gene
@@ -78,6 +85,17 @@ class alignments:
             
         return hit_list
     
+    def hits_for_bug(self,bug):
+        """
+        Return the alignments for the selected bug
+        """
+        
+        hit_list=[]        
+        for index in self.bugs[bug]:
+            hit_list.append(self.hits[index])
+            
+        return hit_list
+       
     def find_index(self,item):
         """
         Return the index number to the item in a hit

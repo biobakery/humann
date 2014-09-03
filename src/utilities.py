@@ -31,6 +31,12 @@ def add_exe_to_path(exe_dir):
     Add path to executable to $PATH
     """
     os.environ["PATH"] += os.pathsep + exe_dir	
+    
+def add_directory_to_pythonpath(exe_dir):
+    """ 
+    Add path to module directory to $PYTHONPATH
+    """
+    sys.path.append(exe_dir)  
 
 def find_exe_in_path(exe):
     """

@@ -292,11 +292,12 @@ def main():
     if args.rapsearch:
         utilities.add_exe_to_path(args.rapsearch)
 
-    # Add the location of the humann1 scripts to the path
+    # Add the location of the humann1 scripts to the path and python path
     humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
     config.humann1_scripts=os.path.join(humann2_fullpath,
         config.humann1_scripts)
     utilities.add_exe_to_path(config.humann1_scripts)
+    utilities.add_directory_to_pythonpath(config.humann1_scripts)
 
     # Update data directory to full path
     config.data_folder=os.path.join(humann2_fullpath,
@@ -401,11 +402,11 @@ def main():
     # Compute the gene families
     families_file=quantify_families.gene_families(alignments)
     
-    # Identify the hits from the alignments
-    hits_file=quantify_families.hits(reduced_aligned_reads_file, translated_alignment_file)
+    # Create hits files by bug
+    hits_files=quantify_modules.pickled_hits(alignments)
 
     # Identify the reactions from the hits
-    reactions_file=quantify_modules.reactions(hits_file)
+    reactions_file=quantify_modules.reactions(hits_files)
 
     # Identify pathways
     pathways_file=quantify_modules.pathways(reactions_file)

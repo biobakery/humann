@@ -1,13 +1,58 @@
 """ 
 Generate pathway coverage and abundance
 """
-import os
-import utilities, config, shutil, tempfile
+import os, shutil, tempfile
+import utilities, config, store
+import hits
 
-def reactions(hits_file):
+def pickled_hits(alignments):
+    """
+    Create pickled hits files by bug
+    Also create a file of all of the hits
+    """
+    hits_files={}
+    
+    file_all_out, all_file=tempfile.mkstemp()
+    os.close(file_all_out)
+    hits_files["all"]=all_file
+    pHits_all = hits.CHits()
+    
+    for bug in alignments.bug_list():
+        file_out, new_file=tempfile.mkstemp()
+        os.close(file_out)
+        hits_files[bug]=new_file
+        
+        # create a new pickled hits instance
+        pHits = hits.CHits()
+        reference_index=alignments.find_index("reference")
+        query_index=alignments.find_index("query")
+        evalue_index=alignments.find_index("evalue")
+        identity_index=alignments.find_index("identity")
+        coverage_index=alignments.find_index("coverage")
+        
+        for hit in alignments.hits_for_bug(bug):
+            pHits.add(hit[reference_index],hit[query_index],
+                hit[evalue_index],hit[identity_index],hit[coverage_index])
+            pHits_all.add(hit[reference_index],hit[query_index],
+                hit[evalue_index],hit[identity_index],hit[coverage_index])
+            
+        file_handle=open(new_file,"w")
+        pHits.save(file_handle)
+        file_handle.close()
+    
+    file_handle=open(all_file,"w")
+    pHits_all.save(file_handle)
+    file_handle.close()
+        
+    return hits_files
+
+def reactions(hits_files):
     """
     Identify the reactions from the hits found
     """
+    
+    # Just run on the all file for now
+    hits_file=hits_files["all"]
 
     reactions_file=utilities.name_temp_file(
         config.reactions_name)
@@ -18,6 +63,10 @@ def reactions(hits_file):
         config.humann1_script_hits_to_reactions,
         [gene_to_reactions],[hits_file],[],
         reactions_file, hits_file)
+
+    # Remove the temp pickled hits files
+    for file in hits_files:
+        utilities.remove_file(hits_files[file])
 
     return reactions_file
 

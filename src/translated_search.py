@@ -2,7 +2,7 @@
 Run alignment, find unused reads
 """
 
-import os, tempfile, re
+import os, tempfile, re, numbers
 import utilities, config, store
 
 def usearch_alignment(alignment_file,threads,identity_threshold,
@@ -178,14 +178,17 @@ def unaligned_reads(input_fasta, alignment_file_tsv, alignments):
             alignment_info=line.split(config.blast_delimiter)
             queryid=alignment_info[config.blast_query_index]
             referenceid=alignment_info[config.blast_reference_index]
-            identity=alignment_info[config.blast_identity_index]
-            aligned_length=alignment_info[config.blast_aligned_length_index]
+            identity=float(alignment_info[config.blast_identity_index])
+            aligned_length=int(alignment_info[config.blast_aligned_length_index])
             evalue=alignment_info[config.blast_evalue_index]
             if config.translated_alignment_selected == "rapsearch":
                 try:
                     evalue=math.pow(10.0, float(evalue))
                 except:
-                    evalue=1 
+                    evalue=1.0 
+            else:
+                if not isinstance(evalue, numbers.Number):
+                    evalue=1.0
         
             alignments.add(referenceid, queryid, evalue, identity, aligned_length,
                            "unclassified")
