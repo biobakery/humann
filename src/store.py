@@ -7,13 +7,14 @@ class alignments:
         self.hits=[]
         self.bugs={}
         self.genes={}
+        self.hit_index=["bug","reference","query","evalue","identity","coverage"]
         
     def add(self, reference, query, evalue, identity, coverage, bug): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
         """
-        self.hits.append([reference, query, evalue, identity, coverage]) 
+        self.hits.append([bug, reference, query, evalue, identity, coverage]) 
         
         index=len(self.hits)-1
         if bug in self.bugs:
@@ -58,4 +59,28 @@ class alignments:
         """
         for hit in self.hits:
             print ",".join(str(item) for item in hit)
-
+            
+    def gene_list(self):
+        """
+        Return a list of all of the gene families
+        """
+        
+        return self.genes.keys()
+    
+    def hits_for_gene(self,gene):
+        """
+        Return the alignments for the selected gene
+        """
+        
+        hit_list=[]        
+        for index in self.genes[gene]:
+            hit_list.append(self.hits[index])
+            
+        return hit_list
+    
+    def find_index(self,item):
+        """
+        Return the index number to the item in a hit
+        """
+        
+        return self.hit_index.index(item)

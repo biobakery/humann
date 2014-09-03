@@ -398,11 +398,11 @@ def main():
     print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
         args.input, translated_unaligned_reads_file_fastq) + "%\n"  
 
+    # Compute the gene families
+    families_file=quantify_families.gene_families(alignments)
+    
     # Identify the hits from the alignments
     hits_file=quantify_families.hits(reduced_aligned_reads_file, translated_alignment_file)
-
-    # Compute the gene families
-    families_file=quantify_families.gene_families(hits_file)
 
     # Identify the reactions from the hits
     reactions_file=quantify_modules.reactions(hits_file)
@@ -413,7 +413,9 @@ def main():
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(pathways_file)
 
-    #print "Output written to: " + ",".join([families_file,abundance_file,coverage_file]) + "\n"
+    output_files=[families_file]
+    #output_files=[families_file,abundance_file,coverage_file]
+    print "Output files created: \n" + "\n".join(output_files) + "\n"
 
     # Remove temp directory
     if not args.temp:
