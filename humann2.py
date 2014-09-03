@@ -406,10 +406,10 @@ def main():
     hits_files=quantify_modules.pickled_hits(alignments)
 
     # Identify the reactions from the hits
-    reactions_file=quantify_modules.reactions(hits_files)
+    reactions_files=quantify_modules.reactions(args.threads, hits_files)
 
     # Identify pathways
-    pathways_file=quantify_modules.pathways(reactions_file)
+    pathways_file=quantify_modules.pathways(args.threads, reactions_files)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(pathways_file)

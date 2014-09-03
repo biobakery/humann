@@ -19,9 +19,6 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
     args=["-id",identity_threshold]
 
-    if threads > 1:
-        args+=["-threads",threads]
-
     print "\nRunning muliple " + exe + " ........\n"
 
     if not bypass:
@@ -42,6 +39,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
        #run the search on each of the databases in the directory
         temp_out_files=[]
+        command_args=[]
         for input_file in temp_in_files:
             for database in os.listdir(uniref):
                 input_database=os.path.join(uniref,database)
@@ -54,7 +52,9 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
                 full_args+=["-blast6out",temp_out_file]
 
-                utilities.execute_command(exe,full_args,[input_database],[],"","")
+                command_args.append([exe,full_args,[input_database],[],"",""])
+                
+        utilities.command_multiprocessing(threads,command_args)
 
         # merge the temp output files
         exe="cat"

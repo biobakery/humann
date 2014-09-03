@@ -46,34 +46,46 @@ def pickled_hits(alignments):
         
     return hits_files
 
-def reactions(hits_files):
+def reactions(threads, hits_files):
     """
     Identify the reactions from the hits found
     """
     
-    # Just run on the all file for now
-    hits_file=hits_files["all"]
-
-    reactions_file=utilities.name_temp_file(
-        config.reactions_name)
-
     gene_to_reactions=os.path.join(config.data_folder,
         config.metacyc_gene_to_reactions)
-    utilities.execute_command(
-        config.humann1_script_hits_to_reactions,
+    
+    reactions_files={}
+    # Set up a command to run through each of the hits files
+    commands=[]
+    for hit in hits_files:
+        
+        hits_file=hits_files[hit]
+        
+        # Create a temp file for the reactions results
+        file_out, reactions_file=tempfile.mkstemp()
+        os.close(file_out)
+
+        reactions_files[hit]=reactions_file
+
+        commands.append([config.humann1_script_hits_to_reactions,
         [gene_to_reactions],[hits_file],[],
-        reactions_file, hits_file)
+        reactions_file, hits_file])
+    
+    utilities.command_multiprocessing(threads, commands)
 
     # Remove the temp pickled hits files
     for file in hits_files:
         utilities.remove_file(hits_files[file])
 
-    return reactions_file
+    return reactions_files
 
-def pathways(reactions_file):
+def pathways(threads, reactions_files):
     """
     Compute the pathways for the reactions found
     """
+
+    # Just run the all reactions for now
+    reactions_file=reactions_files["all"]
 
     # Download the minpath software v1.2
     # Check to see if already downloaded
@@ -100,6 +112,10 @@ def pathways(reactions_file):
         config.humann1_script_enzymes_to_pathways,
         [minpath_exe,metacyc_datafile],[reactions_file],[],
         pathways_file, reactions_file)
+
+    # Remove the temp reactions files
+    for file in reactions_files:
+        utilities.remove_file(reactions_files[file])
 
     return pathways_file
 

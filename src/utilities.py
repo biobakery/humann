@@ -4,7 +4,7 @@ and file formats
 """
 
 import os, sys, subprocess, re, shutil, tempfile
-import fileinput, urllib, tarfile
+import fileinput, urllib, tarfile, multiprocessing
 import config
 
 def name_temp_file(file_name):
@@ -124,6 +124,21 @@ def check_outfiles(outfiles):
         return False
     else:
         return True
+
+def command_multiprocessing(threads, args):
+    """
+    Execute command in parallel, maximum of threads total
+    """
+    
+    pool=multiprocessing.Pool(threads)
+    results=pool.map(execute_command_args_convert, args)
+    
+def execute_command_args_convert(args):
+    """
+    Convert the list of args to function arguments
+    """
+    
+    return execute_command(*args)
 
 def execute_command(exe, args, infiles, outfiles, stdout_file, stdin_file):
     """

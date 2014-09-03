@@ -32,7 +32,6 @@ nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
 
-reactions_name="_reactions.tsv"
 pathways_minpath="_pathways.tsv"
 
 pathabundance_file="_pathabundance.tsv"
