@@ -94,7 +94,6 @@ rapsearch_opts=["-v",-1]
 
 # humann1 scripts
 humann1_scripts="src/humann1/"
-humann1_script_hits_to_reactions="hits2metacyc.py"
 humann1_script_minpath="MinPath1.2hmp.py"
 humann1_script_enzymes_to_pathways="enzymes2pathways_mp.py"
 
