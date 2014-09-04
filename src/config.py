@@ -102,6 +102,7 @@ humann1_script_enzymes_to_pathways="enzymes2pathways_mp.py"
 data_folder="data/"
 metacyc_gene_to_reactions="mcc_with_Uniref_Identifiers"
 metacyc_reactions_to_pathways="mcpc"
+reactions_database_delimiter=" "
 
 # MinPath
 minpath_file="minpath1.2.tar.gz"

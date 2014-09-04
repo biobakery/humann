@@ -1,6 +1,9 @@
 """
 Stores the alignments identified
+Stores the reactions from the database selected
 """
+
+import config
 
 class alignments:
     def __init__(self):
@@ -89,10 +92,12 @@ class alignments:
         """
         Return the alignments for the selected bug
         """
-        
-        hit_list=[]        
-        for index in self.bugs[bug]:
-            hit_list.append(self.hits[index])
+        if bug=="all":
+            hit_list=self.hits
+        else:
+            hit_list=[]        
+            for index in self.bugs[bug]:
+                hit_list.append(self.hits[index])
             
         return hit_list
        
@@ -102,3 +107,89 @@ class alignments:
         """
         
         return self.hit_index.index(item)
+    
+class reactions_database:
+    def __init__(self, database):
+        """
+        Load in the reactions data from the database
+        """
+        self.reactions_to_genes={}
+        self.genes_to_reactions={}
+         
+        file_handle=open(database,"r")
+         
+        line=file_handle.readline()
+         
+        # database is expected to contain a single line per reaction
+        # this line begins with the reaction name and ec number and is followed 
+        # by all genes associated with the reaction
+         
+        while line:
+            data=line.rstrip().split(config.reactions_database_delimiter)
+            if len(data)>2:
+                reaction=data.pop(0)
+                ec_number=data.pop(0)
+             
+                # store the data
+                self.reactions_to_genes[reaction]=data
+             
+                for gene in data:
+                    if gene in self.genes_to_reactions:
+                        self.genes_to_reactions[gene]+=[reaction]
+                    else:
+                        self.genes_to_reactions[gene]=[reaction]    
+             
+            line=file_handle.readline()
+        
+        file_handle.close()
+        
+    def find_reactions(self,gene):
+        """
+        Return the list of reactions associated with the gene
+        """
+        
+        list=[]
+        if self.gene_present(gene):
+            list=self.genes_to_reactions[gene]
+            
+        return list
+    
+    def find_genes(self,reaction):
+        """
+        Return the list of genes associated with the reaction
+        """
+        
+        list=[]
+        if self.reaction_present(reaction):
+            list=self.reactions_to_genes[reaction]
+    
+        return list
+    
+    def gene_present(self, gene):
+        """
+        Return true if gene is part of database
+        """
+        
+        found=False
+        if gene in self.genes_to_reactions.keys():
+            found=True
+        
+        return found
+    
+    def reaction_present(self, reaction):
+        """
+        Return true if reaction is part of database
+        """
+        
+        found=False
+        if reaction in self.reactions_to_genes.keys():
+            found=True
+        
+        return found
+         
+    def list_reactions(self):
+        """
+        Return the list of all the reactions in the database
+        """
+           
+        return self.reactions_to_genes.keys()

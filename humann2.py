@@ -401,12 +401,9 @@ def main():
 
     # Compute the gene families
     families_file=quantify_families.gene_families(alignments)
-    
-    # Create hits files by bug
-    hits_files=quantify_modules.pickled_hits(alignments)
 
     # Identify the reactions from the hits
-    reactions_files=quantify_modules.reactions(args.threads, hits_files)
+    reactions_files=quantify_modules.reactions(args.threads, alignments)
 
     # Identify pathways
     pathways_file=quantify_modules.pathways(args.threads, reactions_files)
