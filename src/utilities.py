@@ -125,13 +125,17 @@ def check_outfiles(outfiles):
     else:
         return True
 
-def command_multiprocessing(threads, args):
+def command_multiprocessing(threads, args, function=None):
     """
     Execute command in parallel, maximum of threads total
     """
     
     pool=multiprocessing.Pool(threads)
-    results=pool.map(execute_command_args_convert, args)
+    
+    if function:
+        results=pool.map(function, args)
+    else:
+        results=pool.map(execute_command_args_convert, args)
     
 def execute_command_args_convert(args):
     """
@@ -140,7 +144,7 @@ def execute_command_args_convert(args):
     
     return execute_command(*args)
 
-def execute_command(exe, args, infiles, outfiles, stdout_file, stdin_file):
+def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=None):
     """
     Execute third party software or shell command with files
     """

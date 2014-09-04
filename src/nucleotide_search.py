@@ -30,7 +30,7 @@ def index(custom_database):
 
     args+=opts
     
-    utilities.execute_command(exe,args,[custom_database],outfiles,"","")
+    utilities.execute_command(exe,args,[custom_database],outfiles)
 
     return index_name
 
@@ -68,7 +68,7 @@ def alignment(user_fastq, threads, index_name):
     
     args+=opts
 
-    utilities.execute_command(exe,args,[user_fastq],[alignment_file],"","")
+    utilities.execute_command(exe,args,[user_fastq],[alignment_file])
 
     return alignment_file
 

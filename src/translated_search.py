@@ -60,7 +60,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
         exe="cat"
 
         utilities.execute_command(exe,temp_out_files,temp_out_files,[alignment_file],
-            alignment_file,"")
+            alignment_file)
 
         # remove the temp files which have been merged
         for temp_file in temp_fasta_files + temp_in_files + temp_out_files:
@@ -105,11 +105,11 @@ def rapsearch_alignment(alignment_file,threads, uniref,
 
                 full_args+=["-o",temp_out_file]
 
-                utilities.execute_command(exe,full_args,[input_database],[],"","")
+                utilities.execute_command(exe,full_args,[input_database],[])
         
         # merge the temp output files
         utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
-            alignment_file,"")
+            alignment_file)
 
         # remove the temp files which have been merged
         for temp_file in temp_out_files:
