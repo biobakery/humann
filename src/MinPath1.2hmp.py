@@ -17,13 +17,16 @@ import re
 import operator
 import math
 
-minpath = os.environ.get('MinPath')
-path0 = "/home/yye/Pathways/MinPath"
-if minpath or os.path.exists(path0):
-        if os.path.exists(path0):
-                minpath = path0
-else:
-        sys.exit("Environment variable MinPath not set")
+# Add location to minpath directory
+minpath=os.path.dirname(os.path.realpath(__file__))
+
+#minpath = os.environ.get('MinPath')
+#path0 = "/home/yye/Pathways/MinPath"
+#if minpath or os.path.exists(path0):
+#        if os.path.exists(path0):
+#                minpath = path0
+#else:
+#        sys.exit("Environment variable MinPath not set")
 
 keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4.6/examples/glpsol"
 

@@ -92,11 +92,6 @@ usearch_opts=[]
 rapsearch_database_extension=".info"
 rapsearch_opts=["-v",-1]
 
-# humann1 scripts
-humann1_scripts="src/humann1/"
-humann1_script_minpath="MinPath1.2hmp.py"
-humann1_script_enzymes_to_pathways="enzymes2pathways_mp.py"
-
 # data files
 data_folder="data/"
 metacyc_gene_to_reactions="mcc_with_Uniref_Identifiers"
@@ -108,3 +103,7 @@ minpath_file="minpath1.2.tar.gz"
 minpath_url=("http://omics.informatics.indiana.edu/mg/get.php?" + 
     "justdoit=yes&software=" + minpath_file)
 minpath_folder="MinPath"
+minpath_reaction_index=0
+minpath_pathway_index=7
+minpath_pathway_delimiter=" "
+minpath_update_script="MinPath1.2hmp.py"

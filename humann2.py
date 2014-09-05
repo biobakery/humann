@@ -292,14 +292,8 @@ def main():
     if args.rapsearch:
         utilities.add_exe_to_path(args.rapsearch)
 
-    # Add the location of the humann1 scripts to the path and python path
-    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
-    config.humann1_scripts=os.path.join(humann2_fullpath,
-        config.humann1_scripts)
-    utilities.add_exe_to_path(config.humann1_scripts)
-    utilities.add_directory_to_pythonpath(config.humann1_scripts)
-
     # Update data directory to full path
+    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
     config.data_folder=os.path.join(humann2_fullpath,
         config.data_folder)
 	

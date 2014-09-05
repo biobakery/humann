@@ -1,7 +1,7 @@
 """ 
 Generate pathway coverage and abundance
 """
-import os, shutil, tempfile, math
+import os, shutil, tempfile, math, re
 import utilities, config, store
 
 def reactions_by_bug(args):
@@ -104,21 +104,19 @@ def pathways(threads, reactions_files):
     Compute the pathways for the reactions found
     """
 
-    # Just run the all reactions for now
-    reactions_file=reactions_files["all"]
-
     # Download the minpath software v1.2
     # Check to see if already downloaded
     minpath_exe=os.path.join(config.data_folder,config.minpath_folder,
-        config.humann1_script_minpath)
+        config.minpath_update_script)
 
     if not os.path.isfile(minpath_exe):
         utilities.download_tar_and_extract(config.minpath_url, 
             os.path.join(config.data_folder, config.minpath_file))
 
         # Copy the updated executable
-        shutil.copy(os.path.join(config.humann1_scripts,
-            config.humann1_script_minpath), os.path.join(config.data_folder,
+        fullpath_scripts=os.path.dirname(os.path.realpath(__file__))
+        shutil.copy(os.path.join(fullpath_scripts,
+            config.minpath_update_script), os.path.join(config.data_folder,
             config.minpath_folder))
 
     metacyc_datafile=os.path.join(config.data_folder,
@@ -128,14 +126,69 @@ def pathways(threads, reactions_files):
         config.pathways_minpath)
 
     # Identify pathways
-    utilities.execute_command(
-        config.humann1_script_enzymes_to_pathways,
-        [minpath_exe,metacyc_datafile],[reactions_file],[],
-        pathways_file, reactions_file)
+    
+    # Just run the "all reactions" for now
+    reactions_file=reactions_files["all"]
+    
+    # Create a temp file for the results
+    file_out, tmpfile=tempfile.mkstemp()
+    os.close(file_out)
+    
+    minpath_args=["-any", reactions_file, "-map", metacyc_datafile,
+        "-report", "/dev/null", "-details", tmpfile]
+      
+    utilities.execute_command(minpath_exe, minpath_args, [reactions_file],
+        [tmpfile],"/dev/null")
+
+    # Process the minpath results
+    file_handle_read=open(tmpfile, "r")
+    file_handle_write=open(pathways_file, "w")
+    
+    line=file_handle_read.readline()
+    
+    pathways_store={}
+    while line:
+        data=line.strip().split(config.minpath_pathway_delimiter)
+        if re.search("^path",line):
+            current_pathway=data[config.minpath_pathway_index]
+        else:
+            current_reaction=data[config.minpath_reaction_index]
+            # store the pathway and reaction
+            pathways_store[current_reaction]=pathways_store.get(
+                current_reaction,[]) + [current_pathway]      
+        line=file_handle_read.readline()
+
+    file_handle_read.close()
+    
+    # Read in the reactions abundance data
+    file_handle_read=open(reactions_file,"r")
+    
+    line=file_handle_read.readline()
+    
+    reactions_store={}
+    while line:
+        current_reaction, current_abundance=line.rstrip("\n").split(
+            config.output_file_column_delimiter)
+        reactions_store[current_reaction]=current_abundance
+        line=file_handle_read.readline()
+    
+    file_handle_read.close()
+    
+    # Write the pathway abundance for each reaction
+    for current_reaction in reactions_store:
+        # Find the pathways associated with reaction
+        for current_pathway in pathways_store.get(current_reaction,[""]):
+            new_line=config.output_file_column_delimiter.join([current_reaction,
+                current_pathway, reactions_store[current_reaction],"\n"])
+            file_handle_write.write(new_line)
+    file_handle_write.close()
 
     # Remove the temp reactions files
-    for file in reactions_files:
-        utilities.remove_file(reactions_files[file])
+    #for file in reactions_files:
+    #    utilities.remove_file(reactions_files[file])
+
+    # Remove the temp pathways files
+    #utilities.remove_file(tmpfile)
 
     return pathways_file
 
