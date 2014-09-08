@@ -32,8 +32,6 @@ nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
 
-pathways_minpath="_pathways.tsv"
-
 pathabundance_file="_pathabundance.tsv"
 pathcoverage_file="_pathcoverage.tsv"
 genefamilies_file="_genefamilies.tsv"
@@ -103,7 +101,8 @@ minpath_file="minpath1.2.tar.gz"
 minpath_url=("http://omics.informatics.indiana.edu/mg/get.php?" + 
     "justdoit=yes&software=" + minpath_file)
 minpath_folder="MinPath"
+minpath_script="MinPath1.2.py"
 minpath_reaction_index=0
 minpath_pathway_index=7
 minpath_pathway_delimiter=" "
-minpath_update_script="MinPath1.2hmp.py"
+minpath_update_script="MinPath12hmp.py"

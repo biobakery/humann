@@ -74,7 +74,7 @@ def check_software_version(exe,version_flag,
         sys.exit("Error: Please update " + exe + " from version " +
             p_out.rstrip('\n') + " to version " + version_required )
 
-def download_tar_and_extract(url, filename):
+def download_tar_and_extract(url, filename, folder):
     """
     Download the file at the url
     """
@@ -86,7 +86,7 @@ def download_tar_and_extract(url, filename):
     if config.verbose:
         print "Extracting:" + filename
     tarfile_handle=tarfile.open(filename,'r:gz')
-    tarfile_handle.extractall(path=config.data_folder)
+    tarfile_handle.extractall(path=folder)
 
 def remove_file(file):
     """

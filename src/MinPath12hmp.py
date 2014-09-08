@@ -17,9 +17,11 @@ import re
 import operator
 import math
 
-# Add location to minpath directory
-minpath=os.path.dirname(os.path.realpath(__file__))
+# LJM Add location to minpath directory
+import config, subprocess
+minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),config.minpath_folder)
 
+# LJM Remove search for minpath directory
 #minpath = os.environ.get('MinPath')
 #path0 = "/home/yye/Pathways/MinPath"
 #if minpath or os.path.exists(path0):
@@ -533,10 +535,15 @@ class MinPath:
 		if glpsol == "":
 			glpsol = glpsol0
 		lpout = mpsfile + ".LPout"
-		command = glpsol + " " + mpsfile + " -o " + lpout
-		print "now run command = %s" % command
-		os.system(command)
-
+		# LJM change to subprocess call
+		# command = glpsol + " " + mpsfile + " -o " + lpout
+		command = [glpsol,mpsfile,"-o",lpout]
+		#print "now run command = %s" % command
+		#os.system(command)
+		try:
+			subprocess_output=subprocess.check_output(command)
+		except:
+			raise
 		# check the result
 		self.GetLPOut(lpout)
 
