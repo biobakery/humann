@@ -95,6 +95,8 @@ data_folder="data/"
 metacyc_gene_to_reactions="mcc_with_Uniref_Identifiers"
 metacyc_reactions_to_pathways="mcpc"
 reactions_database_delimiter=" "
+pathways_database_delimiter="\t"
+pathway_identifier="PWY"
 
 # MinPath
 minpath_file="minpath1.2.tar.gz"

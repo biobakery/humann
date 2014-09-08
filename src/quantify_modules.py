@@ -202,6 +202,10 @@ def pathways_abundance_and_coverage(pathways_files):
     Compute the abundance and coverage of the pathways
     """
 
+    # Load in the pathways database
+    pathways_database=store.pathways_database(os.path.join(config.data_folder,
+        config.metacyc_reactions_to_pathways))
+
     # Compute abundance
     utilities.execute_command(
         "cat",[],[pathways_files["all"]],[],
