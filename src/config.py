@@ -92,8 +92,8 @@ rapsearch_opts=["-v",-1]
 
 # data files
 data_folder="data/"
-metacyc_gene_to_reactions="mcc_with_Uniref_Identifiers"
-metacyc_reactions_to_pathways="mcpc"
+metacyc_gene_to_reactions="metacyc_reactions.uniref"
+metacyc_reactions_to_pathways="metacyc_pathways"
 reactions_database_delimiter=" "
 pathways_database_delimiter="\t"
 pathway_identifier="PWY"
