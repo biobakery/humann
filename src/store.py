@@ -262,5 +262,12 @@ class pathways_database:
                 
                 self.pathways_to_reactions[pathway]=self.pathways_to_reactions.get(
                     pathway,[]) + reaction
+    
+    def find_reactions(self,pathway):
+        """
+        Return the list of reactions associated with the pathway
+        """
+         
+        return self.pathways_to_reactions.get(pathway, [])
                     
                 

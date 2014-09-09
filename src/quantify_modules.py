@@ -205,11 +205,49 @@ def pathways_abundance_and_coverage(pathways_files):
     # Load in the pathways database
     pathways_database=store.pathways_database(os.path.join(config.data_folder,
         config.metacyc_reactions_to_pathways))
-
+    
     # Compute abundance
-    utilities.execute_command(
-        "cat",[],[pathways_files["all"]],[],
-        config.pathabundance_file, pathways_files["all"])
+    # For now just run on the all file
+    file=pathways_files["all"]
+    
+    file_handle=open(file,"r")
+    
+    pathways_reactions_scores={}
+    for line in file_handle:
+        data=line.strip().split(config.output_file_column_delimiter)
+        if len(data) == 3:
+            reaction, pathway, score = data
+            
+            # Bypass lines where the pathway is not listed
+            if len(pathway) > 0:
+                if pathway in pathways_reactions_scores:
+                    pathways_reactions_scores[pathway][reaction]=float(score)
+                else:
+                    pathways_reactions_scores[pathway]={ reaction : float(score) }        
+    file_handle.close()
+
+    # Open output file
+    file_handle=open(config.pathabundance_file,"w")
+
+    # Process through each pathway to compute abundance
+    for pathway, reaction_scores in pathways_reactions_scores.items():
+        
+        # Initialize any reactions in the pathway not found to 0
+        for reaction in pathways_database.find_reactions(pathway):
+            reaction_scores.setdefault(reaction, 0)
+            
+        # Sort the scores for all of the reactions in the pathway from low to high
+        sorted_reaction_scores=sorted(reaction_scores.values())
+            
+        # Select the second half of the list of reaction scores
+        abundance_set=sorted_reaction_scores[(len(sorted_reaction_scores)/ 2):]
+        
+        # Compute abundance
+        abundance=sum(abundance_set)/len(abundance_set)
+        
+        file_handle.write(config.output_file_column_delimiter.join([pathway,str(abundance)])+"\n")
+
+    file_handle.close()
 
     # Compute coverage 
     utilities.execute_command(
