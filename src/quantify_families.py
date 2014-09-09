@@ -22,10 +22,8 @@ def gene_families(alignments):
         
         # merge hits with the same bug
         hits_by_bug={}
-        index=alignments.find_index("bug")
         for hit in hit_list:
-            bug=hit[index]
-            
+            bug=hit.get_bug()          
             if bug in hits_by_bug:
                 hits_by_bug[bug]+=1
             else:

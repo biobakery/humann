@@ -69,21 +69,14 @@ def pathways_by_bug(args):
     
     file_handle=open(reactions_file,"w")
     
-    # Create alignments variable to identify indexes
-    alignments=store.alignments()
-    
-    query_index=alignments.find_index("query")
-    reference_index=alignments.find_index("reference")
-    evalue_index=alignments.find_index("evalue")
-    
     # Group hits by query
     hits_by_query={}
     
     for index, hit in enumerate(hits):
-        if hit[query_index] in hits_by_query:
-            hits_by_query[hit[query_index]]+=[index]
+        if hit.get_query() in hits_by_query:
+            hits_by_query[hit.get_query()]+=[index]
         else:
-            hits_by_query[hit[query_index]]=[index]
+            hits_by_query[hit.get_query()]=[index]
     
     if config.verbose:
         print "Total reads mapped to bug: " + str(len(hits_by_query))
@@ -96,9 +89,9 @@ def pathways_by_bug(args):
         total_score=0
         for index in hits_by_query[query]:
             hit=hits[index]
-            if reactions_database.gene_present(hit[reference_index]):
-                score=math.exp(-hit[evalue_index])
-                genes.append([hit[reference_index],score])
+            if reactions_database.gene_present(hit.get_reference()):
+                score=math.exp(-hit.get_evalue())
+                genes.append([hit.get_reference(),score])
                 total_score+=score
         # add these scores to the total gene scores
         for gene, score in genes:

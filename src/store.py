@@ -1,24 +1,48 @@
 """
 Stores the alignments identified
-Stores the reactions from the database selected
-Stores the pathways from the database selected
+Stores the genes/reactions from the database selected
+Stores the reactions/pathways from the database selected
 """
 import os, re
 import config
 
+class hit:
+    """
+    Holds one alignment/hit 
+    """
+    
+    def __init__(self, bug, reference, query, evalue, identity, coverage):
+        self.item=[bug, reference, query, evalue, identity, coverage]
+
+    def get_bug(self):
+        return self.item[0]
+        
+    def get_reference(self):
+        return self.item[1]
+    
+    def get_query(self):
+        return self.item[2]
+    
+    def get_evalue(self):
+        return self.item[3]
+
 class alignments:
+    """
+    Holds all of the alignments for all bugs
+    """
+    
     def __init__(self):
         self.hits=[]
         self.bugs={}
         self.genes={}
-        self.hit_index=["bug","reference","query","evalue","identity","coverage"]
         
     def add(self, reference, query, evalue, identity, coverage, bug): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
         """
-        self.hits.append([bug, reference, query, evalue, identity, coverage]) 
+        
+        self.hits.append(hit(bug, reference, query, evalue, identity, coverage)) 
         
         index=len(self.hits)-1
         if bug in self.bugs:
@@ -101,15 +125,12 @@ class alignments:
                 hit_list.append(self.hits[index])
             
         return hit_list
-       
-    def find_index(self,item):
-        """
-        Return the index number to the item in a hit
-        """
-        
-        return self.hit_index.index(item)
     
 class reactions_database:
+    """
+    Holds all of the genes/reactions data from the file provided
+    """
+    
     def __init__(self, database):
         """
         Load in the reactions data from the database
@@ -196,6 +217,10 @@ class reactions_database:
         return self.reactions_to_genes.keys()
     
 class pathways_database:
+    """
+    Holds all of the reactions/pathways data from the file provided
+    """
+    
     def is_pathway(self, item):
         """
         Determine if the item is a pathway or reaction
