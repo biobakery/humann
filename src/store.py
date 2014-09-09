@@ -1,8 +1,9 @@
 """
 Stores the alignments identified
 Stores the reactions from the database selected
+Stores the pathways from the database selected
 """
-
+import os, re
 import config
 
 class alignments:
@@ -193,3 +194,80 @@ class reactions_database:
         """
            
         return self.reactions_to_genes.keys()
+    
+class pathways_database:
+    def is_pathway(self, item):
+        """
+        Determine if the item is a pathway or reaction
+        """
+        
+        pathway=False
+        # identifier can be at the beginning or end of the string
+        if re.search("^"+config.pathway_identifier, 
+            item) or re.search(config.pathway_identifier+"$", item):
+            pathway=True
+        
+        return pathway    
+    
+    def return_reactions(self, pathway, reactions):
+        """
+        Search recursively to find the reactions associated with the given pathway
+        """
+        
+        reactions_for_pathway=[]
+        for item in reactions.get(pathway,[]):
+            # go through items to look for pathways to resolve
+            if self.is_pathway(item):
+                # find the reactions for the pathway
+                reactions_for_pathway+=self.return_reactions(item, reactions)
+            else:
+                reactions_for_pathway+=[item]
+                
+        return reactions_for_pathway
+
+    def __init__(self, database):
+        """
+        Load in the pathways data from the database
+        """
+        self.pathways_to_reactions={}
+        
+        file_handle=open(database,"r")
+         
+        line=file_handle.readline()
+         
+        # database is expected to contain a single line per pathway
+        # this line begins with the pathway name and is followed 
+        # by all reactions and/or pathways associated with the pathway
+         
+        reactions={}
+        while line:
+            data=line.rstrip().split(config.pathways_database_delimiter)
+            if len(data)>2:
+                pathway=data.pop(0)
+                reactions[pathway]=data
+                
+            line=file_handle.readline()
+        
+        file_handle.close()
+        
+        # process recursive pathways
+        for pathway in reactions:
+            for item in reactions[pathway]:
+                # go through items to look for pathways to resolve
+                reaction=[item]
+                # identifier can be at the start or the end of the item name
+                if self.is_pathway(item):
+                    # find the reactions for the pathway
+                    reaction=self.return_reactions(item, reactions)
+                
+                self.pathways_to_reactions[pathway]=self.pathways_to_reactions.get(
+                    pathway,[]) + reaction
+    
+    def find_reactions(self,pathway):
+        """
+        Return the list of reactions associated with the pathway
+        """
+         
+        return self.pathways_to_reactions.get(pathway, [])
+                    
+                

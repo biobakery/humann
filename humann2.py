@@ -396,17 +396,13 @@ def main():
     # Compute the gene families
     families_file=quantify_families.gene_families(alignments)
 
-    # Identify the reactions from the hits
-    reactions_files=quantify_modules.reactions(args.threads, alignments)
-
-    # Identify pathways
-    pathways_file=quantify_modules.pathways(args.threads, reactions_files)
+    # Identify reactions and then pathways from the alignments
+    pathways_files=quantify_modules.pathways(args.threads, alignments)
 
     # Compute pathway abundance and coverage
-    abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(pathways_file)
+    abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(pathways_files)
 
-    output_files=[families_file]
-    #output_files=[families_file,abundance_file,coverage_file]
+    output_files=[families_file,abundance_file,coverage_file]
     print "Output files created: \n" + "\n".join(output_files) + "\n"
 
     # Remove temp directory
