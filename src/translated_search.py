@@ -54,7 +54,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
                 command_args.append([exe,full_args,[input_database],[],"",""])
                 
-        utilities.command_multiprocessing(threads,command_args)
+        results=utilities.command_multiprocessing(threads,command_args)
 
         # merge the temp output files
         exe="cat"

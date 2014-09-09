@@ -130,6 +130,8 @@ def command_multiprocessing(threads, args, function=None):
         results=pool.map(function, args)
     else:
         results=pool.map(execute_command_args_convert, args)
+        
+    return results
     
 def execute_command_args_convert(args):
     """

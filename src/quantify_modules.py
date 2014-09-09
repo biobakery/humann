@@ -186,24 +186,20 @@ def pathways(threads, alignments):
 
         args.append([reactions_database, hits, pathways_file, bug])
         
-    utilities.command_multiprocessing(threads, args, function=pathways_by_bug)
+    results=utilities.command_multiprocessing(threads, args, function=pathways_by_bug)
 
     return pathways_files
 
-def pathways_abundance_and_coverage(pathways_files):
+def pathways_abundance_by_bug(args):
     """
-    Compute the abundance and coverage of the pathways
+    Compute the abundance of pathways for one bug
     """
-
-    # Load in the pathways database
-    pathways_database=store.pathways_database(os.path.join(config.data_folder,
-        config.metacyc_reactions_to_pathways))
+    pathways_file, pathways_database, bug = args
     
-    # Compute abundance
-    # For now just run on the all file
-    file=pathways_files["all"]
+    if config.verbose:
+        print "Compute pathway abundance for bug: " + bug
     
-    file_handle=open(file,"r")
+    file_handle=open(pathways_file,"r")
     
     pathways_reactions_scores={}
     for line in file_handle:
@@ -219,10 +215,8 @@ def pathways_abundance_and_coverage(pathways_files):
                     pathways_reactions_scores[pathway]={ reaction : float(score) }        
     file_handle.close()
 
-    # Open output file
-    file_handle=open(config.pathabundance_file,"w")
-
     # Process through each pathway to compute abundance
+    pathways_abundances={}
     for pathway, reaction_scores in pathways_reactions_scores.items():
         
         # Initialize any reactions in the pathway not found to 0
@@ -238,9 +232,69 @@ def pathways_abundance_and_coverage(pathways_files):
         # Compute abundance
         abundance=sum(abundance_set)/len(abundance_set)
         
-        file_handle.write(config.output_file_column_delimiter.join([pathway,str(abundance)])+"\n")
-
+        pathways_abundances[pathway]=str(abundance)
+    
+    # Return a dictionary with a single key of the bug name
+    return { bug: pathways_abundances }
+    
+def print_pathways(pathways, file, header):
+    """
+    Print the pathways data to a file organized by pathway
+    """
+    
+    delimiter=config.output_file_column_delimiter
+    category_delimiter=config.output_file_category_delimiter
+    
+    file_handle=open(file,"w")
+    
+    # Write the header
+    file_handle.write("Pathway"+ delimiter + header +"\n")
+    
+    # Unpack the list of dictionaries to a single dictionary
+    # with the all pathways as a separate dictionary
+    bug_pathways={}
+    all_pathways={}
+    for pathway in pathways:
+        for bug, pathway_abundances in pathway.iteritems():
+            if bug == "all":
+                all_pathways=pathway_abundances
+            else:
+                bug_pathways[bug]=pathway_abundances
+    
+    for pathway, score in all_pathways.iteritems():
+        
+        # Write the pathway and score for all bugs
+        file_handle.write(delimiter.join([pathway,score])+"\n")
+                                          
+        # Identify if the pathway is present for each of the bugs
+        # If present then print with bug identifier
+        for bug in bug_pathways:
+            if pathway in bug_pathways[bug]:
+                file_handle.write(pathway+category_delimiter+bug
+                    +delimiter+bug_pathways[bug][pathway]+"\n")
+                    
     file_handle.close()
+    
+
+def pathways_abundance_and_coverage(threads, pathways_files):
+    """
+    Compute the abundance and coverage of the pathways
+    """
+
+    # Load in the pathways database
+    pathways_database=store.pathways_database(os.path.join(config.data_folder,
+        config.metacyc_reactions_to_pathways))
+    
+    # Compute abundance for all pathways
+    args=[]
+    for bug, file in pathways_files.iteritems():
+         args.append([file, pathways_database, bug])
+        
+    pathways_abundance=utilities.command_multiprocessing(threads, args, 
+        function=pathways_abundance_by_bug)
+
+    # Print the pathways abundance data to file
+    print_pathways(pathways_abundance, config.pathabundance_file, "Abundance")
 
     # Compute coverage 
     utilities.execute_command(

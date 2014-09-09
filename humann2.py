@@ -400,7 +400,8 @@ def main():
     pathways_files=quantify_modules.pathways(args.threads, alignments)
 
     # Compute pathway abundance and coverage
-    abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(pathways_files)
+    abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(
+        args.threads, pathways_files)
 
     output_files=[families_file,abundance_file,coverage_file]
     print "Output files created: \n" + "\n".join(output_files) + "\n"
