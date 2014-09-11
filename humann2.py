@@ -311,7 +311,7 @@ def main():
             prefix='humann2_temp_', dir=output_dir)
 
     if config.verbose:
-        print "Writing temp files to directory: " + config.temp_dir
+        print "\nWriting temp files to directory: " + config.temp_dir
 
     # Initialize alignments
     alignments=store.alignments()
@@ -399,11 +399,11 @@ def main():
 
     # Identify reactions and then pathways from the alignments
     print "\nComputing pathways abundance and coverage ..."
-    pathways_files=quantify_modules.pathways(args.threads, alignments)
+    pathways_store=quantify_modules.pathways(args.threads, alignments)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(
-        args.threads, pathways_files)
+        args.threads, pathways_store)
 
     output_files=[families_file,abundance_file,coverage_file]
     print "\nOutput files created: \n" + "\n".join(output_files) + "\n"

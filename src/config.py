@@ -106,6 +106,7 @@ minpath_folder="MinPath"
 minpath_script="MinPath1.2.py"
 minpath_reaction_index=0
 minpath_pathway_index=7
+minpath_pathway_identifier="^path"
 minpath_pathway_delimiter=" "
 minpath_update_script="MinPath12hmp.py"
 

@@ -2,6 +2,7 @@
 Stores the alignments identified
 Stores the genes/reactions from the database selected
 Stores the reactions/pathways from the database selected
+Stores the pathways identified
 """
 import os, re
 import config
@@ -100,7 +101,7 @@ class alignments:
         Return a list of all of the bugs
         """
         
-        return self.bugs.keys()
+        return self.bugs.keys()+["all"]
     
     def hits_for_gene(self,gene):
         """
@@ -125,6 +126,58 @@ class alignments:
                 hit_list.append(self.hits[index])
             
         return hit_list
+    
+class pathways:
+    """
+    Holds all of the pathways for one bug
+    """
+    
+    def __init__(self, bug):
+        self.pathways={}
+        self.bug=bug
+        
+    def add(self, reaction, pathway, score): 
+        """ 
+        Add the pathway data to the dictionary
+        """
+        
+        if pathway in self.pathways:
+            self.pathways[pathway][reaction]=score
+        else:
+            self.pathways[pathway]={ reaction : score }
+    
+    def get_bug(self):
+        """
+        Return the bug associated with the pathways data
+        """
+        
+        return self.bug
+    
+    def get_items(self):
+        """
+        Return the items in the pathways dictionary
+        """
+        
+        return self.pathways.items()
+    
+    def median_score(self):
+        """
+        Compute the median score for all scores in all pathways
+        """
+        
+        # Create a list of all of the scores in all pathways
+        all_scores=[]
+        for item in self.pathways.values():
+            all_scores+=item.values()
+        
+        all_scores.sort()
+        
+        # Find the median score value
+        median_score_value=0
+        if all_scores:
+            median_score_value=all_scores[len(all_scores)/2]
+            
+        return median_score_value
     
 class reactions_database:
     """
