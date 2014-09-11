@@ -127,9 +127,9 @@ class alignments:
             
         return hit_list
     
-class pathways:
+class pathways_and_reactions:
     """
-    Holds all of the pathways for one bug
+    Holds all of the pathways and reaction scores for one bug
     """
     
     def __init__(self, bug):
@@ -178,6 +178,38 @@ class pathways:
             median_score_value=all_scores[len(all_scores)/2]
             
         return median_score_value
+    
+class pathways:
+    """
+    Holds the pathways coverage or abundance data for a bug
+    """
+    
+    def __init__(self, bug="None", pathways={}):
+        self.bug=bug
+        self.pathways=pathways
+
+    def get_bug(self):
+        """
+        Return the bug associated with the pathways data
+        """
+        
+        return self.bug
+    
+    def get_score(self, pathway):
+        """
+        Return the score for the pathway
+        If the pathway does does not have a score, return 0
+        """
+        
+        return self.pathways.get(pathway, 0)
+    
+    def get_items(self):
+        """
+        Return the items in the pathways dictionary
+        """
+        
+        return self.pathways.items()
+        
     
 class reactions_database:
     """

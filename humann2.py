@@ -399,11 +399,12 @@ def main():
 
     # Identify reactions and then pathways from the alignments
     print "\nComputing pathways abundance and coverage ..."
-    pathways_store=quantify_modules.pathways(args.threads, alignments)
+    pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
+        args.threads, alignments)
 
     # Compute pathway abundance and coverage
-    abundance_file, coverage_file=quantify_modules.pathways_abundance_and_coverage(
-        args.threads, pathways_store)
+    abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
+        args.threads, pathways_and_reactions_store)
 
     output_files=[families_file,abundance_file,coverage_file]
     print "\nOutput files created: \n" + "\n".join(output_files) + "\n"

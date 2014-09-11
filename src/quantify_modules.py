@@ -58,7 +58,7 @@ def run_minpath(reactions_file,metacyc_datafile):
     return tmpfile
 
 
-def pathways_by_bug(args):
+def identify_reactions_and_pathways_by_bug(args):
     """
     Identify the reactions from the hits found for a specific bug
     """
@@ -148,21 +148,21 @@ def pathways_by_bug(args):
     # Remove the minpath results file
     utilities.remove_file(tmpfile)
     
-    pathways_store=store.pathways(bug)
+    pathways_and_reactions_store=store.pathways_and_reactions(bug)
     # Store the pathway abundance for each reaction
     for current_reaction in reactions:
         # Find the pathways associated with reaction
         for current_pathway in pathways.get(current_reaction,[""]):
             # Only store data for items with pathway names
             if current_pathway:
-                pathways_store.add(current_reaction, current_pathway, 
+                pathways_and_reactions_store.add(current_reaction, current_pathway, 
                     reactions[current_reaction])
    
     # Return the name of the temp file with the pathways
-    return pathways_store
+    return pathways_and_reactions_store
     
     
-def pathways(threads, alignments):
+def identify_reactions_and_pathways(threads, alignments):
     """
     Identify the reactions and then pathways from the hits found
     """
@@ -183,26 +183,27 @@ def pathways(threads, alignments):
 
         args.append([reactions_database, hits, bug])
         
-    pathways_store=utilities.command_multiprocessing(threads, args, function=pathways_by_bug)
+    pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
+        function=identify_reactions_and_pathways_by_bug)
 
-    return pathways_store
+    return pathways_and_reactions_store
 
 def pathways_coverage_by_bug(args):
     """
     Compute the coverage of pathways for one bug
     """
     
-    pathways_store, pathways_database = args
+    pathways_and_reactions_store, pathways_database = args
     
     if config.verbose:
-        print "Compute pathway coverage for bug: " + pathways_store.get_bug()
+        print "Compute pathway coverage for bug: " + pathways_and_reactions_store.get_bug()
     
     # Process through each pathway to compute coverage
     pathways_coverages={}
     xipe_input=[]
-    median_score_value=pathways_store.median_score()
+    median_score_value=pathways_and_reactions_store.median_score()
     
-    for pathway, reaction_scores in pathways_store.get_items():
+    for pathway, reaction_scores in pathways_and_reactions_store.get_items():
         
         # Initialize any reactions in the pathway not found to 0
         for reaction in pathways_database.find_reactions(pathway):
@@ -250,22 +251,21 @@ def pathways_coverage_by_bug(args):
     for pathway in pathways_to_remove:
         del pathways_coverages[pathway]
     
-    # Return a dictionary with a single key of the bug name
-    return { pathways_store.get_bug() : pathways_coverages }
+    return store.pathways(pathways_and_reactions_store.get_bug(), pathways_coverages)
 
 def pathways_abundance_by_bug(args):
     """
     Compute the abundance of pathways for one bug
     """
     
-    pathways_store, pathways_database = args
+    pathways_and_reactions_store, pathways_database = args
     
     if config.verbose:
-        print "Compute pathway abundance for bug: " + pathways_store.get_bug()
+        print "Compute pathway abundance for bug: " + pathways_and_reactions_store.get_bug()
 
     # Process through each pathway to compute abundance
     pathways_abundances={}
-    for pathway, reaction_scores in pathways_store.get_items():
+    for pathway, reaction_scores in pathways_and_reactions_store.get_items():
         
         # Initialize any reactions in the pathway not found to 0
         for reaction in pathways_database.find_reactions(pathway):
@@ -283,7 +283,7 @@ def pathways_abundance_by_bug(args):
         pathways_abundances[pathway]=abundance
     
     # Return a dictionary with a single key of the bug name
-    return { pathways_store.get_bug() : pathways_abundances }
+    return store.pathways(pathways_and_reactions_store.get_bug(), pathways_abundances)
     
 def print_pathways(pathways, file, header):
     """
@@ -298,18 +298,14 @@ def print_pathways(pathways, file, header):
     # Write the header
     file_handle.write("Pathway"+ delimiter + header +"\n")
     
-    # Unpack the list of dictionaries to a single dictionary
-    # with the all pathways as a separate dictionary
-    bug_pathways={}
-    all_pathways={}
-    for pathway in pathways:
-        for bug, pathway_abundances in pathway.items():
-            if bug == "all":
-                all_pathways=pathway_abundances
-            else:
-                bug_pathways[bug]=pathway_abundances
+    # Find the set of all pathways
+    all_pathways=store.pathways()
+    for index, pathway in enumerate(pathways):
+        if pathway.get_bug() == "all":
+            all_pathways=pathway
+            del pathways[index]
     
-    for pathway, score in all_pathways.items():
+    for pathway, score in all_pathways.get_items():
         # Write the pathway and score for all bugs
         # Only write pathways where the score is > 0
         if score > 0:
@@ -317,18 +313,17 @@ def print_pathways(pathways, file, header):
                                           
         # Identify if the pathway is present for each of the bugs
         # If present then print with bug identifier
-        for bug in bug_pathways:
-            if pathway in bug_pathways[bug]:
-                # Write pathway if score is > 0
-                bug_score=bug_pathways[bug][pathway]
-                if bug_score > 0: 
-                    file_handle.write(pathway+category_delimiter+bug
-                        +delimiter+str(bug_score)+"\n")
+        for bug_pathways in pathways:
+            bug=bug_pathways.get_bug()
+            bug_score=bug_pathways.get_score(pathway)
+            if bug_score > 0: 
+                file_handle.write(pathway+category_delimiter+bug
+                    +delimiter+str(bug_score)+"\n")
                     
     file_handle.close()
     
 
-def pathways_abundance_and_coverage(threads, pathways_store):
+def compute_pathways_abundance_and_coverage(threads, pathways_and_reactions_store):
     """
     Compute the abundance and coverage of the pathways
     """
@@ -339,8 +334,8 @@ def pathways_abundance_and_coverage(threads, pathways_store):
     
     # Compute abundance for all pathways
     args=[]
-    for bug_pathway_store in pathways_store:
-         args.append([bug_pathway_store, pathways_database])
+    for bug_pathway_and_reactions_store in pathways_and_reactions_store:
+         args.append([bug_pathway_and_reactions_store, pathways_database])
         
     pathways_abundance=utilities.command_multiprocessing(threads, args, 
         function=pathways_abundance_by_bug)
