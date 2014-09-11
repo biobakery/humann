@@ -78,7 +78,7 @@ def create_custom_database(chocophlan_dir, threshold, bug_file):
                     species=organism_info.split("|")[-1]
                     genus=organism_info.split("|")[-2]
                     print "Found " + genus + "|" + species + " : " + \
-                        str(read_percent) + "% of reads"
+                        str(read_percent) + "% of mapped reads"
                     species_found.append(genus + "." + species)
 
             line = file_handle.readline()

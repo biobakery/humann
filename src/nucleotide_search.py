@@ -138,7 +138,7 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
     file_handle_write_aligned.close()
 
     # remove the alignment file as it will be replaced by the two files created
-    #if not config.debug:
-    #    remove_file(sam_alignment_file)
+    if not config.debug:
+        utilities.remove_file(sam_alignment_file)
 
     return [ unaligned_reads_file_fasta, reduced_aligned_reads_file ]

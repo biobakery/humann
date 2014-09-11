@@ -1,7 +1,7 @@
 """ 
 Generate pathway coverage and abundance
 """
-import os, shutil, tempfile, math, re, sys
+import os, shutil, tempfile, math, re, sys, subprocess
 import utilities, config, store, MinPath12hmp
 
 
@@ -190,6 +190,95 @@ def pathways(threads, alignments):
 
     return pathways_files
 
+def pathways_coverage_by_bug(args):
+    """
+    Compute the coverage of pathways for one bug
+    """
+    pathways_file, pathways_database, bug = args
+    
+    if config.verbose:
+        print "Compute pathway coverage for bug: " + bug
+    
+    file_handle=open(pathways_file,"r")
+    
+    pathways_reactions_scores={}
+    all_scores=[]
+    for line in file_handle:
+        data=line.strip().split(config.output_file_column_delimiter)
+        if len(data) == 3:
+            reaction, pathway, score = data
+            
+            # Bypass lines where the pathway is not listed
+            if len(pathway) > 0:
+                if pathway in pathways_reactions_scores:
+                    pathways_reactions_scores[pathway][reaction]=float(score)
+                else:
+                    pathways_reactions_scores[pathway]={ reaction : float(score) }
+                all_scores.append(float(score))        
+    file_handle.close()
+
+    # Find the median score value
+    all_scores.sort()
+    median_score_value=0
+    if all_scores:
+        median_score_value=all_scores[len(all_scores)/2]
+
+    # Process through each pathway to compute coverage
+    pathways_coverages={}
+    xipe_input=[]
+    for pathway, reaction_scores in pathways_reactions_scores.items():
+        
+        # Initialize any reactions in the pathway not found to 0
+        for reaction in pathways_database.find_reactions(pathway):
+            reaction_scores.setdefault(reaction, 0)
+            
+        # Count the reactions with scores greater than the median
+        count_greater_than_median=0.0
+        count_all=0.0
+        for reaction, score in reaction_scores.items():
+            if score > median_score_value:
+               count_greater_than_median+=1.0
+            count_all+=1.0
+        
+        # Compute coverage
+        coverage=count_greater_than_median/count_all
+        
+        pathways_coverages[pathway]=str(coverage)
+        xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
+    
+    # Run xipe
+    xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        config.xipe_script)
+    
+    cmmd=[xipe_exe,"--file2",config.xipe_percent]
+    xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
+        stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+    xipe_stdout, xipe_stderr = xipe_subprocess.communicate( "\n".join(xipe_input))
+    
+    # Record the pathways to remove based on the xipe error messages
+    pathways_to_remove=[]
+    for line in xipe_stderr.split("\n"):
+        data=line.strip().split(config.xipe_delimiter)
+        if len(data) == 2:
+            pathways_to_remove.append(data[1])
+    
+    # Keep some of the pathways to remove based on their xipe scores
+    for line in xipe_stdout.split("\n"):
+        data=line.strip().split(config.xipe_delimiter)
+        if len(data) == 2:
+            pathway, pathway_data = data
+            if pathway in pathways_to_remove:
+                score, bin = pathway_data[1:-1].split(", ")
+                if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
+                    pathways_to_remove.remove(pathway)
+            
+    # Remove the selected pathways
+    for pathway in pathways_to_remove:
+        del pathways_coverages[pathway]
+    
+    # Return a dictionary with a single key of the bug name
+    return { bug: pathways_coverages }
+
 def pathways_abundance_by_bug(args):
     """
     Compute the abundance of pathways for one bug
@@ -255,23 +344,27 @@ def print_pathways(pathways, file, header):
     bug_pathways={}
     all_pathways={}
     for pathway in pathways:
-        for bug, pathway_abundances in pathway.iteritems():
+        for bug, pathway_abundances in pathway.items():
             if bug == "all":
                 all_pathways=pathway_abundances
             else:
                 bug_pathways[bug]=pathway_abundances
     
-    for pathway, score in all_pathways.iteritems():
+    for pathway, score in all_pathways.items():
         
         # Write the pathway and score for all bugs
-        file_handle.write(delimiter.join([pathway,score])+"\n")
+        # Only write pathways where the score is > 0
+        if float(score) > 0:
+            file_handle.write(delimiter.join([pathway,score])+"\n")
                                           
         # Identify if the pathway is present for each of the bugs
         # If present then print with bug identifier
         for bug in bug_pathways:
             if pathway in bug_pathways[bug]:
-                file_handle.write(pathway+category_delimiter+bug
-                    +delimiter+bug_pathways[bug][pathway]+"\n")
+                # Write pathway if score is > 0
+                if float(bug_pathways[bug][pathway]) > 0:
+                    file_handle.write(pathway+category_delimiter+bug
+                        +delimiter+bug_pathways[bug][pathway]+"\n")
                     
     file_handle.close()
     
@@ -287,7 +380,7 @@ def pathways_abundance_and_coverage(threads, pathways_files):
     
     # Compute abundance for all pathways
     args=[]
-    for bug, file in pathways_files.iteritems():
+    for bug, file in pathways_files.items():
          args.append([file, pathways_database, bug])
         
     pathways_abundance=utilities.command_multiprocessing(threads, args, 
@@ -297,9 +390,11 @@ def pathways_abundance_and_coverage(threads, pathways_files):
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance")
 
     # Compute coverage 
-    utilities.execute_command(
-        "cat",[],[pathways_files["unclassified"]],[],
-        config.pathcoverage_file, pathways_files["unclassified"])
+    pathways_coverage=utilities.command_multiprocessing(threads, args, 
+        function=pathways_coverage_by_bug)
+    
+    # Print the pathways abundance data to file
+    print_pathways(pathways_coverage, config.pathcoverage_file, "Coverage")
     
     # Remove the temp pathways files
     for file in pathways_files:

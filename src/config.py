@@ -108,3 +108,10 @@ minpath_reaction_index=0
 minpath_pathway_index=7
 minpath_pathway_delimiter=" "
 minpath_update_script="MinPath12hmp.py"
+
+# Xipe
+xipe_script="xipe.py"
+xipe_delimiter="\t"
+xipe_percent=str(0.1)
+xipe_probability=0.9
+xipe_bin=1

@@ -8,7 +8,7 @@ the coverage and abundance of microbial pathways in a community
 from metagenomic data. Sequencing a metagenome typically produces millions 
 of short DNA/RNA reads.
 
-Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Usearch
+Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
 
 To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 """
@@ -394,9 +394,11 @@ def main():
         args.input, translated_unaligned_reads_file_fastq) + "%\n"  
 
     # Compute the gene families
+    print "\nComputing gene families ..."
     families_file=quantify_families.gene_families(alignments)
 
     # Identify reactions and then pathways from the alignments
+    print "\nComputing pathways abundance and coverage ..."
     pathways_files=quantify_modules.pathways(args.threads, alignments)
 
     # Compute pathway abundance and coverage
@@ -404,7 +406,7 @@ def main():
         args.threads, pathways_files)
 
     output_files=[families_file,abundance_file,coverage_file]
-    print "Output files created: \n" + "\n".join(output_files) + "\n"
+    print "\nOutput files created: \n" + "\n".join(output_files) + "\n"
 
     # Remove temp directory
     if not args.temp:
