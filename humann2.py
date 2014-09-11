@@ -397,6 +397,9 @@ def main():
     print "\nComputing gene families ..."
     families_file=quantify_families.gene_families(alignments)
 
+    if config.verbose:
+        print str(int(time.time() - start_time)) + " seconds from start"
+    
     # Identify reactions and then pathways from the alignments
     print "\nComputing pathways abundance and coverage ..."
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
@@ -405,6 +408,9 @@ def main():
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
         args.threads, pathways_and_reactions_store)
+
+    if config.verbose:
+        print str(int(time.time() - start_time)) + " seconds from start"
 
     output_files=[families_file,abundance_file,coverage_file]
     print "\nOutput files created: \n" + "\n".join(output_files) + "\n"

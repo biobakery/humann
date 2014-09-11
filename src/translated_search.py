@@ -19,7 +19,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
     args=["-id",identity_threshold]
 
-    print "\nRunning muliple " + exe + " ........\n"
+    print "\nRunning " + exe + " ........\n"
 
     if not bypass:
 
@@ -85,7 +85,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
     if threads > 1:
         args+=["-z",threads]
 
-    print "\nRunning muliple " + exe + " ........\n"
+    print "\nRunning " + exe + " ........\n"
 
     if not bypass:
 
