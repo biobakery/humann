@@ -90,7 +90,7 @@ def parse_arguments (args):
         metavar="<bowtie2/>")
     parser.add_argument(
         "--threads", 
-        help="number of threads to use with bowtie2\n[DEFAULT: 1]", 
+        help="number of threads/processes\n[DEFAULT: 1]", 
         metavar="<1>", 
         type=int,
         default=1) 
