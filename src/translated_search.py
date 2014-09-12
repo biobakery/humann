@@ -101,7 +101,9 @@ def rapsearch_alignment(alignment_file,threads, uniref,
                 # create temp output file
                 file_out, temp_out_file=tempfile.mkstemp()
                 os.close(file_out)
-                temp_out_files.append(temp_out_file)
+                utilities.remove_file(temp_out_file)
+
+                temp_out_files.append(temp_out_file+config.rapsearch_output_file_extension)
 
                 full_args+=["-o",temp_out_file]
 

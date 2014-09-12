@@ -89,6 +89,7 @@ usearch_opts=[]
 # rapsearch options
 rapsearch_database_extension=".info"
 rapsearch_opts=["-v",-1]
+rapsearch_output_file_extension=".m8"
 
 # data files
 data_folder="data/"
