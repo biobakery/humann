@@ -293,32 +293,35 @@ def print_pathways(pathways, file, header):
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter
     
-    file_handle=open(file,"w")
+
     
+    # Compile data for all bugs by pathways
+    all_pathways_scores={}
+    all_pathways_output_lines={}
+    for bug_pathways in pathways:
+        bug=bug_pathways.get_bug()
+        # Add up all scores based on score for each bug for each pathway
+        for pathway, score in bug_pathways.get_items():
+            if score>0:
+                if not pathway in all_pathways_scores.keys():
+                    all_pathways_scores[pathway]=score
+                    all_pathways_output_lines[pathway]=[pathway+category_delimiter+bug
+                        +delimiter+str(score)]
+                else:
+                    all_pathways_scores[pathway]+=score
+                    all_pathways_output_lines[pathway].append(pathway+category_delimiter+bug
+                        +delimiter+str(score))               
+ 
     # Write the header
-    file_handle.write("Pathway"+ delimiter + header +"\n")
+    file_handle=open(file,"w")
+    file_handle.write("Pathway"+ delimiter + header +"\n")       
     
-    # Find the set of all pathways
-    all_pathways=store.pathways()
-    for index, pathway in enumerate(pathways):
-        if pathway.get_bug() == "all":
-            all_pathways=pathway
-            del pathways[index]
-    
-    for pathway, score in all_pathways.get_items():
-        # Write the pathway and score for all bugs
-        # Only write pathways where the score is > 0
-        if score > 0:
-            file_handle.write(delimiter.join([pathway,str(score)])+"\n")
-                                          
-        # Identify if the pathway is present for each of the bugs
-        # If present then print with bug identifier
-        for bug_pathways in pathways:
-            bug=bug_pathways.get_bug()
-            bug_score=bug_pathways.get_score(pathway)
-            if bug_score > 0: 
-                file_handle.write(pathway+category_delimiter+bug
-                    +delimiter+str(bug_score)+"\n")
+    # Print out the pathways with those with the highest scores first
+    for pathway in sorted(all_pathways_scores, key=all_pathways_scores.get, reverse=True):
+        # Print the sum of all bugs for pathway
+        file_handle.write(pathway+delimiter+str(all_pathways_scores[pathway])+"\n")
+        # Print scores per bug for pathway
+        file_handle.write("\n".join(all_pathways_output_lines[pathway])+"\n")
                     
     file_handle.close()
     

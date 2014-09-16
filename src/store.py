@@ -101,7 +101,7 @@ class alignments:
         Return a list of all of the bugs
         """
         
-        return self.bugs.keys()+["all"]
+        return self.bugs.keys()
     
     def hits_for_gene(self,gene):
         """
@@ -118,12 +118,9 @@ class alignments:
         """
         Return the alignments for the selected bug
         """
-        if bug=="all":
-            hit_list=self.hits
-        else:
-            hit_list=[]        
-            for index in self.bugs[bug]:
-                hit_list.append(self.hits[index])
+        hit_list=[]        
+        for index in self.bugs[bug]:
+            hit_list.append(self.hits[index])
             
         return hit_list
     
