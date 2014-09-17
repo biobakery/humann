@@ -3,9 +3,10 @@ Stores the alignments identified
 Stores the genes/reactions from the database selected
 Stores the reactions/pathways from the database selected
 Stores the pathways identified
+Stores the unaligned reads
 """
 import os, re
-import config
+import config, utilities
 
 class hit:
     """
@@ -376,5 +377,79 @@ class pathways_database:
         """
          
         return self.pathways_to_reactions.get(pathway, [])
-                    
+    
+class reads:
+    """
+    Holds all of the reads data to create a fasta file
+    """
+    
+    def add(self, id, sequence):
+        """
+        Store the sequence and id which should correspond to the following:
+        >id
+        sequence
+        """
+        
+        self.reads[id]=sequence
+    
+    def __init__(self, file=None):
+        """
+        Create initial data structures and load if file name provided
+        """
+        self.reads={}
+              
+        if file:
+            
+            # Check the file exists and is readable
+            utilities.file_exists_readable(file)
+            
+            # Check that the file of reads is fasta
+            # If it is fastq, then convert the file to fasta
+            temp_file=""
+            if utilities.fasta_or_fastq(file) == "fastq":
+                input_fasta=utilities.fastq_to_fasta(file)
+                temp_file=input_fasta
+            else:
+                input_fasta=file
+                       
+            file_handle=open(input_fasta,"r")
+            
+            sequence=""
+            id=""
+            for line in file_handle:
+                if re.search("^>", line):
+                    # store the prior sequence
+                    if id:
+                        self.add(id, sequence)
+                    id=line.rstrip().replace(">","")
+                    sequence=""
+                else:
+                    sequence+=line.rstrip()
+            
+            # add the last sequence
+            self.add(id, sequence)
                 
+            file_handle.close()
+            
+            # Remove the temp fasta file if exists
+            if temp_file:
+                utilities.remove_file(temp_file)
+    
+    def remove_id(self, id):
+        """
+        Remove the id and sequence from the read structure
+        """
+        
+        if id in self.reads:
+            del self.reads[id]
+                
+    def get_fasta(self):
+        """ 
+        Return a string of the fasta file sequences stored
+        """
+        
+        fasta=[]
+        for id, sequence in self.reads.items():
+            fasta.append(">"+id+"\n"+sequence)
+        
+        return "\n".join(fasta)

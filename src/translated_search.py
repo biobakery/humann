@@ -152,7 +152,7 @@ def alignment(uniref, unaligned_reads_file_fasta, identity_threshold,
 
     return alignment_file
 
-def unaligned_reads(input_fasta, alignment_file_tsv, alignments):
+def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     """
     Create a fasta file of the unaligned reads
     Store the alignment results
@@ -164,8 +164,6 @@ def unaligned_reads(input_fasta, alignment_file_tsv, alignments):
         config.translated_unaligned_reads_name_no_ext + 
         config.fasta_extension)
     
-
-    utilities.file_exists_readable(input_fasta)
     utilities.file_exists_readable(alignment_file_tsv)
 
     # read through the alignment file to identify ids
@@ -179,6 +177,10 @@ def unaligned_reads(input_fasta, alignment_file_tsv, alignments):
         if not re.search("^#",line):
             alignment_info=line.split(config.blast_delimiter)
             queryid=alignment_info[config.blast_query_index]
+            
+            # remove the id of the alignment from the unaligned reads store
+            unaligned_reads_store.remove_id(queryid)
+            
             referenceid=alignment_info[config.blast_reference_index]
             identity=float(alignment_info[config.blast_identity_index])
             aligned_length=int(alignment_info[config.blast_aligned_length_index])
@@ -200,30 +202,12 @@ def unaligned_reads(input_fasta, alignment_file_tsv, alignments):
 
     file_handle.close()
 
-    # create unaligned file using list of aligned ids
-    file_handle_read=open(input_fasta,"r")
+    # create unaligned file using list of remaining unaligned stored data
     file_handle_write=open(unaligned_file_fasta,"w")
 
-    line=file_handle_read.readline()
-
-    print_flag=False
-    while line:
-        # check for id line
-        if re.search("^>",line):
-            id=line.strip(">"+"\n")
-
-            if not id in aligned_ids:
-                print_flag=True
-                file_handle_write.write(line)
-            else:
-                print_flag=False
-        else:
-            if print_flag:
-                file_handle_write.write(line)
-        line=file_handle_read.readline()
+    file_handle_write.write(unaligned_reads_store.get_fasta())
 
     file_handle_write.close()
-    file_handle_read.close()
 
     return unaligned_file_fasta
 

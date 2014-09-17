@@ -356,7 +356,7 @@ def main():
 
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
-        [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+        [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
             args.input, nucleotide_alignment_file, alignments)
 
         # Print out total alignments per bug
@@ -371,6 +371,7 @@ def main():
     else:
         reduced_aligned_reads_file = "Empty"
         unaligned_reads_file_fasta=args.input
+        unaligned_reads_store=store.reads(unaligned_reads_file_fasta)
 
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, 
@@ -381,7 +382,7 @@ def main():
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-        unaligned_reads_file_fasta, translated_alignment_file, alignments)
+        unaligned_reads_store, translated_alignment_file, alignments)
 
     # Print out total alignments per bug
     print "Total bugs after translated alignment: " + str(alignments.count_bugs())

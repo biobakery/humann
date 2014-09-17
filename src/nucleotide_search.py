@@ -76,8 +76,8 @@ def alignment(user_fastq, threads, index_name):
 
 def unaligned_reads(input_fastq, sam_alignment_file, alignments):
     """ 
-    Return file of just the unaligned reads
-    Store the alignments
+    Return file and data structure of the unaligned reads 
+    Store the alignments and return
     """
 
     #determine the index to use for the fastq/fasta file
@@ -102,7 +102,8 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
 
     # read through the file line by line
     line = file_handle_read.readline()
-
+    unaligned_reads_store=store.reads()
+    
     while line:
         # ignore headers ^@ 
         if not re.search("^@",line):
@@ -112,6 +113,9 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 file_handle_write_unaligned.write(">"+
                     info[config.sam_read_name_index]+"\n")
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
+                
+                # store the unaligned reads data
+                unaligned_reads_store.add(info[config.sam_read_name_index], info[config.sam_read_index])
             else:
                 # convert the e-value from global to local
                 try:
@@ -141,4 +145,4 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
     if not config.debug:
         utilities.remove_file(sam_alignment_file)
 
-    return [ unaligned_reads_file_fasta, reduced_aligned_reads_file ]
+    return [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ]
