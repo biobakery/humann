@@ -10,6 +10,13 @@ verbose = False
 bypass_prescreen = False
 bypass_nucleotide_index = False
 
+# Turn on/off computations
+toggle_on = "on"
+toggle_off = "off"
+toggle_choices=[toggle_on,toggle_off]
+xipe_toggle = toggle_off
+
+
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch"]
 translated_alignment_selected = translated_alignment_choices[1]

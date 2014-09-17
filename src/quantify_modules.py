@@ -221,35 +221,40 @@ def pathways_coverage_by_bug(args):
         pathways_coverages[pathway]=coverage
         xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
     
-    # Run xipe
-    xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-        config.xipe_script)
-    
-    cmmd=[xipe_exe,"--file2",config.xipe_percent]
-    xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
-        stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-    xipe_stdout, xipe_stderr = xipe_subprocess.communicate( "\n".join(xipe_input))
-    
-    # Record the pathways to remove based on the xipe error messages
-    pathways_to_remove=[]
-    for line in xipe_stderr.split("\n"):
-        data=line.strip().split(config.xipe_delimiter)
-        if len(data) == 2:
-            pathways_to_remove.append(data[1])
-    
-    # Keep some of the pathways to remove based on their xipe scores
-    for line in xipe_stdout.split("\n"):
-        data=line.strip().split(config.xipe_delimiter)
-        if len(data) == 2:
-            pathway, pathway_data = data
-            if pathway in pathways_to_remove:
-                score, bin = pathway_data[1:-1].split(", ")
-                if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
-                    pathways_to_remove.remove(pathway)
-            
-    # Remove the selected pathways
-    for pathway in pathways_to_remove:
-        del pathways_coverages[pathway]
+    # Check config to determine if xipe should be run
+    if config.xipe_toggle == config.toggle_on:
+        # Run xipe
+        xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            config.xipe_script)
+        
+        cmmd=[xipe_exe,"--file2",config.xipe_percent]
+        
+        if config.verbose:
+            print "Run xipe ...."
+        xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
+            stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+        xipe_stdout, xipe_stderr = xipe_subprocess.communicate("\n".join(xipe_input))
+        
+        # Record the pathways to remove based on the xipe error messages
+        pathways_to_remove=[]
+        for line in xipe_stderr.split("\n"):
+            data=line.strip().split(config.xipe_delimiter)
+            if len(data) == 2:
+                pathways_to_remove.append(data[1])
+        
+        # Keep some of the pathways to remove based on their xipe scores
+        for line in xipe_stdout.split("\n"):
+            data=line.strip().split(config.xipe_delimiter)
+            if len(data) == 2:
+                pathway, pathway_data = data
+                if pathway in pathways_to_remove:
+                    score, bin = pathway_data[1:-1].split(", ")
+                    if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
+                        pathways_to_remove.remove(pathway)
+                
+        # Remove the selected pathways
+        for pathway in pathways_to_remove:
+            del pathways_coverages[pathway]
     
     return store.pathways(pathways_and_reactions_store.get_bug(), pathways_coverages)
 

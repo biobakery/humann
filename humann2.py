@@ -126,6 +126,11 @@ def parse_arguments (args):
             config.translated_alignment_selected + "]", 
         default=config.translated_alignment_selected,
         choices=config.translated_alignment_choices)
+    parser.add_argument(
+        "--xipe",
+        help="turn on/off the xipe computation\n[DEFAULT: OFF]",
+        default=config.xipe_toggle,
+        choices=config.toggle_choices)
 
     return parser.parse_args()
 	
@@ -154,6 +159,10 @@ def check_requirements(args):
     # Update translated alignment software if set
     if args.translated_alignment:
         config.translated_alignment_selected=args.translated_alignment
+        
+    # Update the computation toggle choices
+    if args.xipe:
+        config.xipe_toggle=args.xipe
 
     # Check that the input file exists, is readable, and is fasta/fastq
     if utilities.fasta_or_fastq(args.input) == "error":
