@@ -194,8 +194,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 if not isinstance(evalue, numbers.Number):
                     evalue=1.0
         
-            alignments.add(referenceid, queryid, evalue, identity, aligned_length,
-                           "unclassified")
+            alignments.add(referenceid, queryid, evalue,"unclassified")
         
             aligned_ids+=[queryid]
         line=file_handle.readline()

@@ -66,35 +66,28 @@ def identify_reactions_and_pathways_by_bug(args):
     reactions_database, hits, bug = args
     
     if config.verbose:
-        print "Identify reactions for: " + bug
+        print "Compute gene scores by query ..."
     
-    # Group hits by query
-    hits_by_query={}
-    
-    for index, hit in enumerate(hits):
-        if hit.get_query() in hits_by_query:
-            hits_by_query[hit.get_query()]+=[index]
+    # Loop through hits to organize scores by query
+    genes_by_query={}
+    total_scores_by_query={}
+    for hit in hits:
+        bug, reference, query, evalue=hit
+        score=math.exp(-evalue)
+        if query in genes_by_query:
+            genes_by_query[query].append([reference,score])
         else:
-            hits_by_query[hit.get_query()]=[index]
+            genes_by_query[query]=[[reference,score]]
+        total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
     
     if config.verbose:
-        print "Total reads mapped to bug: " + str(len(hits_by_query))
+        print "Total reads mapped to " + bug + " : " + str(len(hits))            
     
-    # Loop through hits by query
-    # Identify all hits that have a reference which is part of the database
+    # add these scores by query to the total gene scores
     total_genes={}
-    for query in hits_by_query:
-        genes=[]
-        total_score=0
-        for index in hits_by_query[query]:
-            hit=hits[index]
-            if reactions_database.gene_present(hit.get_reference()):
-                score=math.exp(-hit.get_evalue())
-                genes.append([hit.get_reference(),score])
-                total_score+=score
-        # add these scores to the total gene scores
+    for query, genes in genes_by_query.items():
         for gene, score in genes:
-            total_genes[gene]=score/total_score+total_genes.get(gene,0)
+            total_genes[gene]=total_genes.get(gene,0)+score/total_scores_by_query[query]
                 
     # Create a temp file for the reactions results
     file_descriptor, reactions_file=tempfile.mkstemp()
@@ -175,6 +168,18 @@ def identify_reactions_and_pathways(threads, alignments):
         config.metacyc_gene_to_reactions)
     reactions_database=store.reactions_database(gene_to_reactions)
     
+    # Remove the hits from the alignments that are not associated with a gene
+    # in the gene to reactions database
+    if config.verbose:
+        print "Remove hits to genes not in reactions database ..."
+    all_genes_in_database=reactions_database.list_genes()
+    for gene in alignments.gene_list():
+        if not gene in all_genes_in_database:
+            alignments.delete_hits_for_gene(gene)
+            
+    if config.verbose:
+        print "Total gene families after filtering: " + str(len(alignments.gene_list()))
+            
     # Set up a command to run through each of the hits by bug
     args=[]
     for bug in alignments.bug_list():

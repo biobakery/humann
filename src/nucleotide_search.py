@@ -133,7 +133,7 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 file_handle_write_aligned.write(newline+"\n")
                    
                 # store the alignment data
-                alignments.add(uniref,query,evalue,1,1,bug)
+                alignments.add(uniref,query,evalue,bug)
                     
         line=file_handle_read.readline()
 

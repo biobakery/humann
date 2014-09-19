@@ -8,26 +8,6 @@ Stores the unaligned reads
 import os, re
 import config, utilities
 
-class hit:
-    """
-    Holds one alignment/hit 
-    """
-    
-    def __init__(self, bug, reference, query, evalue, identity, coverage):
-        self.item=[bug, reference, query, evalue, identity, coverage]
-
-    def get_bug(self):
-        return self.item[0]
-        
-    def get_reference(self):
-        return self.item[1]
-    
-    def get_query(self):
-        return self.item[2]
-    
-    def get_evalue(self):
-        return self.item[3]
-
 class alignments:
     """
     Holds all of the alignments for all bugs
@@ -38,13 +18,13 @@ class alignments:
         self.bugs={}
         self.genes={}
         
-    def add(self, reference, query, evalue, identity, coverage, bug): 
+    def add(self, reference, query, evalue, bug): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
         """
         
-        self.hits.append(hit(bug, reference, query, evalue, identity, coverage)) 
+        self.hits.append([bug, reference, query, evalue]) 
         
         index=len(self.hits)-1
         if bug in self.bugs:
@@ -111,7 +91,9 @@ class alignments:
         
         hit_list=[]        
         for index in self.genes[gene]:
-            hit_list.append(self.hits[index])
+            # Ignore deleted hits
+            if self.hits[index]:
+                hit_list.append(self.hits[index])
             
         return hit_list
     
@@ -121,9 +103,23 @@ class alignments:
         """
         hit_list=[]        
         for index in self.bugs[bug]:
-            hit_list.append(self.hits[index])
+            # Ignore deleted hits
+            if self.hits[index]:
+                hit_list.append(self.hits[index])
             
         return hit_list
+    
+    def delete_hits_for_gene(self,gene):
+        """
+        Remove the gene and all data for all hits associated with the gene
+        """
+        
+        if gene in self.genes:
+            for index in self.genes[gene]:
+                # Remove the data for the hit
+                self.hits[index]=[]
+            # Remove the gene entry
+            del self.genes[gene]
     
 class pathways_and_reactions:
     """
@@ -298,6 +294,13 @@ class reactions_database:
         """
            
         return self.reactions_to_genes.keys()
+    
+    def list_genes(self):
+        """
+        Return the list of all the genes in the database
+        """
+           
+        return self.genes_to_reactions.keys()
     
 class pathways_database:
     """

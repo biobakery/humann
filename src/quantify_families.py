@@ -32,11 +32,8 @@ def gene_families(alignments):
         # merge hits with the same bug
         hits_by_bug={}
         for hit in hit_list:
-            bug=hit.get_bug()          
-            if bug in hits_by_bug:
-                hits_by_bug[bug]+=1
-            else:
-                hits_by_bug[bug]=1
+            bug, reference, query, evalue=hit
+            hits_by_bug[bug]=hits_by_bug.get(bug,0)+1          
         
         # record the hits by bug for this gene
         for bug in hits_by_bug.keys():
