@@ -56,20 +56,6 @@ class alignments:
         for bug in self.bugs.keys():
             print bug + ": " + str(len(self.bugs[bug])) + " hits"
             
-    def print_genes(self):
-        """
-        Print out the genes and the total number of hits
-        """
-        for gene in self.genes.keys():
-            print gene + ": " + str(len(self.genes[gene])) + " hits"         
-            
-    def print_hits(self):
-        """
-        Print out the list of hits
-        """
-        for hit in self.hits:
-            print ",".join(str(item) for item in hit)
-            
     def gene_list(self):
         """
         Return a list of all of the gene families
@@ -109,7 +95,7 @@ class alignments:
             
         return hit_list
     
-    def delete_hits_for_gene(self,gene):
+    def delete_gene_and_hits(self,gene):
         """
         Remove the gene and all data for all hits associated with the gene
         """
@@ -248,54 +234,24 @@ class reactions_database:
         """
         Return the list of reactions associated with the gene
         """
-        
-        list=[]
-        if self.gene_present(gene):
-            list=self.genes_to_reactions[gene]
             
-        return list
+        return self.genes_to_reactions.get(gene,[])
     
     def find_genes(self,reaction):
         """
         Return the list of genes associated with the reaction
         """
         
-        list=[]
-        if self.reaction_present(reaction):
-            list=self.reactions_to_genes[reaction]
-    
-        return list
-    
-    def gene_present(self, gene):
-        """
-        Return true if gene is part of database
-        """
-        
-        found=False
-        if gene in self.genes_to_reactions.keys():
-            found=True
-        
-        return found
-    
-    def reaction_present(self, reaction):
-        """
-        Return true if reaction is part of database
-        """
-        
-        found=False
-        if reaction in self.reactions_to_genes.keys():
-            found=True
-        
-        return found
+        return self.reactions_to_genes.get(reaction,[])
          
-    def list_reactions(self):
+    def reaction_list(self):
         """
         Return the list of all the reactions in the database
         """
            
         return self.reactions_to_genes.keys()
     
-    def list_genes(self):
+    def gene_list(self):
         """
         Return the list of all the genes in the database
         """

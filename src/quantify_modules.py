@@ -94,7 +94,7 @@ def identify_reactions_and_pathways_by_bug(args):
 
     # Merge the gene scores to reaction scores   
     reactions={}
-    for reaction in reactions_database.list_reactions():
+    for reaction in reactions_database.reaction_list():
         genes_list=reactions_database.find_genes(reaction)
         abundance=0
         # Add the scores for each gene to the total score for the reaction
@@ -172,10 +172,10 @@ def identify_reactions_and_pathways(threads, alignments):
     # in the gene to reactions database
     if config.verbose:
         print "Remove hits to genes not in reactions database ..."
-    all_genes_in_database=reactions_database.list_genes()
+    all_genes_in_database=reactions_database.gene_list()
     for gene in alignments.gene_list():
         if not gene in all_genes_in_database:
-            alignments.delete_hits_for_gene(gene)
+            alignments.delete_gene_and_hits(gene)
             
     if config.verbose:
         print "Total gene families after filtering: " + str(len(alignments.gene_list()))
