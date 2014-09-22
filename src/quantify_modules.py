@@ -150,13 +150,18 @@ def identify_reactions_and_pathways(threads, alignments):
     # in the gene to reactions database
     if config.verbose:
         print "Remove hits to genes not in reactions database ..."
-    all_genes_in_database=reactions_database.gene_list()
+
     for gene in alignments.gene_list():
-        if not gene in all_genes_in_database:
+        if not reactions_database.gene_present(gene):
             alignments.delete_gene_and_hits(gene)
             
-    if config.verbose:
-        print "Total gene families after filtering: " + str(len(alignments.gene_list()))
+    # Update the bugs index list to remove any indexes that point to deleted hits        
+    alignments.update_hits_for_bugs()
+            
+    print "Total bugs after filtering: " + str(alignments.count_bugs())
+    alignments.print_bugs()            
+            
+    print "Total gene families after filtering: " + str(len(alignments.gene_list()))
             
     # Set up a command to run through each of the hits by bug
     args=[]

@@ -77,9 +77,7 @@ class alignments:
         
         hit_list=[]        
         for index in self.genes[gene]:
-            # Ignore deleted hits
-            if self.hits[index]:
-                hit_list.append(self.hits[index])
+            hit_list.append(self.hits[index])
             
         return hit_list
     
@@ -89,9 +87,7 @@ class alignments:
         """
         hit_list=[]        
         for index in self.bugs[bug]:
-            # Ignore deleted hits
-            if self.hits[index]:
-                hit_list.append(self.hits[index])
+            hit_list.append(self.hits[index])
             
         return hit_list
     
@@ -106,6 +102,21 @@ class alignments:
                 self.hits[index]=[]
             # Remove the gene entry
             del self.genes[gene]
+            
+    def update_hits_for_bugs(self):
+        """
+        Update the hit indexes associated with all of the bugs to remove
+        any indexes that point to deleted hits
+        """
+        
+        for bug in self.bugs:
+            updated_indexes=[]
+            for index in self.bugs[bug]:
+                # Check if the hit is empty
+                if self.hits[index]:
+                    updated_indexes.append(index)
+            self.bugs[bug]=updated_indexes
+                    
     
 class pathways_and_reactions:
     """
@@ -257,6 +268,17 @@ class reactions_database:
         """
            
         return self.genes_to_reactions.keys()
+    
+    def gene_present(self, gene):
+        """
+        Check if the gene is included in the database
+        """
+        
+        present=False
+        if gene in self.genes_to_reactions:
+            present=True
+            
+        return present
     
 class pathways_database:
     """
