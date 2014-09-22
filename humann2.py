@@ -128,17 +128,43 @@ def parse_arguments (args):
         choices=config.translated_alignment_choices)
     parser.add_argument(
         "--xipe",
-        help="turn on/off the xipe computation\n[DEFAULT: OFF]",
+        help="turn on/off the xipe computation\n[DEFAULT: " +
+        config.xipe_toggle + " ]",
         default=config.xipe_toggle,
+        choices=config.toggle_choices)
+    parser.add_argument(
+        "--minpath",
+        help="turn on/off the minpath computation\n[DEFAULT: " + 
+        config.minpath_toggle + " ]",
+        default=config.minpath_toggle,
         choices=config.toggle_choices)
 
     return parser.parse_args()
 	
 	 
-def check_requirements(args):
+def update_configuration(args):
     """
-    Check requirements (file format, dependencies, permissions)
+    Update the configuration settings based on the arguments
     """
+
+    # If set, append paths executable locations
+    if args.metaphlan:
+        utilities.add_exe_to_path(args.metaphlan)    
+    
+    if args.bowtie2:
+        utilities.add_exe_to_path(args.bowtie2)
+    
+    if args.usearch:
+        utilities.add_exe_to_path(args.usearch)
+
+    if args.rapsearch:
+        utilities.add_exe_to_path(args.rapsearch)
+
+    # Update data directory to full path
+    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
+    config.data_folder=os.path.join(humann2_fullpath,
+        config.data_folder)    
+
     # if set, update the config run mode to debug
     if args.debug:
         config.debug=True  
@@ -163,6 +189,82 @@ def check_requirements(args):
     # Update the computation toggle choices
     if args.xipe:
         config.xipe_toggle=args.xipe
+        
+    if args.minpath:
+        config.minpath_toggle=args.minpath
+        
+    # If minpath is set to run, install if not already installed
+    if config.minpath_toggle == config.toggle_on:
+        utilities.install_minpath()
+     
+    # Check that the directory that holds the input file is writeable
+    # before creating files/directories in that folder
+    input_dir = os.path.dirname(args.input)
+    if not input_dir:
+        input_dir=os.getcwd()
+    if not os.access(input_dir, os.W_OK):
+        sys.exit("ERROR: The directory which holds the input file is not " + 
+            "writeable. This software needs to write files to this directory.\n" +
+            "Please use another directory to hold your input file.") 
+
+    # Set the basename of the temp files to the sample name
+    config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
+    
+    # Set final output file names
+    if args.o_pathabundance:
+        config.pathabundance_file=args.o_pathabundance
+    else:
+        config.pathabundance_file=os.path.join(input_dir,
+            config.file_basename + config.pathabundance_file)
+
+    if args.o_pathcoverage:
+        config.pathcoverage_file=args.o_pathcoverage
+    else:
+        config.pathcoverage_file=os.path.join(input_dir,
+            config.file_basename + config.pathcoverage_file)
+
+    if args.o_genefamilies:
+        config.genefamilies_file=args.o_genefamilies
+    else:
+        config.genefamilies_file=os.path.join(input_dir,
+            config.file_basename + config.genefamilies_file)
+
+    # if set, check that the temp directory location is writeable
+    if args.temp:
+        if os.path.isdir(args.temp):
+            if not os.access(args.temp, os.W_OK):
+                sys.exit("ERROR: The directory set to hold the temp files " + 
+                    "is not writeable. Please change the permissions or select" +
+                    " another directory.")
+        else:
+            path_to_temp_dir=os.path.dirname(args.temp)
+            if not os.path.basename(args.temp):
+                path_to_temp_dir=os.path.dirname(os.path.dirname(args.temp))
+            if not path_to_temp_dir:
+                path_to_temp_dir=os.getcwd()
+            if not os.access(path_to_temp_dir, os.W_OK):
+                sys.exit("ERROR: The directory set to hold the temp files " + 
+                    "is not writeable. Please change the permissions or select" +
+                    " another directory.")
+
+    # if the temp_dir is set by the user then use that directory
+    if args.temp:
+        config.temp_dir=args.temp
+        if not os.path.isdir(config.temp_dir):
+            os.mkdir(config.temp_dir)    
+    else:
+        config.temp_dir=tempfile.mkdtemp( 
+            prefix='humann2_temp_', dir=input_dir)
+
+    if config.verbose:
+        print "\nWriting temp files to directory: " + config.temp_dir
+
+
+     
+def check_requirements(args):
+    """
+    Check requirements (file format, dependencies, permissions)
+    """
 
     # Check that the input file exists, is readable, and is fasta/fastq
     if utilities.fasta_or_fastq(args.input) == "error":
@@ -232,95 +334,15 @@ def check_requirements(args):
         sys.exit("ERROR: The bowtie2 executable can not be found. "  
             "Please check the install.")
 
-    # Check that the directory that holds the input file is writeable
-    input_dir = os.path.dirname(args.input)
-    if not input_dir:
-        input_dir=os.getcwd()
-    if not os.access(input_dir, os.W_OK):
-        sys.exit("ERROR: The directory which holds the input file is not " + 
-            "writeable. This software needs to write files to this directory.\n" +
-            "Please use another directory to hold your input file.") 
-
-    # Set the basename of the temp files to the sample name
-    config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
-    
-    # Set final output file names
-    if args.o_pathabundance:
-        config.pathabundance_file=args.o_pathabundance
-    else:
-        config.pathabundance_file=os.path.join(input_dir,
-            config.file_basename + config.pathabundance_file)
-
-    if args.o_pathcoverage:
-        config.pathcoverage_file=args.o_pathcoverage
-    else:
-        config.pathcoverage_file=os.path.join(input_dir,
-            config.file_basename + config.pathcoverage_file)
-
-    if args.o_genefamilies:
-        config.genefamilies_file=args.o_genefamilies
-    else:
-        config.genefamilies_file=os.path.join(input_dir,
-            config.file_basename + config.genefamilies_file)
-
-    # if set, check that the temp directory location is writeable
-    if args.temp:
-        if os.path.isdir(args.temp):
-            if not os.access(args.temp, os.W_OK):
-                sys.exit("ERROR: The directory set to hold the temp files " + 
-                    "is not writeable. Please change the permissions or select" +
-                    " another directory.")
-        else:
-            path_to_temp_dir=os.path.dirname(args.temp)
-            if not os.path.basename(args.temp):
-                path_to_temp_dir=os.path.dirname(os.path.dirname(args.temp))
-            if not path_to_temp_dir:
-                path_to_temp_dir=os.getcwd()
-            if not os.access(path_to_temp_dir, os.W_OK):
-                sys.exit("ERROR: The directory set to hold the temp files " + 
-                    "is not writeable. Please change the permissions or select" +
-                    " another directory.")
-
-    return input_dir	
-
-
 def main():
     # Parse arguments from command line
     args=parse_arguments(sys.argv)
-
-    # If set, append paths executable locations
-    if args.metaphlan:
-        utilities.add_exe_to_path(args.metaphlan)	
-	
-    if args.bowtie2:
-        utilities.add_exe_to_path(args.bowtie2)
-	
-    if args.usearch:
-        utilities.add_exe_to_path(args.usearch)
-
-    if args.rapsearch:
-        utilities.add_exe_to_path(args.rapsearch)
-
-    # Update data directory to full path
-    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
-    config.data_folder=os.path.join(humann2_fullpath,
-        config.data_folder)
+    
+    # Update the configuration settings based on the arguments
+    update_configuration(args)
 	
     # Check for required files, software, databases, and also permissions
-    # If all pass, return location of input_dir to write output to
-    output_dir=check_requirements(args)
-
-    # if the temp_dir is set by the user then use that directory
-    if args.temp:
-        config.temp_dir=args.temp
-        if not os.path.isdir(config.temp_dir):
-            os.mkdir(config.temp_dir)	
-    else:
-        config.temp_dir=tempfile.mkdtemp( 
-            prefix='humann2_temp_', dir=output_dir)
-
-    if config.verbose:
-        print "\nWriting temp files to directory: " + config.temp_dir
+    check_requirements(args)
 
     # Initialize alignments
     alignments=store.alignments()

@@ -5,25 +5,6 @@ import os, shutil, tempfile, math, re, sys, subprocess
 import utilities, config, store, MinPath12hmp
 
 
-def install_minpath():
-    """
-    Download and install the minpath software
-    """
-    
-    # Download the minpath software v1.2
-    # Check to see if already downloaded
-    
-    fullpath_scripts=os.path.dirname(os.path.realpath(__file__))
-    minpath_exe=os.path.join(fullpath_scripts,config.minpath_folder,
-        config.minpath_script)
-
-    if not os.path.isfile(minpath_exe):
-        utilities.download_tar_and_extract(config.minpath_url, 
-            os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
-        
-    return minpath_exe
-
-
 def run_minpath(reactions_file,metacyc_datafile):
     """
     Run minpath on the reactions file using the datafile of pathways
@@ -159,9 +140,6 @@ def identify_reactions_and_pathways(threads, alignments):
     """
     Identify the reactions and then pathways from the hits found
     """
-    
-    # Install minpath
-    minpath_exe=install_minpath()
     
     # load in the reactions database
     gene_to_reactions=os.path.join(config.data_folder,

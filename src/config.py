@@ -15,7 +15,7 @@ toggle_on = "on"
 toggle_off = "off"
 toggle_choices=[toggle_on,toggle_off]
 xipe_toggle = toggle_off
-
+minpath_toggle = toggle_on
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch"]

@@ -1,6 +1,5 @@
 """
-Utilities relating to executing third party software, file permissions,
-and file formats
+Utilities relating to third party software, file permissions, and file formats
 """
 
 import os, sys, subprocess, re, shutil, tempfile
@@ -366,4 +365,19 @@ def fastq_to_fasta(file):
 
     return new_file	
 		
+def install_minpath():
+    """
+    Download and install the minpath software
+    """
+    
+    # Download the minpath software v1.2
+    # Check to see if already downloaded
+    
+    fullpath_scripts=os.path.dirname(os.path.realpath(__file__))
+    minpath_exe=os.path.join(fullpath_scripts,config.minpath_folder,
+        config.minpath_script)
+
+    if not os.path.isfile(minpath_exe):
+        download_tar_and_extract(config.minpath_url, 
+            os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
 		
