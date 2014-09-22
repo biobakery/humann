@@ -294,20 +294,17 @@ def print_pathways(pathways, file, header):
     
     # Compile data for all bugs by pathways
     all_pathways_scores={}
-    all_pathways_output_lines={}
+    all_pathways_scores_by_bug={}
     for bug_pathways in pathways:
         bug=bug_pathways.get_bug()
         # Add up all scores based on score for each bug for each pathway
         for pathway, score in bug_pathways.get_items():
             if score>0:
-                if not pathway in all_pathways_scores.keys():
-                    all_pathways_scores[pathway]=score
-                    all_pathways_output_lines[pathway]=[pathway+category_delimiter+bug
-                        +delimiter+str(score)]
+                all_pathways_scores[pathway]=all_pathways_scores.get(pathway,0)+score
+                if not pathway in all_pathways_scores_by_bug:
+                    all_pathways_scores_by_bug[pathway]={bug: score}
                 else:
-                    all_pathways_scores[pathway]+=score
-                    all_pathways_output_lines[pathway].append(pathway+category_delimiter+bug
-                        +delimiter+str(score))               
+                    all_pathways_scores_by_bug[pathway][bug]=score             
  
     # Write the header
     file_handle=open(file,"w")
@@ -317,8 +314,10 @@ def print_pathways(pathways, file, header):
     for pathway in sorted(all_pathways_scores, key=all_pathways_scores.get, reverse=True):
         # Print the sum of all bugs for pathway
         file_handle.write(pathway+delimiter+str(all_pathways_scores[pathway])+"\n")
-        # Print scores per bug for pathway
-        file_handle.write("\n".join(all_pathways_output_lines[pathway])+"\n")
+        # Print scores per bug for pathway ordered with those with the highest values first
+        for bug in sorted(all_pathways_scores_by_bug[pathway], key=all_pathways_scores_by_bug[pathway].get, reverse=True):
+            file_handle.write(pathway+category_delimiter+bug+delimiter
+                              +str(all_pathways_scores_by_bug[pathway][bug])+"\n")
                     
     file_handle.close()
     

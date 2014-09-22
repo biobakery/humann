@@ -36,7 +36,7 @@ def gene_families(alignments):
             hits_by_bug[bug]=hits_by_bug.get(bug,0)+1          
         
         # record the hits by bug for this gene
-        for bug in hits_by_bug.keys():
+        for bug in sorted(hits_by_bug, key=hits_by_bug.get, reverse=True):
             gene_output_lines[gene].append(gene+config.output_file_category_delimiter+
                 bug+config.output_file_column_delimiter+str(hits_by_bug[bug]))
         
