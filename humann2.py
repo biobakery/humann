@@ -257,7 +257,7 @@ def update_configuration(args):
             prefix='humann2_temp_', dir=input_dir)
 
     if config.verbose:
-        print "\nWriting temp files to directory: " + config.temp_dir
+        print "\nWriting temp files to directory: " + config.temp_dir + "\n"
 
 
      
@@ -346,6 +346,22 @@ def main():
 
     # Initialize alignments
     alignments=store.alignments()
+    
+    # Load in the reactions database
+    genes_to_reactions=os.path.join(config.data_folder,
+        config.metacyc_gene_to_reactions)
+    reactions_database=store.reactions_database(genes_to_reactions)
+
+    if config.verbose:
+        print "Load reactions from database: " + genes_to_reactions
+    
+    # Load in the pathways database
+    reactions_to_pathways=os.path.join(config.data_folder,
+        config.metacyc_reactions_to_pathways)
+    pathways_database=store.pathways_database(reactions_to_pathways)
+    
+    if config.verbose:
+        print "Load pathways from database: " + reactions_to_pathways
 
     # Start timer
     start_time=time.time()
@@ -435,11 +451,11 @@ def main():
     # Identify reactions and then pathways from the alignments
     print "\nComputing pathways abundance and coverage ..."
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
-        args.threads, alignments)
+        args.threads, alignments, reactions_database, pathways_database)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
-        args.threads, pathways_and_reactions_store)
+        args.threads, pathways_and_reactions_store, pathways_database)
 
     if config.verbose:
         print str(int(time.time() - start_time)) + " seconds from start"

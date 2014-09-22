@@ -44,7 +44,7 @@ def identify_reactions_and_pathways_by_bug(args):
     Identify the reactions from the hits found for a specific bug
     """
     
-    reactions_database, hits, bug = args
+    reactions_database, pathways_database, hits, bug = args
     
     if config.verbose:
         print "Compute gene scores by query ..."
@@ -70,11 +70,9 @@ def identify_reactions_and_pathways_by_bug(args):
         for gene, score in genes:
             total_genes[gene]=total_genes.get(gene,0)+score/total_scores_by_query[query]
                 
-    # Create a temp file for the reactions results
-    file_descriptor, reactions_file=tempfile.mkstemp()
-
     # Merge the gene scores to reaction scores   
     reactions={}
+    reactions_file_lines=[]
     for reaction in reactions_database.reaction_list():
         genes_list=reactions_database.find_genes(reaction)
         abundance=0
@@ -84,43 +82,54 @@ def identify_reactions_and_pathways_by_bug(args):
         
         # Only write out reactions where the abundance is greater than 0
         if abundance>0: 
-            os.write(file_descriptor, reaction+config.output_file_column_delimiter
+            reactions_file_lines.append(reaction+config.output_file_column_delimiter
                 +str(abundance)+"\n")
             # Store the abundance data to compile with the minpath pathways
             reactions[reaction]=abundance
-        
-    os.close(file_descriptor)
-    
-    metacyc_datafile=os.path.join(config.data_folder,
-        config.metacyc_reactions_to_pathways)
 
-    # Run minpath to identify the pathways
-    tmpfile=run_minpath(reactions_file, metacyc_datafile)
-    
-    # Remove the temp reactions file
-    utilities.remove_file(reactions_file)
-    
-    # Process the minpath results
-    file_handle_read=open(tmpfile, "r")
-    
-    line=file_handle_read.readline()
-    
     pathways={}
-    while line:
-        data=line.strip().split(config.minpath_pathway_delimiter)
-        if re.search(config.minpath_pathway_identifier,line):
-            current_pathway=data[config.minpath_pathway_index]
-        else:
-            current_reaction=data[config.minpath_reaction_index]
-            # store the pathway and reaction
-            pathways[current_reaction]=pathways.get(
-                current_reaction,[]) + [current_pathway]      
-        line=file_handle_read.readline()
+    if config.minpath_toggle == config.toggle_on:   
 
-    file_handle_read.close()
+        # Create a temp file for the reactions results
+        file_descriptor, reactions_file=tempfile.mkstemp()
+        os.write(file_descriptor, "".join(reactions_file_lines))
+        os.close(file_descriptor)
+ 
+        metacyc_datafile=os.path.join(config.data_folder,
+            config.metacyc_reactions_to_pathways)
     
-    # Remove the minpath results file
-    utilities.remove_file(tmpfile)
+        # Run minpath to identify the pathways
+        tmpfile=run_minpath(reactions_file, metacyc_datafile)
+        
+        # Remove the temp reactions file
+        utilities.remove_file(reactions_file)
+        
+        # Process the minpath results
+        file_handle_read=open(tmpfile, "r")
+        
+        line=file_handle_read.readline()
+        
+        while line:
+            data=line.strip().split(config.minpath_pathway_delimiter)
+            if re.search(config.minpath_pathway_identifier,line):
+                current_pathway=data[config.minpath_pathway_index]
+            else:
+                current_reaction=data[config.minpath_reaction_index]
+                # store the pathway and reaction
+                pathways[current_reaction]=pathways.get(
+                    current_reaction,[]) + [current_pathway]      
+            line=file_handle_read.readline()
+    
+        file_handle_read.close()
+        
+        # Remove the minpath results file
+        utilities.remove_file(tmpfile)
+    else:
+        # Add all pathways associated with each reaction if not using minpath
+        for current_reaction in reactions:
+            pathways[current_reaction]=pathways.get(
+                current_reaction, []) + pathways_database.find_pathways(current_reaction)
+        
     
     pathways_and_reactions_store=store.pathways_and_reactions(bug)
     # Store the pathway abundance for each reaction
@@ -136,16 +145,11 @@ def identify_reactions_and_pathways_by_bug(args):
     return pathways_and_reactions_store
     
     
-def identify_reactions_and_pathways(threads, alignments):
+def identify_reactions_and_pathways(threads, alignments, reactions_database, pathways_database):
     """
     Identify the reactions and then pathways from the hits found
     """
-    
-    # load in the reactions database
-    gene_to_reactions=os.path.join(config.data_folder,
-        config.metacyc_gene_to_reactions)
-    reactions_database=store.reactions_database(gene_to_reactions)
-    
+        
     # Remove the hits from the alignments that are not associated with a gene
     # in the gene to reactions database
     if config.verbose:
@@ -169,7 +173,7 @@ def identify_reactions_and_pathways(threads, alignments):
         
         hits=alignments.hits_for_bug(bug)
 
-        args.append([reactions_database, hits, bug])
+        args.append([reactions_database, pathways_database, hits, bug])
         
     pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
         function=identify_reactions_and_pathways_by_bug)
@@ -319,14 +323,10 @@ def print_pathways(pathways, file, header):
     file_handle.close()
     
 
-def compute_pathways_abundance_and_coverage(threads, pathways_and_reactions_store):
+def compute_pathways_abundance_and_coverage(threads, pathways_and_reactions_store, pathways_database):
     """
     Compute the abundance and coverage of the pathways
     """
-
-    # Load in the pathways database
-    pathways_database=store.pathways_database(os.path.join(config.data_folder,
-        config.metacyc_reactions_to_pathways))
     
     # Compute abundance for all pathways
     args=[]

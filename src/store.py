@@ -319,6 +319,7 @@ class pathways_database:
         Load in the pathways data from the database
         """
         self.pathways_to_reactions={}
+        self.reactions_to_pathways={}
         
         file_handle=open(database,"r")
          
@@ -351,6 +352,12 @@ class pathways_database:
                 
                 self.pathways_to_reactions[pathway]=self.pathways_to_reactions.get(
                     pathway,[]) + reaction
+                    
+        # store all pathways associated with a reaction
+        for pathway in self.pathways_to_reactions:
+            for reaction in self.pathways_to_reactions[pathway]:
+                self.reactions_to_pathways[reaction]=self.reactions_to_pathways.get(
+                    reaction,[]) + [pathway]
     
     def find_reactions(self,pathway):
         """
@@ -358,6 +365,13 @@ class pathways_database:
         """
          
         return self.pathways_to_reactions.get(pathway, [])
+
+    def find_pathways(self,reaction):
+        """
+        Return the list of pathways associated with the reaction
+        """
+         
+        return self.reactions_to_pathways.get(reaction, [])
     
 class reads:
     """
