@@ -336,8 +336,8 @@ class pathways_database:
          
         reactions={}
         while line:
-            data=line.rstrip().split(config.pathways_database_delimiter)
-            if len(data)>2:
+            data=line.strip().split(config.pathways_database_delimiter)
+            if len(data)>1:
                 pathway=data.pop(0)
                 reactions[pathway]=data
                 

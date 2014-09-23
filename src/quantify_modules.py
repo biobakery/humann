@@ -198,10 +198,6 @@ def pathways_coverage_by_bug(args):
     median_score_value=pathways_and_reactions_store.median_score()
     
     for pathway, reaction_scores in pathways_and_reactions_store.get_items():
-        
-        # Initialize any reactions in the pathway not found to 0
-        for reaction in pathways_database.find_reactions(pathway):
-            reaction_scores.setdefault(reaction, 0)
             
         # Count the reactions with scores greater than the median
         count_greater_than_median=0
@@ -210,7 +206,10 @@ def pathways_coverage_by_bug(args):
                count_greater_than_median+=1
         
         # Compute coverage
-        coverage=count_greater_than_median/float(len(reaction_scores.keys()))
+        coverage=0
+        total_reactions_for_pathway=len(pathways_database.find_reactions(pathway))
+        if total_reactions_for_pathway:
+            coverage=count_greater_than_median/float(total_reactions_for_pathway)
         
         pathways_coverages[pathway]=coverage
         xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
