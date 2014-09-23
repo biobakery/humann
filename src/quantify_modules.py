@@ -105,25 +105,27 @@ def identify_reactions_and_pathways_by_bug(args):
         utilities.remove_file(reactions_file)
         
         # Process the minpath results
-        file_handle_read=open(tmpfile, "r")
-        
-        line=file_handle_read.readline()
-        
-        while line:
-            data=line.strip().split(config.minpath_pathway_delimiter)
-            if re.search(config.minpath_pathway_identifier,line):
-                current_pathway=data[config.minpath_pathway_index]
-            else:
-                current_reaction=data[config.minpath_reaction_index]
-                # store the pathway and reaction
-                pathways[current_reaction]=pathways.get(
-                    current_reaction,[]) + [current_pathway]      
+        if os.path.isfile(tmpfile):
+
+            file_handle_read=open(tmpfile, "r")
+            
             line=file_handle_read.readline()
-    
-        file_handle_read.close()
+            
+            while line:
+                data=line.strip().split(config.minpath_pathway_delimiter)
+                if re.search(config.minpath_pathway_identifier,line):
+                    current_pathway=data[config.minpath_pathway_index]
+                else:
+                    current_reaction=data[config.minpath_reaction_index]
+                    # store the pathway and reaction
+                    pathways[current_reaction]=pathways.get(
+                        current_reaction,[]) + [current_pathway]      
+                line=file_handle_read.readline()
         
-        # Remove the minpath results file
-        utilities.remove_file(tmpfile)
+            file_handle_read.close()
+            
+            # Remove the minpath results file
+            utilities.remove_file(tmpfile)
     else:
         # Add all pathways associated with each reaction if not using minpath
         for current_reaction in reactions:
