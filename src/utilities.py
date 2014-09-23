@@ -179,8 +179,6 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
         else:
             try:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                if config.verbose:
-                    print p_out
             except OSError as e:
                 sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
 
