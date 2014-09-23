@@ -166,7 +166,12 @@ class pathways_and_reactions:
         # Find the median score value
         median_score_value=0
         if all_scores:
-            median_score_value=all_scores[len(all_scores)/2]
+            if len(all_scores) % 2 == 0:
+                index1=len(all_scores)/2
+                index2=index1-1
+                median_score_value=(all_scores[index1]+all_scores[index2])/2.0
+            else:
+                median_score_value=all_scores[len(all_scores)/2]
             
         return median_score_value
     
