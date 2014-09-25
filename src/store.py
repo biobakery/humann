@@ -453,3 +453,11 @@ class reads:
             fasta.append(">"+id+"\n"+sequence)
         
         return "\n".join(fasta)
+    
+    def id_list(self):
+        """
+        Return a list of all of the fasta ids
+        """
+        
+        return self.reads.keys()
+    
