@@ -378,6 +378,32 @@ class pathways_database:
          
         return self.reactions_to_pathways.get(reaction, [])
     
+    def reaction_list(self):
+        """
+        Return the list of reactions included in the database
+        """
+        
+        return self.reactions_to_pathways.keys()
+    
+    def pathway_list(self):
+        """
+        Return the list of pathways included in the database
+        """
+        
+        return self.pathways_to_reactions.keys()
+    
+    def get_database(self):
+        """
+        Return the database as a flat file with a single pathway per line
+        """
+        
+        data=[]
+        for pathway in self.pathways_to_reactions:
+            data.append(pathway+config.pathways_database_delimiter+
+                config.pathways_database_delimiter.join(self.pathways_to_reactions[pathway]))
+            
+        return "\n".join(data)
+    
 class reads:
     """
     Holds all of the reads data to create a fasta file
