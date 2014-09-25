@@ -375,7 +375,14 @@ def install_minpath():
     minpath_exe=os.path.join(fullpath_scripts,config.minpath_folder,
         config.minpath_script)
 
+    # Check for write permission to the target folder
+    if not os.access(fullpath_scripts, os.W_OK):
+        sys.exit("ERROR: The directory set to install MinPath is not writeable: "+
+            fullpath_scripts + " . Please modify the permissions.")
+
     if not os.path.isfile(minpath_exe):
+        if config.verbose:
+            print "Installing minpath ... "
         download_tar_and_extract(config.minpath_url, 
             os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
 		
