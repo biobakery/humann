@@ -3,7 +3,7 @@ Utilities relating to third party software, file permissions, and file formats
 """
 
 import os, sys, subprocess, re, shutil, tempfile
-import fileinput, urllib, tarfile, multiprocessing
+import urllib, tarfile, multiprocessing
 import config
 
 def name_temp_file(file_name):
