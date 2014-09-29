@@ -150,6 +150,12 @@ def parse_arguments (args):
         config.minpath_toggle + " ]",
         default=config.minpath_toggle,
         choices=config.toggle_choices)
+    parser.add_argument(
+        "--output_format",
+        help="the format of the output files\n[DEFAULT: " +
+        config.output_format + " ]",
+        default=config.output_format,
+        choices=config.output_format_choices)
 
     return parser.parse_args()
 	
@@ -222,24 +228,31 @@ def update_configuration(args):
     # Set the basename of the temp files to the sample name
     config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
     
+    # Set the output format
+    if args.output_format:
+        config.output_format=args.output_format
+    
     # Set final output file names
     if args.o_pathabundance:
         config.pathabundance_file=args.o_pathabundance
     else:
         config.pathabundance_file=os.path.join(input_dir,
-            config.file_basename + config.pathabundance_file)
+            config.file_basename + config.pathabundance_file + "." + 
+            config.output_format)
 
     if args.o_pathcoverage:
         config.pathcoverage_file=args.o_pathcoverage
     else:
         config.pathcoverage_file=os.path.join(input_dir,
-            config.file_basename + config.pathcoverage_file)
+            config.file_basename + config.pathcoverage_file + "." + 
+            config.output_format)
 
     if args.o_genefamilies:
         config.genefamilies_file=args.o_genefamilies
     else:
         config.genefamilies_file=os.path.join(input_dir,
-            config.file_basename + config.genefamilies_file)
+            config.file_basename + config.genefamilies_file + "." + 
+            config.output_format)
 
     # if set, check that the temp directory location is writeable
     if args.temp:
@@ -343,6 +356,12 @@ def check_requirements(args):
     if not utilities.find_exe_in_path("bowtie2"): 
         sys.exit("ERROR: The bowtie2 executable can not be found. "  
             "Please check the install.")
+        
+    # If the biom output format is selected, check for the biom package
+    if config.output_format=="biom":
+        if not utilities.find_exe_in_path("biom"):
+            sys.exit("ERROR: The biom executable can not be found. "
+            "Please check the install or select another output format.")
 
 def main():
     # Parse arguments from command line

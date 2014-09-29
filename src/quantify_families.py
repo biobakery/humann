@@ -2,16 +2,16 @@
 Compute alignments by gene family
 """
 
+import os
+import tempfile
+
 import config
+import utilities
 
 def gene_families(alignments):
     """
     Compute the gene families from the alignments
     """
-    
-    file_handle = open(config.genefamilies_file, "w")
-
-    file_handle.write("Gene Family"+config.output_file_column_delimiter+"Hits\n")
     
     # Compute hits by gene family
     gene_scores={}
@@ -41,10 +41,25 @@ def gene_families(alignments):
                 bug+config.output_file_column_delimiter+str(hits_by_bug[bug]))
         
     # Write the scores ordered with the top first
+    tsv_output=["#Gene Family"+config.output_file_column_delimiter+"Hits"]
     for gene in sorted(gene_scores, key=gene_scores.get, reverse=True):
-        file_handle.write("\n".join(gene_output_lines[gene])+"\n")    
+        tsv_output.append("\n".join(gene_output_lines[gene]))    
         
-    file_handle.close()
+    if config.output_format=="biom":
+        # Open a temp file if a conversion to biom is selected
+        file_out, tmpfile=tempfile.mkstemp()
+        os.write(file_out, "\n".join(tsv_output))
+        os.close(file_out)
+        
+        utilities.tsv_to_biom(tmpfile,config.genefamilies_file)
+        
+        # Remove the temp tsv file
+        utilities.remove_file(tmpfile)
+    else:
+        # Write output as tsv format
+        file_handle = open(config.genefamilies_file, "w")
+        file_handle.write("\n".join(tsv_output))
+        file_handle.close()
 
     return config.genefamilies_file
 

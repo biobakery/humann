@@ -177,18 +177,18 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
             if stdin_file:
                 try:
                     p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
-                except OSError as e:
-                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
+                except OSError:
+                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
             else:
                 try:
                     p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
-                except OSError as e:
-                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
+                except OSError:
+                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
         else:
             try:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except OSError as e:
-                sys.exit("Error: Problem executing " + " ".join(cmd) + "\n" + e.strerror)
+            except OSError:
+                sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
 
         # check that the output files exist and are readable
         for file in outfiles:
@@ -393,4 +393,21 @@ def install_minpath():
             print("Installing minpath ... ")
         download_tar_and_extract(config.minpath_url, 
             os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
+    
+def tsv_to_biom(tsv_file, biom_file):
+    """
+    Convert from a tsv to biom file
+    """
+
+    exe="biom"
+    args=["convert","-i",tsv_file,"-o",biom_file,"--table-type","OTU table","--to-json"]
+    
+    # Remove output file if already exists
+    if os.path.isfile(biom_file):
+        remove_file(biom_file)
+    
+    execute_command(exe, args, [tsv_file], [biom_file])
+    
+    
+    
 		

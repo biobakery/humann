@@ -10,12 +10,16 @@ verbose = False
 bypass_prescreen = False
 bypass_nucleotide_index = False
 
-# Turn on/off computations
+# turn on/off computations
 toggle_on = "on"
 toggle_off = "off"
 toggle_choices=[toggle_on,toggle_off]
 xipe_toggle = toggle_off
 minpath_toggle = toggle_on
+
+# file format
+output_format_choices=["tsv", "biom"]
+output_format=output_format_choices[0]
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch"]
@@ -39,9 +43,9 @@ nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
 
-pathabundance_file="_pathabundance.tsv"
-pathcoverage_file="_pathcoverage.tsv"
-genefamilies_file="_genefamilies.tsv"
+pathabundance_file="_pathabundance"
+pathcoverage_file="_pathcoverage"
+genefamilies_file="_genefamilies"
 
 # metaphlan options
 prescreen_threshold=0.01

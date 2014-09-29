@@ -302,8 +302,6 @@ def print_pathways(pathways, file, header):
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter
     
-
-    
     # Compile data for all bugs by pathways
     all_pathways_scores={}
     all_pathways_scores_by_bug={}
@@ -318,20 +316,34 @@ def print_pathways(pathways, file, header):
                 else:
                     all_pathways_scores_by_bug[pathway][bug]=score             
  
-    # Write the header
-    file_handle=open(file,"w")
-    file_handle.write("Pathway"+ delimiter + header +"\n")       
+    # Create the header
+    tsv_output=["# Pathway"+ delimiter + header]       
     
     # Print out the pathways with those with the highest scores first
     for pathway in sorted(all_pathways_scores, key=all_pathways_scores.get, reverse=True):
         # Print the sum of all bugs for pathway
-        file_handle.write(pathway+delimiter+str(all_pathways_scores[pathway])+"\n")
+        tsv_output.append(pathway+delimiter+str(all_pathways_scores[pathway]))
         # Print scores per bug for pathway ordered with those with the highest values first
         for bug in sorted(all_pathways_scores_by_bug[pathway], key=all_pathways_scores_by_bug[pathway].get, reverse=True):
-            file_handle.write(pathway+category_delimiter+bug+delimiter
-                              +str(all_pathways_scores_by_bug[pathway][bug])+"\n")
-                    
-    file_handle.close()
+            tsv_output.append(pathway+category_delimiter+bug+delimiter
+                              +str(all_pathways_scores_by_bug[pathway][bug]))
+ 
+    if config.output_format == "biom":
+        # Open a temp file if a conversion to biom is selected
+        file_out, tmpfile=tempfile.mkstemp()
+        os.write(file_out, "\n".join(tsv_output))
+        os.close(file_out)
+        
+        utilities.tsv_to_biom(tmpfile,file)
+        
+        # Remove the temp tsv file
+        utilities.remove_file(tmpfile)
+            
+    else:
+        # Write the final file as tsv
+        file_handle=open(file,"w") 
+        file_handle.write("\n".join(tsv_output))                  
+        file_handle.close()
     
 
 def compute_pathways_abundance_and_coverage(threads, pathways_and_reactions_store, pathways_database):
