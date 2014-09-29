@@ -2,8 +2,13 @@
 Index database, run alignment, find unused reads
 """
 
-import os, re, math
-import utilities, config, store
+import os
+import re
+import math
+
+import utilities
+import config
+import store
 
 def index(custom_database):
     """
@@ -102,7 +107,7 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
 
     # read through the file line by line
     line = file_handle_read.readline()
-    unaligned_reads_store=store.reads()
+    unaligned_reads_store=store.Reads()
     
     while line:
         # ignore headers ^@ 

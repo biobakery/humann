@@ -2,8 +2,12 @@
 Identify initial list of bugs from user supplied fasta/fastq
 """
 
-import os, re, sys
-import utilities, config
+import os
+import re
+import sys
+
+import utilities
+import config
 
 def alignment(input, threads):
     """

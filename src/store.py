@@ -5,10 +5,13 @@ Stores the reactions/pathways from the database selected
 Stores the pathways identified
 Stores the unaligned reads
 """
-import os, re
-import config, utilities
+import os
+import re
 
-class alignments:
+import config
+import utilities
+
+class Alignments:
     """
     Holds all of the alignments for all bugs
     """
@@ -118,7 +121,7 @@ class alignments:
             self.bugs[bug]=updated_indexes
                     
     
-class pathways_and_reactions:
+class PathwaysAndReactions:
     """
     Holds all of the pathways and reaction scores for one bug
     """
@@ -175,7 +178,7 @@ class pathways_and_reactions:
             
         return median_score_value
     
-class pathways:
+class Pathways:
     """
     Holds the pathways coverage or abundance data for a bug
     """
@@ -207,7 +210,7 @@ class pathways:
         return self.pathways.items()
         
     
-class reactions_database:
+class ReactionsDatabase:
     """
     Holds all of the genes/reactions data from the file provided
     """
@@ -285,7 +288,7 @@ class reactions_database:
             
         return present
     
-class pathways_database:
+class PathwaysDatabase:
     """
     Holds all of the reactions/pathways data from the file provided
     """
@@ -404,7 +407,7 @@ class pathways_database:
             
         return "\n".join(data)
     
-class reads:
+class Reads:
     """
     Holds all of the reads data to create a fasta file
     """

@@ -2,8 +2,14 @@
 Run alignment, find unused reads
 """
 
-import os, tempfile, re, numbers
-import utilities, config, store
+import os
+import tempfile
+import re
+import numbers
+
+import utilities
+import config
+import store
 
 def usearch_alignment(alignment_file,threads,identity_threshold,
         uniref, unaligned_reads_file_fastq):

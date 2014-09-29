@@ -1,8 +1,19 @@
 """ 
 Generate pathway coverage and abundance
 """
-import os, shutil, tempfile, math, re, sys, subprocess
-import utilities, config, store, MinPath12hmp
+
+import os
+import shutil
+import tempfile
+import math
+import re
+import sys
+import subprocess
+
+import utilities
+import config
+import store
+import MinPath12hmp
 
 
 def run_minpath(reactions_file,metacyc_datafile):
@@ -133,7 +144,7 @@ def identify_reactions_and_pathways_by_bug(args):
                 current_reaction, []) + pathways_database.find_pathways(current_reaction)
         
     
-    pathways_and_reactions_store=store.pathways_and_reactions(bug)
+    pathways_and_reactions_store=store.PathwaysAndReactions(bug)
     # Store the pathway abundance for each reaction
     for current_reaction in reactions:
         # Find the pathways associated with reaction
@@ -249,7 +260,7 @@ def pathways_coverage_by_bug(args):
         for pathway in pathways_to_remove:
             del pathways_coverages[pathway]
     
-    return store.pathways(pathways_and_reactions_store.get_bug(), pathways_coverages)
+    return store.Pathways(pathways_and_reactions_store.get_bug(), pathways_coverages)
 
 def pathways_abundance_by_bug(args):
     """
@@ -281,7 +292,7 @@ def pathways_abundance_by_bug(args):
         pathways_abundances[pathway]=abundance
     
     # Return a dictionary with a single key of the bug name
-    return store.pathways(pathways_and_reactions_store.get_bug(), pathways_abundances)
+    return store.Pathways(pathways_and_reactions_store.get_bug(), pathways_abundances)
     
 def print_pathways(pathways, file, header):
     """

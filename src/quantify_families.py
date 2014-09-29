@@ -2,7 +2,7 @@
 Compute alignments by gene family
 """
 
-import config, store
+import config
 
 def gene_families(alignments):
     """

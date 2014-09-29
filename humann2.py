@@ -13,10 +13,22 @@ Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
 To Run: ./humann2.py -i <input.fastq> -c <chocophlan/> -u <uniref/>
 """
 
-import argparse, sys, subprocess, os, time, tempfile, re
+import argparse
+import sys
+import subprocess
+import os
+import time
+import tempfile
+import re
 
-from src import utilities, prescreen, nucleotide_search, store
-from src import translated_search, config, quantify_families, quantify_modules
+from src import utilities
+from src import prescreen
+from src import nucleotide_search
+from src import store
+from src import translated_search
+from src import config
+from src import quantify_families
+from src import quantify_modules
 
 def parse_arguments (args):
     """ 
@@ -345,12 +357,12 @@ def main():
     check_requirements(args)
 
     # Initialize alignments
-    alignments=store.alignments()
+    alignments=store.Alignments()
     
     # Load in the reactions database
     genes_to_reactions=os.path.join(config.data_folder,
         config.metacyc_gene_to_reactions)
-    reactions_database=store.reactions_database(genes_to_reactions)
+    reactions_database=store.ReactionsDatabase(genes_to_reactions)
 
     if config.verbose:
         print "Load reactions from database: " + genes_to_reactions
@@ -358,7 +370,7 @@ def main():
     # Load in the pathways database
     reactions_to_pathways=os.path.join(config.data_folder,
         config.metacyc_reactions_to_pathways)
-    pathways_database=store.pathways_database(reactions_to_pathways)
+    pathways_database=store.PathwaysDatabase(reactions_to_pathways)
     
     if config.verbose:
         print "Load pathways from database: " + reactions_to_pathways
@@ -418,7 +430,7 @@ def main():
     else:
         reduced_aligned_reads_file = "Empty"
         unaligned_reads_file_fasta=args.input
-        unaligned_reads_store=store.reads(unaligned_reads_file_fasta)
+        unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
 
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, 
