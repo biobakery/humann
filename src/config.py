@@ -11,11 +11,9 @@ bypass_prescreen = False
 bypass_nucleotide_index = False
 
 # turn on/off computations
-toggle_on = "on"
-toggle_off = "off"
-toggle_choices=[toggle_on,toggle_off]
-xipe_toggle = toggle_off
-minpath_toggle = toggle_on
+toggle_choices=["on","off"]
+xipe_toggle = "off"
+minpath_toggle = "on"
 
 # file format
 output_format_choices=["tsv", "biom"]

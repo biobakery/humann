@@ -212,7 +212,7 @@ def update_configuration(args):
         config.minpath_toggle=args.minpath
         
     # If minpath is set to run, install if not already installed
-    if config.minpath_toggle == config.toggle_on:
+    if config.minpath_toggle == "on":
         utilities.install_minpath()
      
     # Check that the directory that holds the input file is writeable

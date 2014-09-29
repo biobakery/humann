@@ -99,7 +99,7 @@ def identify_reactions_and_pathways_by_bug(args):
             reactions[reaction]=abundance
 
     pathways={}
-    if config.minpath_toggle == config.toggle_on:   
+    if config.minpath_toggle == "on":   
 
         # Create a temp file for the reactions results
         file_descriptor, reactions_file=tempfile.mkstemp()
@@ -226,7 +226,7 @@ def pathways_coverage_by_bug(args):
         xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
     
     # Check config to determine if xipe should be run
-    if config.xipe_toggle == config.toggle_on:
+    if config.xipe_toggle == "on":
         # Run xipe
         xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
             config.xipe_script)
