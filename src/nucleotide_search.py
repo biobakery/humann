@@ -31,7 +31,7 @@ def index(custom_database):
         outfiles=[index_name + config.bowtie2_large_index_ext]
         
     # index the database
-    print "\nRunning " + exe + " ........\n"
+    print("\nRunning " + exe + " ........\n")
 
     args+=opts
     
@@ -69,7 +69,7 @@ def alignment(user_fastq, threads, index_name):
         args+=["-p",threads]
 
     # run the bowtie2 alignment
-    print "\nRunning " + exe + " ........\n"
+    print("\nRunning " + exe + " ........\n")
     
     args+=opts
 

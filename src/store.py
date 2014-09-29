@@ -57,7 +57,7 @@ class Alignments:
         Print out the bugs and total number of hits
         """
         for bug in self.bugs.keys():
-            print bug + ": " + str(len(self.bugs[bug])) + " hits"
+            print(bug + ": " + str(len(self.bugs[bug])) + " hits")
             
     def gene_list(self):
         """

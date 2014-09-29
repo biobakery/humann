@@ -32,7 +32,7 @@ def run_minpath(reactions_file,metacyc_datafile):
         os.close(file_out2)
     
         if config.verbose:
-            print "\nRun MinPath .... "
+            print("\nRun MinPath .... ")
     
         # Redirect stdout
         sys.stdout=open(os.devnull,"w")
@@ -58,7 +58,7 @@ def identify_reactions_and_pathways_by_bug(args):
     reactions_database, pathways_database, hits, bug = args
     
     if config.verbose:
-        print "Compute gene scores by query ..."
+        print("Compute gene scores by query ...")
     
     # Loop through hits to organize scores by query
     genes_by_query={}
@@ -73,7 +73,7 @@ def identify_reactions_and_pathways_by_bug(args):
         total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
     
     if config.verbose:
-        print "Total reads mapped to " + bug + " : " + str(len(hits))            
+        print("Total reads mapped to " + bug + " : " + str(len(hits)))            
     
     # add these scores by query to the total gene scores
     total_genes={}
@@ -166,7 +166,7 @@ def identify_reactions_and_pathways(threads, alignments, reactions_database, pat
     # Remove the hits from the alignments that are not associated with a gene
     # in the gene to reactions database
     if config.verbose:
-        print "Remove hits to genes not in reactions database ..."
+        print("Remove hits to genes not in reactions database ...")
 
     for gene in alignments.gene_list():
         if not reactions_database.gene_present(gene):
@@ -175,10 +175,10 @@ def identify_reactions_and_pathways(threads, alignments, reactions_database, pat
     # Update the bugs index list to remove any indexes that point to deleted hits        
     alignments.update_hits_for_bugs()
             
-    print "Total bugs after filtering: " + str(alignments.count_bugs())
+    print("Total bugs after filtering: " + str(alignments.count_bugs()))
     alignments.print_bugs()            
             
-    print "Total gene families after filtering: " + str(len(alignments.gene_list()))
+    print("Total gene families after filtering: " + str(len(alignments.gene_list())))
             
     # Set up a command to run through each of the hits by bug
     args=[]
@@ -201,7 +201,7 @@ def pathways_coverage_by_bug(args):
     pathways_and_reactions_store, pathways_database = args
     
     if config.verbose:
-        print "Compute pathway coverage for bug: " + pathways_and_reactions_store.get_bug()
+        print("Compute pathway coverage for bug: " + pathways_and_reactions_store.get_bug())
     
     # Process through each pathway to compute coverage
     pathways_coverages={}
@@ -234,7 +234,7 @@ def pathways_coverage_by_bug(args):
         cmmd=[xipe_exe,"--file2",config.xipe_percent]
         
         if config.verbose:
-            print "Run xipe ...."
+            print("Run xipe ....")
         xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
             stdout = subprocess.PIPE, stderr = subprocess.PIPE )
         xipe_stdout, xipe_stderr = xipe_subprocess.communicate("\n".join(xipe_input))
@@ -270,7 +270,7 @@ def pathways_abundance_by_bug(args):
     pathways_and_reactions_store, pathways_database = args
     
     if config.verbose:
-        print "Compute pathway abundance for bug: " + pathways_and_reactions_store.get_bug()
+        print("Compute pathway abundance for bug: " + pathways_and_reactions_store.get_bug())
 
     # Process through each pathway to compute abundance
     pathways_abundances={}

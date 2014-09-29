@@ -86,12 +86,12 @@ def download_tar_and_extract(url, filename, folder):
     Download the file at the url
     """
     if config.verbose:
-        print "Download URL:" + url 
+        print("Download URL:" + url) 
 
     file, headers = urllib.urlretrieve(url,filename)
 
     if config.verbose:
-        print "Extracting:" + filename
+        print("Extracting:" + filename)
     tarfile_handle=tarfile.open(filename,'r:gz')
     tarfile_handle.extractall(path=folder)
 
@@ -102,7 +102,7 @@ def remove_file(file):
     if os.path.isfile(file):
         os.unlink(file)
         if config.verbose:
-            print "Remove file: " + file
+            print("Remove file: " + file)
 
 def check_outfiles(outfiles):
     """
@@ -169,7 +169,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
     if not bypass:
 
         if config.verbose:
-            print "\n" + exe + " " + " ".join(args) + "\n"
+            print("\n" + exe + " " + " ".join(args) + "\n")
 
         cmd=[exe]+args
 	
@@ -195,9 +195,9 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
             file_exists_readable(file)
     else:
         if config.verbose:
-            print "Bypass: \n" + exe + " " + " ".join(args) + "\n"
+            print("Bypass: \n" + exe + " " + " ".join(args) + "\n")
         else:
-            print "Bypass\n"
+            print("Bypass\n")
 
 def fasta_or_fastq(file):
     """
@@ -286,7 +286,7 @@ def remove_directory(dir):
     if os.path.isdir(dir):
         try:
             if config.verbose:
-                print "Remove directory: " + dir
+                print("Remove directory: " + dir)
             shutil.rmtree(dir)
         except OSError: 
             sys.exit("ERROR: Unable to delete directory " + dir)
@@ -390,7 +390,7 @@ def install_minpath():
 
     if not os.path.isfile(minpath_exe):
         if config.verbose:
-            print "Installing minpath ... "
+            print("Installing minpath ... ")
         download_tar_and_extract(config.minpath_url, 
             os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
 		

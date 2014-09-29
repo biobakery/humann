@@ -269,7 +269,7 @@ def update_configuration(args):
             prefix='humann2_temp_', dir=input_dir)
 
     if config.verbose:
-        print "\nWriting temp files to directory: " + config.temp_dir + "\n"
+        print("\nWriting temp files to directory: " + config.temp_dir + "\n")
 
 
      
@@ -310,8 +310,6 @@ def check_requirements(args):
         for file in os.listdir(args.uniref):
             if not file.endswith(config.usearch_database_extension):
                 if utilities.fasta_or_fastq(os.path.join(args.uniref,file)) != "fasta":
-                    print os.path.join(args.uniref,file)
-                    print utilities.fasta_or_fastq(os.path.join(args.uniref,file))
                     sys.exit("ERROR: The directory provided for the UniRef database "
                         + "contains files of an unexpected format. Only files of the"
                         + " udb or fasta format are allowed.") 
@@ -365,7 +363,7 @@ def main():
     reactions_database=store.ReactionsDatabase(genes_to_reactions)
 
     if config.verbose:
-        print "Load reactions from database: " + genes_to_reactions
+        print("Load reactions from database: " + genes_to_reactions)
     
     # Load in the pathways database
     reactions_to_pathways=os.path.join(config.data_folder,
@@ -373,7 +371,7 @@ def main():
     pathways_database=store.PathwaysDatabase(reactions_to_pathways)
     
     if config.verbose:
-        print "Load pathways from database: " + reactions_to_pathways
+        print("Load pathways from database: " + reactions_to_pathways)
 
     # Start timer
     start_time=time.time()
@@ -388,7 +386,7 @@ def main():
                 args.threads)
 
     if config.verbose:
-        print str(int(time.time() - start_time)) + " seconds from start"
+        print(str(int(time.time() - start_time)) + " seconds from start")
 
     # Create the custom database from the bugs list
     custom_database = ""
@@ -399,7 +397,7 @@ def main():
         custom_database = "Bypass"
 
     if config.verbose:
-        print str(int(time.time() - start_time)) + " seconds from start"
+        print(str(int(time.time() - start_time)) + " seconds from start")
 
     # Run nucleotide search on custom database
     if custom_database != "Empty":
@@ -411,7 +409,7 @@ def main():
             args.threads, nucleotide_index_file)
 
         if config.verbose:
-            print str(int(time.time() - start_time)) + " seconds from start"
+            print(str(int(time.time() - start_time)) + " seconds from start")
 
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
@@ -419,14 +417,14 @@ def main():
             args.input, nucleotide_alignment_file, alignments)
 
         # Print out total alignments per bug
-        print "Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
+        print("Total bugs from nucleotide alignment: " + str(alignments.count_bugs()))
         alignments.print_bugs()
 
-        print "\nTotal gene families from nucleotide alignment: " + str(alignments.count_genes())
+        print("\nTotal gene families from nucleotide alignment: " + str(alignments.count_genes()))
 
         # Report reads unaligned
-        print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-            args.input, unaligned_reads_file_fasta) + "%\n"  
+        print("\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+            args.input, unaligned_reads_file_fasta) + "%\n")  
     else:
         reduced_aligned_reads_file = "Empty"
         unaligned_reads_file_fasta=args.input
@@ -437,31 +435,31 @@ def main():
         unaligned_reads_file_fasta, args.identity_threshold, args.threads)
 
     if config.verbose:
-        print str(int(time.time() - start_time)) + " seconds from start"
+        print(str(int(time.time() - start_time)) + " seconds from start")
 
     # Determine which reads are unaligned
     translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
         unaligned_reads_store, translated_alignment_file, alignments)
 
     # Print out total alignments per bug
-    print "Total bugs after translated alignment: " + str(alignments.count_bugs())
+    print("Total bugs after translated alignment: " + str(alignments.count_bugs()))
     alignments.print_bugs()
 
-    print "\nTotal gene families after translated alignment: " + str(alignments.count_genes())
+    print("\nTotal gene families after translated alignment: " + str(alignments.count_genes()))
 
     # Report reads unaligned
-    print "\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-        args.input, translated_unaligned_reads_file_fastq) + "%\n"  
+    print("\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+        args.input, translated_unaligned_reads_file_fastq) + "%\n")  
 
     # Compute the gene families
-    print "\nComputing gene families ..."
+    print("\nComputing gene families ...")
     families_file=quantify_families.gene_families(alignments)
 
     if config.verbose:
-        print str(int(time.time() - start_time)) + " seconds from start"
+        print(str(int(time.time() - start_time)) + " seconds from start")
     
     # Identify reactions and then pathways from the alignments
-    print "\nComputing pathways abundance and coverage ..."
+    print("\nComputing pathways abundance and coverage ...")
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
         args.threads, alignments, reactions_database, pathways_database)
 
@@ -470,10 +468,10 @@ def main():
         args.threads, pathways_and_reactions_store, pathways_database)
 
     if config.verbose:
-        print str(int(time.time() - start_time)) + " seconds from start"
+        print(str(int(time.time() - start_time)) + " seconds from start")
 
     output_files=[families_file,abundance_file,coverage_file]
-    print "\nOutput files created: \n" + "\n".join(output_files) + "\n"
+    print("\nOutput files created: \n" + "\n".join(output_files) + "\n")
 
     # Remove temp directory
     if not args.temp:

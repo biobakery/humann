@@ -44,7 +44,7 @@ def alignment(input, threads):
 
     args+=opts
 
-    print "\nRunning " + exe + " ........\n"
+    print("\nRunning " + exe + " ........\n")
     utilities.execute_command(exe, args, infiles, outfiles)
     
     return bug_file
@@ -81,16 +81,16 @@ def create_custom_database(chocophlan_dir, threshold, bug_file):
                     # use the genus and species
                     species=organism_info.split("|")[-1]
                     genus=organism_info.split("|")[-2]
-                    print "Found " + genus + "|" + species + " : " + \
-                        str(read_percent) + "% of mapped reads"
+                    print("Found " + genus + "|" + species + " : " +
+                        str(read_percent) + "% of mapped reads")
                     species_found.append(genus + "." + species)
 
             line = file_handle.readline()
     
     # compute total species found
     if not config.bypass_prescreen:
-        print "\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n"
-        print "Species cover " + str(total_reads_covered) + "% of all mapped reads\n"
+        print("\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n")
+        print("Species cover " + str(total_reads_covered) + "% of all mapped reads\n")
 
     # identify the files to be used from the ChocoPhlAn database
     species_file_list = []
@@ -100,20 +100,20 @@ def create_custom_database(chocophlan_dir, threshold, bug_file):
                 if re.search(species, species_file): 
                     species_file_list.append(os.path.join(chocophlan_dir,species_file))
                     if config.verbose:
-                        print "Adding file to database: " + species_file   
+                        print("Adding file to database: " + species_file)   
     else:
         for species_file in os.listdir(chocophlan_dir):
             species_file_list.append(os.path.join(chocophlan_dir,species_file))
             if config.verbose:
-                print "Adding file to database: " + species_file   
+                print("Adding file to database: " + species_file)   
 
 
     # create new fasta file containing only those species found
     if not species_file_list:
-        print "The custom ChocoPhlAn database is empty"   
+        print("The custom ChocoPhlAn database is empty")   
         return "Empty"
     else:
-        print "\nCreating custom ChocoPhlAn database ........\n"   
+        print("\nCreating custom ChocoPhlAn database ........\n")   
 
         # determine if the files are compressed with gzip
         ext=os.path.splitext(species_file_list[0])[1]

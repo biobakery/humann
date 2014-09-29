@@ -25,7 +25,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
     args=["-id",identity_threshold]
 
-    print "\nRunning " + exe + " ........\n"
+    print("\nRunning " + exe + " ........\n")
 
     if not bypass:
 
@@ -72,7 +72,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
         for temp_file in temp_fasta_files + temp_in_files + temp_out_files:
             utilities.remove_file(temp_file)
     else:
-        print "Bypass"
+        print("Bypass")
 
 
 def rapsearch_alignment(alignment_file,threads, uniref,
@@ -91,7 +91,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
     if threads > 1:
         args+=["-z",threads]
 
-    print "\nRunning " + exe + " ........\n"
+    print("\nRunning " + exe + " ........\n")
 
     if not bypass:
 
@@ -123,7 +123,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
         for temp_file in temp_out_files:
             utilities.remove_file(temp_file)
     else:
-        print "Bypass"
+        print("Bypass")
 
 
 
