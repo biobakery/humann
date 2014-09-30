@@ -17,9 +17,9 @@ class Alignments:
     """
     
     def __init__(self):
-        self.hits=[]
-        self.bugs={}
-        self.genes={}
+        self.__hits=[]
+        self.__bugs={}
+        self.__genes={}
         
     def add(self, reference, query, evalue, bug): 
         """ 
@@ -27,51 +27,51 @@ class Alignments:
         Add the index of the hit to the bugs list and gene list
         """
         
-        self.hits.append([bug, reference, query, evalue]) 
+        self.__hits.append([bug, reference, query, evalue]) 
         
-        index=len(self.hits)-1
-        if bug in self.bugs:
-            self.bugs[bug].append(index)
+        index=len(self.__hits)-1
+        if bug in self.__bugs:
+            self.__bugs[bug].append(index)
         else:
-            self.bugs[bug]=[index]
+            self.__bugs[bug]=[index]
             
-        if reference in self.genes:
-            self.genes[reference].append(index)
+        if reference in self.__genes:
+            self.__genes[reference].append(index)
         else:
-            self.genes[reference]=[index]
+            self.__genes[reference]=[index]
             
     def count_bugs(self):
         """ 
         Return total number of bugs
         """
-        return len(self.bugs.keys())
+        return len(self.__bugs.keys())
     
     def count_genes(self):
         """ 
         Return total number of genes
         """
-        return len(self.genes.keys())    
+        return len(self.__genes.keys())    
             
     def print_bugs(self):
         """
         Print out the bugs and total number of hits
         """
-        for bug in self.bugs.keys():
-            print(bug + ": " + str(len(self.bugs[bug])) + " hits")
+        for bug in self.__bugs.keys():
+            print(bug + ": " + str(len(self.__bugs[bug])) + " hits")
             
     def gene_list(self):
         """
         Return a list of all of the gene families
         """
         
-        return self.genes.keys()
+        return self.__genes.keys()
     
     def bug_list(self):
         """
         Return a list of all of the bugs
         """
         
-        return self.bugs.keys()
+        return self.__bugs.keys()
     
     def hits_for_gene(self,gene):
         """
@@ -79,8 +79,8 @@ class Alignments:
         """
         
         hit_list=[]        
-        for index in self.genes[gene]:
-            hit_list.append(self.hits[index])
+        for index in self.__genes[gene]:
+            hit_list.append(self.__hits[index])
             
         return hit_list
     
@@ -89,8 +89,8 @@ class Alignments:
         Return the alignments for the selected bug
         """
         hit_list=[]        
-        for index in self.bugs[bug]:
-            hit_list.append(self.hits[index])
+        for index in self.__bugs[bug]:
+            hit_list.append(self.__hits[index])
             
         return hit_list
     
@@ -99,12 +99,12 @@ class Alignments:
         Remove the gene and all data for all hits associated with the gene
         """
         
-        if gene in self.genes:
-            for index in self.genes[gene]:
+        if gene in self.__genes:
+            for index in self.__genes[gene]:
                 # Remove the data for the hit
-                self.hits[index]=[]
+                self.__hits[index]=[]
             # Remove the gene entry
-            del self.genes[gene]
+            del self.__genes[gene]
             
     def update_hits_for_bugs(self):
         """
@@ -112,13 +112,13 @@ class Alignments:
         any indexes that point to deleted hits
         """
         
-        for bug in self.bugs:
+        for bug in self.__bugs:
             updated_indexes=[]
-            for index in self.bugs[bug]:
+            for index in self.__bugs[bug]:
                 # Check if the hit is empty
-                if self.hits[index]:
+                if self.__hits[index]:
                     updated_indexes.append(index)
-            self.bugs[bug]=updated_indexes
+            self.__bugs[bug]=updated_indexes
                     
     
 class PathwaysAndReactions:
@@ -127,32 +127,32 @@ class PathwaysAndReactions:
     """
     
     def __init__(self, bug):
-        self.pathways={}
-        self.bug=bug
+        self.__pathways={}
+        self.__bug=bug
         
     def add(self, reaction, pathway, score): 
         """ 
         Add the pathway data to the dictionary
         """
         
-        if pathway in self.pathways:
-            self.pathways[pathway][reaction]=score
+        if pathway in self.__pathways:
+            self.__pathways[pathway][reaction]=score
         else:
-            self.pathways[pathway]={ reaction : score }
+            self.__pathways[pathway]={ reaction : score }
     
     def get_bug(self):
         """
         Return the bug associated with the pathways data
         """
         
-        return self.bug
+        return self.__bug
     
     def get_items(self):
         """
         Return the items in the pathways dictionary
         """
         
-        return self.pathways.items()
+        return self.__pathways.items()
     
     def median_score(self):
         """
@@ -161,7 +161,7 @@ class PathwaysAndReactions:
         
         # Create a list of all of the scores in all pathways
         all_scores=[]
-        for item in self.pathways.values():
+        for item in self.__pathways.values():
             all_scores+=item.values()
         
         all_scores.sort()
@@ -184,15 +184,15 @@ class Pathways:
     """
     
     def __init__(self, bug="None", pathways={}):
-        self.bug=bug
-        self.pathways=pathways
+        self.__bug=bug
+        self.__pathways=pathways
 
     def get_bug(self):
         """
         Return the bug associated with the pathways data
         """
         
-        return self.bug
+        return self.__bug
     
     def get_score(self, pathway):
         """
@@ -200,14 +200,14 @@ class Pathways:
         If the pathway does does not have a score, return 0
         """
         
-        return self.pathways.get(pathway, 0)
+        return self.__pathways.get(pathway, 0)
     
     def get_items(self):
         """
         Return the items in the pathways dictionary
         """
         
-        return self.pathways.items()
+        return self.__pathways.items()
         
     
 class ReactionsDatabase:
@@ -219,8 +219,11 @@ class ReactionsDatabase:
         """
         Load in the reactions data from the database
         """
-        self.reactions_to_genes={}
-        self.genes_to_reactions={}
+        self.__reactions_to_genes={}
+        self.__genes_to_reactions={}
+        
+        # Check the database file exists and is readable
+        utilities.file_exists_readable(database)
          
         file_handle=open(database,"r")
          
@@ -237,13 +240,13 @@ class ReactionsDatabase:
                 ec_number=data.pop(0)
              
                 # store the data
-                self.reactions_to_genes[reaction]=data
+                self.__reactions_to_genes[reaction]=data
              
                 for gene in data:
-                    if gene in self.genes_to_reactions:
-                        self.genes_to_reactions[gene]+=[reaction]
+                    if gene in self.__genes_to_reactions:
+                        self.__genes_to_reactions[gene]+=[reaction]
                     else:
-                        self.genes_to_reactions[gene]=[reaction]    
+                        self.__genes_to_reactions[gene]=[reaction]    
              
             line=file_handle.readline()
         
@@ -254,28 +257,28 @@ class ReactionsDatabase:
         Return the list of reactions associated with the gene
         """
             
-        return self.genes_to_reactions.get(gene,[])
+        return self.__genes_to_reactions.get(gene,[])
     
     def find_genes(self,reaction):
         """
         Return the list of genes associated with the reaction
         """
         
-        return self.reactions_to_genes.get(reaction,[])
+        return self.__reactions_to_genes.get(reaction,[])
          
     def reaction_list(self):
         """
         Return the list of all the reactions in the database
         """
            
-        return self.reactions_to_genes.keys()
+        return self.__reactions_to_genes.keys()
     
     def gene_list(self):
         """
         Return the list of all the genes in the database
         """
            
-        return self.genes_to_reactions.keys()
+        return self.__genes_to_reactions.keys()
     
     def gene_present(self, gene):
         """
@@ -283,7 +286,7 @@ class ReactionsDatabase:
         """
         
         present=False
-        if gene in self.genes_to_reactions:
+        if gene in self.__genes_to_reactions:
             present=True
             
         return present
@@ -293,7 +296,7 @@ class PathwaysDatabase:
     Holds all of the reactions/pathways data from the file provided
     """
     
-    def is_pathway(self, item):
+    def _is_pathway(self, item):
         """
         Determine if the item is a pathway or reaction
         """
@@ -306,7 +309,7 @@ class PathwaysDatabase:
         
         return pathway    
     
-    def return_reactions(self, pathway, reactions):
+    def _return_reactions(self, pathway, reactions):
         """
         Search recursively to find the reactions associated with the given pathway
         """
@@ -314,9 +317,9 @@ class PathwaysDatabase:
         reactions_for_pathway=[]
         for item in reactions.get(pathway,[]):
             # go through items to look for pathways to resolve
-            if self.is_pathway(item):
+            if self._is_pathway(item):
                 # find the reactions for the pathway
-                reactions_for_pathway+=self.return_reactions(item, reactions)
+                reactions_for_pathway+=self._return_reactions(item, reactions)
             else:
                 reactions_for_pathway+=[item]
                 
@@ -326,8 +329,11 @@ class PathwaysDatabase:
         """
         Load in the pathways data from the database
         """
-        self.pathways_to_reactions={}
-        self.reactions_to_pathways={}
+        self.__pathways_to_reactions={}
+        self.__reactions_to_pathways={}
+        
+        # Check the database file exists and is readable
+        utilities.file_exists_readable(database)
         
         file_handle=open(database,"r")
          
@@ -354,17 +360,17 @@ class PathwaysDatabase:
                 # go through items to look for pathways to resolve
                 reaction=[item]
                 # identifier can be at the start or the end of the item name
-                if self.is_pathway(item):
+                if self._is_pathway(item):
                     # find the reactions for the pathway
-                    reaction=self.return_reactions(item, reactions)
+                    reaction=self._return_reactions(item, reactions)
                 
-                self.pathways_to_reactions[pathway]=self.pathways_to_reactions.get(
+                self.__pathways_to_reactions[pathway]=self.__pathways_to_reactions.get(
                     pathway,[]) + reaction
                     
         # store all pathways associated with a reaction
-        for pathway in self.pathways_to_reactions:
-            for reaction in self.pathways_to_reactions[pathway]:
-                self.reactions_to_pathways[reaction]=self.reactions_to_pathways.get(
+        for pathway in self.__pathways_to_reactions:
+            for reaction in self.__pathways_to_reactions[pathway]:
+                self.__reactions_to_pathways[reaction]=self.__reactions_to_pathways.get(
                     reaction,[]) + [pathway]
     
     def find_reactions(self,pathway):
@@ -372,28 +378,28 @@ class PathwaysDatabase:
         Return the list of reactions associated with the pathway
         """
          
-        return self.pathways_to_reactions.get(pathway, [])
+        return self.__pathways_to_reactions.get(pathway, [])
 
     def find_pathways(self,reaction):
         """
         Return the list of pathways associated with the reaction
         """
          
-        return self.reactions_to_pathways.get(reaction, [])
+        return self.__reactions_to_pathways.get(reaction, [])
     
     def reaction_list(self):
         """
         Return the list of reactions included in the database
         """
         
-        return self.reactions_to_pathways.keys()
+        return self.__reactions_to_pathways.keys()
     
     def pathway_list(self):
         """
         Return the list of pathways included in the database
         """
         
-        return self.pathways_to_reactions.keys()
+        return self.__pathways_to_reactions.keys()
     
     def get_database(self):
         """
@@ -401,9 +407,9 @@ class PathwaysDatabase:
         """
         
         data=[]
-        for pathway in self.pathways_to_reactions:
+        for pathway in self.__pathways_to_reactions:
             data.append(pathway+config.pathways_database_delimiter+
-                config.pathways_database_delimiter.join(self.pathways_to_reactions[pathway]))
+                config.pathways_database_delimiter.join(self.__pathways_to_reactions[pathway]))
             
         return "\n".join(data)
     
@@ -419,13 +425,13 @@ class Reads:
         sequence
         """
         
-        self.reads[id]=sequence
+        self.__reads[id]=sequence
     
     def __init__(self, file=None):
         """
         Create initial data structures and load if file name provided
         """
-        self.reads={}
+        self.__reads={}
               
         if file:
             
@@ -469,8 +475,8 @@ class Reads:
         Remove the id and sequence from the read structure
         """
         
-        if id in self.reads:
-            del self.reads[id]
+        if id in self.__reads:
+            del self.__reads[id]
                 
     def get_fasta(self):
         """ 
@@ -478,7 +484,7 @@ class Reads:
         """
         
         fasta=[]
-        for id, sequence in self.reads.items():
+        for id, sequence in self.__reads.items():
             fasta.append(">"+id+"\n"+sequence)
         
         return "\n".join(fasta)
@@ -488,5 +494,5 @@ class Reads:
         Return a list of all of the fasta ids
         """
         
-        return self.reads.keys()
+        return self.__reads.keys()
     
