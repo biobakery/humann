@@ -106,14 +106,19 @@ def identify_reactions_and_pathways_by_bug(args):
         os.write(file_descriptor, "".join(reactions_file_lines))
         os.close(file_descriptor)
  
-        metacyc_datafile=os.path.join(config.data_folder,
-            config.metacyc_reactions_to_pathways)
+        # Write a flat reactions to pathways file
+        file_descriptor, pathways_database_file=tempfile.mkstemp()
+        os.write(file_descriptor, pathways_database.get_database())
+        os.close(file_descriptor)
     
         # Run minpath to identify the pathways
-        tmpfile=run_minpath(reactions_file, metacyc_datafile)
+        tmpfile=run_minpath(reactions_file, pathways_database_file)
         
         # Remove the temp reactions file
         utilities.remove_file(reactions_file)
+        
+        # Remove the temp reactions to pathways database file
+        utilities.remove_file(pathways_database_file)
         
         # Process the minpath results
         if os.path.isfile(tmpfile):
