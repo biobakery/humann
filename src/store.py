@@ -112,14 +112,23 @@ class Alignments:
         any indexes that point to deleted hits
         """
         
+        bugs_to_delete=[]
         for bug in self.__bugs:
             updated_indexes=[]
             for index in self.__bugs[bug]:
                 # Check if the hit is empty
                 if self.__hits[index]:
                     updated_indexes.append(index)
-            self.__bugs[bug]=updated_indexes
-                    
+            if updated_indexes:
+                self.__bugs[bug]=updated_indexes
+            else:
+                # if there are no hits remaining for the bug,
+                # then indicate the bug should be deleted
+                bugs_to_delete.append(bug)
+        
+        # delete the bugs that do not have any hits
+        for bug in bugs_to_delete:
+            del self.__bugs[bug]
     
 class PathwaysAndReactions:
     """
