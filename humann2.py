@@ -156,6 +156,12 @@ def parse_arguments (args):
         config.output_format + " ]",
         default=config.output_format,
         choices=config.output_format_choices)
+    parser.add_argument(
+        "--pathways_databases",
+        help="the two mapping files to use for pathway computations\n[DEFAULT: " +
+        config.pathways_database_part1 + " , " + config.pathways_database_part2 + " ]",
+        metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
+        nargs=2)
 
     return parser.parse_args()
 	
@@ -177,11 +183,18 @@ def update_configuration(args):
 
     if args.rapsearch:
         utilities.add_exe_to_path(args.rapsearch)
-
-    # Update data directory to full path
-    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
-    config.data_folder=os.path.join(humann2_fullpath,
-        config.data_folder)    
+ 
+    # Set the locations of the pathways databases
+    if args.pathways_databases:
+        config.pathways_database_part1=args.pathways_databases[0]
+        config.pathways_database_part2=args.pathways_databases[1]
+    else:
+        # add the full path to the database
+        humann2_fullpath=os.path.dirname(os.path.realpath(__file__)) 
+        config.pathways_database_part1=os.path.join(humann2_fullpath, 
+            config.pathways_database_part1)
+        config.pathways_database_part2=os.path.join(humann2_fullpath,
+            config.pathways_database_part2)
 
     # if set, update the config run mode to debug
     if args.debug:
@@ -291,6 +304,10 @@ def check_requirements(args):
     Check requirements (file format, dependencies, permissions)
     """
 
+    # Check the pathways database files exist and are readable
+    utilities.file_exists_readable(config.pathways_database_part1)
+    utilities.file_exists_readable(config.pathways_database_part2)
+
     # Check that the input file exists, is readable, and is fasta/fastq
     if utilities.fasta_or_fastq(args.input) == "error":
         sys.exit("ERROR: The input file is not of a fasta or fastq format.")
@@ -377,20 +394,16 @@ def main():
     alignments=store.Alignments()
     
     # Load in the reactions database
-    genes_to_reactions=os.path.join(config.data_folder,
-        config.metacyc_gene_to_reactions)
-    reactions_database=store.ReactionsDatabase(genes_to_reactions)
+    reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
 
     if config.verbose:
-        print("Load reactions from database: " + genes_to_reactions)
+        print("Load pathways database part 1: " + config.pathways_database_part1)
     
     # Load in the pathways database
-    reactions_to_pathways=os.path.join(config.data_folder,
-        config.metacyc_reactions_to_pathways)
-    pathways_database=store.PathwaysDatabase(reactions_to_pathways)
+    pathways_database=store.PathwaysDatabase(config.pathways_database_part2)
     
     if config.verbose:
-        print("Load pathways from database: " + reactions_to_pathways)
+        print("Load pathways database part 2: " + config.pathways_database_part2)
 
     # Start timer
     start_time=time.time()

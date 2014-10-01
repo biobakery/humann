@@ -102,11 +102,15 @@ rapsearch_output_file_extension=".m8"
 
 # data files
 data_folder="data/"
-metacyc_gene_to_reactions="metacyc_reactions.uniref"
-metacyc_reactions_to_pathways="metacyc_pathways"
+metacyc_gene_to_reactions=os.path.join(data_folder, "metacyc_reactions.uniref")
+metacyc_reactions_to_pathways=os.path.join(data_folder, "metacyc_pathways")
 reactions_database_delimiter="\t"
 pathways_database_delimiter="\t"
 pathway_identifier="PWY"
+
+# pathways databases
+pathways_database_part1=metacyc_gene_to_reactions
+pathways_database_part2=metacyc_reactions_to_pathways
 
 # MinPath
 minpath_file="minpath1.2.tar.gz"
