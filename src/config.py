@@ -10,6 +10,9 @@ verbose = False
 bypass_prescreen = False
 bypass_nucleotide_index = False
 
+# number of threads
+threads=1
+
 # turn on/off computations
 toggle_choices=["on","off"]
 xipe_toggle = "off"
@@ -90,7 +93,7 @@ output_file_category_delimiter="|"
 
 # usearch options
 usearch_database_extension=".udb"
-id_threshold_default=0.4
+identity_threshold=0.4
 usearch_max_seqs=10000
 usearch_version="usearch v7.0.1001"
 usearch_opts=[]

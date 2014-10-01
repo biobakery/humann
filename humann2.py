@@ -41,22 +41,22 @@ def parse_arguments (args):
         "-v","--verbose", 
         help="additional output is printed\n", 
         action="store_true",
-        default=False)
+        default=config.verbose)
     parser.add_argument(
         "-d","--debug", 
         help="bypass commands if the output files exist\n", 
         action="store_true",
-        default=False)
+        default=config.debug)
     parser.add_argument(
         "--bypass_prescreen", 
         help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
         action="store_true",
-        default=False)
+        default=config.bypass_prescreen)
     parser.add_argument(
         "--bypass_nucleotide_index", 
         help="bypass the nucleotide index step and run on the indexed ChocoPhlAn database\n", 
         action="store_true",
-        default=False)
+        default=config.bypass_nucleotide_index)
     parser.add_argument(
         "-i", "--input", 
         help="fastq/fasta input file\n[REQUIRED]", 
@@ -102,10 +102,10 @@ def parse_arguments (args):
         metavar="<bowtie2/>")
     parser.add_argument(
         "--threads", 
-        help="number of threads/processes\n[DEFAULT: 1]", 
-        metavar="<1>", 
+        help="number of threads/processes\n[DEFAULT: " + str(config.threads) + " ]", 
+        metavar="<" + str(config.threads) + ">", 
         type=int,
-        default=1) 
+        default=config.threads) 
     parser.add_argument(
         "--prescreen_threshold", 
         help="minimum percentage of reads matching a species\n[DEFAULT: "
@@ -116,10 +116,10 @@ def parse_arguments (args):
     parser.add_argument(
         "--identity_threshold", 
         help="identity threshold to use with the translated search\n[DEFAULT: " 
-            + str(config.id_threshold_default) + "]", 
-        metavar="<" + str(config.id_threshold_default) + ">", 
+            + str(config.identity_threshold) + "]", 
+        metavar="<" + str(config.identity_threshold) + ">", 
         type=float,
-        default=config.id_threshold_default) 
+        default=config.identity_threshold) 
     parser.add_argument(
         "--usearch", 
         help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
@@ -212,17 +212,20 @@ def update_configuration(args):
     if args.bypass_nucleotide_index:
         config.bypass_nucleotide_index=True  
         config.bypass_prescreen=True  
+        
+    # Update thresholds
+    config.prescreen_threshold=args.prescreen_threshold
+    config.identity_threshold=args.identity_threshold
     
-    # Update translated alignment software if set
-    if args.translated_alignment:
-        config.translated_alignment_selected=args.translated_alignment
+    # Update threads
+    config.threads=args.threads
+    
+    # Update translated alignment software
+    config.translated_alignment_selected=args.translated_alignment
         
     # Update the computation toggle choices
-    if args.xipe:
-        config.xipe_toggle=args.xipe
-        
-    if args.minpath:
-        config.minpath_toggle=args.minpath
+    config.xipe_toggle=args.xipe
+    config.minpath_toggle=args.minpath
         
     # If minpath is set to run, install if not already installed
     if config.minpath_toggle == "on":
@@ -242,8 +245,7 @@ def update_configuration(args):
     config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
     
     # Set the output format
-    if args.output_format:
-        config.output_format=args.output_format
+    config.output_format=args.output_format
     
     # Set final output file names
     if args.o_pathabundance:
@@ -313,13 +315,13 @@ def check_requirements(args):
         sys.exit("ERROR: The input file is not of a fasta or fastq format.")
 
     # Check that the chocophlan directory exists
-    if not args.bypass_nucleotide_index:
+    if not config.bypass_nucleotide_index:
         if not os.path.isdir(args.chocophlan):
             sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
                 + args.chocophlan + " does not exist. Please select another directory.")	
     
     # Check that the files in the chocophlan folder are of the right format
-    if not args.bypass_nucleotide_index:
+    if not config.bypass_nucleotide_index:
         valid_format_count=0
         for file in os.listdir(args.chocophlan):
             # expect most of the file names to be of the format g__*s__*
@@ -364,7 +366,7 @@ def check_requirements(args):
             " executable can not be found. Please check the install.")
     
     # Check that the metaphlan2 executable can be found
-    if not args.bypass_prescreen and not args.bypass_nucleotide_index:
+    if not config.bypass_prescreen and not config.bypass_nucleotide_index:
         if not utilities.find_exe_in_path("metaphlan2.py"): 
             sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
                 "Please check the install.")
@@ -414,8 +416,7 @@ def main():
         bug_file = args.metaphlan_output
     else:
         if not config.bypass_prescreen:
-            bug_file = prescreen.alignment(args.input, 
-                args.threads)
+            bug_file = prescreen.alignment(args.input)
 
     if config.verbose:
         print(str(int(time.time() - start_time)) + " seconds from start")
@@ -423,8 +424,7 @@ def main():
     # Create the custom database from the bugs list
     custom_database = ""
     if not config.bypass_nucleotide_index:
-        custom_database = prescreen.create_custom_database(args.chocophlan, 
-            args.prescreen_threshold, bug_file)
+        custom_database = prescreen.create_custom_database(args.chocophlan, bug_file)
     else:
         custom_database = "Bypass"
 
@@ -438,7 +438,7 @@ def main():
         else:
             nucleotide_index_file = args.chocophlan
         nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
-            args.threads, nucleotide_index_file)
+            nucleotide_index_file)
 
         if config.verbose:
             print(str(int(time.time() - start_time)) + " seconds from start")
@@ -464,7 +464,7 @@ def main():
 
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, 
-        unaligned_reads_file_fasta, args.identity_threshold, args.threads)
+        unaligned_reads_file_fasta)
 
     if config.verbose:
         print(str(int(time.time() - start_time)) + " seconds from start")
@@ -493,11 +493,11 @@ def main():
     # Identify reactions and then pathways from the alignments
     print("\nComputing pathways abundance and coverage ...")
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
-        args.threads, alignments, reactions_database, pathways_database)
+        alignments, reactions_database, pathways_database)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
-        args.threads, pathways_and_reactions_store, pathways_database)
+        pathways_and_reactions_store, pathways_database)
 
     if config.verbose:
         print(str(int(time.time() - start_time)) + " seconds from start")

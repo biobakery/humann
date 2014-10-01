@@ -9,7 +9,7 @@ import sys
 import utilities
 import config
 
-def alignment(input, threads):
+def alignment(input):
     """
     Runs metaphlan to identify initial list of bugs
     """
@@ -39,8 +39,8 @@ def alignment(input, threads):
         "--bowtie2out",bowtie2_out,
         "--mpa_pkl",infiles[1]]
     
-    if threads >1:
-        args+=["--nproc",threads]
+    if config.threads >1:
+        args+=["--nproc",config.threads]
 
     args+=opts
 
@@ -49,7 +49,7 @@ def alignment(input, threads):
     
     return bug_file
 
-def create_custom_database(chocophlan_dir, threshold, bug_file):
+def create_custom_database(chocophlan_dir, bug_file):
     """
     Using ChocoPhlAn creates a custom database based on the bug_file
     """
@@ -75,7 +75,7 @@ def create_custom_database(chocophlan_dir, threshold, bug_file):
             if re.search("s__", line):
                 # check threshold
                 read_percent=float(line.split("\t")[1])
-                if read_percent >= threshold:
+                if read_percent >= config.prescreen_threshold:
                     total_reads_covered += read_percent
                     organism_info=line.split("\t")[0]
                     # use the genus and species

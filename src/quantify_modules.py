@@ -163,7 +163,7 @@ def identify_reactions_and_pathways_by_bug(args):
     return pathways_and_reactions_store
     
     
-def identify_reactions_and_pathways(threads, alignments, reactions_database, pathways_database):
+def identify_reactions_and_pathways(alignments, reactions_database, pathways_database):
     """
     Identify the reactions and then pathways from the hits found
     """
@@ -193,7 +193,7 @@ def identify_reactions_and_pathways(threads, alignments, reactions_database, pat
 
         args.append([reactions_database, pathways_database, hits, bug])
         
-    pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
+    pathways_and_reactions_store=utilities.command_multiprocessing(config.threads, args, 
         function=identify_reactions_and_pathways_by_bug)
 
     return pathways_and_reactions_store
@@ -351,7 +351,7 @@ def print_pathways(pathways, file, header):
         file_handle.close()
     
 
-def compute_pathways_abundance_and_coverage(threads, pathways_and_reactions_store, pathways_database):
+def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathways_database):
     """
     Compute the abundance and coverage of the pathways
     """
@@ -361,14 +361,14 @@ def compute_pathways_abundance_and_coverage(threads, pathways_and_reactions_stor
     for bug_pathway_and_reactions_store in pathways_and_reactions_store:
          args.append([bug_pathway_and_reactions_store, pathways_database])
         
-    pathways_abundance=utilities.command_multiprocessing(threads, args, 
+    pathways_abundance=utilities.command_multiprocessing(config.threads, args, 
         function=pathways_abundance_by_bug)
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance")
 
     # Compute coverage 
-    pathways_coverage=utilities.command_multiprocessing(threads, args, 
+    pathways_coverage=utilities.command_multiprocessing(config.threads, args, 
         function=pathways_coverage_by_bug)
     
     # Print the pathways abundance data to file

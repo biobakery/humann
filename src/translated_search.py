@@ -11,8 +11,7 @@ import utilities
 import config
 import store
 
-def usearch_alignment(alignment_file,threads,identity_threshold,
-        uniref, unaligned_reads_file_fastq):
+def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fastq):
     """
     Run usearch alignment with memory management
     Individual runs can be threaded
@@ -23,7 +22,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
     exe="usearch"
     opts=config.usearch_opts
 
-    args=["-id",identity_threshold]
+    args=["-id",config.identity_threshold]
 
     print("\nRunning " + exe + " ........\n")
 
@@ -60,7 +59,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
                 command_args.append([exe,full_args,[input_database],[],"",""])
                 
-        results=utilities.command_multiprocessing(threads,command_args)
+        results=utilities.command_multiprocessing(config.threads,command_args)
 
         # merge the temp output files
         exe="cat"
@@ -75,7 +74,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
         print("Bypass")
 
 
-def rapsearch_alignment(alignment_file,threads, uniref,
+def rapsearch_alignment(alignment_file,uniref,
         unaligned_reads_file_fastq):
     """
     Run rapsearch alignment on database formatted for rapsearch
@@ -88,8 +87,8 @@ def rapsearch_alignment(alignment_file,threads, uniref,
 
     args=["-q",unaligned_reads_file_fastq,"-b",0]
 
-    if threads > 1:
-        args+=["-z",threads]
+    if config.threads > 1:
+        args+=["-z",config.threads]
 
     print("\nRunning " + exe + " ........\n")
 
@@ -127,8 +126,7 @@ def rapsearch_alignment(alignment_file,threads, uniref,
 
 
 
-def alignment(uniref, unaligned_reads_file_fasta, identity_threshold, 
-    threads):
+def alignment(uniref, unaligned_reads_file_fasta):
     """
     Run rapsearch2 or usearch for alignment
     """
@@ -146,10 +144,9 @@ def alignment(uniref, unaligned_reads_file_fasta, identity_threshold,
         input_fasta=unaligned_reads_file_fasta
 
     if config.translated_alignment_selected == "usearch":
-        usearch_alignment(alignment_file,threads,identity_threshold,
-            uniref, input_fasta)
+        usearch_alignment(alignment_file, uniref, input_fasta)
     else:
-        rapsearch_alignment(alignment_file,threads,uniref,
+        rapsearch_alignment(alignment_file,uniref,
             input_fasta)
         
     # Remove the temp fasta file if exists
@@ -182,27 +179,31 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     while line:
         if not re.search("^#",line):
             alignment_info=line.split(config.blast_delimiter)
-            queryid=alignment_info[config.blast_query_index]
-            
-            # remove the id of the alignment from the unaligned reads store
-            unaligned_reads_store.remove_id(queryid)
-            
-            referenceid=alignment_info[config.blast_reference_index]
             identity=float(alignment_info[config.blast_identity_index])
-            aligned_length=int(alignment_info[config.blast_aligned_length_index])
-            evalue=alignment_info[config.blast_evalue_index]
-            if config.translated_alignment_selected == "rapsearch":
-                try:
-                    evalue=math.pow(10.0, float(evalue))
-                except:
-                    evalue=1.0 
-            else:
-                if not isinstance(evalue, numbers.Number):
-                    evalue=1.0
-        
-            alignments.add(referenceid, queryid, evalue,"unclassified")
-        
-            aligned_ids+=[queryid]
+            
+            if identity >= config.identity_threshold:
+                # only store those alignments which meet the identity threshold
+                
+                referenceid=alignment_info[config.blast_reference_index]
+                queryid=alignment_info[config.blast_query_index]
+                aligned_length=int(alignment_info[config.blast_aligned_length_index])
+                evalue=alignment_info[config.blast_evalue_index]
+                
+                # remove the id of the alignment from the unaligned reads store
+                unaligned_reads_store.remove_id(queryid)                
+                
+                if config.translated_alignment_selected == "rapsearch":
+                    try:
+                        evalue=math.pow(10.0, float(evalue))
+                    except:
+                        evalue=1.0 
+                else:
+                    if not isinstance(evalue, numbers.Number):
+                        evalue=1.0
+            
+                alignments.add(referenceid, queryid, evalue,"unclassified")
+            
+                aligned_ids+=[queryid]
         line=file_handle.readline()
 
     file_handle.close()

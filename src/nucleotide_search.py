@@ -39,7 +39,7 @@ def index(custom_database):
 
     return index_name
 
-def alignment(user_fastq, threads, index_name):
+def alignment(user_fastq, index_name):
     """
     Run alignment with bowtie2
     """
@@ -65,8 +65,8 @@ def alignment(user_fastq, threads, index_name):
     args=[input_type_flag,"-x",index_name,"-U",user_fastq,"-S",alignment_file]
     
     #add threads
-    if threads > 1:
-        args+=["-p",threads]
+    if config.threads > 1:
+        args+=["-p",config.threads]
 
     # run the bowtie2 alignment
     print("\nRunning " + exe + " ........\n")
