@@ -11,8 +11,12 @@ import tempfile
 import urllib
 import tarfile
 import multiprocessing
+import logging
 
 import config
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def name_temp_file(file_name):
     """
@@ -27,6 +31,9 @@ def file_exists_readable(file):
     """
     Exit with error if file does not exist or is not readable
     """
+    
+    logger.debug("Check file exists and is readable: %s",file)
+    
     if not os.path.isfile(file):
         sys.exit("ERROR: Can not find file "+ file)
 		
@@ -37,12 +44,18 @@ def add_exe_to_path(exe_dir):
     """ 
     Add path to executable to $PATH
     """
+    
+    logger.debug("Add directory, %s, to path", exe_dir)
+    
     os.environ["PATH"] += os.pathsep + exe_dir	
 
 def find_exe_in_path(exe):
     """
     Check that an executable exists in $PATH
     """
+    
+    logger.debug("Find executable, %s, in path", exe)
+    
     paths = os.environ["PATH"].split(os.pathsep)
     for path in paths:
         fullexe = os.path.join(path,exe)
@@ -68,13 +81,15 @@ def check_software_version(exe,version_flag,
     """
     Determine if the software is of the correct version
     """
+    
+    logger.debug("Check software, %s, for correct version, %s",exe,version_required)
 
     if return_exe_path(exe) == "Error":
         sys.exit("ERROR: Can not find software " + exe)
     else:
         try:
             p_out = subprocess.check_output([exe,version_flag])
-        except OSError as e:
+        except EnvironmentError as e:
             sys.exit("Error: Can not call software version\n" + e.strerror)
         
     if not re.search(version_required, p_out):
@@ -85,13 +100,18 @@ def download_tar_and_extract(url, filename, folder):
     """
     Download the file at the url
     """
+    
+    message="Download URL:" + url
+    logger.info(message)
     if config.verbose:
-        print("Download URL:" + url) 
+        print(messsage) 
 
     file, headers = urllib.urlretrieve(url,filename)
 
+    message="Extracting:" + filename
+    logger.info(message)
     if config.verbose:
-        print("Extracting:" + filename)
+        print(message)
     tarfile_handle=tarfile.open(filename,'r:gz')
     tarfile_handle.extractall(path=folder)
 
@@ -101,8 +121,7 @@ def remove_file(file):
     """
     if os.path.isfile(file):
         os.unlink(file)
-        if config.verbose:
-            print("Remove file: " + file)
+        logger.debug("Remove file: %s", file)
 
 def check_outfiles(outfiles):
     """
@@ -131,12 +150,13 @@ def command_multiprocessing(threads, args, function=None):
     Execute command in parallel, maximum of threads total
     """
     
-    pool=multiprocessing.Pool(threads)
+    if not function:
+        function=execute_command_args_convert
     
-    if function:
-        results=pool.map(function, args)
-    else:
-        results=pool.map(execute_command_args_convert, args)
+    logger.debug("Create %s processes for function %s", threads, function)
+    
+    pool=multiprocessing.Pool(threads)
+    results=pool.map(function, args)
         
     return results
     
@@ -158,6 +178,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
 	
     # check that the input files exist and are readable
     for file in infiles:
+        logger.debug("Check input file exists and is readable: %s",file)
         file_exists_readable(file)
         
     # check if outfiles already exist
@@ -167,27 +188,30 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
     args=[str(i) for i in args]
 
     if not bypass:
-
-        if config.verbose:
-            print("\n" + exe + " " + " ".join(args) + "\n")
-
+        
         cmd=[exe]+args
+
+        message=" ".join(cmd)
+        logger.info("Execute command: "+ message)
+        if config.verbose:
+            print("\n"+message+"\n")
 	
         if stdout_file:
             if stdin_file:
                 try:
                     p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
-                except OSError:
+                except EnvironmentError:
                     sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
             else:
                 try:
                     p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
-                except OSError:
+                except EnvironmentError:
                     sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
         else:
             try:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except OSError:
+                logger.debug(p_out)
+            except EnvironmentError:
                 sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
 
         # check that the output files exist and are readable
@@ -288,7 +312,7 @@ def remove_directory(dir):
             if config.verbose:
                 print("Remove directory: " + dir)
             shutil.rmtree(dir)
-        except OSError: 
+        except EnvironmentError: 
             sys.exit("ERROR: Unable to delete directory " + dir)
 
 def break_up_fasta_file(fasta_file, max_seqs):

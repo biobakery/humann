@@ -13,6 +13,10 @@ bypass_nucleotide_index = False
 # number of threads
 threads=1
 
+# log options
+log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
+log_level=log_level_choices[0]
+
 # turn on/off computations
 toggle_choices=["on","off"]
 xipe_toggle = "off"

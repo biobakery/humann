@@ -9,12 +9,15 @@ import math
 import re
 import sys
 import subprocess
+import logging
 
 import utilities
 import config
 import store
 import MinPath12hmp
 
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def run_minpath(reactions_file,metacyc_datafile):
     """
@@ -31,8 +34,10 @@ def run_minpath(reactions_file,metacyc_datafile):
         file_out2, tmpfile2=tempfile.mkstemp()
         os.close(file_out2)
     
+        message="Run MinPath ...."
+        logger.info(message) 
         if config.verbose:
-            print("\nRun MinPath .... ")
+            print("\n"+message)
     
         # Redirect stdout
         sys.stdout=open(os.devnull,"w")
@@ -57,8 +62,10 @@ def identify_reactions_and_pathways_by_bug(args):
     
     reactions_database, pathways_database, hits, bug = args
     
+    message="Compute gene scores by query ..."
+    logger.info(message)
     if config.verbose:
-        print("Compute gene scores by query ...")
+        print(message)
     
     # Loop through hits to organize scores by query
     genes_by_query={}
@@ -72,8 +79,10 @@ def identify_reactions_and_pathways_by_bug(args):
             genes_by_query[query]=[[reference,score]]
         total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
     
+    message="Total reads mapped to " + bug + " : " + str(len(hits))
+    logger.info(message)
     if config.verbose:
-        print("Total reads mapped to " + bug + " : " + str(len(hits)))            
+        print(message)            
     
     # add these scores by query to the total gene scores
     total_genes={}
@@ -107,6 +116,7 @@ def identify_reactions_and_pathways_by_bug(args):
         os.close(file_descriptor)
  
         # Write a flat reactions to pathways file
+        logger.debug("Write flat reactions to pathways file for Minpath")
         file_descriptor, pathways_database_file=tempfile.mkstemp()
         os.write(file_descriptor, pathways_database.get_database())
         os.close(file_descriptor)
@@ -170,20 +180,31 @@ def identify_reactions_and_pathways(alignments, reactions_database, pathways_dat
         
     # Remove the hits from the alignments that are not associated with a gene
     # in the gene to reactions database
+    message="Remove hits to genes not in reactions database ..."
+    logger.info(message)
     if config.verbose:
-        print("Remove hits to genes not in reactions database ...")
+        print(message)
 
+    logger.debug("Remove gene and hits")
     for gene in alignments.gene_list():
         if not reactions_database.gene_present(gene):
             alignments.delete_gene_and_hits(gene)
             
-    # Update the bugs index list to remove any indexes that point to deleted hits        
+    # Update the bugs index list to remove any indexes that point to deleted hits
+    logger.debug("Update hits for bugs to reflect removed hits")        
     alignments.update_hits_for_bugs()
             
-    print("Total bugs after filtering: " + str(alignments.count_bugs()))
-    alignments.print_bugs()            
+    message="Total bugs after filtering: " + str(alignments.count_bugs())
+    logger.info(message)        
+    print(message)
+    
+    message=alignments.counts_by_bug()
+    logger.info(message)
+    print(message)            
             
-    print("Total gene families after filtering: " + str(len(alignments.gene_list())))
+    message="Total gene families after filtering: " + str(len(alignments.gene_list()))
+    logger.info(message)
+    print(message)
             
     # Set up a command to run through each of the hits by bug
     args=[]
@@ -205,8 +226,7 @@ def pathways_coverage_by_bug(args):
     
     pathways_and_reactions_store, pathways_database = args
     
-    if config.verbose:
-        print("Compute pathway coverage for bug: " + pathways_and_reactions_store.get_bug())
+    logger.debug("Compute pathway coverage for bug: " + pathways_and_reactions_store.get_bug())
     
     # Process through each pathway to compute coverage
     pathways_coverages={}
@@ -238,8 +258,10 @@ def pathways_coverage_by_bug(args):
         
         cmmd=[xipe_exe,"--file2",config.xipe_percent]
         
+        message="Run xipe ...."
+        logger.info(message)
         if config.verbose:
-            print("Run xipe ....")
+            print(message)
         xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
             stdout = subprocess.PIPE, stderr = subprocess.PIPE )
         xipe_stdout, xipe_stderr = xipe_subprocess.communicate("\n".join(xipe_input))
@@ -274,8 +296,7 @@ def pathways_abundance_by_bug(args):
     
     pathways_and_reactions_store, pathways_database = args
     
-    if config.verbose:
-        print("Compute pathway abundance for bug: " + pathways_and_reactions_store.get_bug())
+    logger.debug("Compute pathway abundance for bug: " + pathways_and_reactions_store.get_bug())
 
     # Process through each pathway to compute abundance
     pathways_abundances={}
@@ -303,6 +324,8 @@ def print_pathways(pathways, file, header):
     """
     Print the pathways data to a file organized by pathway
     """
+    
+    logger.debug("Print pathways %s", header)
     
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter

@@ -5,9 +5,13 @@ Identify initial list of bugs from user supplied fasta/fastq
 import os
 import re
 import sys
+import logging
 
 import utilities
 import config
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def alignment(input):
     """
@@ -44,7 +48,9 @@ def alignment(input):
 
     args+=opts
 
-    print("\nRunning " + exe + " ........\n")
+    message="Running " + exe + " ........"
+    logger.info(message)
+    print("\n"+message+"\n")
     utilities.execute_command(exe, args, infiles, outfiles)
     
     return bug_file
@@ -62,6 +68,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     total_reads_covered = 0
     if bug_file != "Empty":
         # Identify the species that pass the threshold
+        utilities.file_exists_readable(bug_file)
         file_handle = open(bug_file, "r")
 
         line = file_handle.readline()
@@ -81,16 +88,21 @@ def create_custom_database(chocophlan_dir, bug_file):
                     # use the genus and species
                     species=organism_info.split("|")[-1]
                     genus=organism_info.split("|")[-2]
-                    print("Found " + genus + "|" + species + " : " +
+                    message=("Found " + genus + "|" + species + " : " +
                         str(read_percent) + "% of mapped reads")
+                    logger.info(message)
+                    print(message)
                     species_found.append(genus + "." + species)
 
             line = file_handle.readline()
     
     # compute total species found
     if not config.bypass_prescreen:
-        print("\nTotal species indentified in prescreen: " + str(len(species_found)) + "\n")
-        print("Species cover " + str(total_reads_covered) + "% of all mapped reads\n")
+        message="Total species indentified in prescreen: " + str(len(species_found))
+        logger.info(message)
+        print("\n"+message+"\n")
+        message="Species cover " + str(total_reads_covered) + "% of all mapped reads"
+        print(message+"\n")
 
     # identify the files to be used from the ChocoPhlAn database
     species_file_list = []
@@ -99,21 +111,21 @@ def create_custom_database(chocophlan_dir, bug_file):
             for species in species_found:
                 if re.search(species, species_file): 
                     species_file_list.append(os.path.join(chocophlan_dir,species_file))
-                    if config.verbose:
-                        print("Adding file to database: " + species_file)   
+                    logger.debug("Adding file to database: " + species_file)   
     else:
         for species_file in os.listdir(chocophlan_dir):
             species_file_list.append(os.path.join(chocophlan_dir,species_file))
-            if config.verbose:
-                print("Adding file to database: " + species_file)   
+            logger.debug("Adding file to database: " + species_file)   
 
 
     # create new fasta file containing only those species found
     if not species_file_list:
-        print("The custom ChocoPhlAn database is empty")   
+        logger.debug("The custom ChocoPhlAn database is empty")   
         return "Empty"
     else:
-        print("\nCreating custom ChocoPhlAn database ........\n")   
+        message="Creating custom ChocoPhlAn database ........"
+        logger.info(message)
+        print("\n"+message+"\n")   
 
         # determine if the files are compressed with gzip
         ext=os.path.splitext(species_file_list[0])[1]

@@ -4,14 +4,20 @@ Compute alignments by gene family
 
 import os
 import tempfile
+import logging
 
 import config
 import utilities
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def gene_families(alignments):
     """
     Compute the gene families from the alignments
     """
+    
+    logger.debug("Compute gene families")
     
     # Compute hits by gene family
     gene_scores={}

@@ -5,10 +5,14 @@ Index database, run alignment, find unused reads
 import os
 import re
 import math
+import logging
 
 import utilities
 import config
 import store
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def index(custom_database):
     """
@@ -31,7 +35,9 @@ def index(custom_database):
         outfiles=[index_name + config.bowtie2_large_index_ext]
         
     # index the database
-    print("\nRunning " + exe + " ........\n")
+    message="Running " + exe + " ........"
+    logger.info(message)
+    print("\n"+message+"\n")
 
     args+=opts
     
@@ -48,13 +54,14 @@ def alignment(user_fastq, index_name):
     alignment_file = utilities.name_temp_file(
         config.chocophlan_alignment_name)
 
-
     # align user input to database
     exe="bowtie2"
     opts=config.bowtie2_align_opts
 
     #determine input type as fastq or fasta
     input_type = utilities.fasta_or_fastq(user_fastq)
+
+    logger.debug("Nucleotide input file is of type: %s", input_type)
 
     #determine input type flag
     #default flag to fastq
@@ -69,7 +76,8 @@ def alignment(user_fastq, index_name):
         args+=["-p",config.threads]
 
     # run the bowtie2 alignment
-    print("\nRunning " + exe + " ........\n")
+    message="Running " + exe + " ........"
+    print("\n"+message+"\n")
     
     args+=opts
 
@@ -100,8 +108,8 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
 
   
     utilities.file_exists_readable(sam_alignment_file)
-
     file_handle_read=open(sam_alignment_file, "r")
+    
     file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
     file_handle_write_aligned=open(reduced_aligned_reads_file, "w")
 
@@ -120,12 +128,15 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
                 
                 # store the unaligned reads data
-                unaligned_reads_store.add(info[config.sam_read_name_index], info[config.sam_read_index])
+                unaligned_reads_store.add(info[config.sam_read_name_index], 
+                    info[config.sam_read_index])
             else:
                 # convert the e-value from global to local
                 try:
                     evalue=math.pow(10.0, float(info[config.sam_mapq_index])/-10.0)
-                except:
+                except ValueError:
+                    logger.warning("Unable to convert bowtie2 e-value: %s", 
+                        info[config.sam_mapq_index])
                     evalue=1.0 
                 reference_info=info[config.sam_reference_index].split(
                     config.chocophlan_delimiter)

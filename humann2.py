@@ -20,6 +20,7 @@ import os
 import time
 import tempfile
 import re
+import logging
 
 from src import utilities
 from src import prescreen
@@ -29,6 +30,9 @@ from src import translated_search
 from src import config
 from src import quantify_families
 from src import quantify_modules
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def parse_arguments (args):
     """ 
@@ -91,6 +95,17 @@ def parse_arguments (args):
         help="output file for gene families\n" + 
         "[DEFAULT: $input_dir/$SAMPLE_genefamilies.tsv]", 
         metavar="<genefamilies.tsv>")
+    parser.add_argument(
+        "--o_log", 
+        help="log file\n" + 
+        "[DEFAULT: temp/sample.log]", 
+        metavar="<sample.log>")
+    parser.add_argument(
+        "--log_level", 
+        help="level of messages to display in log\n" + 
+        "[DEFAULT: " + config.log_level + " ]", 
+        default=config.log_level,
+        choices=config.log_level_choices)
     parser.add_argument(
         "--temp", 
         help="directory to store temp output files\n" + 
@@ -296,8 +311,21 @@ def update_configuration(args):
         config.temp_dir=tempfile.mkdtemp( 
             prefix='humann2_temp_', dir=input_dir)
 
-    if config.verbose:
-        print("\nWriting temp files to directory: " + config.temp_dir + "\n")
+    # set the name of the log file 
+    log_file=os.path.join(config.temp_dir,config.file_basename+".log")
+    
+    # change file name if set
+    if args.o_log:
+        log_file=args.o_log
+        
+    # configure the logger
+    logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
+        level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
+    
+    message="Writing temp files to directory: " + config.temp_dir
+    logger.info(message)
+    if config.verbose: 
+        print("\n"+message+"\n")
 
 
      
@@ -398,14 +426,18 @@ def main():
     # Load in the reactions database
     reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
 
+    message="Load pathways database part 1: " + config.pathways_database_part1
+    logger.info(message)
     if config.verbose:
-        print("Load pathways database part 1: " + config.pathways_database_part1)
+        print(message)
     
     # Load in the pathways database
     pathways_database=store.PathwaysDatabase(config.pathways_database_part2)
     
+    message="Load pathways database part 2: " + config.pathways_database_part2
+    logger.info(message)
     if config.verbose:
-        print("Load pathways database part 2: " + config.pathways_database_part2)
+        print(message)
 
     # Start timer
     start_time=time.time()
@@ -418,8 +450,10 @@ def main():
         if not config.bypass_prescreen:
             bug_file = prescreen.alignment(args.input)
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
 
     # Create the custom database from the bugs list
     custom_database = ""
@@ -428,8 +462,10 @@ def main():
     else:
         custom_database = "Bypass"
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
 
     # Run nucleotide search on custom database
     if custom_database != "Empty":
@@ -440,8 +476,10 @@ def main():
         nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
             nucleotide_index_file)
 
+        message=str(int(time.time() - start_time)) + " seconds from start"
+        logger.info(message)
         if config.verbose:
-            print(str(int(time.time() - start_time)) + " seconds from start")
+            print(message)
 
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
@@ -449,15 +487,25 @@ def main():
             args.input, nucleotide_alignment_file, alignments)
 
         # Print out total alignments per bug
-        print("Total bugs from nucleotide alignment: " + str(alignments.count_bugs()))
-        alignments.print_bugs()
+        message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
+        logger.info(message)
+        print(message)
+        
+        message=alignments.counts_by_bug()
+        logger.info("\n"+message)
+        print(message)        
 
-        print("\nTotal gene families from nucleotide alignment: " + str(alignments.count_genes()))
+        message="Total gene families from nucleotide alignment: " + str(alignments.count_genes())
+        logger.info(message)
+        print("\n"+message)
 
         # Report reads unaligned
-        print("\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-            args.input, unaligned_reads_file_fasta) + "%\n")  
+        message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+            args.input, unaligned_reads_file_fasta) + "%"
+        logger.info(message)
+        print("\n"+message+"\n")  
     else:
+        logger.debug("Custom database is empty")
         reduced_aligned_reads_file = "Empty"
         unaligned_reads_file_fasta=args.input
         unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
@@ -474,24 +522,40 @@ def main():
         unaligned_reads_store, translated_alignment_file, alignments)
 
     # Print out total alignments per bug
-    print("Total bugs after translated alignment: " + str(alignments.count_bugs()))
-    alignments.print_bugs()
+    message="Total bugs after translated alignment: " + str(alignments.count_bugs())
+    logger.info(message)
+    print(message)
+    
+    message=alignments.counts_by_bug()
+    logger.info("\n"+message)
+    print(message)
 
-    print("\nTotal gene families after translated alignment: " + str(alignments.count_genes()))
+    message="Total gene families after translated alignment: " + str(alignments.count_genes())
+    logger.info(message)
+    print("\n"+message)
 
     # Report reads unaligned
-    print("\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-        args.input, translated_unaligned_reads_file_fastq) + "%\n")  
+    message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+        args.input, translated_unaligned_reads_file_fastq) + "%"
+    logger.info(message)
+    print("\n"+message+"\n")  
 
     # Compute the gene families
-    print("\nComputing gene families ...")
+    message="Computing gene families ..."
+    logger.info(message)
+    print("\n"+message)
+    
     families_file=quantify_families.gene_families(alignments)
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
     
     # Identify reactions and then pathways from the alignments
-    print("\nComputing pathways abundance and coverage ...")
+    message="Computing pathways abundance and coverage ..."
+    logger.info(message)
+    print("\n"+message)
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
         alignments, reactions_database, pathways_database)
 
@@ -499,11 +563,15 @@ def main():
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
         pathways_and_reactions_store, pathways_database)
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
 
     output_files=[families_file,abundance_file,coverage_file]
-    print("\nOutput files created: \n" + "\n".join(output_files) + "\n")
+    message="\nOutput files created: \n" + "\n".join(output_files) + "\n"
+    logger.info(message)
+    print(message)
 
     # Remove temp directory
     if not args.temp:
