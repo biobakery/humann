@@ -7,9 +7,13 @@ Stores the unaligned reads
 """
 import os
 import re
+import logging
 
 import config
 import utilities
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 class Alignments:
     """
@@ -52,12 +56,15 @@ class Alignments:
         """
         return len(self.__genes.keys())    
             
-    def print_bugs(self):
+    def counts_by_bug(self):
         """
-        Print out the bugs and total number of hits
+        Return each bug and the total number of hits
         """
+        lines=[]
         for bug in self.__bugs.keys():
-            print(bug + ": " + str(len(self.__bugs[bug])) + " hits")
+            lines.append(bug + ": " + str(len(self.__bugs[bug])) + " hits")
+            
+        return "\n".join(lines)
             
     def gene_list(self):
         """
@@ -128,6 +135,7 @@ class Alignments:
         
         # delete the bugs that do not have any hits
         for bug in bugs_to_delete:
+            logger.debug("Bug removed because no longer associated with any hits: %s", bug)
             del self.__bugs[bug]
     
 class PathwaysAndReactions:
@@ -145,6 +153,8 @@ class PathwaysAndReactions:
         """
         
         if pathway in self.__pathways:
+            if reaction in self.__pathways[pathway]:
+                logger.debug("Overwrite of pathway/reaction score: %s %s", pathway, reaction)
             self.__pathways[pathway][reaction]=score
         else:
             self.__pathways[pathway]={ reaction : score }

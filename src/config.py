@@ -10,6 +10,13 @@ verbose = False
 bypass_prescreen = False
 bypass_nucleotide_index = False
 
+# number of threads
+threads=1
+
+# log options
+log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
+log_level=log_level_choices[0]
+
 # turn on/off computations
 toggle_choices=["on","off"]
 xipe_toggle = "off"
@@ -90,7 +97,7 @@ output_file_category_delimiter="|"
 
 # usearch options
 usearch_database_extension=".udb"
-id_threshold_default=0.4
+identity_threshold=0.4
 usearch_max_seqs=10000
 usearch_version="usearch v7.0.1001"
 usearch_opts=[]
@@ -102,11 +109,15 @@ rapsearch_output_file_extension=".m8"
 
 # data files
 data_folder="data/"
-metacyc_gene_to_reactions="metacyc_reactions.uniref"
-metacyc_reactions_to_pathways="metacyc_pathways"
+metacyc_gene_to_reactions=os.path.join(data_folder, "metacyc_reactions.uniref")
+metacyc_reactions_to_pathways=os.path.join(data_folder, "metacyc_pathways")
 reactions_database_delimiter="\t"
 pathways_database_delimiter="\t"
 pathway_identifier="PWY"
+
+# pathways databases
+pathways_database_part1=metacyc_gene_to_reactions
+pathways_database_part2=metacyc_reactions_to_pathways
 
 # MinPath
 minpath_file="minpath1.2.tar.gz"

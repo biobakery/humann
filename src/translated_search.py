@@ -6,13 +6,17 @@ import os
 import tempfile
 import re
 import numbers
+import logging
+import math
 
 import utilities
 import config
 import store
 
-def usearch_alignment(alignment_file,threads,identity_threshold,
-        uniref, unaligned_reads_file_fastq):
+# name global logging instance
+logger=logging.getLogger(__name__)
+
+def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
     """
     Run usearch alignment with memory management
     Individual runs can be threaded
@@ -23,23 +27,18 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
     exe="usearch"
     opts=config.usearch_opts
 
-    args=["-id",identity_threshold]
+    args=["-id",config.identity_threshold]
 
-    print("\nRunning " + exe + " ........\n")
+    message="Running " + exe + " ........"
+    logger.info(message)
+    print("\n"+message+"\n")
 
     if not bypass:
 
         args+=opts
 
-        #convert unaligned reads file to fasta
-        temp_fasta_files=[]
-        if utilities.fasta_or_fastq(unaligned_reads_file_fastq) == "fastq":
-            utilities.unaligned_reads_file_fasta=fastq_to_fasta(unaligned_reads_file_fastq)
-            temp_fasta_files.append(unaligned_reads_file_fasta)
-        else:
-            unaligned_reads_file_fasta=unaligned_reads_file_fastq
-
         #break up input file into smaller files for memory requirement
+        logger.debug("Break up fasta file into smaller files for memory management")
         temp_in_files=utilities.break_up_fasta_file(unaligned_reads_file_fasta,
             config.usearch_max_seqs)
 
@@ -60,7 +59,7 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
 
                 command_args.append([exe,full_args,[input_database],[],"",""])
                 
-        results=utilities.command_multiprocessing(threads,command_args)
+        results=utilities.command_multiprocessing(config.threads,command_args)
 
         # merge the temp output files
         exe="cat"
@@ -69,14 +68,15 @@ def usearch_alignment(alignment_file,threads,identity_threshold,
             alignment_file)
 
         # remove the temp files which have been merged
-        for temp_file in temp_fasta_files + temp_in_files + temp_out_files:
+        for temp_file in temp_in_files + temp_out_files:
             utilities.remove_file(temp_file)
     else:
-        print("Bypass")
+        message="Bypass"
+        logger.info(message)
+        print(message)
 
 
-def rapsearch_alignment(alignment_file,threads, uniref,
-        unaligned_reads_file_fastq):
+def rapsearch_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
     """
     Run rapsearch alignment on database formatted for rapsearch
     """
@@ -86,12 +86,14 @@ def rapsearch_alignment(alignment_file,threads, uniref,
     exe="rapsearch"
     opts=config.rapsearch_opts
 
-    args=["-q",unaligned_reads_file_fastq,"-b",0]
+    args=["-q",unaligned_reads_file_fasta,"-b",0]
 
-    if threads > 1:
-        args+=["-z",threads]
+    if config.threads > 1:
+        args+=["-z",config.threads]
 
-    print("\nRunning " + exe + " ........\n")
+    message="Running " + exe + " ........"
+    logger.info(message)
+    print("\n"+message+"\n")
 
     if not bypass:
 
@@ -123,12 +125,13 @@ def rapsearch_alignment(alignment_file,threads, uniref,
         for temp_file in temp_out_files:
             utilities.remove_file(temp_file)
     else:
-        print("Bypass")
+        message="Bypass"
+        logger.info(message)
+        print(message)
 
 
 
-def alignment(uniref, unaligned_reads_file_fasta, identity_threshold, 
-    threads):
+def alignment(uniref, unaligned_reads_file):
     """
     Run rapsearch2 or usearch for alignment
     """
@@ -139,18 +142,17 @@ def alignment(uniref, unaligned_reads_file_fasta, identity_threshold,
     
     # Check that the file of reads to align is fasta
     temp_file=""
-    if utilities.fasta_or_fastq(unaligned_reads_file_fasta) == "fastq":
-        input_fasta=utilities.fastq_to_fasta(unaligned_reads_file_fasta)
+    if utilities.fasta_or_fastq(unaligned_reads_file) == "fastq":
+        logger.debug("Convert unaligned reads fastq file to fasta")
+        input_fasta=utilities.fastq_to_fasta(unaligned_reads_file)
         temp_file=input_fasta
     else:
-        input_fasta=unaligned_reads_file_fasta
+        input_fasta=unaligned_reads_file
 
     if config.translated_alignment_selected == "usearch":
-        usearch_alignment(alignment_file,threads,identity_threshold,
-            uniref, input_fasta)
+        usearch_alignment(alignment_file, uniref, input_fasta)
     else:
-        rapsearch_alignment(alignment_file,threads,uniref,
-            input_fasta)
+        rapsearch_alignment(alignment_file, uniref, input_fasta)
         
     # Remove the temp fasta file if exists
     if temp_file:
@@ -182,36 +184,40 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     while line:
         if not re.search("^#",line):
             alignment_info=line.split(config.blast_delimiter)
-            queryid=alignment_info[config.blast_query_index]
-            
-            # remove the id of the alignment from the unaligned reads store
-            unaligned_reads_store.remove_id(queryid)
-            
-            referenceid=alignment_info[config.blast_reference_index]
             identity=float(alignment_info[config.blast_identity_index])
-            aligned_length=int(alignment_info[config.blast_aligned_length_index])
-            evalue=alignment_info[config.blast_evalue_index]
-            if config.translated_alignment_selected == "rapsearch":
-                try:
-                    evalue=math.pow(10.0, float(evalue))
-                except:
-                    evalue=1.0 
-            else:
-                if not isinstance(evalue, numbers.Number):
-                    evalue=1.0
-        
-            alignments.add(referenceid, queryid, evalue,"unclassified")
-        
-            aligned_ids+=[queryid]
+            
+            if identity >= config.identity_threshold:
+                # only store those alignments which meet the identity threshold
+                
+                referenceid=alignment_info[config.blast_reference_index]
+                queryid=alignment_info[config.blast_query_index]
+                aligned_length=int(alignment_info[config.blast_aligned_length_index])
+                evalue=alignment_info[config.blast_evalue_index]
+                
+                # remove the id of the alignment from the unaligned reads store
+                unaligned_reads_store.remove_id(queryid)                
+                
+                if config.translated_alignment_selected == "rapsearch":
+                    try:
+                        evalue=math.pow(10.0, float(evalue))
+                    except ValueError:
+                        logger.warning("Unable to convert rapsearch e-value: %s", evalue)
+                        evalue=1.0 
+                else:
+                    if not isinstance(evalue, numbers.Number):
+                        logger.warning("Usearch e-value is not a number: %s", evalue)
+                        evalue=1.0
+            
+                alignments.add(referenceid, queryid, evalue,"unclassified")
+            
+                aligned_ids+=[queryid]
         line=file_handle.readline()
 
     file_handle.close()
 
     # create unaligned file using list of remaining unaligned stored data
     file_handle_write=open(unaligned_file_fasta,"w")
-
     file_handle_write.write(unaligned_reads_store.get_fasta())
-
     file_handle_write.close()
 
     return unaligned_file_fasta

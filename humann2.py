@@ -20,6 +20,7 @@ import os
 import time
 import tempfile
 import re
+import logging
 
 from src import utilities
 from src import prescreen
@@ -29,6 +30,9 @@ from src import translated_search
 from src import config
 from src import quantify_families
 from src import quantify_modules
+
+# name global logging instance
+logger=logging.getLogger(__name__)
 
 def parse_arguments (args):
     """ 
@@ -41,22 +45,22 @@ def parse_arguments (args):
         "-v","--verbose", 
         help="additional output is printed\n", 
         action="store_true",
-        default=False)
+        default=config.verbose)
     parser.add_argument(
         "-d","--debug", 
         help="bypass commands if the output files exist\n", 
         action="store_true",
-        default=False)
+        default=config.debug)
     parser.add_argument(
         "--bypass_prescreen", 
         help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
         action="store_true",
-        default=False)
+        default=config.bypass_prescreen)
     parser.add_argument(
         "--bypass_nucleotide_index", 
         help="bypass the nucleotide index step and run on the indexed ChocoPhlAn database\n", 
         action="store_true",
-        default=False)
+        default=config.bypass_nucleotide_index)
     parser.add_argument(
         "-i", "--input", 
         help="fastq/fasta input file\n[REQUIRED]", 
@@ -92,6 +96,17 @@ def parse_arguments (args):
         "[DEFAULT: $input_dir/$SAMPLE_genefamilies.tsv]", 
         metavar="<genefamilies.tsv>")
     parser.add_argument(
+        "--o_log", 
+        help="log file\n" + 
+        "[DEFAULT: temp/sample.log]", 
+        metavar="<sample.log>")
+    parser.add_argument(
+        "--log_level", 
+        help="level of messages to display in log\n" + 
+        "[DEFAULT: " + config.log_level + " ]", 
+        default=config.log_level,
+        choices=config.log_level_choices)
+    parser.add_argument(
         "--temp", 
         help="directory to store temp output files\n" + 
             "[DEFAULT: temp files are removed]", 
@@ -102,10 +117,10 @@ def parse_arguments (args):
         metavar="<bowtie2/>")
     parser.add_argument(
         "--threads", 
-        help="number of threads/processes\n[DEFAULT: 1]", 
-        metavar="<1>", 
+        help="number of threads/processes\n[DEFAULT: " + str(config.threads) + " ]", 
+        metavar="<" + str(config.threads) + ">", 
         type=int,
-        default=1) 
+        default=config.threads) 
     parser.add_argument(
         "--prescreen_threshold", 
         help="minimum percentage of reads matching a species\n[DEFAULT: "
@@ -116,10 +131,10 @@ def parse_arguments (args):
     parser.add_argument(
         "--identity_threshold", 
         help="identity threshold to use with the translated search\n[DEFAULT: " 
-            + str(config.id_threshold_default) + "]", 
-        metavar="<" + str(config.id_threshold_default) + ">", 
+            + str(config.identity_threshold) + "]", 
+        metavar="<" + str(config.identity_threshold) + ">", 
         type=float,
-        default=config.id_threshold_default) 
+        default=config.identity_threshold) 
     parser.add_argument(
         "--usearch", 
         help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
@@ -156,6 +171,12 @@ def parse_arguments (args):
         config.output_format + " ]",
         default=config.output_format,
         choices=config.output_format_choices)
+    parser.add_argument(
+        "--pathways_databases",
+        help="the two mapping files to use for pathway computations\n[DEFAULT: " +
+        config.pathways_database_part1 + " , " + config.pathways_database_part2 + " ]",
+        metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
+        nargs=2)
 
     return parser.parse_args()
 	
@@ -177,11 +198,18 @@ def update_configuration(args):
 
     if args.rapsearch:
         utilities.add_exe_to_path(args.rapsearch)
-
-    # Update data directory to full path
-    humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
-    config.data_folder=os.path.join(humann2_fullpath,
-        config.data_folder)    
+ 
+    # Set the locations of the pathways databases
+    if args.pathways_databases:
+        config.pathways_database_part1=args.pathways_databases[0]
+        config.pathways_database_part2=args.pathways_databases[1]
+    else:
+        # add the full path to the database
+        humann2_fullpath=os.path.dirname(os.path.realpath(__file__)) 
+        config.pathways_database_part1=os.path.join(humann2_fullpath, 
+            config.pathways_database_part1)
+        config.pathways_database_part2=os.path.join(humann2_fullpath,
+            config.pathways_database_part2)
 
     # if set, update the config run mode to debug
     if args.debug:
@@ -199,17 +227,20 @@ def update_configuration(args):
     if args.bypass_nucleotide_index:
         config.bypass_nucleotide_index=True  
         config.bypass_prescreen=True  
+        
+    # Update thresholds
+    config.prescreen_threshold=args.prescreen_threshold
+    config.identity_threshold=args.identity_threshold
     
-    # Update translated alignment software if set
-    if args.translated_alignment:
-        config.translated_alignment_selected=args.translated_alignment
+    # Update threads
+    config.threads=args.threads
+    
+    # Update translated alignment software
+    config.translated_alignment_selected=args.translated_alignment
         
     # Update the computation toggle choices
-    if args.xipe:
-        config.xipe_toggle=args.xipe
-        
-    if args.minpath:
-        config.minpath_toggle=args.minpath
+    config.xipe_toggle=args.xipe
+    config.minpath_toggle=args.minpath
         
     # If minpath is set to run, install if not already installed
     if config.minpath_toggle == "on":
@@ -229,8 +260,7 @@ def update_configuration(args):
     config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
     
     # Set the output format
-    if args.output_format:
-        config.output_format=args.output_format
+    config.output_format=args.output_format
     
     # Set final output file names
     if args.o_pathabundance:
@@ -281,8 +311,21 @@ def update_configuration(args):
         config.temp_dir=tempfile.mkdtemp( 
             prefix='humann2_temp_', dir=input_dir)
 
-    if config.verbose:
-        print("\nWriting temp files to directory: " + config.temp_dir + "\n")
+    # set the name of the log file 
+    log_file=os.path.join(config.temp_dir,config.file_basename+".log")
+    
+    # change file name if set
+    if args.o_log:
+        log_file=args.o_log
+        
+    # configure the logger
+    logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
+        level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
+    
+    message="Writing temp files to directory: " + config.temp_dir
+    logger.info(message)
+    if config.verbose: 
+        print("\n"+message+"\n")
 
 
      
@@ -291,18 +334,22 @@ def check_requirements(args):
     Check requirements (file format, dependencies, permissions)
     """
 
+    # Check the pathways database files exist and are readable
+    utilities.file_exists_readable(config.pathways_database_part1)
+    utilities.file_exists_readable(config.pathways_database_part2)
+
     # Check that the input file exists, is readable, and is fasta/fastq
     if utilities.fasta_or_fastq(args.input) == "error":
         sys.exit("ERROR: The input file is not of a fasta or fastq format.")
 
     # Check that the chocophlan directory exists
-    if not args.bypass_nucleotide_index:
+    if not config.bypass_nucleotide_index:
         if not os.path.isdir(args.chocophlan):
             sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
                 + args.chocophlan + " does not exist. Please select another directory.")	
     
     # Check that the files in the chocophlan folder are of the right format
-    if not args.bypass_nucleotide_index:
+    if not config.bypass_nucleotide_index:
         valid_format_count=0
         for file in os.listdir(args.chocophlan):
             # expect most of the file names to be of the format g__*s__*
@@ -347,7 +394,7 @@ def check_requirements(args):
             " executable can not be found. Please check the install.")
     
     # Check that the metaphlan2 executable can be found
-    if not args.bypass_prescreen and not args.bypass_nucleotide_index:
+    if not config.bypass_prescreen and not config.bypass_nucleotide_index:
         if not utilities.find_exe_in_path("metaphlan2.py"): 
             sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
                 "Please check the install.")
@@ -377,20 +424,20 @@ def main():
     alignments=store.Alignments()
     
     # Load in the reactions database
-    genes_to_reactions=os.path.join(config.data_folder,
-        config.metacyc_gene_to_reactions)
-    reactions_database=store.ReactionsDatabase(genes_to_reactions)
+    reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
 
+    message="Load pathways database part 1: " + config.pathways_database_part1
+    logger.info(message)
     if config.verbose:
-        print("Load reactions from database: " + genes_to_reactions)
+        print(message)
     
     # Load in the pathways database
-    reactions_to_pathways=os.path.join(config.data_folder,
-        config.metacyc_reactions_to_pathways)
-    pathways_database=store.PathwaysDatabase(reactions_to_pathways)
+    pathways_database=store.PathwaysDatabase(config.pathways_database_part2)
     
+    message="Load pathways database part 2: " + config.pathways_database_part2
+    logger.info(message)
     if config.verbose:
-        print("Load pathways from database: " + reactions_to_pathways)
+        print(message)
 
     # Start timer
     start_time=time.time()
@@ -401,22 +448,24 @@ def main():
         bug_file = args.metaphlan_output
     else:
         if not config.bypass_prescreen:
-            bug_file = prescreen.alignment(args.input, 
-                args.threads)
+            bug_file = prescreen.alignment(args.input)
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
 
     # Create the custom database from the bugs list
     custom_database = ""
     if not config.bypass_nucleotide_index:
-        custom_database = prescreen.create_custom_database(args.chocophlan, 
-            args.prescreen_threshold, bug_file)
+        custom_database = prescreen.create_custom_database(args.chocophlan, bug_file)
     else:
         custom_database = "Bypass"
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
 
     # Run nucleotide search on custom database
     if custom_database != "Empty":
@@ -425,10 +474,12 @@ def main():
         else:
             nucleotide_index_file = args.chocophlan
         nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
-            args.threads, nucleotide_index_file)
+            nucleotide_index_file)
 
+        message=str(int(time.time() - start_time)) + " seconds from start"
+        logger.info(message)
         if config.verbose:
-            print(str(int(time.time() - start_time)) + " seconds from start")
+            print(message)
 
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
@@ -436,22 +487,32 @@ def main():
             args.input, nucleotide_alignment_file, alignments)
 
         # Print out total alignments per bug
-        print("Total bugs from nucleotide alignment: " + str(alignments.count_bugs()))
-        alignments.print_bugs()
+        message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
+        logger.info(message)
+        print(message)
+        
+        message=alignments.counts_by_bug()
+        logger.info("\n"+message)
+        print(message)        
 
-        print("\nTotal gene families from nucleotide alignment: " + str(alignments.count_genes()))
+        message="Total gene families from nucleotide alignment: " + str(alignments.count_genes())
+        logger.info(message)
+        print("\n"+message)
 
         # Report reads unaligned
-        print("\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-            args.input, unaligned_reads_file_fasta) + "%\n")  
+        message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+            args.input, unaligned_reads_file_fasta) + "%"
+        logger.info(message)
+        print("\n"+message+"\n")  
     else:
+        logger.debug("Custom database is empty")
         reduced_aligned_reads_file = "Empty"
         unaligned_reads_file_fasta=args.input
         unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
 
     # Run translated search on UniRef database
     translated_alignment_file = translated_search.alignment(args.uniref, 
-        unaligned_reads_file_fasta, args.identity_threshold, args.threads)
+        unaligned_reads_file_fasta)
 
     if config.verbose:
         print(str(int(time.time() - start_time)) + " seconds from start")
@@ -461,36 +522,56 @@ def main():
         unaligned_reads_store, translated_alignment_file, alignments)
 
     # Print out total alignments per bug
-    print("Total bugs after translated alignment: " + str(alignments.count_bugs()))
-    alignments.print_bugs()
+    message="Total bugs after translated alignment: " + str(alignments.count_bugs())
+    logger.info(message)
+    print(message)
+    
+    message=alignments.counts_by_bug()
+    logger.info("\n"+message)
+    print(message)
 
-    print("\nTotal gene families after translated alignment: " + str(alignments.count_genes()))
+    message="Total gene families after translated alignment: " + str(alignments.count_genes())
+    logger.info(message)
+    print("\n"+message)
 
     # Report reads unaligned
-    print("\nEstimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-        args.input, translated_unaligned_reads_file_fastq) + "%\n")  
+    message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+        args.input, translated_unaligned_reads_file_fastq) + "%"
+    logger.info(message)
+    print("\n"+message+"\n")  
 
     # Compute the gene families
-    print("\nComputing gene families ...")
+    message="Computing gene families ..."
+    logger.info(message)
+    print("\n"+message)
+    
     families_file=quantify_families.gene_families(alignments)
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
     
     # Identify reactions and then pathways from the alignments
-    print("\nComputing pathways abundance and coverage ...")
+    message="Computing pathways abundance and coverage ..."
+    logger.info(message)
+    print("\n"+message)
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
-        args.threads, alignments, reactions_database, pathways_database)
+        alignments, reactions_database, pathways_database)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
-        args.threads, pathways_and_reactions_store, pathways_database)
+        pathways_and_reactions_store, pathways_database)
 
+    message=str(int(time.time() - start_time)) + " seconds from start"
+    logger.info(message)
     if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        print(message)
 
     output_files=[families_file,abundance_file,coverage_file]
-    print("\nOutput files created: \n" + "\n".join(output_files) + "\n")
+    message="\nOutput files created: \n" + "\n".join(output_files) + "\n"
+    logger.info(message)
+    print(message)
 
     # Remove temp directory
     if not args.temp:
