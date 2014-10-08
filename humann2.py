@@ -244,7 +244,14 @@ def update_configuration(args):
         
     # If minpath is set to run, install if not already installed
     if config.minpath_toggle == "on":
-        utilities.install_minpath()
+        utilities.install_minpath() 
+    
+    # Check that the input file exists and is readable
+    if not os.path.isfile(args.input):
+        sys.exit("CRITICAL ERROR: Can not find input file selected: "+ args.input)
+        
+    if not os.access(args.input, os.R_OK):
+        sys.exit("CRITICAL ERROR: Not able to read input file selected: " + args.input)
      
     # Check that the directory that holds the input file is writeable
     # before creating files/directories in that folder

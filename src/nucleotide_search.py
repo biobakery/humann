@@ -6,6 +6,7 @@ import os
 import re
 import math
 import logging
+import traceback
 
 import utilities
 import config
@@ -137,6 +138,7 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 except ValueError:
                     logger.warning("Unable to convert bowtie2 e-value: %s", 
                         info[config.sam_mapq_index])
+                    logger.warning("Traceback: \n" + traceback.print_exc())
                     evalue=1.0 
                 reference_info=info[config.sam_reference_index].split(
                     config.chocophlan_delimiter)

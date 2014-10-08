@@ -12,6 +12,7 @@ import urllib
 import tarfile
 import multiprocessing
 import logging
+import traceback
 
 import config
 
@@ -27,18 +28,31 @@ def name_temp_file(file_name):
     return os.path.join(config.temp_dir,
        config.file_basename + file_name) 
 
-def file_exists_readable(file):
+def file_exists_readable(file, raise_IOError=None):
     """
     Exit with error if file does not exist or is not readable
+    Or raise an IOerror if selected
     """
     
     logger.debug("Check file exists and is readable: %s",file)
     
     if not os.path.isfile(file):
-        sys.exit("ERROR: Can not find file "+ file)
+        message="Can not find file "+ file
+        logger.critical(message)
+        if raise_IOError:
+            print("CRITICAL ERROR: " + message)   
+            raise IOError 
+        else:
+            sys.exit("CRITICAL ERROR: " + message)
 		
     if not os.access(file, os.R_OK):
-        sys.exit("ERROR: Not able to read file " + file)
+        message="Not able to read file " + file
+        logger.critical(message)
+        if raise_IOError:
+            print("CRITICAL ERROR: " + message)
+            raise IOError
+        else:
+            sys.exit("CRITICAL ERROR: " + message)
 
 def add_exe_to_path(exe_dir):
     """ 
@@ -69,12 +83,13 @@ def return_exe_path(exe):
     Return the location of the exe in $PATH
     """
     paths = os.environ["PATH"].split(os.pathsep)
+    full_path=""
     for path in paths:
         fullexe = os.path.join(path,exe)
         if os.path.exists(fullexe):
             if os.access(fullexe,os.X_OK):
-                return path
-    return "Error"	
+                full_path=path
+    return full_path
 
 def check_software_version(exe,version_flag,
     version_required):
@@ -84,17 +99,23 @@ def check_software_version(exe,version_flag,
     
     logger.debug("Check software, %s, for correct version, %s",exe,version_required)
 
-    if return_exe_path(exe) == "Error":
-        sys.exit("ERROR: Can not find software " + exe)
+    if not find_exe_in_path(exe):
+        message="Can not find software " + exe
+        logger.critical(message)
+        sys.exit("CRITICAL ERROR: " + message)
     else:
         try:
             p_out = subprocess.check_output([exe,version_flag])
-        except EnvironmentError as e:
-            sys.exit("Error: Can not call software version\n" + e.strerror)
+        except EnvironmentError:
+            message="Can not call software version for " + exe
+            logger.warning(message)
+            print("WARNING: " + message + "\n")
         
     if not re.search(version_required, p_out):
-        sys.exit("Error: Please update " + exe + " from version " +
-            p_out.rstrip('\n') + " to version " + version_required )
+        message=("Please update " + exe + " from version " +
+            p_out.rstrip('\n') + " to version " + version_required)
+        logger.critical(message) 
+        sys.exit("CRITICAL ERROR: " + message)
 
 def download_tar_and_extract(url, filename, folder):
     """
@@ -106,22 +127,32 @@ def download_tar_and_extract(url, filename, folder):
     if config.verbose:
         print(messsage) 
 
-    file, headers = urllib.urlretrieve(url,filename)
-
-    message="Extracting:" + filename
-    logger.info(message)
-    if config.verbose:
-        print(message)
-    tarfile_handle=tarfile.open(filename,'r:gz')
-    tarfile_handle.extractall(path=folder)
+    try:
+        file, headers = urllib.urlretrieve(url,filename)
+        message="Extracting:" + filename
+        logger.info(message)
+        if config.verbose:
+            print(message)
+        tarfile_handle=tarfile.open(filename,'r:gz')
+        tarfile_handle.extractall(path=folder)
+    except EnvironmentError:
+        message="Unable to download and extract from URL: " + url
+        logger.critical(message)
+        logger.critical("Traceback: \n" + traceback.print_exc())
+        sys.exit("CRITICAL ERROR: " + message)
 
 def remove_file(file):
     """
     If file exists, then remove
     """
-    if os.path.isfile(file):
-        os.unlink(file)
-        logger.debug("Remove file: %s", file)
+    
+    try:
+        if os.path.isfile(file):
+            os.unlink(file)
+            logger.debug("Remove file: %s", file)
+    except OSError:
+        message="Unable to remove file"
+        logger.error(message)
 
 def check_outfiles(outfiles):
     """
@@ -156,7 +187,13 @@ def command_multiprocessing(threads, args, function=None):
     logger.debug("Create %s processes for function %s", threads, function)
     
     pool=multiprocessing.Pool(threads)
-    results=pool.map(function, args)
+    try:
+        results=pool.map(function, args)
+    except EnvironmentError, ValueError:
+        message=("Error in one of the processes. See the log file for additional" + 
+            " details including traceback.")
+        logger.critical(message)
+        sys.exit(message)
         
     return results
     
@@ -174,12 +211,15 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
 	
     # check that the executable can be found
     if not find_exe_in_path(exe):
-        sys.exit("ERROR: Can not find executable " + exe)
+        message="Can not find executable " + exe
+        print("CRITICAL ERROR: " + message)
+        logger.critical(message)
+        raise EnvironmentError
 	
     # check that the input files exist and are readable
     for file in infiles:
         logger.debug("Check input file exists and is readable: %s",file)
-        file_exists_readable(file)
+        file_exists_readable(file, raise_IOError=True)
         
     # check if outfiles already exist
     bypass=check_outfiles(outfiles)
@@ -196,27 +236,27 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
         if config.verbose:
             print("\n"+message+"\n")
 	
-        if stdout_file:
-            if stdin_file:
-                try:
+        try:
+            if stdout_file:
+                if stdin_file:
                     p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
-                except EnvironmentError:
-                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
-            else:
-                try:
+                else:
                     p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
-                except EnvironmentError:
-                    sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
-        else:
-            try:
+            else:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                logger.debug(p_out)
-            except EnvironmentError:
-                sys.exit("Error: Problem executing " + " ".join(cmd) + "\n")
+                logger.debug(p_out)            
+        except EnvironmentError:
+            message="Problem executing " + " ".join(cmd) + "\n"
+            logger.critical(message)
+            logger.critical("TRACEBACK: \n" + traceback.print_exc())
+            print("CRITICAL ERROR: " + message)
+            raise EnvironmentError
 
         # check that the output files exist and are readable
         for file in outfiles:
-            file_exists_readable(file)
+            logger.debug("Check output file exists and is readable: %s",file)
+            file_exists_readable(file, raise_IOError=True)
+    
     else:
         if config.verbose:
             print("Bypass: \n" + exe + " " + " ".join(args) + "\n")

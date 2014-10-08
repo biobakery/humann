@@ -18,7 +18,8 @@ import operator
 import math
 
 # LJM Add location to minpath directory
-import config, subprocess
+import config
+import subprocess
 minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),config.minpath_folder)
 
 # LJM Remove search for minpath directory
@@ -196,7 +197,7 @@ class MinPath:
 			file = open(pathfile, "r")	
 		except IOError:
 			print "open file %s error" % pathfile
-			sys.exit()
+			raise IOError
 
 		for aline in file:
 			aline = aline[:-1]
@@ -542,8 +543,9 @@ class MinPath:
 		#os.system(command)
 		try:
 			subprocess_output=subprocess.check_output(command)
-		except:
-			raise
+		except EnvironmentError:
+			print ("Error when running glpsol command in MinPath")
+			raise EnvironmentError
 		# check the result
 		self.GetLPOut(lpout)
 
@@ -555,7 +557,7 @@ class MinPath:
 			file = open(mpsfile, "w")
 		except IOError:
 			print "open file %s error" % mpsfile
-			sys.exit()
+			raise IOError
 	        str = "%-14s%s\n" % ("NAME", "PATH")
        	 	file.write(str)
 	
@@ -616,7 +618,7 @@ class MinPath:
 			file = open(lpoutfile, "r")
 		except IOError:
 			print "open file %s error" % lpoutfile 
-			sys.exit(1)
+			raise IOError
 
 		keeppath = []
 		for aline in file:
@@ -837,7 +839,8 @@ def Orth2Path(infile = "demo.ko", whichdb = "KEGG", mpsfile = "test.mps", report
 	try:
 		file = open(infile, "r")
 	except IOError:
-		sys.exit( "open file error " + infile)
+		print( "open file error " + infile)
+		raise IOError
 
 	orthlist, orthcount = [], []
 	add = 0
