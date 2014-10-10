@@ -60,7 +60,7 @@ metaphlan_mpa_index="db_v20/mpa_v20_m200"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
-chocophlan_bug_index=-2
+chocophlan_bug_index=-3
 chocophlan_uniref_index=-1
 
 # bowtie2 options and threshold
