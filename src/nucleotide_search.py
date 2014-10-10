@@ -146,8 +146,8 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 bug=reference_info[config.chocophlan_bug_index]
                 uniref=reference_info[config.chocophlan_uniref_index]
                 query=info[config.sam_read_name_index]
-                newline=("\t").join([query,"",info[config.sam_reference_index],
-                    "",str(evalue)])
+                newline=("\t").join([query,info[config.sam_reference_index],
+                    str(evalue)])
                 file_handle_write_aligned.write(newline+"\n")
                    
                 # store the alignment data
