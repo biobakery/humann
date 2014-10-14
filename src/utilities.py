@@ -125,7 +125,7 @@ def download_tar_and_extract(url, filename, folder):
     message="Download URL:" + url
     logger.info(message)
     if config.verbose:
-        print(messsage) 
+        print(message) 
 
     try:
         file, headers = urllib.urlretrieve(url,filename)
