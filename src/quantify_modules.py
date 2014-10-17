@@ -4,7 +4,6 @@ Generate pathway coverage and abundance
 
 import os
 import shutil
-import tempfile
 import math
 import re
 import sys
@@ -25,14 +24,12 @@ def run_minpath(reactions_file,metacyc_datafile):
     """
     
     # Create temp files for the results
-    file_out, tmpfile=tempfile.mkstemp()
-    os.close(file_out)
+    tmpfile=utilities.unnamed_temp_file()
     
     # Bypass minpath run if reactions file is empty
     if os.path.getsize(reactions_file):
     
-        file_out2, tmpfile2=tempfile.mkstemp()
-        os.close(file_out2)
+        tmpfile2=utilities.unnamed_temp_file()
     
         message="Run MinPath ...."
         logger.info(message) 
@@ -49,8 +46,6 @@ def run_minpath(reactions_file,metacyc_datafile):
     
         # Undo stdout redirect
         sys.stdout=sys.__stdout__
-    
-        utilities.remove_file(tmpfile2)
     
     return tmpfile
 
@@ -111,24 +106,20 @@ def identify_reactions_and_pathways_by_bug(args):
     if config.minpath_toggle == "on":   
 
         # Create a temp file for the reactions results
-        file_descriptor, reactions_file=tempfile.mkstemp()
-        os.write(file_descriptor, "".join(reactions_file_lines))
-        os.close(file_descriptor)
+        reactions_file=utilities.unnamed_temp_file()
+        file_handle=open(reactions_file,"w")
+        file_handle.write("".join(reactions_file_lines))
+        file_handle.close()
  
         # Write a flat reactions to pathways file
         logger.debug("Write flat reactions to pathways file for Minpath")
-        file_descriptor, pathways_database_file=tempfile.mkstemp()
-        os.write(file_descriptor, pathways_database.get_database())
-        os.close(file_descriptor)
+        pathways_database_file=utilities.unnamed_temp_file()
+        file_handle=open(pathways_database_file,"w")
+        file_handle.write(pathways_database.get_database())
+        file_handle.close()
     
         # Run minpath to identify the pathways
         tmpfile=run_minpath(reactions_file, pathways_database_file)
-        
-        # Remove the temp reactions file
-        utilities.remove_file(reactions_file)
-        
-        # Remove the temp reactions to pathways database file
-        utilities.remove_file(pathways_database_file)
         
         # Process the minpath results
         if os.path.isfile(tmpfile):
@@ -358,14 +349,12 @@ def print_pathways(pathways, file, header):
  
     if config.output_format == "biom":
         # Open a temp file if a conversion to biom is selected
-        file_out, tmpfile=tempfile.mkstemp()
-        os.write(file_out, "\n".join(tsv_output))
-        os.close(file_out)
+        tmpfile=utilities.unnamed_temp_file()
+        file_out=open(tmpfile,"w")
+        file_out.write("\n".join(tsv_output))
+        file_out.close()
         
         utilities.tsv_to_biom(tmpfile,file)
-        
-        # Remove the temp tsv file
-        utilities.remove_file(tmpfile)
             
     else:
         # Write the final file as tsv

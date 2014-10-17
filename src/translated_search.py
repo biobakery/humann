@@ -3,7 +3,6 @@ Run alignment, find unused reads
 """
 
 import os
-import tempfile
 import re
 import numbers
 import logging
@@ -52,8 +51,7 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
                 full_args=["-usearch_global",input_file]+args+["-db",input_database]
 
                 # create temp output file
-                file_out, temp_out_file=tempfile.mkstemp()
-                os.close(file_out)
+                temp_out_file=utilities.unnamed_temp_file()
                 temp_out_files.append(temp_out_file)
 
                 full_args+=["-blast6out",temp_out_file]
@@ -68,9 +66,6 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
         utilities.execute_command(exe,temp_out_files,temp_out_files,[alignment_file],
             alignment_file)
 
-        # remove the temp files which have been merged
-        for temp_file in temp_in_files + temp_out_files:
-            utilities.remove_file(temp_file)
     else:
         message="Bypass"
         logger.info(message)
@@ -108,8 +103,7 @@ def rapsearch_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
                 full_args=args+["-d",input_database]
 
                 # create temp output file
-                file_out, temp_out_file=tempfile.mkstemp()
-                os.close(file_out)
+                temp_out_file=utilities.unnamed_temp_file()
                 utilities.remove_file(temp_out_file)
 
                 temp_out_files.append(temp_out_file+config.rapsearch_output_file_extension)
@@ -122,9 +116,6 @@ def rapsearch_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
         utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
             alignment_file)
 
-        # remove the temp files which have been merged
-        for temp_file in temp_out_files:
-            utilities.remove_file(temp_file)
     else:
         message="Bypass"
         logger.info(message)

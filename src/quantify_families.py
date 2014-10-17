@@ -3,7 +3,6 @@ Compute alignments by gene family
 """
 
 import os
-import tempfile
 import logging
 
 import config
@@ -53,14 +52,13 @@ def gene_families(alignments):
         
     if config.output_format=="biom":
         # Open a temp file if a conversion to biom is selected
-        file_out, tmpfile=tempfile.mkstemp()
-        os.write(file_out, "\n".join(tsv_output))
-        os.close(file_out)
+        tmpfile=utilities.unnamed_temp_file()
+        file_handle=open(tmpfile,'w')
+        file_handle.write("\n".join(tsv_output))
+        file_handle.close()
         
         utilities.tsv_to_biom(tmpfile,config.genefamilies_file)
         
-        # Remove the temp tsv file
-        utilities.remove_file(tmpfile)
     else:
         # Write output as tsv format
         file_handle = open(config.genefamilies_file, "w")

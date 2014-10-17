@@ -32,6 +32,7 @@ translated_alignment_selected = translated_alignment_choices[1]
 
 # file naming
 temp_dir=""
+unnamed_temp_dir=""
 file_basename=""
 fasta_extension=".fa"
 
