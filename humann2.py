@@ -316,7 +316,10 @@ def update_configuration(args):
             os.mkdir(config.temp_dir)    
     else:
         config.temp_dir=tempfile.mkdtemp( 
-            prefix='humann2_temp_', dir=input_dir)
+            prefix='humann2_temp_')
+        
+    # create the unnamed temp directory
+    config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
 
     # set the name of the log file 
     log_file=os.path.join(config.temp_dir,config.file_basename+".log")
@@ -580,9 +583,13 @@ def main():
     logger.info(message)
     print(message)
 
-    # Remove temp directory
+    # Remove the unnamed temp files
+    utilities.remove_directory(config.unnamed_temp_dir)
+
+    # Remove named temp directory
     if not args.temp:
         utilities.remove_directory(config.temp_dir)
+        
 
 if __name__ == "__main__":
 	main()

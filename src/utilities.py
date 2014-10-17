@@ -19,6 +19,18 @@ import config
 # name global logging instance
 logger=logging.getLogger(__name__)
 
+def unnamed_temp_file():
+    """
+    Return the full path to an unnamed temp file
+    stored in the temp folder
+    """
+    
+    file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir)
+    os.close(file_out)
+    
+    return(new_file)
+    
+
 def name_temp_file(file_name):
     """
     Return the full path to a new temp file 
@@ -349,11 +361,12 @@ def remove_directory(dir):
     """
     if os.path.isdir(dir):
         try:
-            if config.verbose:
-                print("Remove directory: " + dir)
             shutil.rmtree(dir)
+            logger.debug("Remove directory: " + dir)
         except EnvironmentError: 
-            sys.exit("ERROR: Unable to delete directory " + dir)
+            logger.error("Unable to remove directory: " + dir)
+    else:
+        logger.debug("Request to remove directory that does not exist: " + dir)
 
 def break_up_fasta_file(fasta_file, max_seqs):
     """
@@ -367,27 +380,32 @@ def break_up_fasta_file(fasta_file, max_seqs):
 
     line=file_handle_read.readline()
 
-    file_out, new_file=tempfile.mkstemp()
+    new_file=unnamed_temp_file()
+    file_out=open(new_file,"w")
+    
     fasta_files=[new_file]
 
     current_seq=0
     while line:
         if not re.search("^>",line):
-            os.write(file_out,line)
+            file_out.write(line)
         else:
             if current_seq == max_seqs:
                 # close current file and open new
-                os.close(file_out)
-                file_out, new_file=tempfile.mkstemp()
+                file_out.close()
+                     
+                new_file=unnamed_temp_file()
+                file_out=open(new_file,"w")
+                
                 fasta_files+=[new_file]
-                os.write(file_out, line)
+                file_out.write(line)
                 current_seq=1
             else:
                 current_seq+=1
-                os.write(file_out, line)
+                file_out.write(line)
         line=file_handle_read.readline()
 
-    os.close(file_out)
+    file_out.close()
     file_handle_read.close()
 
     return fasta_files
@@ -416,21 +434,22 @@ def fastq_to_fasta(file):
 	
     line = file_handle_read.readline()
 	
-    file_out, new_file=tempfile.mkstemp()
+    new_file=unnamed_temp_file()
+    file_out=open(new_file,"w")
 
     while line:
         if re.search("^@",line):
-            os.write(file_out,line.replace("@",">",1))
+            file_out.write(line.replace("@",">",1))
             line=file_handle_read.readline()
             while line:
                 if re.search("^\\+",line):
                     break
                 else:
-                    os.write(file_out,line)
+                    file_out.write(line)
                 line=file_handle_read.readline()
         line=file_handle_read.readline()
   	
-    os.close(file_out)	
+    file_out.close()	
     file_handle_read.close()
 
     return new_file	
