@@ -5,15 +5,23 @@
 ## Description ##
 HUMAnN is a pipeline for efficiently and accurately determining the presence/absence and abundance of microbial pathways in a community from metagenomic sequencing data (typically millions of short DNA/RNA reads). HUMAnN2 incorporates multiple upgrades including an expanded database of microbial genomes (>4x the size of the database included in HUMAnN), a simple user interface (single command driven flow), and bug-specific output files. 
 
-HUMAnN2 produces three output files:
+HUMAnN2 produces three output files (which can optionally be written in biom format):
 
-1. "genefamilies.tsv": The abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
+1. genefamilies.tsv
+	* The abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
+	* HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
 
-2. "pathcoverage.tsv": The presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage," and defines a pathway as a set of two or more genes. By deafult, HUMAnN2 uses MetaCyc along with MinPath for this computation. The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+2. pathcoverage.tsv 
+	* The presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage," and defines a pathway as a set of two or more genes. 
+	* By deafult, HUMAnN2 uses MetaCyc along with MinPath for this computation. 
+	* The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-3. "pathabundance.tsv": The abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. By deafult, HUMAnN2 uses MetaCyc along with MinPath for this computation. The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+3. pathabundance.tsv 
+	* The abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
+	 * By deafult, HUMAnN2 uses MetaCyc along with MinPath for this computation. 
+	 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-The HUMAnN2 pipeline is a single command driven flow requiring the user to only provide a filtered fastq file to produce gene and pathway summary files ready for analysis. The pipeline converts sequence reads into coverage and abundance tables summarizing the gene families and pathways in one or more microbial communities. This lets you analyze a collection of metagenomes as a matrix of gene/pathway abundances, just like you might analyze a collection of microarrays.
+The HUMAnN2 pipeline is a single command driven flow requiring the user to only provide a filtered fastq file to produce gene and pathway summary files ready for analysis. The pipeline converts sequence reads into coverage and abundance tables summarizing the gene families and pathways in one or more microbial communities. 
 
 ## Prerequisites ##
 
