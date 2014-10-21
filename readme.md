@@ -61,9 +61,9 @@ Note: Creating a clone of the repository requires [Mercurial](http://mercurial.s
 For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
 
 
-### Downloading databases ###
+### Downloading the databases ###
 
-**Download [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/)**
+#### Downloading the [ChocoPhlAn database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) ####
 
 ```
 $ cd $HUMANn2_PATH/databases
@@ -78,7 +78,7 @@ NOTE: These steps download the ChocoPhlAn database to the humann2/databases fold
 
 
 
-**Download [UniRef50 formatted for rapsearch2](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/)** 
+#### Downloading the [UniRef50 database](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) ####
 
 ```
 $ cd $HUMANn2_PATH/databases
@@ -95,7 +95,7 @@ NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the
 NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
 
 ### Updating the environment ###
-Once HUMAnN2 is downloaded, we now need to add the location of the code to the paths.
+Once HUMAnN2 is downloaded, add the location of the code to the paths.
 Type these commands or include them in your .bashrc file.
 
 ```
@@ -112,11 +112,9 @@ NOTE: If you added these commands to your .bashrc file, please run the following
 
 ### Basic usage ###
 
-`` humann2.py --input $SAMPLE --chocophlan $CHOCOPHLAN_DIR --uniref $UNIREF_DIR ``
+`` humann2.py --input $SAMPLE ``
 
-* $SAMPLE is your filtered fasta or fastq file
-* $CHOCOPHLAN_DIR is the directory that contains chocophlan
-* $UNIREF_DIR is the directory that contains the rapsearch formatted uniref50 database
+* $SAMPLE is your filtered fasta or fastq file (ie metagenome.fastq)
 
 ### Additional ways to run ####
 
@@ -151,19 +149,21 @@ NOTE: If you added these commands to your .bashrc file, please run the following
 1. To bypass the MetaPhlAn prescreen step: add the ``--bypass_prescreen`` flag
 1. To bypass the prescreen and the nucleotide alignment index step and start with the bowtie2 alignment step: add the ``--bypass_nucleotide_index`` flag
 	* If using this flag provide the bowtie2 index as the input to the chocophlan parameter instead of the chocoplan directory. For example, run with "--bypass_nucleotide_index --chocophlan chocophlan_dir/chocophlan_bowtie2_index"  if the first bowtie2 index file is located at chocophlan_dir/chocophlan_bowtie2_index.1.bt2 .
+1. To provide the location of the ChocoPhlAn database: add the ``--chocophlan $DIR `` option
+1. To provide the location of the UniRef database: add the ``--uniref $DIR`` option
 
 ### Complete option list ###
 ```
 usage: humann2.py [-h] [-v] [-d] [--bypass_prescreen]
-                  [--bypass_nucleotide_index] -i <input.fastq> -c
-                  <chocophlan/> -u <uniref/> [--metaphlan <metaplhan/>]
+                  [--bypass_nucleotide_index] -i <input.fastq>
+                  [-c <chocophlan>] [-u <uniref>] [--metaphlan <metaplhan>]
                   [--o_pathabundance <pathabundance.tsv>]
                   [--o_pathcoverage <pathcoverage.tsv>]
                   [--o_genefamilies <genefamilies.tsv>] [--o_log <sample.log>]
                   [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-                  [--temp <temp/>] [--bowtie2 <bowtie2/>] [--threads <1>]
+                  [--temp <temp>] [--bowtie2 <bowtie2>] [--threads <1>]
                   [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
-                  [--usearch <usearch/>] [--rapsearch <rapsearch/>]
+                  [--usearch <usearch>] [--rapsearch <rapsearch>]
                   [--metaphlan_output <bugs_list.tsv>]
                   [--translated_alignment {usearch,rapsearch}]
                   [--xipe {on,off}] [--minpath {on,off}]
@@ -182,13 +182,13 @@ optional arguments:
   -i <input.fastq>, --input <input.fastq>
                         fastq/fasta input file
                         [REQUIRED]
-  -c <chocophlan/>, --chocophlan <chocophlan/>
+  -c <chocophlan>, --chocophlan <chocophlan>
                         directory containing the ChocoPhlAn database
-                        [REQUIRED]
-  -u <uniref/>, --uniref <uniref/>
+                        [DEFAULT: databases/chocophlan/ ]
+  -u <uniref>, --uniref <uniref>
                         directory containing the UniRef database
-                        [REQUIRED]
-  --metaphlan <metaplhan/>
+                        [DEFAULT: databases/uniref/ ]
+  --metaphlan <metaplhan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
   --o_pathabundance <pathabundance.tsv>
@@ -205,9 +205,9 @@ optional arguments:
   --log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         level of messages to display in log
                         [DEFAULT: DEBUG ]
-  --temp <temp/>        directory to store temp output files
+  --temp <temp>         directory to store temp output files
                         [DEFAULT: temp files are removed]
-  --bowtie2 <bowtie2/>  directory of the bowtie2 executable
+  --bowtie2 <bowtie2>   directory of the bowtie2 executable
                         [DEFAULT: $PATH]
   --threads <1>         number of threads/processes
                         [DEFAULT: 1 ]
@@ -217,9 +217,9 @@ optional arguments:
   --identity_threshold <0.4>
                         identity threshold to use with the translated search
                         [DEFAULT: 0.4]
-  --usearch <usearch/>  directory containing the usearch executable
+  --usearch <usearch>   directory containing the usearch executable
                         [DEFAULT: $PATH]
-  --rapsearch <rapsearch/>
+  --rapsearch <rapsearch>
                         directory containing the rapsearch executable
                         [DEFAULT: $PATH]
   --metaphlan_output <bugs_list.tsv>
@@ -237,5 +237,5 @@ optional arguments:
                         [DEFAULT: tsv ]
   --pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
                         the two mapping files to use for pathway computations
-                        [DEFAULT: data/metacyc_reactions.uniref , data/metacyc_pathways ]
+                        [DEFAULT: databases/pathways/metacyc_reactions.uniref , databases/pathways/metacyc_pathways ]
 ```
