@@ -27,41 +27,38 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 ## Requirements ##
 
-|Software|Source|
-|-|-|
-| MetaPhlAn | https://bitbucket.org/biobakery/metaphlan2/ |
-| bowtie2 | http://bowtie-bio.sourceforge.net/bowtie2/ |
-| rapsearch2 | http://omics.informatics.indiana.edu/mg/RAPSearch2/ |
-| Python (>= version 2.7) | http://www.python.org/ |
-| MinPath | http://omics.informatics.indiana.edu/MinPath/ |
-| usearch v7.0.1001 (optional) | http://www.drive5.com/usearch/ |
+### Software ###
 
-|Database|Source|
-|-|-|
-| ChocoPhlAn | Compressed distribution (link TBD) |
-| UniRef50 | ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/uniref50.fasta.gz |
+1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan2/)
+1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/)
+1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/)
+1. [Python](http://www.python.org/) ( version >= 2.7 )
+1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded)
+1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
+1. [usearch](http://www.drive5.com/usearch/) (version = v7.0.1001) (optional)
 
-|Other||
-|-|-|
-|Memory| >= 10 Gb |
-|Disk space| >= 40 Gb |
-|Operating system | Linux or Mac |
+Steps
 
-1. Download the ChocoPhlAn and UniRef50 databases from the links provided above.
-2. Format the UniRef50 database for the translated alignment software you will use (rapsearch or usearch).
-3. If running with rapsearch, the command to format is:
-"prerapsearch -d uniref50.fasta -n processed-db-file"
-4. If running with usearch, the command to format is:
-"usearch -makeudb_usearch uniref50.fasta --output uniref50.udb" 
-HUMAnN2 expects the UniRef50 database for usearch runs to be of the fasta format or files with 
-the *.udb extension. Also to meet the maximum memory 32-bit usearch requirements it is suggested to break up
-the UniRef50 database into files of at most 10,000 sequences before running the formatting step. 
-HUMAnN2 can run with multiple database files for the UniRef50 database.
-5. Install MetaPhlAn, bowtie2, and rapsearch (or usearch) from the links provided above. 
-6. If MetaPhlAn, bowtie2, and rapsearch (or usearch) are not installed in a location in your $PATH,
+1. Install MetaPhlAn, bowtie2, and rapsearch (or usearch) from the links provided above. 
+1. If MetaPhlAn, bowtie2, and rapsearch (or usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
 directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARCH/ (or --usearch $USEARCH/)). By default rapsearch is run for the translated alignment but this can be changed to usearch by setting "--translated_alignment usearch".
-7. Since Minpath is run by default it is a requirement. However, there is no need to download it manually as it is automatically downloaded by HUMAnN2.
+
+### Databases ###
+1. ChocoPhlAn
+1. UniRef50 formatted for rapsearch2
+1. UniRef50 formatted for usearch (optional)
+1. HUMAnN2 Metacyc pathways database (included under humann2/data)
+1. HUMAnN2 Unipathways pathways database (optional / included under humann2/data)
+
+Steps
+
+1. Download the ChocoPhlAn and UniRef50 databases from the links provided above (selecting the UniRef50 database that corresponds to the translated alignment software you will use with the HUMAnN2 default being rapsearch2).
+
+### Other ###
+1. Memory (>= 10 Gb)
+1. Disk space (>= 40 Gb)
+1. Operating system (Linux or Mac)
 
 ## Installation ##
 
