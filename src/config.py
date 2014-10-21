@@ -107,6 +107,9 @@ rapsearch_opts=["-v",-1]
 rapsearch_output_file_extension=".m8"
 
 # data files
+chocophlan="databases/chocophlan/"
+uniref="databases/uniref/"
+
 metacyc_gene_to_reactions="databases/pathways/metacyc_reactions.uniref"
 metacyc_reactions_to_pathways="databases/pathways/metacyc_pathways"
 pathway_identifier="PWY"

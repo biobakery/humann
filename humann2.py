@@ -68,18 +68,18 @@ def parse_arguments (args):
         required=True)
     parser.add_argument(
         "-c", "--chocophlan",
-        help="directory containing the ChocoPhlAn database\n[REQUIRED]", 
-        metavar="<chocophlan/>",
-        required=True)
+        help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
+            + config.chocophlan + " ]", 
+        metavar="<chocophlan>")
     parser.add_argument(
         "-u", "--uniref",
-        help="directory containing the UniRef database\n[REQUIRED]", 
-        metavar="<uniref/>",
-        required=True)
+        help="directory containing the UniRef database\n[DEFAULT: " 
+            + config.uniref + " ]", 
+        metavar="<uniref>")
     parser.add_argument(
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
-        metavar="<metaplhan/>")
+        metavar="<metaplhan>")
     parser.add_argument(
         "--o_pathabundance", 
         help="output file for pathway abundance\n" + 
@@ -110,11 +110,11 @@ def parse_arguments (args):
         "--temp", 
         help="directory to store temp output files\n" + 
             "[DEFAULT: temp files are removed]", 
-        metavar="<temp/>")
+        metavar="<temp>")
     parser.add_argument(
         "--bowtie2",
         help="directory of the bowtie2 executable\n[DEFAULT: $PATH]", 
-        metavar="<bowtie2/>")
+        metavar="<bowtie2>")
     parser.add_argument(
         "--threads", 
         help="number of threads/processes\n[DEFAULT: " + str(config.threads) + " ]", 
@@ -138,11 +138,11 @@ def parse_arguments (args):
     parser.add_argument(
         "--usearch", 
         help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
-        metavar="<usearch/>")
+        metavar="<usearch>")
     parser.add_argument(
         "--rapsearch", 
         help="directory containing the rapsearch executable\n[DEFAULT: $PATH]", 
-        metavar="<rapsearch/>")
+        metavar="<rapsearch>")
     parser.add_argument(
         "--metaphlan_output", 
         help="output file created by metaphlan\n[DEFAULT: file will be created]", 
@@ -199,17 +199,29 @@ def update_configuration(args):
     if args.rapsearch:
         utilities.add_exe_to_path(args.rapsearch)
  
+    humann2_fullpath=os.path.dirname(os.path.realpath(__file__)) 
+ 
     # Set the locations of the pathways databases
     if args.pathways_databases:
         config.pathways_database_part1=args.pathways_databases[0]
         config.pathways_database_part2=args.pathways_databases[1]
     else:
         # add the full path to the database
-        humann2_fullpath=os.path.dirname(os.path.realpath(__file__)) 
         config.pathways_database_part1=os.path.join(humann2_fullpath, 
             config.pathways_database_part1)
         config.pathways_database_part2=os.path.join(humann2_fullpath,
             config.pathways_database_part2)
+        
+    # Set the locations of the other databases
+    if args.chocophlan:
+        config.chocophlan=args.chocophlan
+    else:
+        config.chocophlan=os.path.join(humann2_fullpath,config.chocophlan)
+        
+    if args.uniref:
+        config.uniref=args.uniref
+    else:
+        config.uniref=os.path.join(humann2_fullpath,config.uniref)
 
     # if set, update the config run mode to debug
     if args.debug:
@@ -354,44 +366,56 @@ def check_requirements(args):
 
     # Check that the chocophlan directory exists
     if not config.bypass_nucleotide_index:
-        if not os.path.isdir(args.chocophlan):
-            sys.exit("ERROR: The directory provided for ChocoPhlAn at " 
-                + args.chocophlan + " does not exist. Please select another directory.")	
+        if not os.path.isdir(config.chocophlan):
+            if args.chocophlan:
+                sys.exit("ERROR: The directory provided for the ChocoPhlAn database at " 
+                    + args.chocophlan + " does not exist. Please select another directory.")
+            else:
+                sys.exit("ERROR: The default ChocoPhlAn database directory of "
+                    + config.chocophlan + " does not exist. Please provide the location "
+                    + "of the ChocoPhlAn directory using the --chocophlan option.")	
     
     # Check that the files in the chocophlan folder are of the right format
     if not config.bypass_nucleotide_index:
         valid_format_count=0
-        for file in os.listdir(args.chocophlan):
+        for file in os.listdir(config.chocophlan):
             # expect most of the file names to be of the format g__*s__*
             if re.search("^[g__][s__]",file): 
                 valid_format_count+=1
         if valid_format_count == 0:
             sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
-                + "contain files of the expected format.")
+                + "contain files of the expected format (ie \'^[g__][s__]\').")
  
     # Check that the uniref directory exists
-    if not os.path.isdir(args.uniref):
-        sys.exit("ERROR: The directory provided for the UniRef database at " 
-            + args.uniref + " does not exist. Please select another directory.")	
+    if not os.path.isdir(config.uniref):
+        if args.uniref:
+            sys.exit("ERROR: The directory provided for the UniRef database at " 
+                + args.uniref + " does not exist. Please select another directory.")
+        else:
+            sys.exit("ERROR: The default UniRef database directory of "
+                + config.uniref + " does not exist. Please provide the location "
+                + "of the UniRef directory using the --uniref option.")            	
 
     # Check that all files in the uniref folder are of *.udb extension or fasta
     # if translated search selected is usearch
     if config.translated_alignment_selected == "usearch":
-        for file in os.listdir(args.uniref):
+        for file in os.listdir(config.uniref):
             if not file.endswith(config.usearch_database_extension):
-                if utilities.fasta_or_fastq(os.path.join(args.uniref,file)) != "fasta":
+                if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
                     sys.exit("ERROR: The directory provided for the UniRef database "
+                        + "at " + config.uniref + " " +
                         + "contains files of an unexpected format. Only files of the"
                         + " udb or fasta format are allowed.") 
 
     # Check that some of the database files are of the *.info extension
     valid_format_count=0
     if config.translated_alignment_selected == "rapsearch":
-        for file in os.listdir(args.uniref):
+        for file in os.listdir(config.uniref):
             if file.endswith(config.rapsearch_database_extension):
                 valid_format_count+=1
         if valid_format_count == 0:
-            sys.exit("ERROR: The UniRef directory provided has not been formatted to run with"
+            sys.exit("ERROR: The UniRef directory provided at " + config.uniref 
+                + " has not been formatted to run with"
                 " the rapsearch translated alignment software. Please format these files.")
 
     # Check for correct usearch version
@@ -468,7 +492,7 @@ def main():
     # Create the custom database from the bugs list
     custom_database = ""
     if not config.bypass_nucleotide_index:
-        custom_database = prescreen.create_custom_database(args.chocophlan, bug_file)
+        custom_database = prescreen.create_custom_database(config.chocophlan, bug_file)
     else:
         custom_database = "Bypass"
 
@@ -482,7 +506,7 @@ def main():
         if not config.bypass_nucleotide_index:
             nucleotide_index_file = nucleotide_search.index(custom_database)
         else:
-            nucleotide_index_file = args.chocophlan
+            nucleotide_index_file = config.chocophlan
         nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
             nucleotide_index_file)
 
@@ -521,7 +545,7 @@ def main():
         unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
 
     # Run translated search on UniRef database
-    translated_alignment_file = translated_search.alignment(args.uniref, 
+    translated_alignment_file = translated_search.alignment(config.uniref, 
         unaligned_reads_file_fasta)
 
     if config.verbose:
