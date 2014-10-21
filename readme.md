@@ -37,31 +37,9 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
 1. [usearch](http://www.drive5.com/usearch/) (version = v7.0.1001) (optional)
 
-* Install MetaPhlAn, bowtie2, and rapsearch (or usearch) from the links provided above. If MetaPhlAn, bowtie2, and rapsearch (or usearch) are not installed in a location in your $PATH,
+If MetaPhlAn, bowtie2, and rapsearch (or usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
 directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARCH/ (or --usearch $USEARCH/)). By default rapsearch is run for the translated alignment but this can be changed to usearch by setting "--translated_alignment usearch".
-
-### Databases ###
-1. [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/)
-1. [UniRef50 formatted for rapsearch2](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/)
-1. HUMAnN2 Metacyc pathways database (included under humann2/data)
-1. HUMAnN2 Unipathways pathways database (optional / included under humann2/data)
-
-* Download the ChocoPhlAn database to the humann2/databases folder and decompress. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--chocophlan $DIR" option.
-
-	1. `` cd humann2/databases ``
-	1. `` wget http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz ``
-	1. `` tar zxvf chocophlan.tar.gz ``
-	1. `` rm chocophlan.tar.gz ``
-
-* Download the UniRef50 database formatted for rapsearch2 to the humann2/databases folder and decompress. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--uniref $DIR" option.
-
-	1. `` cd humann2/databases ``
-	1. `` wget http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz ``
-	1. `` tar zxvf uniref50_rapsearch.tar.gz ``
-	1. `` rm uniref50_rapsearch.tar.gz ``
-
-	NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
 
 ### Other ###
 1. Memory (>= 10 Gb)
@@ -73,19 +51,48 @@ directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARC
 ### Downloading HUMAnN2 ###
 HUMAnN2 can be downloaded in two ways:
 
-1. [Download](https://bitbucket.org/biobakery/humann2/downloads) a compressed set of files.
-1. Create a clone of the repository on your computer with the command: 
+* [Download](https://bitbucket.org/biobakery/humann2/downloads) a compressed set of files.
+* Create a clone of the repository on your computer with the command: 
 	
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
 Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg -u pull`` from within the repository which will download the latest release.
 
+### Downloading databases ###
+
+Download [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/)
+
+```
+$ cd humann2/databases
+$ wget http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz
+$ tar zxvf chocophlan.tar.gz 
+$ rm chocophlan.tar.gz
+```
+
+NOTE: These steps download the ChocoPhlAn database to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--chocophlan $DIR" option.
+
+
+Download [UniRef50 formatted for rapsearch2](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/)
+
+```
+$ cd humann2/databases
+$ wget http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz
+$ tar zxvf uniref50_rapsearch.tar.gz
+$ rm uniref50_rapsearch.tar.gz
+```
+
+NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--uniref $DIR" option.
+
+NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
+
 ### Updating the environment ###
 Once HUMAnN2 is downloaded, we now need to add the location of the code to the paths.
 Type these commands at the prompt or include them in your .bashrc file where $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
 
-1. ``export PATH=$PATH:$HUMAnN2_PATH``
-1. ``export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH/src``
+```
+$ export PATH=$PATH:$HUMAnN2_PATH
+$ export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH/src
+```
 
 NOTE: If you added these commands to your .bashrc file, please run the following command before proceeding to the next steps. This command will update your environment to reflect the changes to your .bashrc file: `` source .bashrc ``
 
