@@ -205,6 +205,7 @@ def update_configuration(args):
     if args.pathways_databases:
         config.pathways_database_part1=args.pathways_databases[0]
         config.pathways_database_part2=args.pathways_databases[1]
+        config.pathways_recursion=False
     else:
         # add the full path to the database
         config.pathways_database_part1=os.path.join(humann2_fullpath, 
@@ -466,7 +467,8 @@ def main():
         print(message)
     
     # Load in the pathways database
-    pathways_database=store.PathwaysDatabase(config.pathways_database_part2)
+    pathways_database=store.PathwaysDatabase(config.pathways_database_part2, 
+        config.pathways_recursion)
     
     message="Load pathways database part 2: " + config.pathways_database_part2
     logger.info(message)

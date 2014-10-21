@@ -344,7 +344,7 @@ class PathwaysDatabase:
                 
         return reactions_for_pathway
 
-    def __init__(self, database):
+    def __init__(self, database, recursion):
         """
         Load in the pathways data from the database
         """
@@ -379,7 +379,7 @@ class PathwaysDatabase:
                 # go through items to look for pathways to resolve
                 reaction=[item]
                 # identifier can be at the start or the end of the item name
-                if self._is_pathway(item):
+                if self._is_pathway(item) and recursion:
                     # find the reactions for the pathway
                     reaction=self._return_reactions(item, reactions)
                 

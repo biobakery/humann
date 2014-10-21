@@ -113,6 +113,7 @@ uniref="databases/uniref/"
 metacyc_gene_to_reactions="databases/pathways/metacyc_reactions.uniref"
 metacyc_reactions_to_pathways="databases/pathways/metacyc_pathways"
 pathway_identifier="PWY"
+pathways_recursion=True
 
 unipathway_database_part1="databases/pathways/unipathway_uniprots.uniref"
 unipathway_database_part2="databases/pathways/unipathway_pathways"
