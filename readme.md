@@ -58,28 +58,37 @@ HUMAnN2 can be downloaded in two ways:
 
 Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg -u pull`` from within the repository which will download the latest release.
 
+For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
+
+
 ### Downloading databases ###
 
-Download [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/)
+**Download [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/)**
 
 ```
-$ cd humann2/databases
+$ cd $HUMANn2_PATH/databases
 $ wget http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz
 $ tar zxvf chocophlan.tar.gz 
 $ rm chocophlan.tar.gz
 ```
 
+$HUMANn2_PATH = the full path to the HUMAnN2 download
+
 NOTE: These steps download the ChocoPhlAn database to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--chocophlan $DIR" option.
 
 
-Download [UniRef50 formatted for rapsearch2](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/)
+
+**Download [UniRef50 formatted for rapsearch2](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/)** 
 
 ```
-$ cd humann2/databases
+$ cd $HUMANn2_PATH/databases
 $ wget http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz
 $ tar zxvf uniref50_rapsearch.tar.gz
 $ rm uniref50_rapsearch.tar.gz
 ```
+
+$HUMANn2_PATH = the full path to the HUMAnN2 download
+
 
 NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--uniref $DIR" option.
 
@@ -87,12 +96,15 @@ NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is
 
 ### Updating the environment ###
 Once HUMAnN2 is downloaded, we now need to add the location of the code to the paths.
-Type these commands at the prompt or include them in your .bashrc file where $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
+Type these commands or include them in your .bashrc file.
 
 ```
 $ export PATH=$PATH:$HUMAnN2_PATH
 $ export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH/src
 ```
+
+$HUMANn2_PATH = the full path to the HUMAnN2 download
+
 
 NOTE: If you added these commands to your .bashrc file, please run the following command before proceeding to the next steps. This command will update your environment to reflect the changes to your .bashrc file: `` source .bashrc ``
 
