@@ -2,8 +2,6 @@
 Configuration settings
 """
 
-import os
-
 # software run modes
 debug = False
 verbose = False
@@ -109,12 +107,16 @@ rapsearch_opts=["-v",-1]
 rapsearch_output_file_extension=".m8"
 
 # data files
-data_folder="data/"
-metacyc_gene_to_reactions=os.path.join(data_folder, "metacyc_reactions.uniref")
-metacyc_reactions_to_pathways=os.path.join(data_folder, "metacyc_pathways")
+metacyc_gene_to_reactions="databases/pathways/metacyc_reactions.uniref"
+metacyc_reactions_to_pathways="databases/pathways/metacyc_pathways"
+pathway_identifier="PWY"
+
+unipathway_database_part1="databases/pathways/unipathway_uniprots.uniref"
+unipathway_database_part2="databases/pathways/unipathway_pathways"
+
 reactions_database_delimiter="\t"
 pathways_database_delimiter="\t"
-pathway_identifier="PWY"
+
 
 # pathways databases
 pathways_database_part1=metacyc_gene_to_reactions
