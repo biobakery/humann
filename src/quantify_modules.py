@@ -138,6 +138,8 @@ def identify_reactions_and_pathways_by_bug(args):
             
             # Remove the minpath results file
             utilities.remove_file(tmpfile)
+        else:
+            logger.warning("Empty results file from MinPath run for bug: " + bug)
     else:
         # Add all pathways associated with each reaction if not using minpath
         for current_reaction in reactions:
