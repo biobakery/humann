@@ -57,7 +57,7 @@ def identify_reactions_and_pathways_by_bug(args):
     
     reactions_database, pathways_database, hits, bug = args
     
-    message="Compute gene scores by query ..."
+    message="Compute gene scores by query for " + bug
     logger.info(message)
     if config.verbose:
         print(message)
@@ -73,11 +73,6 @@ def identify_reactions_and_pathways_by_bug(args):
         else:
             genes_by_query[query]=[[reference,score]]
         total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
-    
-    message="Total reads mapped to " + bug + " : " + str(len(hits))
-    logger.info(message)
-    if config.verbose:
-        print(message)            
     
     # add these scores by query to the total gene scores
     total_genes={}
