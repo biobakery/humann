@@ -7,18 +7,18 @@ HUMAnN is a pipeline for efficiently and accurately determining the presence/abs
 
 HUMAnN2 incorporates multiple upgrades including an expanded database of microbial genomes (>4x the size of the database included in HUMAnN), a simple user interface (single command driven flow), and bug-specific output files. 
 
-HUMAnN2 produces three output files (which can optionally be written in biom format):
+HUMAnN2 produces three output files:
 
-1. genefamilies.tsv
+1. Gene Families
 	* This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
 	* HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
 
-2. pathcoverage.tsv 
+2. Pathway Coverage
 	* This file includes the presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes. 
 	* HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 	* The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-3. pathabundance.tsv 
+3. Pathway Abundance
 	* This file includes the abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
 	 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 	 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
