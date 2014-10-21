@@ -197,7 +197,7 @@ class MinPath:
 			file = open(pathfile, "r")	
 		except IOError:
 			print "open file %s error" % pathfile
-			raise IOError
+			raise
 
 		for aline in file:
 			aline = aline[:-1]
@@ -545,7 +545,7 @@ class MinPath:
 			subprocess_output=subprocess.check_output(command)
 		except EnvironmentError:
 			print ("Error when running glpsol command in MinPath")
-			raise EnvironmentError
+			raise
 		# check the result
 		self.GetLPOut(lpout)
 
@@ -557,7 +557,7 @@ class MinPath:
 			file = open(mpsfile, "w")
 		except IOError:
 			print "open file %s error" % mpsfile
-			raise IOError
+			raise
 	        str = "%-14s%s\n" % ("NAME", "PATH")
        	 	file.write(str)
 	
@@ -618,7 +618,7 @@ class MinPath:
 			file = open(lpoutfile, "r")
 		except IOError:
 			print "open file %s error" % lpoutfile 
-			raise IOError
+			raise
 
 		keeppath = []
 		for aline in file:
@@ -840,7 +840,7 @@ def Orth2Path(infile = "demo.ko", whichdb = "KEGG", mpsfile = "test.mps", report
 		file = open(infile, "r")
 	except IOError:
 		print( "open file error " + infile)
-		raise IOError
+		raise
 
 	orthlist, orthcount = [], []
 	add = 0

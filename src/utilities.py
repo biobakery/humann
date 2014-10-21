@@ -201,9 +201,10 @@ def command_multiprocessing(threads, args, function=None):
     pool=multiprocessing.Pool(threads)
     try:
         results=pool.map(function, args)
-    except EnvironmentError, ValueError:
+    except (EnvironmentError, ValueError, CalledProcessError):
+        logger.critical("TRACEBACK: \n" + traceback.print_exc())
         message=("Error in one of the processes. See the log file for additional" + 
-            " details including traceback.")
+            " details including tracebacks.")
         logger.critical(message)
         sys.exit(message)
         
@@ -257,12 +258,12 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
             else:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 logger.debug(p_out)            
-        except EnvironmentError:
+        except (EnvironmentError, CalledProcessError):
             message="Problem executing " + " ".join(cmd) + "\n"
             logger.critical(message)
             logger.critical("TRACEBACK: \n" + traceback.print_exc())
             print("CRITICAL ERROR: " + message)
-            raise EnvironmentError
+            raise
 
         # check that the output files exist and are readable
         for file in outfiles:
