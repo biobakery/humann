@@ -112,9 +112,22 @@ NOTE: If you added these commands to your .bashrc file, please run the following
 
 ### Basic usage ###
 
+Type the command:
+
 `` humann2.py --input $SAMPLE ``
 
-* $SAMPLE is your filtered fasta or fastq file (ie metagenome.fastq)
+where $SAMPLE is your filtered fasta or fastq file (ie metagenome.fastq)
+
+Three output files will be created:
+
+1. $input_dir/$SAMPLENAME_genefamilies.tsv
+1. $input_dir/$SAMPLENAME_pathcoverage.tsv
+1. $input_dir/$SAMPLENAME_pathabundance.tsv
+
+where $input_dir is the full path to the folder containing $SAMPLE and
+ $SAMPLENAME is the basename of $SAMPLE
+
+NOTE: To specify the locations of the output files use the (--o_* options).
 
 ### Additional ways to run ####
 
