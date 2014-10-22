@@ -37,7 +37,7 @@ $ python Reaction_to_Uniref5090.py --i_reactions $METACYC/18.1/data/reactions.da
 2.4. Create the humann2/data/metacyc_pathways data file (pathways database file2).
 $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways
 
- 
+2.5  Instructions to run the ReadUniref.py   
 #********************************************************************************************
 #    Read Uniref Program                                                                    *
 #    This program reads the mappings uniprot --> Uniref50                                   *
@@ -95,3 +95,103 @@ $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways
 #                                                                                           *
 #   Written by George Weingart - george.weingart@gmail.com   8/28/2014                      *  
 #********************************************************************************************
+
+2.6  Instructions to run the  Build_mapping_Pathways_Uniprot.py
+
+#********************************************************************************************
+#    Map Pathways to Uniprot IDs  and Uniref50 and 90                                       *
+#                                                                                           *
+#    The objective of this program is to map  Swissprot Pathways to Uniprot ACs             *
+#    and Uniref50 and 90                                                                    *
+#                                                                                           *
+#  -----------------------------------------------------------------------------------------*
+#  Invoking the program:                                                                    *
+#  ---------------------                                                                    *
+#  python Build_mapping_Pathways_Uniprot.py --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
+# --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz\
+# --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz\
+# --oPathwaysACs  unipathway_uniprots.uniref \
+# --oPathwaysUniref5090 PathwaysUniref5090                                            
+#                                                                                           *
+#   Where:                                                                                  *
+#    --i_reactions, is the pathways  file, which is currently located at                    *
+#    /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt             *
+#  and it was downloaded from  the site:  http://www.uniprot.org/help/pathway               *
+#                                                                                           *
+#   --uniref50gz and --uniref90gz are the Uniref50 and 90 mappings,                         *
+#      Currently located at /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz and 90
+#                                                                                           *
+#   --oPathwaysACs  is the Output file containing the Pathways --> ACs relations            *
+#                                                                                           *
+#  --oPathwaysUniref5090 is the output file containing the Pathways --> Uniref50/90 relations
+#     ****NOTE****  If this parameter is not supplied,  this file is not created            *
+#  
+#   Written by George Weingart  Oct. 20, 2014   george.weingart@gmail.com                   *
+#********************************************************************************************
+
+2.7  Instructions to run the  Reaction_to_Uniref5090.py
+
+
+#********************************************************************************************
+#    Map Reactions to Uniref5090                                                            *
+#                                                                                           *
+#    The objective of this program is to map reactions from the metacyc file to             *
+#       uniref50/90                                                                         *
+#                                                                                           *
+#    Logic:                                                                                 *
+#    1. Read the reactions file (See location below) and build relation: REACTION--> EC     *
+#    2. Read Swissprot file (See location below) and build relations EC--> Swissprot AC     *
+#    3. Build the relations REACTIONs --> UniprotKb ACs                                     *
+#    4. Build and print the relations REACTIONS --> UniRef50, 90                            *
+#                                                                                           *
+#  -----------------------------------------------------------------------------------------*
+#  Invoking the program:                                                                    *
+#  ---------------------                                                                    *
+#  python Reaction_to_Uniref5090.py --i_reactions /n/huttenhower_lab_nobackup/downloads/metacyc/18.1/data/reactions.dat  --i_sprot /n/huttenhower_lab/data/uniprot/2014-09/uniprot_sprot.dat  --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz  --o mapping_reactions_to_uniref5090
+#                                                                                           *
+#   Where:                                                                                  *
+#    --i_reactions, is the reactions file, which is currently located at                    *
+#    /n/huttenhower_lab_nobackup/downloads/metacyc/18.1/reactions.dat                       *
+#                                                                                           *           
+#   --i_sprot input_file is the UniprotKB Swissprot text file, which can be downloaded from *
+#    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz *
+#   The current downloaded i_sprot file, which serves as input,  resides on hutlab3 in      *
+#    /n/huttenhower_lab/data/uniprot/2014-09/uniprot_sprot.dat                              *
+#                                                                                           *
+#    uniref50gz and uniref90gz are the uniref mappings (Uniref50 --> Uniprot AC)            * 
+#     currently located at                                                                  *
+#     /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz                         *
+
+#   Written by George Weingart - george.weingart@gmail.com   10/08/2014                     *  
+#********************************************************************************************
+
+
+2.7  Instructions to run the  ReadSwissprot.py
+
+
+#********************************************************************************************
+#    Read Swissprot program                                                                 *
+#    This program reads the unprot.dat file and creates an                                  *
+#    extract containing in each line                                                        *
+#    The Protein AC and all the ECs related to it                                           *
+
+#  -----------------------------------------------------------------------------------------*
+#  Invoking the program:                                                                    *
+#  ---------------------                                                                    *
+#   python ReadSwissprot.py  --i  input_file  --o output_file                               *
+#   Where:                                                                                  *
+#   --i input_file is the UniprotKB Swissprot text file, which can be downloaded from       *
+#    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz *
+#                                                                                           *
+#   The current downloaded file, which serves as input,  resides on hutlab3 in              *
+#    /n/huttenhower_lab/data/uniprot/2014-09/uniprot_sprot.dat                              *
+#                                                                                           *
+#   The current output of thei program is stored in humann2_test directory under the name   *
+#   swissprot_mapping_AC_to_EC                                                              * 
+#                                                                                           *
+#   Written by George Weingart - george.weingart@gmail.com   10/06/2014                     *  
+#********************************************************************************************
+
+
+
+
