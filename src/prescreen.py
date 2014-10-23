@@ -98,7 +98,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     
     # compute total species found
     if not config.bypass_prescreen:
-        message="Total species indentified in prescreen: " + str(len(species_found))
+        message="Total species identified in prescreen: " + str(len(species_found))
         logger.info(message)
         print("\n"+message+"\n")
         message="Species cover " + str(total_reads_covered) + "% of all mapped reads"
