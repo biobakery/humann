@@ -100,7 +100,7 @@ Type these commands or include them in your .bashrc file.
 
 ```
 $ export PATH=$PATH:$HUMAnN2_PATH
-$ export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH/src
+$ export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH
 ```
 
 $HUMANn2_PATH = the full path to the HUMAnN2 download
