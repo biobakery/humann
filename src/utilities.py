@@ -171,7 +171,7 @@ def download_tar_and_extract(url, filename, folder):
     except EnvironmentError:
         message="Unable to download and extract from URL: " + url
         logger.critical(message)
-        logger.critical("Traceback: \n" + traceback.print_exc())
+        logger.critical("Traceback: \n" + traceback.format_exc())
         sys.exit("CRITICAL ERROR: " + message)
 
 def remove_file(file):
@@ -216,14 +216,14 @@ def command_multiprocessing(threads, args, function=None):
     
     if not function:
         function=execute_command_args_convert
-    
+        
     logger.debug("Create %s processes for function %s", threads, function)
     
     pool=multiprocessing.Pool(threads)
     try:
         results=pool.map(function, args)
-    except (EnvironmentError, ValueError, CalledProcessError):
-        logger.critical("TRACEBACK: \n" + traceback.print_exc())
+    except (EnvironmentError, ValueError, subprocess.CalledProcessError):
+        logger.critical("TRACEBACK: \n" + traceback.format_exc())
         message=("Error in one of the processes. See the log file for additional" + 
             " details including tracebacks.")
         logger.critical(message)
@@ -279,10 +279,10 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
             else:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 logger.debug(p_out)            
-        except (EnvironmentError, CalledProcessError):
+        except (EnvironmentError, subprocess.CalledProcessError):
             message="Problem executing " + " ".join(cmd) + "\n"
             logger.critical(message)
-            logger.critical("TRACEBACK: \n" + traceback.print_exc())
+            logger.critical("TRACEBACK: \n" + traceback.format_exc())
             print("CRITICAL ERROR: " + message)
             raise
 

@@ -215,7 +215,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                         evalue=math.pow(10.0, float(evalue))
                     except ValueError:
                         logger.warning("Unable to convert rapsearch e-value: %s", evalue)
-                        logger.warning("Traceback: \n" + traceback.print_exc())
+                        logger.warning("Traceback: \n" + traceback.format_exc())
                         evalue=1.0 
                 else:
                     if not isinstance(evalue, numbers.Number):

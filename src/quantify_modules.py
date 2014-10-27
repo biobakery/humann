@@ -87,13 +87,16 @@ def identify_reactions_and_pathways_by_bug(args):
     genes_by_query={}
     total_scores_by_query={}
     for hit in hits:
-        bug, reference, query, evalue=hit
-        score=math.exp(-evalue)
-        if query in genes_by_query:
-            genes_by_query[query].append([reference,score])
-        else:
-            genes_by_query[query]=[[reference,score]]
-        total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
+        try:
+            hit_bug, reference, query, evalue=hit
+            score=math.exp(-evalue)
+            if query in genes_by_query:
+                genes_by_query[query].append([reference,score])
+            else:
+                genes_by_query[query]=[[reference,score]]
+            total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
+        except ValueError:
+            logger.debug("Tried to use hit removed in filtering step")
     
     # add these scores by query to the total gene scores
     total_genes={}
@@ -223,6 +226,10 @@ def identify_reactions_and_pathways(alignments, reactions_database, pathways_dat
 
         args.append([reactions_database, pathways_database, hits, bug])
         
+    # also run for all bugs
+    hits=alignments.all_hits()
+    args.append([reactions_database, pathways_database, hits, "all"])
+        
     pathways_and_reactions_store=utilities.command_multiprocessing(config.threads, args, 
         function=identify_reactions_and_pathways_by_bug)
 
@@ -326,7 +333,6 @@ def pathways_abundance_by_bug(args):
         
         pathways_abundances[pathway]=abundance
     
-    # Return a dictionary with a single key of the bug name
     return store.Pathways(pathways_and_reactions_store.get_bug(), pathways_abundances)
     
 def print_pathways(pathways, file, header):
@@ -344,26 +350,30 @@ def print_pathways(pathways, file, header):
     all_pathways_scores_by_bug={}
     for bug_pathways in pathways:
         bug=bug_pathways.get_bug()
-        # Add up all scores based on score for each bug for each pathway
-        for pathway, score in bug_pathways.get_items():
-            if score>0:
-                all_pathways_scores[pathway]=all_pathways_scores.get(pathway,0)+score
-                if not pathway in all_pathways_scores_by_bug:
-                    all_pathways_scores_by_bug[pathway]={bug: score}
-                else:
-                    all_pathways_scores_by_bug[pathway][bug]=score             
+        # Compile all scores based on score for each bug for each pathway
+        if bug == "all":
+            all_pathways_scores=bug_pathways.get_pathways()
+        else:
+            for pathway, score in bug_pathways.get_items():
+                if score>0:
+                    if not pathway in all_pathways_scores_by_bug:
+                        all_pathways_scores_by_bug[pathway]={bug: score}
+                    else:
+                        all_pathways_scores_by_bug[pathway][bug]=score             
  
     # Create the header
     tsv_output=["# Pathway"+ delimiter + header]       
     
     # Print out the pathways with those with the highest scores first
     for pathway in sorted(all_pathways_scores, key=all_pathways_scores.get, reverse=True):
-        # Print the sum of all bugs for pathway
-        tsv_output.append(pathway+delimiter+str(all_pathways_scores[pathway]))
-        # Print scores per bug for pathway ordered with those with the highest values first
-        for bug in sorted(all_pathways_scores_by_bug[pathway], key=all_pathways_scores_by_bug[pathway].get, reverse=True):
-            tsv_output.append(pathway+category_delimiter+bug+delimiter
-                              +str(all_pathways_scores_by_bug[pathway][bug]))
+        if all_pathways_scores[pathway]>0:
+            # Print the computation of all bugs for pathway
+            tsv_output.append(pathway+delimiter+str(all_pathways_scores[pathway]))
+            # Print scores per bug for pathway ordered with those with the highest values first
+            if pathway in all_pathways_scores_by_bug:
+                for bug in sorted(all_pathways_scores_by_bug[pathway], key=all_pathways_scores_by_bug[pathway].get, reverse=True):
+                    tsv_output.append(pathway+category_delimiter+bug+delimiter
+                                      +str(all_pathways_scores_by_bug[pathway][bug]))
  
     if config.output_format == "biom":
         # Open a temp file if a conversion to biom is selected

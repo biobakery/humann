@@ -122,6 +122,17 @@ class Alignments:
             
         return hit_list
     
+    def all_hits(self):
+        """
+        Return all of the hits
+        """
+        hit_list=[]
+        for hit in self.__hits:
+            if hit:
+                hit_list.append(hit)
+                
+        return hit_list
+    
     def delete_gene_and_hits(self,gene):
         """
         Remove the gene and all data for all hits associated with the gene
@@ -248,6 +259,13 @@ class Pathways:
         """
         
         return self.__pathways.items()
+    
+    def get_pathways(self):
+        """
+        Return the dictionary of pathways
+        """
+        
+        return self.__pathways
         
     
 class ReactionsDatabase:
