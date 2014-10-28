@@ -102,8 +102,8 @@ def identify_reactions_and_pathways_by_bug(args):
     total_genes={}
     for query, genes in genes_by_query.items():
         for gene, score in genes:
-            total_genes[gene]=total_genes.get(gene,0)+score/total_scores_by_query[query]
-                
+            total_genes[gene]=total_genes.get(gene,0)+score/total_scores_by_query[query]          
+    
     # Merge the gene scores to reaction scores   
     reactions={}
     reactions_file_lines=[]
@@ -168,10 +168,10 @@ def identify_reactions_and_pathways_by_bug(args):
         # Add all pathways associated with each reaction if not using minpath
         for current_reaction in reactions:
             pathways[current_reaction]=pathways.get(
-                current_reaction, []) + pathways_database.find_pathways(current_reaction)
-        
-    
+                current_reaction, []) + pathways_database.find_pathways(current_reaction) 
+     
     pathways_and_reactions_store=store.PathwaysAndReactions(bug)
+    
     # Store the pathway abundance for each reaction
     for current_reaction in reactions:
         # Find the pathways associated with reaction
@@ -181,7 +181,6 @@ def identify_reactions_and_pathways_by_bug(args):
                 pathways_and_reactions_store.add(current_reaction, current_pathway, 
                     reactions[current_reaction])
    
-    # Return the name of the temp file with the pathways
     return pathways_and_reactions_store
     
     
@@ -229,8 +228,12 @@ def identify_reactions_and_pathways(alignments, reactions_database, pathways_dat
     # also run for all bugs
     hits=alignments.all_hits()
     args.append([reactions_database, pathways_database, hits, "all"])
+    
+    threads=config.threads
+    if config.minpath_toggle == "on":
+        threads=1
         
-    pathways_and_reactions_store=utilities.command_multiprocessing(config.threads, args, 
+    pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
         function=identify_reactions_and_pathways_by_bug)
 
     return pathways_and_reactions_store
@@ -249,8 +252,9 @@ def pathways_coverage_by_bug(args):
     xipe_input=[]
     median_score_value=pathways_and_reactions_store.median_score()
     
-    for pathway, reaction_scores in pathways_and_reactions_store.get_items():
+    for pathway in pathways_and_reactions_store.get_pathways():
             
+        reaction_scores=pathways_and_reactions_store.get_reactions(pathway)
         # Count the reactions with scores greater than the median
         count_greater_than_median=0
         for reaction, score in reaction_scores.items():
@@ -316,8 +320,9 @@ def pathways_abundance_by_bug(args):
 
     # Process through each pathway to compute abundance
     pathways_abundances={}
-    for pathway, reaction_scores in pathways_and_reactions_store.get_items():
+    for pathway in pathways_and_reactions_store.get_pathways():
         
+        reaction_scores=pathways_and_reactions_store.get_reactions(pathway)
         # Initialize any reactions in the pathway not found to 0
         for reaction in pathways_database.find_reactions(pathway):
             reaction_scores.setdefault(reaction, 0)
@@ -335,6 +340,7 @@ def pathways_abundance_by_bug(args):
     
     return store.Pathways(pathways_and_reactions_store.get_bug(), pathways_abundances)
     
+    
 def print_pathways(pathways, file, header):
     """
     Print the pathways data to a file organized by pathway
@@ -346,15 +352,16 @@ def print_pathways(pathways, file, header):
     category_delimiter=config.output_file_category_delimiter
     
     # Compile data for all bugs by pathways
-    all_pathways_scores={}
+    all_pathways=store.Pathways()
     all_pathways_scores_by_bug={}
     for bug_pathways in pathways:
         bug=bug_pathways.get_bug()
         # Compile all scores based on score for each bug for each pathway
         if bug == "all":
-            all_pathways_scores=bug_pathways.get_pathways()
+            all_pathways=bug_pathways
         else:
-            for pathway, score in bug_pathways.get_items():
+            for pathway in bug_pathways.get_pathways():
+                score=bug_pathways.get_score(pathway)
                 if score>0:
                     if not pathway in all_pathways_scores_by_bug:
                         all_pathways_scores_by_bug[pathway]={bug: score}
@@ -363,15 +370,16 @@ def print_pathways(pathways, file, header):
  
     # Create the header
     tsv_output=["# Pathway"+ delimiter + header]       
-    
+            
     # Print out the pathways with those with the highest scores first
-    for pathway in sorted(all_pathways_scores, key=all_pathways_scores.get, reverse=True):
-        if all_pathways_scores[pathway]>0:
+    for pathway in all_pathways.get_pathways_double_sorted():
+        all_score=all_pathways.get_score(pathway)
+        if all_score>0:
             # Print the computation of all bugs for pathway
-            tsv_output.append(pathway+delimiter+str(all_pathways_scores[pathway]))
+            tsv_output.append(pathway+delimiter+str(all_score))
             # Print scores per bug for pathway ordered with those with the highest values first
             if pathway in all_pathways_scores_by_bug:
-                for bug in sorted(all_pathways_scores_by_bug[pathway], key=all_pathways_scores_by_bug[pathway].get, reverse=True):
+                for bug in utilities.double_sort(all_pathways_scores_by_bug[pathway]):
                     tsv_output.append(pathway+category_delimiter+bug+delimiter
                                       +str(all_pathways_scores_by_bug[pathway][bug]))
  
@@ -407,8 +415,12 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance")
 
-    # Compute coverage 
-    pathways_coverage=utilities.command_multiprocessing(config.threads, args, 
+    # Compute coverage
+    threads=config.threads 
+    if config.xipe_toggle == "on":
+        threads=1
+
+    pathways_coverage=utilities.command_multiprocessing(threads, args, 
         function=pathways_coverage_by_bug)
     
     # Print the pathways abundance data to file

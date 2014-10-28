@@ -40,12 +40,36 @@ import config
 # name global logging instance
 logger=logging.getLogger(__name__)
 
+def double_sort(pathways_dictionary):
+    """
+    Return the keys to a dictionary sorted with top values first
+    then for duplicate values sorted alphabetically by key
+    """
+
+    sorted_keys=[]
+    prior_value=""
+    store=[]
+    for pathway in sorted(pathways_dictionary, key=pathways_dictionary.get, reverse=True):
+        if prior_value == pathways_dictionary[pathway]:
+            if not store:
+                store.append(sorted_keys.pop())
+            store.append(pathway)
+        else:
+            if store:
+                sorted_keys+=sorted(store)
+                store=[]
+            prior_value=pathways_dictionary[pathway]
+            sorted_keys.append(pathway)
+
+    if store:
+        sorted_keys+=sorted(store)
+    return sorted_keys
+
 def unnamed_temp_file():
     """
     Return the full path to an unnamed temp file
     stored in the temp folder
     """
-    
     file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir)
     os.close(file_out)
     
@@ -208,6 +232,27 @@ def check_outfiles(outfiles):
         return False
     else:
         return True
+    
+class MultiprocessingWorker(multiprocessing.Process):
+    """
+    Class to get/put to worker queue
+    """
+    
+    def __init__(self, work_queue, results_queue, function):
+        super(MultiprocessingWorker, self).__init__()
+        self.work_queue=work_queue
+        self.results_queue=results_queue
+        self.function=function
+        
+    def run(self):
+        while True:
+            try:
+                args = self.work_queue.get()
+                results = self.function(args)
+                self.results_queue.put(results)
+            finally:
+                self.work_queue.task_done()
+        
 
 def command_multiprocessing(threads, args, function=None):
     """
@@ -216,12 +261,29 @@ def command_multiprocessing(threads, args, function=None):
     
     if not function:
         function=execute_command_args_convert
-        
-    logger.debug("Create %s processes for function %s", threads, function)
     
-    pool=multiprocessing.Pool(threads)
     try:
-        results=pool.map(function, args)
+        if threads>1:
+            logger.debug("Create %s processes for function %s", threads, function)
+            work_queue = multiprocessing.JoinableQueue()
+            results_queue = multiprocessing.Queue()
+            # set up thread number of workers
+            for i in range(threads):
+                worker=MultiprocessingWorker(work_queue, results_queue, function)
+                worker.daemon=True
+                worker.start()
+                
+            # add the arguments for each run to the queue
+            for arg in args:
+                work_queue.put(arg)
+            work_queue.join()
+            
+            # collect the results
+            results=[]
+            for i in range(len(args)):
+                results.append(results_queue.get())            
+        else:
+            results=[function(arg) for arg in args]
     except (EnvironmentError, ValueError, subprocess.CalledProcessError):
         logger.critical("TRACEBACK: \n" + traceback.format_exc())
         message=("Error in one of the processes. See the log file for additional" + 

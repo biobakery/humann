@@ -29,6 +29,7 @@ THE SOFTWARE.
 import os
 import re
 import logging
+import copy
 
 import config
 import utilities
@@ -196,14 +197,21 @@ class PathwaysAndReactions:
         Return the bug associated with the pathways data
         """
         
-        return self.__bug
+        return str(self.__bug)
     
-    def get_items(self):
+    def get_pathways(self):
         """
-        Return the items in the pathways dictionary
+        Return the keys in the pathways dictionary
         """
         
-        return self.__pathways.items()
+        return self.__pathways.keys()
+    
+    def get_reactions(self, pathway):
+        """
+        Return the reactions in the pathways dictionary for a pathway
+        """
+        
+        return copy.copy(self.__pathways.get(pathway,{}))
     
     def median_score(self):
         """
@@ -229,6 +237,13 @@ class PathwaysAndReactions:
             
         return median_score_value
     
+    def count_pathways(self):
+        """
+        Return the total number of pathways
+        """
+        
+        return len(self.__pathways.keys())
+    
 class Pathways:
     """
     Holds the pathways coverage or abundance data for a bug
@@ -243,7 +258,7 @@ class Pathways:
         Return the bug associated with the pathways data
         """
         
-        return self.__bug
+        return str(self.__bug)
     
     def get_score(self, pathway):
         """
@@ -251,21 +266,26 @@ class Pathways:
         If the pathway does does not have a score, return 0
         """
         
-        return self.__pathways.get(pathway, 0)
-    
-    def get_items(self):
-        """
-        Return the items in the pathways dictionary
-        """
-        
-        return self.__pathways.items()
+        try:
+            score=float(self.__pathways.get(pathway,0))
+        except ValueError:
+            score=0
+            logger.debug("Non-float value found for pathway: " + pathway)
+        return score
     
     def get_pathways(self):
         """
-        Return the dictionary of pathways
+        Return the keys in the pathways dictionary
         """
         
-        return self.__pathways
+        return self.__pathways.keys()
+    
+    def get_pathways_double_sorted(self):
+        """
+        Return the pathways sorted by value
+        """
+        
+        return utilities.double_sort(self.__pathways)
         
     
 class ReactionsDatabase:
@@ -315,14 +335,14 @@ class ReactionsDatabase:
         Return the list of reactions associated with the gene
         """
             
-        return self.__genes_to_reactions.get(gene,[])
+        return copy.copy(self.__genes_to_reactions.get(gene,[]))
     
     def find_genes(self,reaction):
         """
         Return the list of genes associated with the reaction
         """
         
-        return self.__reactions_to_genes.get(reaction,[])
+        return copy.copy(self.__reactions_to_genes.get(reaction,[]))
          
     def reaction_list(self):
         """
@@ -436,14 +456,14 @@ class PathwaysDatabase:
         Return the list of reactions associated with the pathway
         """
          
-        return self.__pathways_to_reactions.get(pathway, [])
+        return copy.copy(self.__pathways_to_reactions.get(pathway, []))
 
     def find_pathways(self,reaction):
         """
         Return the list of pathways associated with the reaction
         """
          
-        return self.__reactions_to_pathways.get(reaction, [])
+        return copy.copy(self.__reactions_to_pathways.get(reaction, []))
     
     def reaction_list(self):
         """
