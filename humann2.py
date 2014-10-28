@@ -67,10 +67,10 @@ def parse_arguments (args):
         action="store_true",
         default=config.verbose)
     parser.add_argument(
-        "-d","--debug", 
+        "-r","--resume", 
         help="bypass commands if the output files exist\n", 
         action="store_true",
-        default=config.debug)
+        default=config.resume)
     parser.add_argument(
         "--bypass_prescreen", 
         help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
@@ -244,9 +244,9 @@ def update_configuration(args):
     else:
         config.uniref=os.path.join(humann2_fullpath,config.uniref)
 
-    # if set, update the config run mode to debug
-    if args.debug:
-        config.debug=True  
+    # if set, update the config run mode to resume
+    if args.resume:
+        config.resume=True  
             
     # if set, update the config run mode to verbose
     if args.verbose:

@@ -218,7 +218,7 @@ def check_outfiles(outfiles):
     bypass=[]
     for file in outfiles:
         if os.path.isfile(file):
-            if config.debug and os.path.getsize(file) > 0:
+            if config.resume and os.path.getsize(file) > 0:
                 bypass.append(True)
             else:
                 bypass.append(False)

@@ -24,7 +24,7 @@ THE SOFTWARE.
 """
 
 # software run modes
-debug = False
+resume = False
 verbose = False
 bypass_prescreen = False
 bypass_nucleotide_index = False
