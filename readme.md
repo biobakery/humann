@@ -188,7 +188,7 @@ HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 optional arguments:
   -h, --help            show this help message and exit
   -v, --verbose         additional output is printed
-  -r, --resume           bypass commands if the output files exist
+  -r, --resume          bypass commands if the output files exist
   --bypass_prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
   --bypass_nucleotide_index
                         bypass the nucleotide index step and run on the indexed ChocoPhlAn database
