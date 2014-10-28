@@ -167,7 +167,7 @@ NOTE: To specify the locations of the output files use the (--o_* options).
 
 ### Complete option list ###
 ```
-usage: humann2.py [-h] [-v] [-d] [--bypass_prescreen]
+usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
                   [--bypass_nucleotide_index] -i <input.fastq>
                   [-c <chocophlan>] [-u <uniref>] [--metaphlan <metaplhan>]
                   [--o_pathabundance <pathabundance.tsv>]
@@ -188,7 +188,7 @@ HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 optional arguments:
   -h, --help            show this help message and exit
   -v, --verbose         additional output is printed
-  -d, --debug           bypass commands if the output files exist
+  -r, --resume          bypass commands if the output files exist
   --bypass_prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
   --bypass_nucleotide_index
                         bypass the nucleotide index step and run on the indexed ChocoPhlAn database
