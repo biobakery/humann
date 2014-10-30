@@ -47,13 +47,20 @@ class Alignments:
         self.__bugs={}
         self.__genes={}
         
-    def add(self, reference, query, evalue, bug): 
+    def add(self, reference, reference_length, query, evalue, bug): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
         """
         
-        self.__hits.append([bug, reference, query, evalue]) 
+        if reference_length==0:
+            reference_length=1
+            logger.debug("Reference length of 0 found for gene: " + reference)
+        
+        # store the reference length as per kilobase
+        length=reference_length/1000.0
+            
+        self.__hits.append([bug, reference, length, query, evalue]) 
         
         index=len(self.__hits)-1
         if bug in self.__bugs:
@@ -170,6 +177,7 @@ class Alignments:
         for bug in bugs_to_delete:
             logger.debug("Bug removed because no longer associated with any hits: %s", bug)
             del self.__bugs[bug]
+        
     
 class PathwaysAndReactions:
     """

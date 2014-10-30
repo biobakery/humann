@@ -35,6 +35,7 @@ import utilities
 import config
 import store
 import MinPath12hmp
+import quantify_families
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -82,27 +83,8 @@ def identify_reactions_and_pathways_by_bug(args):
     logger.info(message)
     if config.verbose:
         print(message)
-    
-    # Loop through hits to organize scores by query
-    genes_by_query={}
-    total_scores_by_query={}
-    for hit in hits:
-        try:
-            hit_bug, reference, query, evalue=hit
-            score=math.exp(-evalue)
-            if query in genes_by_query:
-                genes_by_query[query].append([reference,score])
-            else:
-                genes_by_query[query]=[[reference,score]]
-            total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
-        except ValueError:
-            logger.debug("Tried to use hit removed in filtering step")
-    
-    # add these scores by query to the total gene scores
-    total_genes={}
-    for query, genes in genes_by_query.items():
-        for gene, score in genes:
-            total_genes[gene]=total_genes.get(gene,0)+score/total_scores_by_query[query]          
+        
+    gene_scores=quantify_families.compute_gene_scores(hits)
     
     # Merge the gene scores to reaction scores   
     reactions={}
@@ -112,7 +94,7 @@ def identify_reactions_and_pathways_by_bug(args):
         abundance=0
         # Add the scores for each gene to the total score for the reaction
         for gene in genes_list:
-            abundance+=total_genes.get(gene,0)  
+            abundance+=gene_scores.get(gene,0)  
         
         # Only write out reactions where the abundance is greater than 0
         if abundance>0: 
@@ -188,7 +170,7 @@ def identify_reactions_and_pathways(alignments, reactions_database, pathways_dat
     """
     Identify the reactions and then pathways from the hits found
     """
-        
+    
     # Remove the hits from the alignments that are not associated with a gene
     # in the gene to reactions database
     message="Remove hits to genes not in reactions database ..."
@@ -220,9 +202,7 @@ def identify_reactions_and_pathways(alignments, reactions_database, pathways_dat
     # Set up a command to run through each of the hits by bug
     args=[]
     for bug in alignments.bug_list():
-        
         hits=alignments.hits_for_bug(bug)
-
         args.append([reactions_database, pathways_database, hits, bug])
         
     # also run for all bugs
@@ -413,7 +393,7 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
         function=pathways_abundance_by_bug)
 
     # Print the pathways abundance data to file
-    print_pathways(pathways_abundance, config.pathabundance_file, "Abundance")
+    print_pathways(pathways_abundance, config.pathabundance_file, "Abundance (reads per kilobase)")
 
     # Compute coverage
     threads=config.threads 

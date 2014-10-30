@@ -25,12 +25,51 @@ THE SOFTWARE.
 
 import os
 import logging
+import math
 
 import config
 import utilities
 
 # name global logging instance
 logger=logging.getLogger(__name__)
+
+def compute_gene_scores(hits):
+    """
+    Compute the scores for each gene for a set of hits
+    """
+ 
+    # Loop through hits to organize scores by query
+    genes_by_query={}
+    total_scores_by_query={}
+    for hit in hits:
+        try:
+            bug, reference, reference_length, query, evalue=hit
+            score=math.exp(-evalue)/reference_length
+            if query in genes_by_query:
+                genes_by_query[query].append([reference,score])
+            else:
+                genes_by_query[query]=[[reference,score]]
+            total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
+        except ValueError:
+            logger.debug("Tried to use a hit that is not complete")
+    
+    # add these scores by query to the total gene scores
+    total_gene_scores={}
+    for query, genes in genes_by_query.items():
+        for gene, score in genes:
+            total_gene_scores[gene]=total_gene_scores.get(gene,0)+score/total_scores_by_query[query]    
+    
+    return total_gene_scores
+
+def compute_gene_scores_by_bug(args):
+    """
+    Compute the gene scores for a specific bug
+    """
+    
+    hits, bug = args
+    
+    return [bug, compute_gene_scores(hits)]
+    
 
 def gene_families(alignments):
     """
@@ -39,37 +78,50 @@ def gene_families(alignments):
     
     logger.debug("Compute gene families")
     
-    # Compute hits by gene family
-    gene_scores={}
-    gene_output_lines={}
-    for gene in alignments.gene_list():
-        hit_list=alignments.hits_for_gene(gene)
-        total_hits_for_gene=len(hit_list)
+    # Compute scores for each gene family per bug
+    args=[]
+    for bug in alignments.bug_list():
+        hits=alignments.hits_for_bug(bug)
+        args.append([hits, bug])
         
-        if gene in gene_scores:
-            gene_scores[gene]+=total_hits_for_gene
-            gene_output_lines[gene].append(gene+config.output_file_column_delimiter+
-            str(total_hits_for_gene))
+    # also run for all bugs
+    hits=alignments.all_hits()
+    args.append([hits, "all"])
+    
+    gene_scores_array=utilities.command_multiprocessing(config.threads, args, 
+        function=compute_gene_scores_by_bug)
+    
+    # find the all scores and compile by gene
+    all_scores={}
+    all_scores_by_bug={}
+    for bug, scores in gene_scores_array:
+        if bug == "all":
+            all_scores=scores
         else:
-            gene_scores[gene]=total_hits_for_gene
-            gene_output_lines[gene]=[gene+config.output_file_column_delimiter+
-            str(total_hits_for_gene)]
-        
-        # merge hits with the same bug
-        hits_by_bug={}
-        for hit in hit_list:
-            bug, reference, query, evalue=hit
-            hits_by_bug[bug]=hits_by_bug.get(bug,0)+1          
-        
-        # record the hits by bug for this gene
-        for bug in sorted(hits_by_bug, key=hits_by_bug.get, reverse=True):
-            gene_output_lines[gene].append(gene+config.output_file_category_delimiter+
-                bug+config.output_file_column_delimiter+str(hits_by_bug[bug]))
+            for gene, score in scores.items():
+                if score>0:
+                    if not gene in all_scores_by_bug:
+                        all_scores_by_bug[gene]={bug: score}
+                    else:
+                        all_scores_by_bug[gene][bug]=score 
         
     # Write the scores ordered with the top first
-    tsv_output=["#Gene Family"+config.output_file_column_delimiter+"Hits"]
-    for gene in sorted(gene_scores, key=gene_scores.get, reverse=True):
-        tsv_output.append("\n".join(gene_output_lines[gene]))    
+    tsv_output=["# Gene Family"+config.output_file_column_delimiter+"Abundance (reads per kilobase)"]
+    
+    delimiter=config.output_file_column_delimiter
+    category_delimiter=config.output_file_category_delimiter
+
+    # Print out the gene families with those with the highest scores first
+    for gene in utilities.double_sort(all_scores):
+        all_score=all_scores[gene]
+        if all_score>0:
+            # Print the computation of all bugs for gene family
+            tsv_output.append(gene+delimiter+str(all_score))
+            # Print scores per bug for family ordered with those with the highest values first
+            if gene in all_scores_by_bug:
+                for bug in utilities.double_sort(all_scores_by_bug[gene]):
+                    tsv_output.append(gene+category_delimiter+bug+delimiter
+                                      +str(all_scores_by_bug[gene][bug]))       
         
     if config.output_format=="biom":
         # Open a temp file if a conversion to biom is selected

@@ -203,6 +203,14 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 # only store those alignments which meet the identity threshold
                 
                 referenceid=alignment_info[config.blast_reference_index]
+                
+                # get reference length information
+                reference_length=1
+                if config.uniref_delimiter in referenceid:
+                    reference_info=referenceid.split(config.uniref_delimiter)
+                    referenceid=reference_info[config.uniref_gene_index]
+                    reference_length=int(reference_info[config.uniref_length_index])
+                    
                 queryid=alignment_info[config.blast_query_index]
                 aligned_length=int(alignment_info[config.blast_aligned_length_index])
                 evalue=alignment_info[config.blast_evalue_index]
@@ -222,7 +230,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                         logger.warning("Usearch e-value is not a number: %s", evalue)
                         evalue=1.0
             
-                alignments.add(referenceid, queryid, evalue,"unclassified")
+                alignments.add(referenceid, reference_length, queryid, evalue,"unclassified")
             
                 aligned_ids+=[queryid]
         line=file_handle.readline()

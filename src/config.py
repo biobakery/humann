@@ -82,6 +82,15 @@ metaphlan_mpa_index="db_v20/mpa_v20_m200"
 chocophlan_delimiter="|"
 chocophlan_bug_index=-3
 chocophlan_uniref_index=-1
+chocophlan_location_index=-5
+chocophlan_location_delimiter="-"
+chocophlan_location_extra_characters="[:|c]"
+chocophlan_multiple_location_delimiter=","
+
+# uniref formatting
+uniref_delimiter="|"
+uniref_gene_index=-2
+uniref_length_index=-1
 
 # bowtie2 options and threshold
 bowtie2_large_index_threshold=4000000000

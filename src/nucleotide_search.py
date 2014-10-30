@@ -166,13 +166,28 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
                 # identify bug and gene families
                 bug=reference_info[config.chocophlan_bug_index]
                 uniref=reference_info[config.chocophlan_uniref_index]
+                location=reference_info[config.chocophlan_location_index]
+                # compute the length of the gene from the location provided
+                try:
+                    if config.chocophlan_multiple_location_delimiter in location:
+                        locations=location.split(config.chocophlan_multiple_location_delimiter)
+                    else:
+                        locations=[location]
+                    length=0
+                    for location in locations:
+                        start, end = re.sub(config.chocophlan_location_extra_characters,
+                            '',location).split(config.chocophlan_location_delimiter)
+                        length=length+abs(int(end)-int(start))+1
+                except ValueError:
+                    length=1
+                    logger.debug("Unable to compute length for gene: " + uniref)
                 query=info[config.sam_read_name_index]
                 newline=("\t").join([query,info[config.sam_reference_index],
                     str(evalue)])
                 file_handle_write_aligned.write(newline+"\n")
                    
                 # store the alignment data
-                alignments.add(uniref,query,evalue,bug)
+                alignments.add(uniref,length,query,evalue,bug)
                     
         line=file_handle_read.readline()
 
