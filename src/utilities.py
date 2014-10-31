@@ -254,7 +254,7 @@ class MultiprocessingWorker(multiprocessing.Process):
                 self.work_queue.task_done()
         
 
-def command_multiprocessing(threads, args, function=None):
+def command_multiprocessing(threads, args, function=None, lock=None):
     """
     Execute command in parallel, maximum of threads total
     """
@@ -265,23 +265,27 @@ def command_multiprocessing(threads, args, function=None):
     try:
         if threads>1:
             logger.debug("Create %s processes for function %s", threads, function)
-            work_queue = multiprocessing.JoinableQueue()
-            results_queue = multiprocessing.Queue()
-            # set up thread number of workers
-            for i in range(threads):
-                worker=MultiprocessingWorker(work_queue, results_queue, function)
-                worker.daemon=True
-                worker.start()
+            if lock:
+                work_queue = multiprocessing.JoinableQueue()
+                results_queue = multiprocessing.Queue()
+                # set up thread number of workers
+                for i in range(threads):
+                    worker=MultiprocessingWorker(work_queue, results_queue, function)
+                    worker.daemon=True
+                    worker.start()
+                    
+                # add the arguments for each run to the queue
+                for arg in args:
+                    work_queue.put(arg)
+                work_queue.join()
                 
-            # add the arguments for each run to the queue
-            for arg in args:
-                work_queue.put(arg)
-            work_queue.join()
-            
-            # collect the results
-            results=[]
-            for i in range(len(args)):
-                results.append(results_queue.get())            
+                # collect the results
+                results=[]
+                for i in range(len(args)):
+                    results.append(results_queue.get())
+            else:
+                pool=multiprocessing.Pool(threads)
+                results=pool.map(function, args)
         else:
             results=[function(arg) for arg in args]
     except (EnvironmentError, ValueError, subprocess.CalledProcessError):
