@@ -54,7 +54,7 @@ class Alignments:
         """
         
         if reference_length==0:
-            reference_length=1
+            reference_length=1000
             logger.debug("Reference length of 0 found for gene: " + reference)
         
         # store the reference length as per kilobase
