@@ -30,9 +30,9 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 ### Software ###
 
 1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan2/)
-1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/)
+1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/)(version >= 2.1)
 1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/)
-1. [Python](http://www.python.org/) ( version >= 2.7 )
+1. [Python](http://www.python.org/) (version >= 2.7)
 1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded)
 1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
 1. [usearch](http://www.drive5.com/usearch/) (version = v7.0.1001) (optional)
