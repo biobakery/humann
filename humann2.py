@@ -344,7 +344,7 @@ def update_configuration(args):
 
     # if the temp_dir is set by the user then use that directory
     if args.temp:
-        config.temp_dir=args.temp
+        config.temp_dir=os.path.abspath(args.temp)
         if not os.path.isdir(config.temp_dir):
             os.mkdir(config.temp_dir)    
     else:
