@@ -582,3 +582,10 @@ class Reads:
         
         return self.__reads.keys()
     
+    def count_reads(self):
+        """
+        Return the total number of reads stored
+        """
+            
+        return len(self.__reads.keys())
+    
