@@ -44,11 +44,11 @@ def compute_gene_scores(hits):
     for hit in hits:
         try:
             bug, reference, reference_length, query, evalue=hit
-            score=math.exp(-evalue)/reference_length
+            score=math.exp(-evalue)
             if query in genes_by_query:
-                genes_by_query[query].append([reference,score])
+                genes_by_query[query].append([reference,score,reference_length])
             else:
-                genes_by_query[query]=[[reference,score]]
+                genes_by_query[query]=[[reference,score,reference_length]]
             total_scores_by_query[query]=total_scores_by_query.get(query,0)+score
         except ValueError:
             logger.debug("Tried to use a hit that is not complete")
@@ -56,8 +56,8 @@ def compute_gene_scores(hits):
     # add these scores by query to the total gene scores
     total_gene_scores={}
     for query, genes in genes_by_query.items():
-        for gene, score in genes:
-            total_gene_scores[gene]=total_gene_scores.get(gene,0)+score/total_scores_by_query[query]    
+        for gene, score, gene_length in genes:
+            total_gene_scores[gene]=total_gene_scores.get(gene,0)+(score/total_scores_by_query[query])/gene_length    
     
     return total_gene_scores
 
