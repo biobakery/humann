@@ -566,35 +566,40 @@ def main():
         unaligned_reads_file_fasta=args.input
         unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
 
-    # Run translated search on UniRef database
-    translated_alignment_file = translated_search.alignment(config.uniref, 
-        unaligned_reads_file_fasta)
+    # Run translated search on UniRef database if unaligned reads exit
+    if unaligned_reads_store.count_reads()>0:
+        translated_alignment_file = translated_search.alignment(config.uniref, 
+            unaligned_reads_file_fasta)
 
-    if config.verbose:
-        print(str(int(time.time() - start_time)) + " seconds from start")
+        if config.verbose:
+            print(str(int(time.time() - start_time)) + " seconds from start")
 
-    # Determine which reads are unaligned
-    translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-        unaligned_reads_store, translated_alignment_file, alignments)
+        # Determine which reads are unaligned
+        translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+            unaligned_reads_store, translated_alignment_file, alignments)
 
-    # Print out total alignments per bug
-    message="Total bugs after translated alignment: " + str(alignments.count_bugs())
-    logger.info(message)
-    print(message)
+        # Print out total alignments per bug
+        message="Total bugs after translated alignment: " + str(alignments.count_bugs())
+        logger.info(message)
+        print(message)
     
-    message=alignments.counts_by_bug()
-    logger.info("\n"+message)
-    print(message)
+        message=alignments.counts_by_bug()
+        logger.info("\n"+message)
+        print(message)
 
-    message="Total gene families after translated alignment: " + str(alignments.count_genes())
-    logger.info(message)
-    print("\n"+message)
+        message="Total gene families after translated alignment: " + str(alignments.count_genes())
+        logger.info(message)
+        print("\n"+message)
 
-    # Report reads unaligned
-    message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-        args.input, translated_unaligned_reads_file_fastq) + "%"
-    logger.info(message)
-    print("\n"+message+"\n")  
+        # Report reads unaligned
+        message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+            args.input, translated_unaligned_reads_file_fastq) + "%"
+        logger.info(message)
+        print("\n"+message+"\n")  
+    else:
+        message="All reads are aligned so translated alignment will not be run"
+        logger.info(message)
+        print(message)
 
     # Compute the gene families
     message="Computing gene families ..."

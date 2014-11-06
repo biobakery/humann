@@ -184,8 +184,14 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
         "_" + config.translated_alignment_selected + 
         config.translated_unaligned_reads_name_no_ext + 
         config.fasta_extension)
-    
-    utilities.file_exists_readable(alignment_file_tsv)
+    try:
+        utilities.file_exists_readable(alignment_file_tsv,raise_IOError=True)
+    except IOError:
+        message="No alignment results found from translated search"
+        logger.critical(message)
+        print(message)
+        return unaligned_file_fasta
+        
 
     # read through the alignment file to identify ids
     # that correspond to aligned reads
