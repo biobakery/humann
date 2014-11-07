@@ -111,6 +111,15 @@ def gene_families(alignments):
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter
 
+    # Filter out any unknown genes that we do not want to print
+    delete_list=[]
+    for gene in all_scores:
+        if gene in config.uniref_gene_filters:
+            delete_list.append(gene)
+    
+    for gene in delete_list:
+        del all_scores[gene]
+
     # Print out the gene families with those with the highest scores first
     for gene in utilities.double_sort(all_scores):
         all_score=all_scores[gene]
