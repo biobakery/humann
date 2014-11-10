@@ -24,8 +24,11 @@ import os
 import subprocess
 
 # pathways databases with uniref ids
-PATHWAYS_DATABASE1="pathways/metacyc_reactions.uniref"
-PATHWAYS_DATABASE2="pathways/unipathway_pathways"
+humann2_test_fullpath=os.path.dirname(os.path.realpath(__file__))
+PATHWAYS_DATABASE1=os.path.join(humann2_test_fullpath,
+    "pathways/metacyc_reactions.uniref")
+PATHWAYS_DATABASE2=os.path.join(humann2_test_fullpath,
+    "pathways/unipathway_pathways")
 PATHWAYS_DATABASES=[PATHWAYS_DATABASE1,PATHWAYS_DATABASE2]
 PATHWAYS_DELIMITER="\t"
 PATHWAYS_UNIREF_IDENTIFIER="uniref50"
@@ -208,11 +211,11 @@ def parse_arguments(args):
         default=False)
     parser.add_argument(
         "-i","--input",
-        help="the UniRef fasta file\n",
+        help="the UniRef fasta file to read\n",
         required=True)
     parser.add_argument(
         "-o","--output",
-        help="the name of the UniRef database\n",
+        help="the UniRef database to write\n",
         required=True)
     parser.add_argument(
         "-f","--filter",
@@ -231,9 +234,12 @@ def main():
         sys.exit("Could not find the location of the software to create the" +
             " database: " + database_software)
     
+    # Find the output directory
+    output_dir=os.path.dirname(os.path.realpath(args.output))
+    
     # Create temp folder
     temp_dir=tempfile.mkdtemp( 
-        prefix='humann2_create_uniref_database_')
+        prefix='humann2_create_uniref_database_', dir=output_dir)
     if args.verbose:
         print("Temp folder created: " + temp_dir)
         
