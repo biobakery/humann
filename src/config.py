@@ -134,7 +134,7 @@ usearch_opts=[]
 
 # rapsearch options
 rapsearch_database_extension=".info"
-rapsearch_opts=["-v",-1]
+rapsearch_opts=["-v",20,"-e",0]
 rapsearch_output_file_extension=".m8"
 
 # data files
