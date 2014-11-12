@@ -68,10 +68,13 @@ def compute_gene_scores_by_bug(args):
     
     hits, bug = args
     
+    message="Compute gene scores for bug: " + bug
+    logger.info(message)
+    
     return [bug, compute_gene_scores(hits)]
     
 
-def gene_families(alignments):
+def gene_families(alignments,gene_scores):
     """
     Compute the gene families from the alignments
     """
@@ -92,18 +95,31 @@ def gene_families(alignments):
         function=compute_gene_scores_by_bug)
     
     # find the all scores and compile by gene
+    # add to gene scores instance
     all_scores={}
     all_scores_by_bug={}
+    messages=[]
     for bug, scores in gene_scores_array:
+        gene_scores.add(scores,bug)
         if bug == "all":
             all_scores=scores
+            message="Total gene families  : " +str(len(scores.keys()))
+            if config.verbose:
+                print(message)
+            logger.info(message)
         else:
+            messages.append(bug + " : " + str(len(scores.keys())) + " gene families")
             for gene, score in scores.items():
                 if score>0:
                     if not gene in all_scores_by_bug:
                         all_scores_by_bug[gene]={bug: score}
                     else:
                         all_scores_by_bug[gene][bug]=score 
+                        
+    message="\n".join(messages)
+    if config.verbose:
+        print(message)
+    logger.info(message)
         
     # Write the scores ordered with the top first
     tsv_output=["# Gene Family"+config.output_file_column_delimiter+"Abundance (reads per kilobase)"]

@@ -53,11 +53,6 @@ def run_minpath(reactions_file,metacyc_datafile):
     
         tmpfile2=utilities.unnamed_temp_file()
     
-        message="Run MinPath ...."
-        logger.info(message) 
-        if config.verbose:
-            print("\n"+message)
-    
         # Redirect stdout
         sys.stdout=open(os.devnull,"w")
     
@@ -77,16 +72,12 @@ def identify_reactions_and_pathways_by_bug(args):
     Identify the reactions from the hits found for a specific bug
     """
     
-    reactions_database, pathways_database, hits, bug = args
-    
-    message="Compute gene scores by query for " + bug
-    logger.info(message)
-    if config.verbose:
-        print(message)
-        
-    gene_scores=quantify_families.compute_gene_scores(hits)
+    reactions_database, pathways_database, gene_scores, bug = args
     
     # Merge the gene scores to reaction scores   
+    message="Compute reaction scores for bug: " + bug
+    logger.info(message)
+    
     reactions={}
     reactions_file_lines=[]
     for reaction in reactions_database.reaction_list():
@@ -120,6 +111,11 @@ def identify_reactions_and_pathways_by_bug(args):
         file_handle.close()
     
         # Run minpath to identify the pathways
+        message="Run MinPath on " + bug
+        if config.verbose:
+            print(message)
+        logger.info(message)
+            
         tmpfile=run_minpath(reactions_file, pathways_database_file)
         
         # Process the minpath results
@@ -166,24 +162,16 @@ def identify_reactions_and_pathways_by_bug(args):
     return pathways_and_reactions_store
     
     
-def identify_reactions_and_pathways(alignments, reactions_database, pathways_database):
+def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database):
     """
     Identify the reactions and then pathways from the hits found
     """
-    
-    # Remove the hits from the alignments that are not associated with a gene
-    # in the gene to reactions database
-    alignments.filter_hits(reactions_database)
             
     # Set up a command to run through each of the hits by bug
     args=[]
-    for bug in alignments.bug_list():
-        hits=alignments.hits_for_bug(bug)
-        args.append([reactions_database, pathways_database, hits, bug])
-        
-    # also run for all bugs
-    hits=alignments.all_hits()
-    args.append([reactions_database, pathways_database, hits, "all"])
+    for bug in gene_scores.bug_list():
+        scores=gene_scores.scores_for_bug(bug)
+        args.append([reactions_database, pathways_database, scores, bug])
     
     threads=config.threads
     if config.minpath_toggle == "on":

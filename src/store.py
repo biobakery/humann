@@ -212,6 +212,60 @@ class Alignments:
         logger.info(message)
         print(message)
         
+class GeneScores:
+    """
+    Holds scores for all of the genes
+    """
+    
+    def __init__(self):
+        self.__scores={}
+        
+    def add(self,gene_scores,bug):
+        """ 
+        Add gene scores for a specific bug
+        """
+        
+        if bug in self.__scores:
+            self.__scores[bug]=dict(self.__scores[bug].items() + gene_scores.items())
+        else:
+            self.__scores[bug]=gene_scores
+        
+    def count_genes_for_bug(self,bug):
+        """
+        Count the total number of genes stored for all bugs
+        """
+        
+        return len(self.__scores[bug].keys())
+        
+    def get_score(self,bug,gene):
+        """
+        Get the score for a gene for bug
+        """
+        score=0
+        if bug in self.__scores:
+            score=self.__scores[bug].get(gene,0)
+        
+        return score
+
+    def bug_list(self):
+        """
+        Return a list of the bugs including "all"
+        """
+        
+        return self.__scores.keys()
+    
+    def scores_for_bug(self,bug):
+        """
+        Return the gene scores for a specific bug
+        """
+        
+        scores={}
+        if bug in self.__scores:
+            scores=copy.copy(self.__scores[bug])
+        else:
+            logger.debug("Request for scores for bug that does not exist.")
+        
+        return scores
     
 class PathwaysAndReactions:
     """

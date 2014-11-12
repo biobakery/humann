@@ -475,8 +475,9 @@ def main():
     # Check for required files, software, databases, and also permissions
     check_requirements(args)
 
-    # Initialize alignments
+    # Initialize alignments and gene scores
     alignments=store.Alignments()
+    gene_scores=store.GeneScores()
     
     # Load in the reactions database
     reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
@@ -606,7 +607,7 @@ def main():
     logger.info(message)
     print("\n"+message)
     
-    families_file=quantify_families.gene_families(alignments)
+    families_file=quantify_families.gene_families(alignments,gene_scores)
 
     message=str(int(time.time() - start_time)) + " seconds from start"
     logger.info(message)
@@ -618,7 +619,7 @@ def main():
     logger.info(message)
     print("\n"+message)
     pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
-        alignments, reactions_database, pathways_database)
+        gene_scores, reactions_database, pathways_database)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
