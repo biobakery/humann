@@ -177,6 +177,40 @@ class Alignments:
         for bug in bugs_to_delete:
             logger.debug("Bug removed because no longer associated with any hits: %s", bug)
             del self.__bugs[bug]
+            
+    def filter_hits(self,reactions_database):
+        """
+        Remove hits from the alignments database that are not associated with
+        a gene in the reactions database
+        """
+        
+        # Remove the hits from the alignments that are not associated with a gene
+        # in the gene to reactions database
+        message="Remove hits to genes not in reactions database ..."
+        logger.info(message)
+        if config.verbose:
+            print(message)
+    
+        logger.debug("Remove gene and hits")
+        for gene in self.gene_list():
+            if not reactions_database.gene_present(gene):
+                self.delete_gene_and_hits(gene)
+                
+        # Update the bugs index list to remove any indexes that point to deleted hits
+        logger.debug("Update hits for bugs to reflect removed hits")        
+        self.update_hits_for_bugs()
+                
+        message="Total bugs after filtering: " + str(self.count_bugs())
+        logger.info(message)        
+        print(message)
+        
+        message=self.counts_by_bug()
+        logger.info(message)
+        print(message)            
+                
+        message="Total gene families after filtering: " + str(len(self.gene_list()))
+        logger.info(message)
+        print(message)
         
     
 class PathwaysAndReactions:

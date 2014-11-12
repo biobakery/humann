@@ -173,31 +173,7 @@ def identify_reactions_and_pathways(alignments, reactions_database, pathways_dat
     
     # Remove the hits from the alignments that are not associated with a gene
     # in the gene to reactions database
-    message="Remove hits to genes not in reactions database ..."
-    logger.info(message)
-    if config.verbose:
-        print(message)
-
-    logger.debug("Remove gene and hits")
-    for gene in alignments.gene_list():
-        if not reactions_database.gene_present(gene):
-            alignments.delete_gene_and_hits(gene)
-            
-    # Update the bugs index list to remove any indexes that point to deleted hits
-    logger.debug("Update hits for bugs to reflect removed hits")        
-    alignments.update_hits_for_bugs()
-            
-    message="Total bugs after filtering: " + str(alignments.count_bugs())
-    logger.info(message)        
-    print(message)
-    
-    message=alignments.counts_by_bug()
-    logger.info(message)
-    print(message)            
-            
-    message="Total gene families after filtering: " + str(len(alignments.gene_list()))
-    logger.info(message)
-    print(message)
+    alignments.filter_hits(reactions_database)
             
     # Set up a command to run through each of the hits by bug
     args=[]
