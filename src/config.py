@@ -130,7 +130,7 @@ usearch_database_extension=".udb"
 identity_threshold=0.4
 usearch_max_seqs=10000
 usearch_version="usearch v7.0.1001"
-usearch_opts=[]
+usearch_opts=["-maxhits",20]
 
 # rapsearch options
 rapsearch_database_extension=".info"
