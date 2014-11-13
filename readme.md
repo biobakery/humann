@@ -114,26 +114,25 @@ NOTE: If you added these commands to your .bashrc file, please run the following
 
 Type the command:
 
-`` humann2.py --input $SAMPLE ``
+`` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-where $SAMPLE is your filtered fasta or fastq file (ie metagenome.fastq)
+where $SAMPLE is your filtered fasta or fastq file (ie metagenome.fastq) and $OUTPUT_DIR is the output directory
 
 Three output files will be created:
 
-1. $input_dir/$SAMPLENAME_genefamilies.tsv
-1. $input_dir/$SAMPLENAME_pathcoverage.tsv
-1. $input_dir/$SAMPLENAME_pathabundance.tsv
+1. $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv
+1. $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv
+1. $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv
 
-where $input_dir is the full path to the folder containing $SAMPLE and
- $SAMPLENAME is the basename of $SAMPLE
+where $SAMPLENAME is the basename of $SAMPLE
 
-NOTE: To specify the locations of the output files use the (--o_* options).
+NOTE: To keep all of the intermediate temp files use the "--temp" flag.
 
 ### Additional ways to run ####
 
 1. To run with additional output printed to stdout: add the ``--verbose`` flag
 1. To run using multiple cores: add the ``--threads $CORES`` option
-1. To keep the intermediate output files: add the ``--temp $DIR`` option
+1. To keep the intermediate output files: add the ``--temp`` flag
 	* The intermediate files are:
 		1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
 			* the full alignment output from bowtie2 
@@ -155,7 +154,7 @@ NOTE: To specify the locations of the output files use the (--o_* options).
 			* a fasta file of unaligned reads after the translated alignment step
 		1. $DIR/$SAMPLENAME.log 
 			* a log of the run
-	* $DIR is the directory provided to store the temp files
+	* $DIR=$OUTPUT_DIR/$SAMPLENAME_HUMAnN2_temp/
 	* $SAMPLENAME is the basename of the fastq/fasta input file
 	* $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
 
@@ -168,13 +167,11 @@ NOTE: To specify the locations of the output files use the (--o_* options).
 ### Complete option list ###
 ```
 usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
-                  [--bypass_nucleotide_index] -i <input.fastq>
+                  [--bypass_nucleotide_index] -i <input.fastq> -o <output>
                   [-c <chocophlan>] [-u <uniref>] [--metaphlan <metaplhan>]
-                  [--o_pathabundance <pathabundance.tsv>]
-                  [--o_pathcoverage <pathcoverage.tsv>]
-                  [--o_genefamilies <genefamilies.tsv>] [--o_log <sample.log>]
-                  [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-                  [--temp <temp>] [--bowtie2 <bowtie2>] [--threads <1>]
+                  [--o_log <sample.log>]
+                  [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [--temp]
+                  [--bowtie2 <bowtie2>] [--threads <1>]
                   [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
                   [--usearch <usearch>] [--rapsearch <rapsearch>]
                   [--metaphlan_output <bugs_list.tsv>]
@@ -195,6 +192,9 @@ optional arguments:
   -i <input.fastq>, --input <input.fastq>
                         fastq/fasta input file
                         [REQUIRED]
+  -o <output>, --output <output>
+                        directory to write output files
+                        [REQUIRED]
   -c <chocophlan>, --chocophlan <chocophlan>
                         directory containing the ChocoPhlAn database
                         [DEFAULT: databases/chocophlan/ ]
@@ -204,21 +204,12 @@ optional arguments:
   --metaphlan <metaplhan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
-  --o_pathabundance <pathabundance.tsv>
-                        output file for pathway abundance
-                        [DEFAULT: $input_dir/$SAMPLE_pathabundance.tsv]
-  --o_pathcoverage <pathcoverage.tsv>
-                        output file for pathway coverage
-                        [DEFAULT: $input_dir/$SAMPLE_pathcoverage.tsv]
-  --o_genefamilies <genefamilies.tsv>
-                        output file for gene families
-                        [DEFAULT: $input_dir/$SAMPLE_genefamilies.tsv]
   --o_log <sample.log>  log file
                         [DEFAULT: temp/sample.log]
   --log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         level of messages to display in log
                         [DEFAULT: DEBUG ]
-  --temp <temp>         directory to store temp output files
+  --temp                keep temp output files
                         [DEFAULT: temp files are removed]
   --bowtie2 <bowtie2>   directory of the bowtie2 executable
                         [DEFAULT: $PATH]
