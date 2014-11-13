@@ -8,9 +8,9 @@ the coverage and abundance of microbial pathways in a community
 from metagenomic data. Sequencing a metagenome typically produces millions 
 of short DNA/RNA reads.
 
-Dependencies: MetaPhlAn, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
+Dependencies: MetaPhlAn2, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
 
-To Run: ./humann2.py -i <input.fastq>
+To Run: ./humann2.py -i <input.fastq> -o <output_dir>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -87,6 +87,11 @@ def parse_arguments (args):
         metavar="<input.fastq>", 
         required=True)
     parser.add_argument(
+        "-o", "--output", 
+        help="directory to write output files\n[REQUIRED]", 
+        metavar="<output>", 
+        required=True)
+    parser.add_argument(
         "-c", "--chocophlan",
         help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
             + config.chocophlan + " ]", 
@@ -101,21 +106,6 @@ def parse_arguments (args):
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaplhan>")
     parser.add_argument(
-        "--o_pathabundance", 
-        help="output file for pathway abundance\n" + 
-        "[DEFAULT: $input_dir/$SAMPLE_pathabundance.tsv]", 
-        metavar="<pathabundance.tsv>")
-    parser.add_argument(
-        "--o_pathcoverage",
-        help="output file for pathway coverage\n" + 
-        "[DEFAULT: $input_dir/$SAMPLE_pathcoverage.tsv]", 
-        metavar="<pathcoverage.tsv>")
-    parser.add_argument(
-        "--o_genefamilies", 
-        help="output file for gene families\n" + 
-        "[DEFAULT: $input_dir/$SAMPLE_genefamilies.tsv]", 
-        metavar="<genefamilies.tsv>")
-    parser.add_argument(
         "--o_log", 
         help="log file\n" + 
         "[DEFAULT: temp/sample.log]", 
@@ -128,9 +118,9 @@ def parse_arguments (args):
         choices=config.log_level_choices)
     parser.add_argument(
         "--temp", 
-        help="directory to store temp output files\n" + 
+        help="keep temp output files\n" + 
             "[DEFAULT: temp files are removed]", 
-        metavar="<temp>")
+        action="store_true")
     parser.add_argument(
         "--bowtie2",
         help="directory of the bowtie2 executable\n[DEFAULT: $PATH]", 
@@ -286,15 +276,19 @@ def update_configuration(args):
     if not os.access(args.input, os.R_OK):
         sys.exit("CRITICAL ERROR: Not able to read input file selected: " + args.input)
      
-    # Check that the directory that holds the input file is writeable
-    # before creating files/directories in that folder
-    input_dir = os.path.dirname(args.input)
-    if not input_dir:
-        input_dir=os.getcwd()
-    if not os.access(input_dir, os.W_OK):
-        sys.exit("ERROR: The directory which holds the input file is not " + 
+    # Check that the output directory is writeable
+    output_dir = os.path.abspath(args.output)
+    
+    if not os.path.isdir(output_dir):
+        sys.exit("CRITICAL ERROR: The location provided for the output parameter "+
+            "is not a directory. Please provide a directory.")
+    
+    if not os.access(output_dir, os.W_OK):
+        sys.exit("CRITICAL ERROR: The output directory is not " + 
             "writeable. This software needs to write files to this directory.\n" +
-            "Please use another directory to hold your input file.") 
+            "Please select another directory.")
+        
+    print("Output files will be written to: " + output_dir) 
 
     # Set the basename of the temp files to the sample name
     config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
@@ -302,57 +296,36 @@ def update_configuration(args):
     # Set the output format
     config.output_format=args.output_format
     
-    # Set final output file names
-    if args.o_pathabundance:
-        config.pathabundance_file=args.o_pathabundance
-    else:
-        config.pathabundance_file=os.path.join(input_dir,
+    # Set final output file names and location
+    config.pathabundance_file=os.path.join(output_dir,
             config.file_basename + config.pathabundance_file + "." + 
             config.output_format)
-
-    if args.o_pathcoverage:
-        config.pathcoverage_file=args.o_pathcoverage
-    else:
-        config.pathcoverage_file=os.path.join(input_dir,
+    config.pathcoverage_file=os.path.join(output_dir,
             config.file_basename + config.pathcoverage_file + "." + 
             config.output_format)
-
-    if args.o_genefamilies:
-        config.genefamilies_file=args.o_genefamilies
-    else:
-        config.genefamilies_file=os.path.join(input_dir,
+    config.genefamilies_file=os.path.join(output_dir,
             config.file_basename + config.genefamilies_file + "." + 
             config.output_format)
 
-    # if set, check that the temp directory location is writeable
+    # set the location of the temp directory
     if args.temp:
-        if os.path.isdir(args.temp):
-            if not os.access(args.temp, os.W_OK):
-                sys.exit("ERROR: The directory set to hold the temp files " + 
-                    "is not writeable. Please change the permissions or select" +
-                    " another directory.")
-        else:
-            path_to_temp_dir=os.path.dirname(args.temp)
-            if not os.path.basename(args.temp):
-                path_to_temp_dir=os.path.dirname(os.path.dirname(args.temp))
-            if not path_to_temp_dir:
-                path_to_temp_dir=os.getcwd()
-            if not os.access(path_to_temp_dir, os.W_OK):
-                sys.exit("ERROR: The directory set to hold the temp files " + 
-                    "is not writeable. Please change the permissions or select" +
-                    " another directory.")
-
-    # if the temp_dir is set by the user then use that directory
-    if args.temp:
-        config.temp_dir=os.path.abspath(args.temp)
+        config.temp_dir=os.path.join(output_dir,config.file_basename+"_HUMAnN2_temp")
         if not os.path.isdir(config.temp_dir):
-            os.mkdir(config.temp_dir)    
+            try:
+                os.mkdir(config.temp_dir)
+            except EnvironmentError:
+                sys.exit("Unable to create temp directory: " + config.temp_dir)
     else:
         config.temp_dir=tempfile.mkdtemp( 
-            prefix='humann2_temp_')
+            prefix=config.file_basename+'_HUMAnN2_temp_',dir=output_dir)
         
     # create the unnamed temp directory
     config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
+    
+    message="Writing temp files to directory: " + config.temp_dir
+    logger.info(message)
+    if config.verbose: 
+        print("\n"+message+"\n")
 
     # set the name of the log file 
     log_file=os.path.join(config.temp_dir,config.file_basename+".log")
@@ -365,10 +338,7 @@ def update_configuration(args):
     logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
     
-    message="Writing temp files to directory: " + config.temp_dir
-    logger.info(message)
-    if config.verbose: 
-        print("\n"+message+"\n")
+
 
 
      
