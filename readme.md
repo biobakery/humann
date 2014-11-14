@@ -48,6 +48,15 @@ directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARC
 
 ## Installation ##
 
+### For the impatient ###
+
+```
+$ hg clone https://bitbucket.org/biobakery/humann2
+$ cd humann2
+$ python setup.py install # or 'develop'
+$ python setup.py download
+```
+
 ### Downloading HUMAnN2 ###
 HUMAnN2 can be downloaded in two ways:
 
@@ -82,12 +91,12 @@ $ python setup.py develop
 
 ```
 $ cd $HUMANn2_PATH/
-$ python setup.py download_databases
+$ python setup.py download
 ```
 
 $HUMANn2_PATH = the full path to the HUMAnN2 download
 
-NOTE: By default, this step download the databases to the $HUMAnN2_PATH/databases directory. To download to a different directory use the `--to` option. For example `python setup.py download_databases --to /opt/humann2` will download the databses to the `/opt/humann2` directory. Remember to provide this directory to HUMAnN2 with the "--chocophlan $DIR" option.
+NOTE: By default, this step download the databases to the $HUMAnN2_PATH/databases directory. To download to a different directory use the `--to` option. For example `python setup.py download --to /opt/humann2` will download the databses to the `/opt/humann2` directory. Remember to provide this directory to HUMAnN2 with the "--chocophlan $DIR" option.
 
 NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. Thus, the UniRef50 database downloaded in the step above will be formatted for rapsearch2. If usearch is selected for translated alignment, you will need to provide a database that has been formatted for usearch yourself.
 
