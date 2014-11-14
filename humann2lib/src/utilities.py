@@ -34,8 +34,9 @@ import tarfile
 import multiprocessing
 import logging
 import traceback
+import setuptools
 
-import config
+from . import config
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -582,3 +583,53 @@ def tsv_to_biom(tsv_file, biom_file):
     
     
 		
+# Refer to https://docs.python.org/2/distutils/apiref.html#creating-a-new-distutils-command    
+class DownloadDBsCommand(setuptools.Command):
+    description = "Download the ChocoPhlAn and UniRef50 databases"
+    user_options    = [ ('to=', 't', "Download databases to this directory") ]
+
+
+    def initialize_options(self):
+        self.to = None
+        self.download_dir = os.path.realpath(os.path.join(
+            os.path.dirname(__file__), '..', '..', 'databases' ))
+
+        self.download_config = {
+            "chocophlan": "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz",
+            "uniref50": "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz"
+        }
+
+
+    def finalize_options(self):
+        if self.to:
+            self.download_dir = os.path.realpath(self.to)
+
+
+    def download(self, name):
+        self.log("Downloading "+name)
+        url = self.download_config[name]
+        download_proc = subprocess.Popen(["wget", "-O-", url], 
+                                         stdout=subprocess.PIPE)
+        extract_proc = subprocess.Popen(
+            ["tar", "-C", self.download_dir, "-xzf", "-"],
+            stdin=download_proc.stdout)
+        download_proc.stdout.close()
+        extract_proc.wait()
+        return extract_proc.returncode
+
+
+    def log(self, msg):
+        sys.stderr.write(msg+"\n")
+
+
+    def run(self):
+        self.download("chocophlan")
+        self.download("uniref50")
+        self.log("Thanks!")
+
+
+    help_options    = [ ]
+    boolean_options = [ ]
+    negative_opt    = { }
+    default_format  = { }
+    

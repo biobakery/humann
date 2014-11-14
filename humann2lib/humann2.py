@@ -42,14 +42,14 @@ import tempfile
 import re
 import logging
 
-from src import utilities
-from src import prescreen
-from src import nucleotide_search
-from src import store
-from src import translated_search
-from src import config
-from src import quantify_families
-from src import quantify_modules
+from .src import utilities
+from .src import prescreen
+from .src import nucleotide_search
+from .src import store
+from .src import translated_search
+from .src import config
+from .src import quantify_families
+from .src import quantify_modules
 
 # name global logging instance
 logger=logging.getLogger(__name__)
