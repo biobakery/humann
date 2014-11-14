@@ -604,6 +604,13 @@ class DownloadDBsCommand(setuptools.Command):
         if self.to:
             self.download_dir = os.path.realpath(self.to)
 
+        if not os.path.exists(self.download_dir):
+            try:
+                os.mkdir(self.download_dir)
+            except OSError as e:
+                self.log(e.strerror + ": " + self.download_dir)
+                sys.exit(1)
+
 
     def download(self, name):
         self.log("Downloading "+name)
