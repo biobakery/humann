@@ -74,6 +74,7 @@ For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was downlo
 Install HUMAnN2 using the following command:
 
 ```
+$ cd $HUMANn2_PATH/
 $ python setup.py install
 ```
 
@@ -81,6 +82,7 @@ $ python setup.py install
 To install the HUMAnN2 scripts such that edits made to the files in `$HUMAnN2_PATH` take effect immediately, use the `develop` command as follows:
 
 ```
+$ cd $HUMANn2_PATH/
 $ python setup.py develop
 ```
 
