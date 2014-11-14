@@ -58,55 +58,38 @@ HUMAnN2 can be downloaded in two ways:
 
 Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg -u pull`` from within the repository which will download the latest release.
 
-For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
+For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the directory "humann2lib" and file "readme.md" found in this folder).
+
+
+### Installing HUMAnN2 scripts and libraries ###
+Install HUMAnN2 using the following command:
+
+```
+$ python setup.py install
+```
+
+### Installing HUMAnN2 scripts and libraries in editable mode ###
+To install the HUMAnN2 scripts such that edits made to the files in `$HUMAnN2_PATH` take effect immediately, use the `develop` command as follows:
+
+```
+$ python setup.py develop
+```
 
 
 ### Downloading the databases ###
 
-#### Downloading the [ChocoPhlAn database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) ####
+#### Downloading the [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) and [UniRef50](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) databases####
 
 ```
-$ cd $HUMANn2_PATH/databases
-$ wget http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz
-$ tar zxvf chocophlan.tar.gz 
-$ rm chocophlan.tar.gz
+$ cd $HUMANn2_PATH/
+$ python setup.py download_databases
 ```
 
 $HUMANn2_PATH = the full path to the HUMAnN2 download
 
-NOTE: These steps download the ChocoPhlAn database to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--chocophlan $DIR" option.
+NOTE: By default, this step download the databases to the $HUMAnN2_PATH/databases directory. To download to a different directory use the `--to` option. For example `python setup.py download_databases --to /opt/humann2` will download the databses to the `/opt/humann2` directory. Remember to provide this directory to HUMAnN2 with the "--chocophlan $DIR" option.
 
-
-
-#### Downloading the [UniRef50 database](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) ####
-
-```
-$ cd $HUMANn2_PATH/databases
-$ wget http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz
-$ tar zxvf uniref50_rapsearch.tar.gz
-$ rm uniref50_rapsearch.tar.gz
-```
-
-$HUMANn2_PATH = the full path to the HUMAnN2 download
-
-
-NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--uniref $DIR" option.
-
-NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
-
-### Updating the environment ###
-Once HUMAnN2 is downloaded, add the location of the code to the paths.
-Type these commands or include them in your .bashrc file.
-
-```
-$ export PATH=$PATH:$HUMAnN2_PATH
-$ export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH
-```
-
-$HUMANn2_PATH = the full path to the HUMAnN2 download
-
-
-NOTE: If you added these commands to your .bashrc file, please run the following command before proceeding to the next steps. This command will update your environment to reflect the changes to your .bashrc file: `` source .bashrc ``
+NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. Thus, the UniRef50 database downloaded in the step above will be formatted for rapsearch2. If usearch is selected for translated alignment, you will need to provide a database that has been formatted for usearch yourself.
 
 ## How to Run ##
 
