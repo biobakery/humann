@@ -3,7 +3,7 @@
 # HUMAnN2: HMP Unified Metabolic Analysis Network 2 #
 
 ## Description ##
-HUMAnN is a pipeline for efficiently and accurately determining the presence/absence and abundance of microbial pathways in a community from metagenomic  or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). 
+HUMAnN is a pipeline for efficiently and accurately determining the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). 
 
 HUMAnN2 incorporates multiple upgrades including an expanded database of microbial genomes (>4x the size of the database included in HUMAnN), a simple user interface (single command driven flow), and bug-specific output files. 
 
