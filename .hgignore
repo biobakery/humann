@@ -2,3 +2,7 @@
 .*\.py.
 \.egg-info/*
 .*.nfs.*
+^databases/chocophlan/.*\.gz
+^databases/uniref/.*\.rapsearch.*
+MinPath/.*
+minpath.*\.tar.gz
