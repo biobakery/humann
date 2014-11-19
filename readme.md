@@ -142,7 +142,7 @@ running quickly; just clone and `develop`.
 
 #### Downloading the ChocoPhlAn and UniRef50 databases with setup.py
 
-Downloading the [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) and [UniRef50](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) databases####
+Downloading the [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) and [UniRef50](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) databases:
 
 ```
 $ cd $HUMANn2_PATH/
