@@ -29,9 +29,9 @@ import math
 import logging
 import traceback
 
-from . import utilities
-from . import config
-from . import store
+import utilities
+import config
+import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)
