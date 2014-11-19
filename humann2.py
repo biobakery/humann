@@ -106,6 +106,14 @@ def parse_arguments (args):
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaplhan>")
     parser.add_argument(
+        "--metaphlan_pkl",
+        help="file path to MetaPhlAn's pkl index\n[DEFAULT: $PATH]",
+        metavar="<metaphlan_pkl>")
+    parser.add_argument(
+        "--metaphlan_bowtie2db",
+        help="file path to MetaPhlAn's bowtie2 index\n[DEFAULT: $PATH]",
+        metavar="<metaphlan_bowtie2db>")
+    parser.add_argument(
         "--o_log", 
         help="log file\n" + 
         "[DEFAULT: temp/sample.log]", 
@@ -251,6 +259,12 @@ def update_configuration(args):
         config.bypass_nucleotide_index=True  
         config.bypass_prescreen=True  
         
+    if args.metaphlan_pkl:
+        config.metaphlan_pkl_file = args.metaphlan_pkl
+
+    if args.metaphlan_bowtie2db:
+        config.metaphlan_mpa_index = args.metaphlan_bowtie2db
+
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.identity_threshold=args.identity_threshold
