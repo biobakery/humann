@@ -3,25 +3,9 @@
 # HUMAnN2: HMP Unified Metabolic Analysis Network 2 #
 
 ## Description ##
-HUMAnN is a pipeline for efficiently and accurately determining the presence/absence and abundance of microbial pathways in a community from metagenomic sequencing data (typically millions of short DNA/RNA reads). 
+HUMAnN is a pipeline for efficiently and accurately determining the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). 
 
-HUMAnN2 incorporates multiple upgrades including an expanded database of microbial genomes (>4x the size of the database included in HUMAnN), a simple user interface (single command driven flow), and bug-specific output files. 
-
-HUMAnN2 produces three output files:
-
-1. Gene Families
-	* This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
-	* HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
-
-2. Pathway Coverage
-	* This file includes the presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes. 
-	* HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
-	* The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-
-3. Pathway Abundance
-	* This file includes the abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
-	 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
-	 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+HUMAnN2 is the next generation of HUMAnN. HUMAnN2 incorporates several new features including an expanded database of microbial genomes (>4x the size of the database included in HUMAnN), a simple user interface (single command driven flow), and bug-specific output files. 
 
 The HUMAnN2 pipeline is a single command driven flow requiring the user to only provide a filtered fastq file to produce gene and pathway summary files ready for analysis. The pipeline converts sequence reads into coverage and abundance tables summarizing the gene families and pathways in one or more microbial communities. 
 
@@ -121,6 +105,66 @@ Three output files will be created:
 where $SAMPLENAME is the basename of $SAMPLE
 
 NOTE: To keep all of the intermediate temp files use the "--temp" flag.
+
+### Output files ###
+
+HUMAnN2 produces three output files which by default are tab-delimited text. There is an option to print out files in biom format. 
+
+#### Gene Families ####
+
+```
+Gene Family	Abundance (reads per kilobase)
+UniRef50_A6L0N6	67.0
+UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
+UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
+UniRef50_A6L0N6|s__Bacteroides_stercoris	4.0
+UniRef50_A6L0N6|unclassified	1.0
+UniRef50_G9S1V7	60.0
+UniRef50_G9S1V7|s__Bacteroides_vulgatus	31.0
+UniRef50_G9S1V7|s__Bacteroides_thetaiotaomicron	22.0
+UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
+```
+
+* This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
+* HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
+
+#### Pathway Coverage ####
+
+```
+Pathway	Coverage
+PWY0-1301	1.0
+PWY0-1301|s__Bacteroides_caccae	1.0
+PWY0-1301|s__Bacteroides_finegoldii	1.0
+PWY0-1301|unclassified	1.0
+PWY-7134	1.0
+PWY-7134|s__Bacteroides_vulgatus	0.666666666667
+PWY-7134|s__Bacteroides_thetaiotaomicron	0.666666666667
+PWY-7134|unclassified	0.333333333333
+PWY-7134|s__Parabacteroides_merdae	0.333333333333
+```
+
+* This file includes the presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes. 
+* HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
+* The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+
+#### Pathway Abundance ####
+
+```
+Pathway	Abundance (reads per kilobase)
+PWY-1921	57.0136768635
+PWY-1921|unclassified	32.2636768635
+PWY-1921|s__Bacteroides_ovatus	4.5
+PWY-1921|s__Alistipes_putredinis	3.0
+PWY-1921|s__Bacteroides_caccae	2.25
+PWY0-1301	54.9996450867
+PWY0-1301|unclassified	16.9996450867
+PWY0-1301|s__Parabacteroides_merdae	8.0
+PWY0-1301|s__Bacteroides_caccae	6.0
+```
+
+* This file includes the abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
+* HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
+* The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
 ### Additional ways to run ####
 
