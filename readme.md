@@ -92,6 +92,69 @@ $HUMANn2_PATH = the full path to the HUMAnN2 download
 
 NOTE: If you added these commands to your .bashrc file, please run the following command before proceeding to the next steps. This command will update your environment to reflect the changes to your .bashrc file: `` source .bashrc ``
 
+### Downloading and installing HUMAnN2 with setup.py
+
+For a simpler installation, follow the steps below.
+
+#### For the impatient
+
+```
+$ hg clone https://bitbucket.org/biobakery/humann2
+$ cd humann2
+$ python setup.py install # or 'develop' 
+$ python setup.py download
+```
+
+#### Downloading HUMAnN2
+Download HUMAnN2 with mercurial via the below command:
+
+``$ hg clone https://bitbucket.org/biobakery/humann2 ``
+
+Alternatively, download and extract the repository from this download [link](https://bitbucket.org/biobakery/humann2/get/master.zip)
+
+#### Installing HUMAnN2 via setup.py 
+
+To install HUMAnN2 with the included installation script, execute the
+following command:
+
+```
+$ cd $HUMANn2_PATH/
+$ python setup.py install
+```
+
+This will copy the HUMAnN2 files to the appropriate python system
+directories. You should now be able to run humann2.py as a command
+line script from any directory.
+
+Alternatively, the following command also installs HUMAnN2:
+
+``` 
+$ cd $HUMANn2_PATH/
+$ python setup.py develop 
+```
+
+$HUMANn2_PATH = the full path to the HUMAnN2 download
+
+This command will install humann2.py, but will use links to make
+changes made to the humann2.py file included in the source take effect
+immediately. This command is intended to help developers get up and
+running quickly; just clone and `develop`.
+
+#### Downloading the ChocoPhlAn and UniRef50 databases with setup.py
+
+Downloading the [ChocoPhlAn](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) and [UniRef50](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) databases####
+
+```
+$ cd $HUMANn2_PATH/
+$ python setup.py download
+```
+
+$HUMANn2_PATH = the full path to the HUMAnN2 download
+
+NOTE: By default, this step download the databases to the $HUMAnN2_PATH/databases directory. To download to a different directory use the `--to` option. For example `python setup.py download --to /opt/humann2` will download the databses to the `/opt/humann2` directory. Remember to provide this directory to HUMAnN2 with the "--chocophlan $DIR" option.
+
+
+
 ## How to Run ##
 
 ### Basic usage ###
