@@ -34,12 +34,93 @@ import tarfile
 import multiprocessing
 import logging
 import traceback
-import setuptools
 
-from . import config
+import config
 
 # name global logging instance
 logger=logging.getLogger(__name__)
+
+def determine_file_format(file):
+    """
+    Return the type of file based on the format
+    
+    Formats recognized are: fasta, fastq, sam, and blastm8
+    
+    Fastq format short example:
+    @SEQ_ID
+    GATCTGG
+    +
+    !''****
+    
+    Fasta format short example:
+    >SEQ_INFO
+    GATCTGG
+    
+    Sam format short example:
+    @HD_optional_headers
+    Qname    flag    rname    pos    mapq    cigar    rnext    pnext    tlen   \
+    seq    qual optional_tags
+    
+    Blastm8 format short example:
+    # optional comment line
+    Qname    Sname    id    len    mismatched    gap    Qstart    Qend    Sstart \
+    Send    e-value    bit_score
+    
+    Error is return if the file is not of a known format
+    """
+    
+    # check file exists
+    file_exists_readable(file)
+    
+    format=""
+        
+    # read in the first 2 lines of the file to check format
+    file_handle = open(file, "r")
+    first_line = file_handle.readline()
+    second_line = file_handle.readline()
+    
+    # check that second line is only nucleotides or amino acids
+    if re.search("^[A-Z|a-z]+$", second_line):
+        # check first line to determine fasta or fastq format
+        if re.search("^@",first_line):
+            format="fastq"        
+        if re.search("^>",first_line):
+            format="fasta"
+    else:
+        # check for sam format with header on first line
+        if re.search("^@[A-Za-z]",first_line):
+            format="sam"
+            
+        # remove comments at beginning of file
+        data_line=first_line
+        if re.search("^#",first_line):
+            if re.search("^#",second_line):
+                # go through lines to find first one which is not a comment
+                data_line=file_handle.readline()
+                while re.search("^#",data_line):
+                    data_line=file_handle.readline()
+            else:
+                data_line=second_line
+        
+        file_handle.close()
+        
+        # check for formats that have tabs in the first line
+        if re.search(("\t"),data_line) and not format:
+            data=data_line.split("\t")
+            if len(data)>config.sam_read_index:
+                # check for sam format
+                if re.search("\*|[A-Za-z=.]+",data[config.sam_read_index]):
+                    format="sam"
+                # check for standard blastm8 format (blast, usearch, rapsearch)
+                # this will have only numeric values in the column that for
+                # a sam file would be the read sequence
+                elif re.search("^[0-9]+$",data[config.sam_read_index]):
+                    format="blastm8"
+                    
+    if not format:
+        format="error"
+                
+    return format
 
 def double_sort(pathways_dictionary):
     """
@@ -175,15 +256,9 @@ def check_software_version(exe,version_flag,
         logger.critical(message) 
         sys.exit("CRITICAL ERROR: " + message)
 
-def download_tar_and_extract(url, filename, folder, reporthook=None):
+def download_tar_and_extract(url, filename, folder):
     """
     Download the file at the url
-
-    The reporthook optional keyword should, if specified, be a
-    function that accepts three numerical arguments: The blocknumber,
-    the max number of bytes accepted per .read(), and the total size
-    of the file being downloaded.
-
     """
     
     message="Download URL:" + url
@@ -191,11 +266,8 @@ def download_tar_and_extract(url, filename, folder, reporthook=None):
     if config.verbose:
         print(message) 
 
-    if not reporthook:
-        reporthook = lambda blocknum, bs, size: None
-
     try:
-        file, headers = urllib.urlretrieve(url,filename, reporthook)
+        file, headers = urllib.urlretrieve(url,filename)
         message="Extracting:" + filename
         logger.info(message)
         if config.verbose:
@@ -395,7 +467,7 @@ def fasta_or_fastq(file):
     # check file exists
     file_exists_readable(file)
 	
-    # read in first 4 lines of file to check format
+    # read in first 2 lines of file to check format
     file_handle = open(file, "r")
 	
     first_line = file_handle.readline()
@@ -592,70 +664,3 @@ def tsv_to_biom(tsv_file, biom_file):
     
     
 		
-# Refer to https://docs.python.org/2/distutils/apiref.html#creating-a-new-distutils-command    
-class DownloadDBsCommand(setuptools.Command):
-    description = "Download the ChocoPhlAn and UniRef50 databases"
-    user_options    = [ ('to=', 't', "Download databases to this directory") ]
-
-
-    def initialize_options(self):
-        self.to = None
-        self.download_dir = os.path.realpath(os.path.join(
-            os.path.dirname(__file__), '..', '..', 'databases' ))
-
-        self.download_config = {
-            "chocophlan.tar.gz": "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz",
-            "uniref50_rapsearch.tar.gz": "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz"
-        }
-
-
-    def finalize_options(self):
-        if self.to:
-            self.download_dir = os.path.realpath(self.to)
-
-        if not os.path.exists(self.download_dir):
-            try:
-                os.mkdir(self.download_dir)
-            except OSError as e:
-                logger.exception(e)
-                logger.critical(e.strerror + ": " + self.download_dir)
-                sys.exit(1)
-                
-        logging.basicConfig(
-            format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
-            level=logging.INFO, 
-            datefmt='%m/%d/%Y %I:%M:%S %p'
-        )
-
-
-
-    def download(self, name):
-        logger.info("Downloading "+name)
-        url = self.download_config[name]
-        
-        # report every 10 MB worth of reads or 1280 blocks, since the
-        # default block size for urllib is 8KB:
-        # https://github.com/python/cpython/blob/master/Lib/urllib/request.py#L204
-        report_interval = (1024*1024*10) / (1024*8)
-        def _reporthook(blocknum, bs, size):
-            total_blocks = size/bs
-            if blocknum % report_interval == 0:
-                percent_complete = (100 * blocknum * bs) / float(size)
-                logger.info("Downloading %s: %.1f%% complete",
-                            name, percent_complete)
-
-        return download_tar_and_extract(url, name, 
-                                        self.download_dir, _reporthook)
-
-
-    def run(self):
-        self.download("chocophlan.tar.gz")
-        self.download("uniref50_rapsearch.tar.gz")
-        logger.info("Thanks!")
-
-
-    help_options    = [ ]
-    boolean_options = [ ]
-    negative_opt    = { }
-    default_format  = { }
-    

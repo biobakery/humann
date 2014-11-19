@@ -42,14 +42,14 @@ import tempfile
 import re
 import logging
 
-from humann2src import utilities
-from humann2src import prescreen
-from humann2src import nucleotide_search
-from humann2src import store
-from humann2src import translated_search
-from humann2src import config
-from humann2src import quantify_families
-from humann2src import quantify_modules
+from src import utilities
+from src import prescreen
+from src import nucleotide_search
+from src import store
+from src import translated_search
+from src import config
+from src import quantify_families
+from src import quantify_modules
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -105,14 +105,6 @@ def parse_arguments (args):
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaplhan>")
-    parser.add_argument(
-        "--metaphlan_pkl",
-        help="file path to MetaPhlAn's pkl index\n[DEFAULT: $PATH]",
-        metavar="<metaphlan_pkl>")
-    parser.add_argument(
-        "--metaphlan_bowtie2db",
-        help="file path to MetaPhlAn's bowtie2 index\n[DEFAULT: $PATH]",
-        metavar="<metaphlan_bowtie2db>")
     parser.add_argument(
         "--o_log", 
         help="log file\n" + 
@@ -258,12 +250,6 @@ def update_configuration(args):
     if args.bypass_nucleotide_index:
         config.bypass_nucleotide_index=True  
         config.bypass_prescreen=True  
-
-    if args.metaphlan_pkl:
-        config.metaphlan_pkl_file = args.metaphlan_pkl
-
-    if args.metaphlan_bowtie2db:
-        config.metaphlan_mpa_index = args.metaphlan_bowtie2db
         
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold

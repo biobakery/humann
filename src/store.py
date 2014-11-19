@@ -31,8 +31,8 @@ import re
 import logging
 import copy
 
-from . import config
-from . import utilities
+import config
+import utilities
 
 # name global logging instance
 logger=logging.getLogger(__name__)
