@@ -34,6 +34,7 @@ import tarfile
 import multiprocessing
 import logging
 import traceback
+import setuptools
 
 import config
 
@@ -256,7 +257,7 @@ def check_software_version(exe,version_flag,
         logger.critical(message) 
         sys.exit("CRITICAL ERROR: " + message)
 
-def download_tar_and_extract(url, filename, folder):
+def download_tar_and_extract(url, filename, folder, reporthook=None):
     """
     Download the file at the url
     """
@@ -266,8 +267,11 @@ def download_tar_and_extract(url, filename, folder):
     if config.verbose:
         print(message) 
 
+    if not reporthook:
+        reporthook = lambda blocknum, bs, size: None
+
     try:
-        file, headers = urllib.urlretrieve(url,filename)
+        file, headers = urllib.urlretrieve(url,filename, reporthook)
         message="Extracting:" + filename
         logger.info(message)
         if config.verbose:
@@ -662,5 +666,74 @@ def tsv_to_biom(tsv_file, biom_file):
     execute_command(exe, args, [tsv_file], [biom_file])
     
     
+
+# Refer to https://docs.python.org/2/distutils/apiref.html#creating-a-new-distutils-command    
+class DownloadDBsCommand(setuptools.Command):
+    description = "Download the ChocoPhlAn and UniRef50 databases"
+    user_options    = [ ('to=', 't', "Download databases to this directory") ]
+
+
+    def initialize_options(self):
+        self.to = None
+        self.download_dir = os.path.realpath(os.path.join(
+            os.path.dirname(__file__), '..', '..', 'databases' ))
+
+        self.download_config = {
+            "chocophlan.tar.gz": "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz",
+            "uniref50_rapsearch.tar.gz": "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz"
+        }
+
+
+    def finalize_options(self):
+        if self.to:
+            self.download_dir = os.path.realpath(self.to)
+
+        if not os.path.exists(self.download_dir):
+            try:
+                os.mkdir(self.download_dir)
+            except OSError as e:
+                logger.exception(e)
+                logger.critical(e.strerror + ": " + self.download_dir)
+                sys.exit(1)
+                
+        logging.basicConfig(
+            format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
+            level=logging.INFO, 
+            datefmt='%m/%d/%Y %I:%M:%S %p'
+        )
+
+
+
+    def download(self, name):
+        logger.info("Downloading "+name)
+        url = self.download_config[name]
+        
+        # report every 10 MB worth of reads or 1280 blocks, since the
+        # default block size for urllib is 8KB:
+        # https://github.com/python/cpython/blob/master/Lib/urllib/request.py#L204
+        report_interval = (1024*1024*10) / (1024*8)
+        def _reporthook(blocknum, bs, size):
+            total_blocks = size/bs
+            if blocknum % report_interval == 0:
+                percent_complete = (100 * blocknum * bs) / float(size)
+                logger.info("Downloading %s: %.1f%% complete",
+                            name, percent_complete)
+
+        return download_tar_and_extract(url, name, 
+                                        self.download_dir, _reporthook)
+
+
+    def run(self):
+        self.download("chocophlan.tar.gz")
+        self.download("uniref50_rapsearch.tar.gz")
+        logger.info("Thanks!")
+
+
+    help_options    = [ ]
+    boolean_options = [ ]
+    negative_opt    = { }
+    default_format  = { }
+    
+
     
 		

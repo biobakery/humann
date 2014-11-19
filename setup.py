@@ -14,5 +14,10 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha"
     ],
-    scripts=[humann2_script]
+    scripts=[humann2_script],
+    entry_points= {
+        'distutils.commands': [
+            'download = humann2src.utilities:DownloadDBsCommand'
+        ]
+    }
 )
