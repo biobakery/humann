@@ -36,7 +36,7 @@ import logging
 import traceback
 import setuptools
 
-import config
+from . import config
 
 # name global logging instance
 logger=logging.getLogger(__name__)

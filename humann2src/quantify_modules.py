@@ -31,11 +31,11 @@ import sys
 import subprocess
 import logging
 
-import utilities
-import config
-import store
-import MinPath12hmp
-import quantify_families
+from . import utilities
+from . import config
+from . import store
+from . import MinPath12hmp
+from . import quantify_families
 
 # name global logging instance
 logger=logging.getLogger(__name__)

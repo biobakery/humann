@@ -18,7 +18,7 @@ import operator
 import math
 
 # LJM Add location to minpath directory
-import config
+from . import config
 import subprocess
 minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),config.minpath_folder)
 
