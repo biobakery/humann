@@ -47,7 +47,7 @@ For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was downlo
 
 ### Downloading the databases ###
 
-#### Downloading the [ChocoPhlAn database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/) ####
+#### Downloading the [ChocoPhlAn database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz) ####
 
 ```
 $ cd $HUMANn2_PATH/databases
@@ -62,7 +62,7 @@ NOTE: These steps download the ChocoPhlAn database to the humann2/databases fold
 
 
 
-#### Downloading the [UniRef50 database](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/) ####
+#### Downloading the [UniRef50 database](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz) ####
 
 ```
 $ cd $HUMANn2_PATH/databases
