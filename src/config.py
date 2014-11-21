@@ -44,6 +44,7 @@ minpath_toggle = "on"
 # file format
 output_format_choices=["tsv", "biom"]
 output_format=output_format_choices[0]
+input_format_choices=["fastq","fastq.gz","fasta","fasta.gz","sam","blastm8"]
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch"]

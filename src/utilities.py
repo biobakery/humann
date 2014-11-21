@@ -34,6 +34,8 @@ import tarfile
 import multiprocessing
 import logging
 import traceback
+import gzip
+import shutil
 
 import config
 
@@ -73,12 +75,27 @@ def determine_file_format(file):
     file_exists_readable(file)
     
     format=""
-        
-    # read in the first 2 lines of the file to check format
-    file_handle = open(file, "r")
-    first_line = file_handle.readline()
-    second_line = file_handle.readline()
     
+    # read in the first 2 lines of the file to check format  
+    gzipped=False
+    try:      
+        # check for gzipped files
+        if file.endswith(".gz"):
+            file_handle = gzip.open(file, "r")
+            gzipped=True
+        else:
+            file_handle = open(file, "r")
+        
+        first_line = file_handle.readline()
+        while re.search("^#",first_line):
+            first_line = file_handle.readline()
+        second_line = file_handle.readline()
+    except EnvironmentError:
+        # if unable to open and read the file, return unknown
+        return "unknown"   
+    finally:
+        file_handle.close()
+
     # check that second line is only nucleotides or amino acids
     if re.search("^[A-Z|a-z]+$", second_line):
         # check first line to determine fasta or fastq format
@@ -88,25 +105,13 @@ def determine_file_format(file):
             format="fasta"
     else:
         # check for sam format with header on first line
-        if re.search("^@[A-Za-z]",first_line):
+        if re.search("^@[A-Za-z][A-Za-z](\t[A-Za-z][A-Za-z0-9]:[ -~]+)+$",
+            first_line) or re.search("^@CO\t.*",first_line):
             format="sam"
-            
-        # remove comments at beginning of file
-        data_line=first_line
-        if re.search("^#",first_line):
-            if re.search("^#",second_line):
-                # go through lines to find first one which is not a comment
-                data_line=file_handle.readline()
-                while re.search("^#",data_line):
-                    data_line=file_handle.readline()
-            else:
-                data_line=second_line
-        
-        file_handle.close()
         
         # check for formats that have tabs in the first line
-        if re.search(("\t"),data_line) and not format:
-            data=data_line.split("\t")
+        if re.search(("\t"),first_line) and not format:
+            data=first_line.split("\t")
             if len(data)>config.sam_read_index:
                 # check for sam format
                 if re.search("\*|[A-Za-z=.]+",data[config.sam_read_index]):
@@ -118,9 +123,36 @@ def determine_file_format(file):
                     format="blastm8"
                     
     if not format:
-        format="error"
+        format="unknown"
+    elif gzipped:
+        format+=".gz"
                 
     return format
+
+def gunzip_file(gzip_file):
+    """
+    Return a new copy of the file that is not gzipped
+    The new file will be placed in the unnamed temp folder
+    """
+    
+    try:
+        file_handle_gzip=gzip.open(gzip_file,"r")
+        
+        # create a unnamed temp file
+        new_file=unnamed_temp_file()
+        
+        # write the gunzipped file
+        file_handle=open(new_file,"w")
+        shutil.copyfileobj(file_handle_gzip, file_handle)
+        
+    except EnvironmentError:
+        print("Critical Error: Unable to unzip input file: " + gzip_file)
+        new_file=""
+    finally:
+        file_handle.close()
+        file_handle_gzip.close()
+        
+    return new_file
 
 def double_sort(pathways_dictionary):
     """
@@ -150,7 +182,7 @@ def double_sort(pathways_dictionary):
 def unnamed_temp_file():
     """
     Return the full path to an unnamed temp file
-    stored in the temp folder
+    stored in the unnamed temp folder
     """
     file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir)
     os.close(file_out)
