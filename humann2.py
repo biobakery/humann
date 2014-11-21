@@ -182,6 +182,10 @@ def parse_arguments (args):
         default=config.output_format,
         choices=config.output_format_choices)
     parser.add_argument(
+        "--input_format",
+        help="the format of the input file\n[DEFAULT: format identified by software ]",
+        choices=config.input_format_choices)
+    parser.add_argument(
         "--pathways_databases",
         help="the two mapping files to use for pathway computations\n[DEFAULT: " +
         config.pathways_database_part1 + " , " + config.pathways_database_part2 + " ]",
@@ -280,8 +284,11 @@ def update_configuration(args):
     output_dir = os.path.abspath(args.output)
     
     if not os.path.isdir(output_dir):
-        sys.exit("CRITICAL ERROR: The location provided for the output parameter "+
-            "is not a directory. Please provide a directory.")
+        try:
+            print("Creating output directory: " + output_dir)
+            os.mkdir(output_dir)
+        except EnvironmentError:
+            sys.exit("CRITICAL ERROR: Unable to create output directory.")
     
     if not os.access(output_dir, os.W_OK):
         sys.exit("CRITICAL ERROR: The output directory is not " + 
@@ -351,10 +358,24 @@ def check_requirements(args):
     utilities.file_exists_readable(config.pathways_database_part1)
     utilities.file_exists_readable(config.pathways_database_part2)
 
-    # Check that the input file exists, is readable, and is fasta/fastq
-    if utilities.fasta_or_fastq(args.input) == "error":
-        sys.exit("ERROR: The input file is not of a fasta or fastq format.")
-
+    # Determine the input file format if not provided
+    if not args.input_format:
+        args.input_format=utilities.determine_file_format(args.input)
+        
+        if args.input_format == "unknown":
+            sys.exit("CRITICAL ERROR: Unable to determine the input file format." +
+                " Please provide the format with the --input_format argument.")
+        
+    # If the input file is compressed, then decompress
+    if args.input_format.endswith(".gz"):
+        new_file=utilities.gunzip_file(args.input)
+        
+        if new_file:
+            args.input=new_file
+        else:
+            sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
+                " Please check the format of the input file.")
+        
     # Check that the chocophlan directory exists
     if not config.bypass_nucleotide_index:
         if not os.path.isdir(config.chocophlan):
@@ -441,7 +462,7 @@ def main():
     
     # Update the configuration settings based on the arguments
     update_configuration(args)
-	
+    
     # Check for required files, software, databases, and also permissions
     check_requirements(args)
 
