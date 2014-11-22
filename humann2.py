@@ -298,7 +298,7 @@ def update_configuration(args):
     print("Output files will be written to: " + output_dir) 
 
     # Set the basename of the temp files to the sample name
-    config.file_basename=os.path.splitext(os.path.basename(args.input))[0]
+    config.file_basename=os.path.basename(args.input).split('.')[0]
     
     # Set the output format
     config.output_format=args.output_format
