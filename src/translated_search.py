@@ -227,7 +227,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 if config.translated_alignment_selected == "rapsearch":
                     try:
                         evalue=math.pow(10.0, float(evalue))
-                    except ValueError:
+                    except (ValueError, OverflowError):
                         logger.warning("Unable to convert rapsearch e-value: %s", evalue)
                         logger.warning("Traceback: \n" + traceback.format_exc())
                         evalue=1.0 
@@ -236,7 +236,11 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                         logger.warning("Usearch e-value is not a number: %s", evalue)
                         evalue=1.0
             
-                alignments.add(referenceid, reference_length, queryid, evalue,"unclassified")
+                # only store alignments with evalues less than 1
+                if evalue<1.0:
+                    alignments.add(referenceid, reference_length, queryid, evalue,"unclassified")
+                else:
+                    logger.debug("Not including alignment based on large evalue: %s", evalue)
             
                 aligned_ids+=[queryid]
         line=file_handle.readline()
