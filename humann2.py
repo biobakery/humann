@@ -375,6 +375,10 @@ def check_requirements(args):
         else:
             sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
                 " Please check the format of the input file.")
+            
+    # Check that the input file exists, is readable, and is fasta/fastq
+    if utilities.fasta_or_fastq(args.input) == "error":
+        sys.exit("ERROR: The input file is not of a fasta or fastq format.")
         
     # Check that the chocophlan directory exists
     if not config.bypass_nucleotide_index:
