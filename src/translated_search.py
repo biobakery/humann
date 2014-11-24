@@ -69,7 +69,7 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
         for input_file in temp_in_files:
             for database in os.listdir(uniref):
                 input_database=os.path.join(uniref,database)
-                full_args=["-usearch_global",input_file]+args+["-db",input_database]
+                full_args=["-ublast",input_file]+args+["-db",input_database]
 
                 # create temp output file
                 temp_out_file=utilities.unnamed_temp_file()
@@ -222,25 +222,29 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 evalue=alignment_info[config.blast_evalue_index]
                 
                 # remove the id of the alignment from the unaligned reads store
-                unaligned_reads_store.remove_id(queryid)                
+                unaligned_reads_store.remove_id(queryid)    
                 
+                # try converting evalue to float to check if it is a number
+                try:
+                    evalue=float(evalue)
+                except ValueError:
+                    logger.warning("E-value is not a number: %s", evalue)
+                    evalue=1.0
+                                
+                # convert rapsearch evalue to blastm8 format
                 if config.translated_alignment_selected == "rapsearch":
                     try:
-                        evalue=math.pow(10.0, float(evalue))
+                        evalue=math.pow(10.0, evalue)
                     except (ValueError, OverflowError):
                         logger.warning("Unable to convert rapsearch e-value: %s", evalue)
                         logger.warning("Traceback: \n" + traceback.format_exc())
                         evalue=1.0 
-                else:
-                    if not isinstance(evalue, numbers.Number):
-                        logger.warning("Usearch e-value is not a number: %s", evalue)
-                        evalue=1.0
             
                 # only store alignments with evalues less than 1
                 if evalue<1.0:
                     alignments.add(referenceid, reference_length, queryid, evalue,"unclassified")
                 else:
-                    logger.debug("Not including alignment based on large evalue: %s", evalue)
+                    logger.debug("Not including alignment based on large e-value: %s", evalue)
             
                 aligned_ids+=[queryid]
         line=file_handle.readline()
