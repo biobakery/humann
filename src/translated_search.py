@@ -200,8 +200,16 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     line=file_handle.readline()
 
     aligned_ids=[]
+    log_evalue=False
     while line:
-        if not re.search("^#",line):
+        if re.search("^#",line):
+            # Check for the rapsearch2 header to determine if these are log(e-value)
+            if re.search(config.blast_delimiter,line):
+                data=line.split(config.blast_delimiter)
+                if len(data)>config.blast_evalue_index:
+                    if re.search("log",data[config.blast_evalue_index]):
+                        log_evalue=True
+        else:
             alignment_info=line.split(config.blast_delimiter)
             identity=float(alignment_info[config.blast_identity_index])
             
@@ -231,8 +239,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                     logger.warning("E-value is not a number: %s", evalue)
                     evalue=1.0
                                 
-                # convert rapsearch evalue to blastm8 format
-                if config.translated_alignment_selected == "rapsearch":
+                # convert rapsearch evalue to blastm8 format if logged
+                if log_evalue:
                     try:
                         evalue=math.pow(10.0, evalue)
                     except (ValueError, OverflowError):
