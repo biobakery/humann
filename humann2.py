@@ -536,7 +536,7 @@ def main():
         # Determine which reads are unaligned and reduce aligned reads file
         # Remove the alignment_file as we only need the reduced aligned reads file
         [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-            args.input, nucleotide_alignment_file, alignments)
+            nucleotide_alignment_file, alignments)
 
         # Print out total alignments per bug
         message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())

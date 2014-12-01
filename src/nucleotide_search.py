@@ -109,15 +109,11 @@ def alignment(user_fastq, index_name):
 
 
 
-def unaligned_reads(input_fastq, sam_alignment_file, alignments):
+def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
     """ 
     Return file and data structure of the unaligned reads 
     Store the alignments and return
     """
-
-    #determine the index to use for the fastq/fasta file
-    #use the same as that that was used by the user for the input file
-    original_extension = os.path.splitext(os.path.basename(input_fastq))[1]
 
     #for translated search create fasta unaligned reads file
     #even if original reads file is fastq
@@ -197,6 +193,10 @@ def unaligned_reads(input_fastq, sam_alignment_file, alignments):
 
     # remove the alignment file as it will be replaced by the two files created
     if not config.resume:
-        utilities.remove_file(sam_alignment_file)
+        if keep_sam:
+            logger.debug("Keeping sam file")
+        else:
+            logger.debug("Remove sam file")
+            utilities.remove_file(sam_alignment_file)
 
     return [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ]
