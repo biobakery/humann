@@ -232,7 +232,7 @@ def add_exe_to_path(exe_dir):
     
     logger.debug("Add directory, %s, to path", exe_dir)
     
-    os.environ["PATH"] += os.pathsep + exe_dir	
+    os.environ["PATH"] = exe_dir + os.pathsep + os.environ["PATH"]
 
 def find_exe_in_path(exe):
     """

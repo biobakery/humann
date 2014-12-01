@@ -202,16 +202,16 @@ def update_configuration(args):
 
     # If set, append paths executable locations
     if args.metaphlan:
-        utilities.add_exe_to_path(args.metaphlan)    
+        utilities.add_exe_to_path(os.path.abspath(args.metaphlan))    
     
     if args.bowtie2:
-        utilities.add_exe_to_path(args.bowtie2)
+        utilities.add_exe_to_path(os.path.abspath(args.bowtie2))
     
     if args.usearch:
-        utilities.add_exe_to_path(args.usearch)
+        utilities.add_exe_to_path(os.path.abspath(args.usearch))
 
     if args.rapsearch:
-        utilities.add_exe_to_path(args.rapsearch)
+        utilities.add_exe_to_path(os.path.abspath(args.rapsearch))
  
     humann2_fullpath=os.path.dirname(os.path.realpath(__file__)) 
  

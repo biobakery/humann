@@ -159,24 +159,41 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
                     evalue=1.0 
                 reference_info=info[config.sam_reference_index].split(
                     config.chocophlan_delimiter)
+                
                 # identify bug and gene families
-                bug=reference_info[config.chocophlan_bug_index]
-                uniref=reference_info[config.chocophlan_uniref_index]
-                location=reference_info[config.chocophlan_location_index]
-                # compute the length of the gene from the location provided
+                location=""
+                length=0
+                uniref=reference_info[0]
                 try:
-                    if config.chocophlan_multiple_location_delimiter in location:
-                        locations=location.split(config.chocophlan_multiple_location_delimiter)
-                    else:
-                        locations=[location]
-                    length=0
-                    for location in locations:
-                        start, end = re.sub(config.chocophlan_location_extra_characters,
-                            '',location).split(config.chocophlan_location_delimiter)
-                        length=length+abs(int(end)-int(start))+1
-                except ValueError:
-                    length=1
-                    logger.debug("Unable to compute length for gene: " + uniref)
+                    bug=reference_info[config.chocophlan_bug_index]
+                    uniref=reference_info[config.chocophlan_uniref_index]
+                    location=reference_info[config.chocophlan_location_index]
+                except IndexError:
+                    # try to find gene length if present
+                    bug="unclassified"
+                    if len(reference_info)==2:
+                        if re.search("^[0-9]+$",reference_info[0]):
+                            length=int(reference_info[0])
+                            uniref=reference_info[1]
+                        elif re.search("^[0-9]+$",reference_info[1]):
+                            length=int(reference_info[1])
+                            uniref=reference_info[0]
+                        
+                # compute the length of the gene from the location provided
+                if location:
+                    try:
+                        if config.chocophlan_multiple_location_delimiter in location:
+                            locations=location.split(config.chocophlan_multiple_location_delimiter)
+                        else:
+                            locations=[location]
+                        length=0
+                        for location in locations:
+                            start, end = re.sub(config.chocophlan_location_extra_characters,
+                                '',location).split(config.chocophlan_location_delimiter)
+                            length=length+abs(int(end)-int(start))+1
+                    except ValueError:
+                        length=0
+                        logger.debug("Unable to compute length for gene: " + uniref)
                 query=info[config.sam_read_name_index]
                 newline=("\t").join([query,info[config.sam_reference_index],
                     str(evalue)])
