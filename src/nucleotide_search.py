@@ -157,50 +157,23 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
                         info[config.sam_mapq_index])
                     logger.warning("Traceback: \n" + traceback.format_exc())
                     evalue=1.0 
-                reference_info=info[config.sam_reference_index].split(
-                    config.chocophlan_delimiter)
                 
-                # identify bug and gene families
-                location=""
-                length=0
-                uniref=reference_info[0]
-                try:
-                    bug=reference_info[config.chocophlan_bug_index]
-                    uniref=reference_info[config.chocophlan_uniref_index]
-                    location=reference_info[config.chocophlan_location_index]
-                except IndexError:
-                    # try to find gene length if present
-                    bug="unclassified"
-                    if len(reference_info)==2:
-                        if re.search("^[0-9]+$",reference_info[0]):
-                            length=int(reference_info[0])
-                            uniref=reference_info[1]
-                        elif re.search("^[0-9]+$",reference_info[1]):
-                            length=int(reference_info[1])
-                            uniref=reference_info[0]
-                        
-                # compute the length of the gene from the location provided
-                if location:
-                    try:
-                        if config.chocophlan_multiple_location_delimiter in location:
-                            locations=location.split(config.chocophlan_multiple_location_delimiter)
-                        else:
-                            locations=[location]
-                        length=0
-                        for location in locations:
-                            start, end = re.sub(config.chocophlan_location_extra_characters,
-                                '',location).split(config.chocophlan_location_delimiter)
-                            length=length+abs(int(end)-int(start))+1
-                    except ValueError:
-                        length=0
-                        logger.debug("Unable to compute length for gene: " + uniref)
+                # read in the data from the reference annotation
+                [uniref,length,bug]=utilities.process_reference_annotation(info[config.sam_reference_index])
+                
                 query=info[config.sam_read_name_index]
-                newline=("\t").join([query,info[config.sam_reference_index],
-                    str(evalue)])
-                file_handle_write_aligned.write(newline+"\n")
+                # write output to be blastm8-like
+                new_info=[""] * config.blast_total_columns
+                new_info[config.blast_query_index]=query
+                new_info[config.blast_reference_index]=info[config.sam_reference_index]
+                new_info[config.blast_evalue_index]=str(evalue)
+                file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
                    
-                # store the alignment data
-                alignments.add(uniref,length,query,evalue,bug)
+                # only store alignments with evalues less than threshold
+                if evalue<1.0:
+                    alignments.add(uniref,length,query,evalue,bug)
+                else:
+                    logger.debug("Not including alignment based on large e-value: %s", evalue)
                     
         line=file_handle_read.readline()
 

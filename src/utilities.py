@@ -112,7 +112,7 @@ def determine_file_format(file):
         # check for formats that have tabs in the first line
         if re.search(("\t"),first_line) and not format:
             data=first_line.split("\t")
-            if len(data)>config.sam_read_index:
+            if len(data)>config.sam_read_quality:
                 # check for sam format
                 if re.search("\*|[A-Za-z=.]+",data[config.sam_read_index]):
                     format="sam"
@@ -121,7 +121,15 @@ def determine_file_format(file):
                 # a sam file would be the read sequence
                 elif re.search("^[0-9]+$",data[config.sam_read_index]):
                     format="blastm8"
-                    
+                else:
+                    try:
+                        # the location of the blastm8 evalue contains quality
+                        # score information in the sam format
+                        evalue=float(data[config.blast_evalue_index])
+                        format="blastm8"
+                    except ValueError:
+                        if re.search("[!-~]+",data[config.blast_evalue_index]):
+                            format="sam"
     if not format:
         format="unknown"
     elif gzipped:
@@ -693,6 +701,59 @@ def tsv_to_biom(tsv_file, biom_file):
     
     execute_command(exe, args, [tsv_file], [biom_file])
     
+def process_chocophlan_length(location,uniref):
+    """
+    Return the length given the sequence location
+    """
+    
+    try:
+        if config.chocophlan_multiple_location_delimiter in location:
+            locations=location.split(config.chocophlan_multiple_location_delimiter)
+        else:
+            locations=[location]
+        length=0
+        for location in locations:
+            start, end = re.sub(config.chocophlan_location_extra_characters,
+                '',location).split(config.chocophlan_location_delimiter)
+            length=length+abs(int(end)-int(start))+1
+    except (ValueError, IndexError):
+        length=0
+        logger.debug("Unable to compute length for gene: " + uniref)
+    
+    return length
+
+def process_reference_annotation(reference):
+    """
+    Process the reference string for information on gene, gene length, and bug
+    Allow for chocophlan annotations, gene|gene_length, gene_length|gene, and gene
+    """
+    
+    reference_info=reference.split(config.chocophlan_delimiter)
+    
+    # identify bug and gene families
+    location=""
+    length=0
+    uniref=reference_info[0]
+    try:
+        bug=reference_info[config.chocophlan_bug_index]
+        uniref=reference_info[config.chocophlan_uniref_index]
+        location=reference_info[config.chocophlan_location_index]
+    except IndexError:
+        # try to find gene length if present
+        bug="unclassified"
+        if len(reference_info)==2:
+            if re.search("^[0-9]+$",reference_info[0]):
+                length=int(reference_info[0])
+                uniref=reference_info[1]
+            elif re.search("^[0-9]+$",reference_info[1]):
+                length=int(reference_info[1])
+                uniref=reference_info[0]
+                        
+    # compute the length of the gene from the location provided
+    if location:
+        length=process_chocophlan_length(location, uniref)
+        
+    return [uniref,length,bug]
     
     
 		

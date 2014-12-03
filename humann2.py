@@ -229,12 +229,12 @@ def update_configuration(args):
         
     # Set the locations of the other databases
     if args.chocophlan:
-        config.chocophlan=args.chocophlan
+        config.chocophlan=os.path.abspath(args.chocophlan)
     else:
         config.chocophlan=os.path.join(humann2_fullpath,config.chocophlan)
         
     if args.uniref:
-        config.uniref=args.uniref
+        config.uniref=os.path.abspath(args.uniref)
     else:
         config.uniref=os.path.join(humann2_fullpath,config.uniref)
 
@@ -372,94 +372,94 @@ def check_requirements(args):
         
         if new_file:
             args.input=new_file
+            args.input_format=args.input_format.split(".")[0]
         else:
             sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
                 " Please check the format of the input file.")
             
-    # Check that the input file exists, is readable, and is fasta/fastq
-    if utilities.fasta_or_fastq(args.input) == "error":
-        sys.exit("ERROR: The input file is not of a fasta or fastq format.")
-        
-    # Check that the chocophlan directory exists
-    if not config.bypass_nucleotide_index:
-        if not os.path.isdir(config.chocophlan):
-            if args.chocophlan:
-                sys.exit("ERROR: The directory provided for the ChocoPhlAn database at " 
-                    + args.chocophlan + " does not exist. Please select another directory.")
-            else:
-                sys.exit("ERROR: The default ChocoPhlAn database directory of "
-                    + config.chocophlan + " does not exist. Please provide the location "
-                    + "of the ChocoPhlAn directory using the --chocophlan option.")	
-    
-    # Check that the files in the chocophlan folder are of the right format
-    if not config.bypass_nucleotide_index:
-        valid_format_count=0
-        for file in os.listdir(config.chocophlan):
-            # expect most of the file names to be of the format g__*s__*
-            if re.search("^[g__][s__]",file): 
-                valid_format_count+=1
-        if valid_format_count == 0:
-            sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
-                + "contain files of the expected format (ie \'^[g__][s__]\').")
- 
-    # Check that the uniref directory exists
-    if not os.path.isdir(config.uniref):
-        if args.uniref:
-            sys.exit("ERROR: The directory provided for the UniRef database at " 
-                + args.uniref + " does not exist. Please select another directory.")
-        else:
-            sys.exit("ERROR: The default UniRef database directory of "
-                + config.uniref + " does not exist. Please provide the location "
-                + "of the UniRef directory using the --uniref option.")            	
-
-    # Check that all files in the uniref folder are of *.udb extension or fasta
-    # if translated search selected is usearch
-    if config.translated_alignment_selected == "usearch":
-        for file in os.listdir(config.uniref):
-            if not file.endswith(config.usearch_database_extension):
-                if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
-                    sys.exit("ERROR: The directory provided for the UniRef database "
-                        + "at " + config.uniref + " " +
-                        + "contains files of an unexpected format. Only files of the"
-                        + " udb or fasta format are allowed.") 
-
-    # Check that some of the database files are of the *.info extension
-    valid_format_count=0
-    if config.translated_alignment_selected == "rapsearch":
-        for file in os.listdir(config.uniref):
-            if file.endswith(config.rapsearch_database_extension):
-                valid_format_count+=1
-        if valid_format_count == 0:
-            sys.exit("ERROR: The UniRef directory provided at " + config.uniref 
-                + " has not been formatted to run with"
-                " the rapsearch translated alignment software. Please format these files.")
-
-    # Check for correct usearch version
-    if config.translated_alignment_selected == "usearch":
-        utilities.check_software_version("usearch","-version",config.usearch_version)
-    
-    # Check that the translated alignment executable can be found
-    if not utilities.find_exe_in_path(config.translated_alignment_selected):
-        sys.exit("ERROR: The " +  config.translated_alignment_selected + 
-            " executable can not be found. Please check the install.")
-    
-    # Check that the metaphlan2 executable can be found
-    if not config.bypass_prescreen and not config.bypass_nucleotide_index:
-        if not utilities.find_exe_in_path("metaphlan2.py"): 
-            sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
-                "Please check the install.")
-
-    # Check that the bowtie2 executable can be found
-    if not utilities.find_exe_in_path("bowtie2"): 
-        sys.exit("ERROR: The bowtie2 executable can not be found. "  
-            "Please check the install.")
-        
     # If the biom output format is selected, check for the biom package
     if config.output_format=="biom":
         if not utilities.find_exe_in_path("biom"):
             sys.exit("ERROR: The biom executable can not be found. "
             "Please check the install or select another output format.")
+     
+    # If the file is fasta/fastq check for requirements   
+    if args.input_format in ["fasta","fastq"]:
+        # Check that the chocophlan directory exists
+        if not config.bypass_nucleotide_index:
+            if not os.path.isdir(config.chocophlan):
+                if args.chocophlan:
+                    sys.exit("ERROR: The directory provided for the ChocoPhlAn database at " 
+                        + args.chocophlan + " does not exist. Please select another directory.")
+                else:
+                    sys.exit("ERROR: The default ChocoPhlAn database directory of "
+                        + config.chocophlan + " does not exist. Please provide the location "
+                        + "of the ChocoPhlAn directory using the --chocophlan option.")	
+    
+        # Check that the files in the chocophlan folder are of the right format
+        if not config.bypass_nucleotide_index:
+            valid_format_count=0
+            for file in os.listdir(config.chocophlan):
+                # expect most of the file names to be of the format g__*s__*
+                if re.search("^[g__][s__]",file): 
+                    valid_format_count+=1
+            if valid_format_count == 0:
+                sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
+                    + "contain files of the expected format (ie \'^[g__][s__]\').")
+ 
+        # Check that the uniref directory exists
+        if not os.path.isdir(config.uniref):
+            if args.uniref:
+                sys.exit("ERROR: The directory provided for the UniRef database at " 
+                    + args.uniref + " does not exist. Please select another directory.")
+            else:
+                sys.exit("ERROR: The default UniRef database directory of "
+                    + config.uniref + " does not exist. Please provide the location "
+                    + "of the UniRef directory using the --uniref option.")            	
 
+        # Check that all files in the uniref folder are of *.udb extension or fasta
+        # if translated search selected is usearch
+        if config.translated_alignment_selected == "usearch":
+            for file in os.listdir(config.uniref):
+                if not file.endswith(config.usearch_database_extension):
+                    if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
+                        sys.exit("ERROR: The directory provided for the UniRef database "
+                            + "at " + config.uniref + " " +
+                            + "contains files of an unexpected format. Only files of the"
+                            + " udb or fasta format are allowed.") 
+
+        # Check that some of the database files are of the *.info extension
+        valid_format_count=0
+        if config.translated_alignment_selected == "rapsearch":
+            for file in os.listdir(config.uniref):
+                if file.endswith(config.rapsearch_database_extension):
+                    valid_format_count+=1
+            if valid_format_count == 0:
+                sys.exit("ERROR: The UniRef directory provided at " + config.uniref 
+                    + " has not been formatted to run with"
+                    " the rapsearch translated alignment software. Please format these files.")
+
+        # Check for correct usearch version
+        if config.translated_alignment_selected == "usearch":
+            utilities.check_software_version("usearch","-version",config.usearch_version)
+    
+        # Check that the translated alignment executable can be found
+        if not utilities.find_exe_in_path(config.translated_alignment_selected):
+            sys.exit("ERROR: The " +  config.translated_alignment_selected + 
+                " executable can not be found. Please check the install.")
+    
+        # Check that the metaphlan2 executable can be found
+        if not config.bypass_prescreen and not config.bypass_nucleotide_index:
+            if not utilities.find_exe_in_path("metaphlan2.py"): 
+                sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
+                    "Please check the install.")
+
+        # Check that the bowtie2 executable can be found
+        if not utilities.find_exe_in_path("bowtie2"): 
+            sys.exit("ERROR: The bowtie2 executable can not be found. "  
+                "Please check the install.")
+        
+        
 def main():
     # Parse arguments from command line
     args=parse_arguments(sys.argv)
@@ -494,108 +494,130 @@ def main():
     # Start timer
     start_time=time.time()
 
-    # Run prescreen to identify bugs
-    bug_file = "Empty"
-    if args.metaphlan_output:
-        bug_file = args.metaphlan_output
-    else:
-        if not config.bypass_prescreen:
-            bug_file = prescreen.alignment(args.input)
-
-    message=str(int(time.time() - start_time)) + " seconds from start"
-    logger.info(message)
-    if config.verbose:
-        print(message)
-
-    # Create the custom database from the bugs list
-    custom_database = ""
-    if not config.bypass_nucleotide_index:
-        custom_database = prescreen.create_custom_database(config.chocophlan, bug_file)
-    else:
-        custom_database = "Bypass"
-
-    message=str(int(time.time() - start_time)) + " seconds from start"
-    logger.info(message)
-    if config.verbose:
-        print(message)
-
-    # Run nucleotide search on custom database
-    if custom_database != "Empty":
-        if not config.bypass_nucleotide_index:
-            nucleotide_index_file = nucleotide_search.index(custom_database)
+    # Process fasta or fastq input files
+    if args.input_format in ["fasta","fastq"]:
+        # Run prescreen to identify bugs
+        bug_file = "Empty"
+        if args.metaphlan_output:
+            bug_file = args.metaphlan_output
         else:
-            nucleotide_index_file = config.chocophlan
-        nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
-            nucleotide_index_file)
-
+            if not config.bypass_prescreen:
+                bug_file = prescreen.alignment(args.input)
+    
         message=str(int(time.time() - start_time)) + " seconds from start"
         logger.info(message)
         if config.verbose:
             print(message)
-
-        # Determine which reads are unaligned and reduce aligned reads file
-        # Remove the alignment_file as we only need the reduced aligned reads file
-        [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-            nucleotide_alignment_file, alignments)
-
-        # Print out total alignments per bug
-        message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
-        logger.info(message)
-        print(message)
-        
-        message=alignments.counts_by_bug()
-        logger.info("\n"+message)
-        print(message)        
-
-        message="Total gene families from nucleotide alignment: " + str(alignments.count_genes())
-        logger.info(message)
-        print("\n"+message)
-
-        # Report reads unaligned
-        message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-            args.input, unaligned_reads_file_fasta) + "%"
-        logger.info(message)
-        print("\n"+message+"\n")  
-    else:
-        logger.debug("Custom database is empty")
-        reduced_aligned_reads_file = "Empty"
-        unaligned_reads_file_fasta=args.input
-        unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
-
-    # Run translated search on UniRef database if unaligned reads exit
-    if unaligned_reads_store.count_reads()>0:
-        translated_alignment_file = translated_search.alignment(config.uniref, 
-            unaligned_reads_file_fasta)
-
-        if config.verbose:
-            print(str(int(time.time() - start_time)) + " seconds from start")
-
-        # Determine which reads are unaligned
-        translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-            unaligned_reads_store, translated_alignment_file, alignments)
-
-        # Print out total alignments per bug
-        message="Total bugs after translated alignment: " + str(alignments.count_bugs())
-        logger.info(message)
-        print(message)
     
-        message=alignments.counts_by_bug()
-        logger.info("\n"+message)
-        print(message)
-
-        message="Total gene families after translated alignment: " + str(alignments.count_genes())
+        # Create the custom database from the bugs list
+        custom_database = ""
+        if not config.bypass_nucleotide_index:
+            custom_database = prescreen.create_custom_database(config.chocophlan, bug_file)
+        else:
+            custom_database = "Bypass"
+    
+        message=str(int(time.time() - start_time)) + " seconds from start"
         logger.info(message)
-        print("\n"+message)
-
-        # Report reads unaligned
-        message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-            args.input, translated_unaligned_reads_file_fastq) + "%"
-        logger.info(message)
-        print("\n"+message+"\n")  
+        if config.verbose:
+            print(message)
+    
+        # Run nucleotide search on custom database
+        if custom_database != "Empty":
+            if not config.bypass_nucleotide_index:
+                nucleotide_index_file = nucleotide_search.index(custom_database)
+            else:
+                nucleotide_index_file = config.chocophlan
+            nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
+                nucleotide_index_file)
+    
+            message=str(int(time.time() - start_time)) + " seconds from start"
+            logger.info(message)
+            if config.verbose:
+                print(message)
+    
+            # Determine which reads are unaligned and reduce aligned reads file
+            # Remove the alignment_file as we only need the reduced aligned reads file
+            [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+                nucleotide_alignment_file, alignments)
+    
+            # Print out total alignments per bug
+            message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
+            logger.info(message)
+            print(message)
+            
+            message=alignments.counts_by_bug()
+            logger.info("\n"+message)
+            print(message)        
+    
+            message="Total gene families from nucleotide alignment: " + str(alignments.count_genes())
+            logger.info(message)
+            print("\n"+message)
+    
+            # Report reads unaligned
+            message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+                args.input, unaligned_reads_file_fasta) + "%"
+            logger.info(message)
+            print("\n"+message+"\n")  
+        else:
+            logger.debug("Custom database is empty")
+            reduced_aligned_reads_file = "Empty"
+            unaligned_reads_file_fasta=args.input
+            unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
+    
+        # Run translated search on UniRef database if unaligned reads exit
+        if unaligned_reads_store.count_reads()>0:
+            translated_alignment_file = translated_search.alignment(config.uniref, 
+                unaligned_reads_file_fasta)
+    
+            if config.verbose:
+                print(str(int(time.time() - start_time)) + " seconds from start")
+    
+            # Determine which reads are unaligned
+            translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+                unaligned_reads_store, translated_alignment_file, alignments)
+    
+            # Print out total alignments per bug
+            message="Total bugs after translated alignment: " + str(alignments.count_bugs())
+            logger.info(message)
+            print(message)
+        
+            message=alignments.counts_by_bug()
+            logger.info("\n"+message)
+            print(message)
+    
+            message="Total gene families after translated alignment: " + str(alignments.count_genes())
+            logger.info(message)
+            print("\n"+message)
+    
+            # Report reads unaligned
+            message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+                args.input, translated_unaligned_reads_file_fastq) + "%"
+            logger.info(message)
+            print("\n"+message+"\n")  
+        else:
+            message="All reads are aligned so translated alignment will not be run"
+            logger.info(message)
+            print(message)
+    
+    # Process input files of sam format
+    elif args.input_format in ["sam"]:
+        # Store the sam mapping results
+        [unaligned_reads_file_fasta, unaligned_reads_store, 
+            reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
+            args.input, alignments, keep_sam=True)
+            
+    # Process input files of tab-delimited blast format
+    elif args.input_format in ["blastm8"]:
+        # Create new unaligned reads store
+        unaligned_reads_store=store.Reads()
+        
+        # Store the blastm8 mapping results
+        translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+            unaligned_reads_store, args.input, alignments)
+        
+    # Handle input files of unknown formats
     else:
-        message="All reads are aligned so translated alignment will not be run"
-        logger.info(message)
-        print(message)
+        sys.exit("CRITICAL ERROR: Input file of unknown format.")
 
     # Compute the gene families
     message="Computing gene families ..."

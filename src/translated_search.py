@@ -211,22 +211,27 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                         log_evalue=True
         else:
             alignment_info=line.split(config.blast_delimiter)
-            identity=float(alignment_info[config.blast_identity_index])
             
-            if identity >= config.identity_threshold:
-                # only store those alignments which meet the identity threshold
+            # try to obtain the identity value to determine if threshold is met
+            process_alignment=True
+            try:
+                identity=float(alignment_info[config.blast_identity_index])
+                if identity < config.identity_threshold:
+                    process_alignment=False
+            except ValueError:
+                if alignment_info[config.blast_identity_index]:
+                    logger.debug("Unexpected value in identity field: %s",
+                        alignment_info[config.blast_identity_index])
+                    process_alignment=False
+                else:
+                    identity="NA"
+            
+            if process_alignment:
                 
-                referenceid=alignment_info[config.blast_reference_index]
-                
-                # get reference length information
-                reference_length=1
-                if config.uniref_delimiter in referenceid:
-                    reference_info=referenceid.split(config.uniref_delimiter)
-                    referenceid=reference_info[config.uniref_gene_index]
-                    reference_length=int(reference_info[config.uniref_length_index])
+                [uniref,length,bug]=utilities.process_reference_annotation(
+                    alignment_info[config.blast_reference_index])
                     
                 queryid=alignment_info[config.blast_query_index]
-                aligned_length=int(alignment_info[config.blast_aligned_length_index])
                 evalue=alignment_info[config.blast_evalue_index]
                 
                 # remove the id of the alignment from the unaligned reads store
@@ -248,9 +253,9 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                         logger.warning("Traceback: \n" + traceback.format_exc())
                         evalue=1.0 
             
-                # only store alignments with evalues less than 1
+                # only store alignments with evalues less than threshold
                 if evalue<1.0:
-                    alignments.add(referenceid, reference_length, queryid, evalue,"unclassified")
+                    alignments.add(uniref, length, queryid, evalue, bug)
                 else:
                     logger.debug("Not including alignment based on large e-value: %s", evalue)
             

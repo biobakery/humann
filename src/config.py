@@ -121,6 +121,7 @@ blast_reference_index=1
 blast_identity_index=2
 blast_aligned_length_index=3
 blast_evalue_index=10
+blast_total_columns=12
 
 # output file formats
 output_file_column_delimiter="\t"
