@@ -83,7 +83,7 @@ def parse_arguments (args):
         default=config.bypass_nucleotide_index)
     parser.add_argument(
         "-i", "--input", 
-        help="fastq/fasta input file\n[REQUIRED]", 
+        help="input file of type {" +",".join(config.input_format_choices)+ "} \n[REQUIRED]", 
         metavar="<input.fastq>", 
         required=True)
     parser.add_argument(
@@ -199,6 +199,9 @@ def update_configuration(args):
     """
     Update the configuration settings based on the arguments
     """
+    
+    # Use the full path to the input file
+    args.input=os.path.abspath(args.input)
 
     # If set, append paths executable locations
     if args.metaphlan:
@@ -424,7 +427,7 @@ def check_requirements(args):
                 if not file.endswith(config.usearch_database_extension):
                     if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
                         sys.exit("ERROR: The directory provided for the UniRef database "
-                            + "at " + config.uniref + " " +
+                            + "at " + config.uniref + " "
                             + "contains files of an unexpected format. Only files of the"
                             + " udb or fasta format are allowed.") 
 

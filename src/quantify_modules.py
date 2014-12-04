@@ -52,7 +52,7 @@ def run_minpath(reactions_file,metacyc_datafile):
     if os.path.getsize(reactions_file):
     
         tmpfile2=utilities.unnamed_temp_file()
-    
+
         # Redirect stdout
         sys.stdout=open(os.devnull,"w")
     
@@ -95,7 +95,8 @@ def identify_reactions_and_pathways_by_bug(args):
             reactions[reaction]=abundance
 
     pathways={}
-    if config.minpath_toggle == "on":   
+    # Run minpath if toggle on and also if there is more than one reaction   
+    if config.minpath_toggle == "on" and len(reactions_file_lines)>1:   
 
         # Create a temp file for the reactions results
         reactions_file=utilities.unnamed_temp_file()

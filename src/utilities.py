@@ -135,6 +135,12 @@ def determine_file_format(file):
     elif gzipped:
         format+=".gz"
                 
+    message="File ( " + file + " ) is of format:  " + format
+    if config.verbose:
+        print(message+"\n")
+    
+    logger.info(message)       
+                
     return format
 
 def gunzip_file(gzip_file):
