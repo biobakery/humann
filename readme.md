@@ -100,7 +100,7 @@ Type the command:
 
 `` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-where $SAMPLE is your filtered fasta or fastq file (ie metagenome.fastq) and $OUTPUT_DIR is the output directory
+where $SAMPLE is your filtered shotgun sequencing metagenome file (of fasta or fastq format) or mapping results file (of sam or blastm8 format) and $OUTPUT_DIR is the output directory
 
 Three output files will be created:
 
@@ -111,6 +111,31 @@ Three output files will be created:
 where $SAMPLENAME is the basename of $SAMPLE
 
 NOTE: To keep all of the intermediate temp files use the "--temp" flag.
+
+### Demo runs ###
+
+The input folder contains four demo input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
+
+
+To run the fasta demo type the command:
+
+`` humann2.py --input input/demo.fasta --output $OUTPUT_DIR``
+
+To run the fastq demo type the command:
+
+`` humann2.py --input input/demo.fastq --output $OUTPUT_DIR``
+
+To run the sam demo type the command:
+
+`` humann2.py --input input/demo.sam --output $OUTPUT_DIR``
+
+To run the blastm8 demo type the command:
+
+`` humann2.py --input input/demo.m8 --output $OUTPUT_DIR``
+
+$OUTPUT_DIR is the output directory
+
+Since sam and blastm8 are mapping results, using these files as input to HUMAnN2 will bypass both the nucleotide and translated mapping portions of the flow.
 
 ### Output files ###
 
@@ -222,6 +247,7 @@ usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
                   [--translated_alignment {usearch,rapsearch}]
                   [--xipe {on,off}] [--minpath {on,off}]
                   [--output_format {tsv,biom}]
+                  [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8}]
                   [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
@@ -234,7 +260,7 @@ optional arguments:
   --bypass_nucleotide_index
                         bypass the nucleotide index step and run on the indexed ChocoPhlAn database
   -i <input.fastq>, --input <input.fastq>
-                        fastq/fasta input file
+                        input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8} 
                         [REQUIRED]
   -o <output>, --output <output>
                         directory to write output files
@@ -283,6 +309,9 @@ optional arguments:
   --output_format {tsv,biom}
                         the format of the output files
                         [DEFAULT: tsv ]
+  --input_format {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8}
+                        the format of the input file
+                        [DEFAULT: format identified by software ]
   --pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
                         the two mapping files to use for pathway computations
                         [DEFAULT: databases/pathways/metacyc_reactions.uniref , databases/pathways/metacyc_pathways ]
