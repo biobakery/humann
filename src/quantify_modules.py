@@ -96,7 +96,7 @@ def identify_reactions_and_pathways_by_bug(args):
 
     pathways={}
     # Run minpath if toggle on and also if there is more than one reaction   
-    if config.minpath_toggle == "on" and len(reactions_file_lines)>1:   
+    if config.minpath_toggle == "on" and len(reactions_file_lines)>3:   
 
         # Create a temp file for the reactions results
         reactions_file=utilities.unnamed_temp_file()
@@ -112,10 +112,7 @@ def identify_reactions_and_pathways_by_bug(args):
         file_handle.close()
     
         # Run minpath to identify the pathways
-        message="Run MinPath on " + bug
-        if config.verbose:
-            print(message)
-        logger.info(message)
+        logger.info("Run MinPath on " + bug)
             
         tmpfile=run_minpath(reactions_file, pathways_database_file)
         
