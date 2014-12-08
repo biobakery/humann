@@ -348,9 +348,6 @@ def update_configuration(args):
     logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
     
-
-
-
      
 def check_requirements(args):
     """
@@ -383,7 +380,7 @@ def check_requirements(args):
     # If the biom output format is selected, check for the biom package
     if config.output_format=="biom":
         if not utilities.find_exe_in_path("biom"):
-            sys.exit("ERROR: The biom executable can not be found. "
+            sys.exit("CRITICAL ERROR: The biom executable can not be found. "
             "Please check the install or select another output format.")
      
     # If the file is fasta/fastq check for requirements   
@@ -392,10 +389,10 @@ def check_requirements(args):
         if not config.bypass_nucleotide_index:
             if not os.path.isdir(config.chocophlan):
                 if args.chocophlan:
-                    sys.exit("ERROR: The directory provided for the ChocoPhlAn database at " 
+                    sys.exit("CRITICAL ERROR: The directory provided for the ChocoPhlAn database at " 
                         + args.chocophlan + " does not exist. Please select another directory.")
                 else:
-                    sys.exit("ERROR: The default ChocoPhlAn database directory of "
+                    sys.exit("CRITICAL ERROR: The default ChocoPhlAn database directory of "
                         + config.chocophlan + " does not exist. Please provide the location "
                         + "of the ChocoPhlAn directory using the --chocophlan option.")	
     
@@ -407,60 +404,61 @@ def check_requirements(args):
                 if re.search("^[g__][s__]",file): 
                     valid_format_count+=1
             if valid_format_count == 0:
-                sys.exit("ERROR: The directory provided for ChocoPhlAn does not "
+                sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
                     + "contain files of the expected format (ie \'^[g__][s__]\').")
- 
-        # Check that the uniref directory exists
-        if not os.path.isdir(config.uniref):
-            if args.uniref:
-                sys.exit("ERROR: The directory provided for the UniRef database at " 
-                    + args.uniref + " does not exist. Please select another directory.")
-            else:
-                sys.exit("ERROR: The default UniRef database directory of "
-                    + config.uniref + " does not exist. Please provide the location "
-                    + "of the UniRef directory using the --uniref option.")            	
-
-        # Check that all files in the uniref folder are of *.udb extension or fasta
-        # if translated search selected is usearch
-        if config.translated_alignment_selected == "usearch":
-            for file in os.listdir(config.uniref):
-                if not file.endswith(config.usearch_database_extension):
-                    if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
-                        sys.exit("ERROR: The directory provided for the UniRef database "
-                            + "at " + config.uniref + " "
-                            + "contains files of an unexpected format. Only files of the"
-                            + " udb or fasta format are allowed.") 
-
-        # Check that some of the database files are of the *.info extension
-        valid_format_count=0
-        if config.translated_alignment_selected == "rapsearch":
-            for file in os.listdir(config.uniref):
-                if file.endswith(config.rapsearch_database_extension):
-                    valid_format_count+=1
-            if valid_format_count == 0:
-                sys.exit("ERROR: The UniRef directory provided at " + config.uniref 
-                    + " has not been formatted to run with"
-                    " the rapsearch translated alignment software. Please format these files.")
-
-        # Check for correct usearch version
-        if config.translated_alignment_selected == "usearch":
-            utilities.check_software_version("usearch","-version",config.usearch_version)
-    
-        # Check that the translated alignment executable can be found
-        if not utilities.find_exe_in_path(config.translated_alignment_selected):
-            sys.exit("ERROR: The " +  config.translated_alignment_selected + 
-                " executable can not be found. Please check the install.")
-    
+                
         # Check that the metaphlan2 executable can be found
         if not config.bypass_prescreen and not config.bypass_nucleotide_index:
             if not utilities.find_exe_in_path("metaphlan2.py"): 
-                sys.exit("ERROR: The metaphlan2.py executable can not be found. "  
+                sys.exit("CRITICAL ERROR: The metaphlan2.py executable can not be found. "  
                     "Please check the install.")
 
         # Check that the bowtie2 executable can be found
         if not utilities.find_exe_in_path("bowtie2"): 
-            sys.exit("ERROR: The bowtie2 executable can not be found. "  
+            sys.exit("CRITICAL ERROR: The bowtie2 executable can not be found. "  
                 "Please check the install.")
+ 
+        if not config.bypass_translated_search:
+            # Check that the uniref directory exists
+            if not os.path.isdir(config.uniref):
+                if args.uniref:
+                    sys.exit("CRITICAL ERROR: The directory provided for the UniRef database at " 
+                        + args.uniref + " does not exist. Please select another directory.")
+                else:
+                    sys.exit("CRITICAL ERROR: The default UniRef database directory of "
+                        + config.uniref + " does not exist. Please provide the location "
+                        + "of the UniRef directory using the --uniref option.")            	
+    
+            # Check that all files in the uniref folder are of *.udb extension or fasta
+            # if translated search selected is usearch
+            if config.translated_alignment_selected == "usearch":
+                for file in os.listdir(config.uniref):
+                    if not file.endswith(config.usearch_database_extension):
+                        if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
+                            sys.exit("CRITICAL ERROR: The directory provided for the UniRef database "
+                                + "at " + config.uniref + " "
+                                + "contains files of an unexpected format. Only files of the"
+                                + " udb or fasta format are allowed.") 
+    
+            # Check that some of the database files are of the *.info extension
+            valid_format_count=0
+            if config.translated_alignment_selected == "rapsearch":
+                for file in os.listdir(config.uniref):
+                    if file.endswith(config.rapsearch_database_extension):
+                        valid_format_count+=1
+                if valid_format_count == 0:
+                    sys.exit("CRITICAL ERROR: The UniRef directory provided at " + config.uniref 
+                        + " has not been formatted to run with"
+                        " the rapsearch translated alignment software. Please format these files.")
+
+            # Check for correct usearch version
+            if config.translated_alignment_selected == "usearch":
+                utilities.check_software_version("usearch","-version",config.usearch_version)
+        
+            # Check that the translated alignment executable can be found
+            if not utilities.find_exe_in_path(config.translated_alignment_selected):
+                sys.exit("CRITICAL ERROR: The " +  config.translated_alignment_selected + 
+                    " executable can not be found. Please check the install.")
         
         
 def main():
@@ -567,38 +565,44 @@ def main():
             unaligned_reads_file_fasta=args.input
             unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
     
-        # Run translated search on UniRef database if unaligned reads exit
-        if unaligned_reads_store.count_reads()>0:
-            translated_alignment_file = translated_search.alignment(config.uniref, 
-                unaligned_reads_file_fasta)
-    
-            if config.verbose:
-                print(str(int(time.time() - start_time)) + " seconds from start")
-    
-            # Determine which reads are unaligned
-            translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
-                unaligned_reads_store, translated_alignment_file, alignments)
-    
-            # Print out total alignments per bug
-            message="Total bugs after translated alignment: " + str(alignments.count_bugs())
-            logger.info(message)
-            print(message)
+        # Do not run if set to bypass translated search in config file
+        if not config.bypass_translated_search:
+            # Run translated search on UniRef database if unaligned reads exit
+            if unaligned_reads_store.count_reads()>0:
+                translated_alignment_file = translated_search.alignment(config.uniref, 
+                    unaligned_reads_file_fasta)
         
-            message=alignments.counts_by_bug()
-            logger.info("\n"+message)
-            print(message)
-    
-            message="Total gene families after translated alignment: " + str(alignments.count_genes())
-            logger.info(message)
-            print("\n"+message)
-    
-            # Report reads unaligned
-            message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-                args.input, translated_unaligned_reads_file_fastq) + "%"
-            logger.info(message)
-            print("\n"+message+"\n")  
+                if config.verbose:
+                    print(str(int(time.time() - start_time)) + " seconds from start")
+        
+                # Determine which reads are unaligned
+                translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+                    unaligned_reads_store, translated_alignment_file, alignments)
+        
+                # Print out total alignments per bug
+                message="Total bugs after translated alignment: " + str(alignments.count_bugs())
+                logger.info(message)
+                print(message)
+            
+                message=alignments.counts_by_bug()
+                logger.info("\n"+message)
+                print(message)
+        
+                message="Total gene families after translated alignment: " + str(alignments.count_genes())
+                logger.info(message)
+                print("\n"+message)
+        
+                # Report reads unaligned
+                message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
+                    args.input, translated_unaligned_reads_file_fastq) + "%"
+                logger.info(message)
+                print("\n"+message+"\n")  
+            else:
+                message="All reads are aligned so translated alignment will not be run"
+                logger.info(message)
+                print(message)
         else:
-            message="All reads are aligned so translated alignment will not be run"
+            message="Bypass translated search"
             logger.info(message)
             print(message)
     
