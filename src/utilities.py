@@ -247,7 +247,18 @@ def add_exe_to_path(exe_dir):
     logger.debug("Add directory, %s, to path", exe_dir)
     
     os.environ["PATH"] = exe_dir + os.pathsep + os.environ["PATH"]
-
+    
+def add_directory_to_pythonpath(dir):
+    """
+    Prepend the directory to the PYTHONPATH if not currently included
+    """
+    
+    # check if the directory is already at the beginning of the list
+    if not os.path.samefile(sys.path[0],dir):
+        # add directory to beginning of path list
+        logger.debug("Add directory, %s, to pythonpath", dir)
+        sys.path.insert(1,dir)
+        
 def find_exe_in_path(exe):
     """
     Check that an executable exists in $PATH

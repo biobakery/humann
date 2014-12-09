@@ -23,6 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import os
+
 # software run modes
 resume = False
 verbose = False
@@ -178,3 +180,15 @@ xipe_delimiter="\t"
 xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
+
+def get_humann2_base_directory():
+    """ 
+    Return the location of the humann2 base directory
+    """
+    
+    config_file_location=os.path.dirname(os.path.realpath(__file__))
+    
+    # The humann2 base directory is parent directory of the config file location
+    humann2_base_directory=os.path.abspath(os.path.join(config_file_location,os.pardir))
+    
+    return humann2_base_directory

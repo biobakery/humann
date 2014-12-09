@@ -79,18 +79,44 @@ NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the
 NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
 
 ### Updating the environment ###
-Once HUMAnN2 is downloaded, add the location of the code to the paths.
-Type these commands or include them in your .bashrc file.
+This step is optional if the full path to the HUMAnN2 executable ($HUMAnN2_PATH) is always provided or if the executable is called with a current working directory of $HUMAnN2_PATH. For example, calling HUMAnN2 as follows does not require updates to the enviroment:
+
+1. Calling HUMAnN2 by providing a full path to the executable
 
 ```
-$ export PATH=$PATH:$HUMAnN2_PATH
-$ export PYTHONPATH=$PYTHONPATH:$HUMAnN2_PATH
+$ $HUMAnN2_PATH/humann2.py -h
+```
+
+2. Calling HUMAnN2 with a current working directory of $HUMAnN2_PATH
+
+```
+$ cd $HUMAnN2_PATH
+$ ./humann2.py -h
 ```
 
 $HUMANn2_PATH = the full path to the HUMAnN2 download
 
+NOTE: The example commands above execute the HUMAnN2 help option.
 
-NOTE: If you added these commands to your .bashrc file, please run the following command before proceeding to the next steps. This command will update your environment to reflect the changes to your .bashrc file: `` source .bashrc ``
+To update the environment, add the location of the code to your path.
+Include this command in your .bashrc file located in your home directory.
+
+```
+$ export PATH=$PATH:$HUMAnN2_PATH
+```
+
+After editing your .bashrc file, run the following command to update your current environment.
+
+```
+source $HOME/.bashrc
+```
+
+Now HUMAnN2 can be called without providing the location of the install directory
+
+```
+$ humann2.py -h
+```
+
 
 ## How to Run ##
 
@@ -100,7 +126,9 @@ Type the command:
 
 `` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-where $SAMPLE is your filtered shotgun sequencing metagenome file (of fasta or fastq format) or mapping results file (of sam or blastm8 format) and $OUTPUT_DIR is the output directory
+$SAMPLE = filtered shotgun sequencing metagenome file (of fasta or fastq format) or mapping results file (of sam or blastm8 format)
+
+$OUTPUT_DIR = the output directory
 
 Three output files will be created:
 

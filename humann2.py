@@ -42,12 +42,18 @@ import tempfile
 import re
 import logging
 
-from src import utilities
+# Try to load one of the humann2 src modules to check the installation
+try:
+    from src import config
+except ImportError:
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
+        " Please check your install.") 
+    
 from src import prescreen
 from src import nucleotide_search
 from src import store
 from src import translated_search
-from src import config
+from src import utilities
 from src import quantify_families
 from src import quantify_modules
 
@@ -216,30 +222,30 @@ def update_configuration(args):
     if args.rapsearch:
         utilities.add_exe_to_path(os.path.abspath(args.rapsearch))
  
-    humann2_fullpath=os.path.dirname(os.path.realpath(__file__)) 
+    humann2_base_directory=config.get_humann2_base_directory() 
  
     # Set the locations of the pathways databases
     if args.pathways_databases:
-        config.pathways_database_part1=args.pathways_databases[0]
-        config.pathways_database_part2=args.pathways_databases[1]
+        config.pathways_database_part1=os.path.abspath(args.pathways_databases[0])
+        config.pathways_database_part2=os.path.abspath(args.pathways_databases[1])
         config.pathways_recursion=False
     else:
         # add the full path to the database
-        config.pathways_database_part1=os.path.join(humann2_fullpath, 
+        config.pathways_database_part1=os.path.join(humann2_base_directory, 
             config.pathways_database_part1)
-        config.pathways_database_part2=os.path.join(humann2_fullpath,
+        config.pathways_database_part2=os.path.join(humann2_base_directory,
             config.pathways_database_part2)
         
     # Set the locations of the other databases
     if args.chocophlan:
         config.chocophlan=os.path.abspath(args.chocophlan)
     else:
-        config.chocophlan=os.path.join(humann2_fullpath,config.chocophlan)
+        config.chocophlan=os.path.join(humann2_base_directory,config.chocophlan)
         
     if args.uniref:
         config.uniref=os.path.abspath(args.uniref)
     else:
-        config.uniref=os.path.join(humann2_fullpath,config.uniref)
+        config.uniref=os.path.join(humann2_base_directory,config.uniref)
 
     # if set, update the config run mode to resume
     if args.resume:
@@ -348,6 +354,12 @@ def update_configuration(args):
     logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
     
+    # write the locations of the databases to the log file
+    logger.info("Chocophlan database: " + config.chocophlan)
+    logger.info("UniRef database: " + config.uniref)
+    logger.info("Pathways database part 1: " + config.pathways_database_part1)
+    logger.info("Pathways database part 2: " + config.pathways_database_part2)
+     
      
 def check_requirements(args):
     """
