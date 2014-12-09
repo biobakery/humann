@@ -79,43 +79,25 @@ NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the
 NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
 
 ### Updating the environment ###
-This step is optional if the full path to the HUMAnN2 executable ($HUMAnN2_PATH) is always provided or if the executable is called with a current working directory of $HUMAnN2_PATH. For example, calling HUMAnN2 as follows does not require updates to the enviroment:
+To update the environment, add the path to the HUMAnN2 download directory ($HUMAnN2_PATH) to your $PATH.
+Include this command in your .bashrc file located in your home directory ($HOME).
 
-1. Calling HUMAnN2 by providing a full path to the executable
-
-```
-$ $HUMAnN2_PATH/humann2.py -h
-```
-
-2. Calling HUMAnN2 with a current working directory of $HUMAnN2_PATH
-
-```
-$ cd $HUMAnN2_PATH
-$ ./humann2.py -h
-```
-
-$HUMANn2_PATH = the full path to the HUMAnN2 download
-
-NOTE: The example commands above execute the HUMAnN2 help option.
-
-To update the environment, add the location of the code to your path.
-Include this command in your .bashrc file located in your home directory.
-
-```
-$ export PATH=$PATH:$HUMAnN2_PATH
-```
+`` export PATH=$PATH:$HUMAnN2_PATH ``
 
 After editing your .bashrc file, run the following command to update your current environment.
 
-```
-source $HOME/.bashrc
-```
+`` source $HOME/.bashrc ``
 
-Now HUMAnN2 can be called without providing the location of the install directory
+HUMAnN2 can now be called without providing the location of the install directory.
 
-```
-$ humann2.py -h
-```
+`` $ humann2.py --help ``
+
+
+*The update environment step is optional if the path to the HUMAnN2 executable is always provided.* 
+
+*For example, calling HUMAnN2 as follows does not require updates to the environment:*
+
+`` $ $HUMAnN2_PATH/humann2.py --help ``
 
 
 ## How to Run ##
@@ -126,7 +108,7 @@ Type the command:
 
 `` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-$SAMPLE = filtered shotgun sequencing metagenome file (of fasta or fastq format) or mapping results file (of sam or blastm8 format)
+$SAMPLE = filtered shotgun sequencing metagenome file (fasta or fastq format) or mapping results file (sam or blastm8)
 
 $OUTPUT_DIR = the output directory
 
