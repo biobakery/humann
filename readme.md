@@ -80,24 +80,14 @@ NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is
 
 ### Updating the environment ###
 To update the environment, add the path to the HUMAnN2 download directory ($HUMAnN2_PATH) to your $PATH.
-Include this command in your .bashrc file located in your home directory ($HOME).
 
-`` export PATH=$PATH:$HUMAnN2_PATH ``
-
-After editing your .bashrc file, run the following command to update your current environment.
-
-`` source $HOME/.bashrc ``
-
-HUMAnN2 can now be called without providing the location of the install directory.
-
-`` $ humann2.py --help ``
+1. Add this line to the .bashrc file located in your home directory ($HOME) : `` export PATH=$PATH:$HUMAnN2_PATH ``
+1.  Run this command to update your current environment: ``$ source $HOME/.bashrc ``
+1. HUMAnN2 can now be run without providing the location of the install directory: `` $ humann2.py --help ``
 
 
-*The update environment step is optional if the path to the HUMAnN2 executable is always provided.* 
-
-*For example, calling HUMAnN2 as follows does not require updates to the environment:*
-
-`` $ $HUMAnN2_PATH/humann2.py --help ``
+The update environment step is optional if the path to the HUMAnN2 executable is always provided. 
+For example, calling HUMAnN2 as follows does not require updates to the environment: `` $ $HUMAnN2_PATH/humann2.py --help ``
 
 
 ## How to Run ##
