@@ -389,6 +389,16 @@ def check_requirements(args):
             sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
                 " Please check the format of the input file.")
             
+    # If the input format is in binary then convert to sam (tab-delimited text)
+    if args.input_format == "bam":
+        new_file=utilities.bam_to_sam(args.input)
+        
+        if new_file:
+            args.input=new_file
+            args.input_format="sam"
+        else:
+            sys.exit("CRITICAL ERROR: Unable to convert bam input file to sam.")
+            
     # If the biom output format is selected, check for the biom package
     if config.output_format=="biom":
         if not utilities.find_exe_in_path("biom"):

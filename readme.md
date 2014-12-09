@@ -98,7 +98,7 @@ Type the command:
 
 `` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-$SAMPLE = filtered shotgun sequencing metagenome file (fasta or fastq format) or mapping results file (sam or blastm8)
+$SAMPLE = filtered shotgun sequencing metagenome file (fasta or fastq format) or mapping results file (sam,bam,blastm8)
 
 $OUTPUT_DIR = the output directory
 
@@ -247,7 +247,7 @@ usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
                   [--translated_alignment {usearch,rapsearch}]
                   [--xipe {on,off}] [--minpath {on,off}]
                   [--output_format {tsv,biom}]
-                  [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8}]
+                  [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8,bam}]
                   [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2

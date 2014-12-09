@@ -68,6 +68,8 @@ def determine_file_format(file):
     Qname    Sname    id    len    mismatched    gap    Qstart    Qend    Sstart \
     Send    e-value    bit_score
     
+    Bam and gzipped files are recognized based on their extensions
+    
     Error is return if the file is not of a known format
     """
     
@@ -96,8 +98,11 @@ def determine_file_format(file):
     finally:
         file_handle.close()
 
+    # check for a bam file
+    if file.endswith(".bam"):
+        format="bam"
     # check that second line is only nucleotides or amino acids
-    if re.search("^[A-Z|a-z]+$", second_line):
+    elif re.search("^[A-Z|a-z]+$", second_line):
         # check first line to determine fasta or fastq format
         if re.search("^@",first_line):
             format="fastq"        
@@ -142,6 +147,25 @@ def determine_file_format(file):
     logger.info(message)       
                 
     return format
+
+def bam_to_sam(bam_file):
+    """
+    Convert from a bam to sam file
+    """
+    
+    # create a unnamed temp file
+    new_file=unnamed_temp_file()
+
+    exe="samtools"
+    args=["view","-h",bam_file,"-o",new_file]
+    
+    try:
+        execute_command(exe, args, [bam_file], [new_file])
+    except (EnvironmentError, subprocess.CalledProcessError):
+        new_file=""
+        logger.warning("ERROR: Unable to convert bam file to sam.")
+    
+    return new_file
 
 def gunzip_file(gzip_file):
     """
