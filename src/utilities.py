@@ -159,6 +159,10 @@ def bam_to_sam(bam_file):
     exe="samtools"
     args=["view","-h",bam_file,"-o",new_file]
     
+    message="Converting bam file to sam format ..."
+    print(message)
+    logger.info(message)
+    
     try:
         execute_command(exe, args, [bam_file], [new_file])
     except (EnvironmentError, subprocess.CalledProcessError):
@@ -172,6 +176,10 @@ def gunzip_file(gzip_file):
     Return a new copy of the file that is not gzipped
     The new file will be placed in the unnamed temp folder
     """
+    
+    message="Decompressing gzipped file ..."
+    print(message+"\n")
+    logger.info(message)    
     
     try:
         file_handle_gzip=gzip.open(gzip_file,"r")
