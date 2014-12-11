@@ -68,7 +68,7 @@ def determine_file_format(file):
     Qname    Sname    id    len    mismatched    gap    Qstart    Qend    Sstart \
     Send    e-value    bit_score
     
-    Bam and gzipped files are recognized based on their extensions
+    Bam, biom, and gzipped files are recognized based on their extensions
     
     Error is return if the file is not of a known format
     """
@@ -101,6 +101,8 @@ def determine_file_format(file):
     # check for a bam file
     if file.endswith(".bam"):
         format="bam"
+    elif file.endswith(".biom"):
+        format="biom"
     # check that second line is only nucleotides or amino acids
     elif re.search("^[A-Z|a-z]+$", second_line):
         # check first line to determine fasta or fastq format
@@ -135,6 +137,11 @@ def determine_file_format(file):
                     except ValueError:
                         if re.search("[!-~]+",data[config.blast_evalue_index]):
                             format="sam"
+            # check for gene table for a single sample
+            elif len(data)==config.gene_table_total_columns:
+                # check that the data column is numerical
+                if re.search("^[0-9.]+$",data[config.gene_table_value_index]):
+                    format="genetable"
     if not format:
         format="unknown"
     elif gzipped:
@@ -736,19 +743,43 @@ def install_minpath():
         download_tar_and_extract(config.minpath_url, 
             os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
     
-def tsv_to_biom(tsv_file, biom_file):
+def tsv_to_biom(tsv_file, biom_file, table_type):
     """
     Convert from a tsv to biom file
     """
 
     exe="biom"
-    args=["convert","-i",tsv_file,"-o",biom_file,"--table-type","OTU table","--to-json"]
+    args=["convert","-i",tsv_file,"-o",biom_file,"--table-type",table_type+" table","--to-hdf5"]
     
     # Remove output file if already exists
     if os.path.isfile(biom_file):
         remove_file(biom_file)
+    try:
+        execute_command(exe, args, [tsv_file], [biom_file])
+    except (EnvironmentError, subprocess.CalledProcessError):
+        sys.exit("CRITICAL ERROR: Unable to convert tsv file to biom format")
     
-    execute_command(exe, args, [tsv_file], [biom_file])
+def biom_to_tsv(biom_file):
+    """
+    Convert from a biom to tsv file
+    """
+
+    # create a unnamed temp file
+    new_tsv_file=unnamed_temp_file()
+
+    exe="biom"
+    args=["convert","-i",biom_file,"-o",new_tsv_file,"--to-tsv"]
+    
+    message="Converting biom file to tsv ..."
+    logger.info(message)
+    
+    try:
+        execute_command(exe, args, [biom_file], [new_tsv_file])
+    except (EnvironmentError, subprocess.CalledProcessError):
+        new_tsv_file=""
+        logger.warning("Unable to convert biom file to tsv")
+    
+    return new_tsv_file
     
 def process_chocophlan_length(location,uniref):
     """
@@ -804,5 +835,9 @@ def process_reference_annotation(reference):
         
     return [uniref,length,bug]
     
+def format_float_to_string(number):
+    """
+    Format a float to a string using the config max number of decimals
+    """
     
-		
+    return "{:.{digits}f}".format(number, digits=config.output_max_decimals)

@@ -98,17 +98,23 @@ Type the command:
 
 `` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-$SAMPLE = filtered shotgun sequencing metagenome file (fasta or fastq format) or mapping results file (sam,bam,blastm8)
+$SAMPLE = a single file that is one of the following types
+
+1. filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format)
+1. mapping results file (sam, bam or blastm8 format)
+1. gene table file (tsv or biom format)
 
 $OUTPUT_DIR = the output directory
 
 Three output files will be created:
 
-1. $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv
+1. $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv*
 1. $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv
 1. $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv
 
 where $SAMPLENAME is the basename of $SAMPLE
+
+* The gene families file will not be created if the input file type is a gene table.
 
 NOTE: To keep all of the intermediate temp files use the "--temp" flag.
 
@@ -247,7 +253,7 @@ usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
                   [--translated_alignment {usearch,rapsearch}]
                   [--xipe {on,off}] [--minpath {on,off}]
                   [--output_format {tsv,biom}]
-                  [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8,bam}]
+                  [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
                   [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
@@ -309,7 +315,7 @@ optional arguments:
   --output_format {tsv,biom}
                         the format of the output files
                         [DEFAULT: tsv ]
-  --input_format {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8}
+  --input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
                         the format of the input file
                         [DEFAULT: format identified by software ]
   --pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>

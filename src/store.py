@@ -253,6 +253,17 @@ class GeneScores:
         """
         
         return self.__scores.keys()
+
+    def gene_list(self):
+        """
+        Return a list of the genes
+        """
+        genes={}
+        for bug in self.__scores:
+            for gene in self.__scores[bug]:
+                genes[gene]=1
+        
+        return genes.keys()
     
     def scores_for_bug(self,bug):
         """
@@ -266,6 +277,36 @@ class GeneScores:
             logger.debug("Request for scores for bug that does not exist.")
         
         return scores
+    
+    def add_from_file(self,file):
+        """
+        Add all of the gene scores from the file
+        """
+        
+        # Check the file exists and is readable
+        utilities.file_exists_readable(file)
+         
+        file_handle=open(file,"r")
+         
+        for line in file_handle:
+            # Ignore comment lines
+            if not re.search(config.gene_table_comment_indicator,line):
+                data=line.rstrip().split(config.gene_table_delimiter)
+                gene=data[config.gene_table_gene_index]
+                bug="all"
+                if config.gene_table_category_delimiter in gene:
+                    gene_data=gene.split(config.gene_table_category_delimiter)
+                    gene=gene_data[0]
+                    bug=gene_data[1]
+                try:
+                    value=float(data[config.gene_table_value_index])
+                except ValueError:
+                    value=0
+                    logger.debug("Unable to convert gene table value to float: %s",
+                        data[config.gene_table_value_index])
+                self.add({gene: value},bug)
+    
+        file_handle.close()
     
 class PathwaysAndReactions:
     """

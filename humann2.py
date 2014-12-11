@@ -391,6 +391,12 @@ def check_requirements(args):
             
     # If the input format is in binary then convert to sam (tab-delimited text)
     if args.input_format == "bam":
+        
+        # Check for the samtools software
+        if not utilities.find_exe_in_path("samtools"):
+            sys.exit("CRITICAL ERROR: The samtools executable can not be found. "
+            "Please check the install or select another input format.")
+        
         new_file=utilities.bam_to_sam(args.input)
         
         if new_file:
@@ -398,6 +404,23 @@ def check_requirements(args):
             args.input_format="sam"
         else:
             sys.exit("CRITICAL ERROR: Unable to convert bam input file to sam.")
+
+    # If the input format is in biom then convert to tsv
+    if args.input_format == "biom":
+        
+        # Check for the biom software
+        if not utilities.find_exe_in_path("biom"):
+            sys.exit("CRITICAL ERROR: The biom executable can not be found. "
+            "Please check the install or select another input format.")
+        
+        new_file=utilities.biom_to_tsv(args.input)
+        
+        if new_file:
+            args.input=new_file
+            # determine the format of the file
+            args.input_format=utilities.determine_file_format(args.input)
+        else:
+            sys.exit("CRITICAL ERROR: Unable to convert biom input file to tsv.")
             
     # If the biom output format is selected, check for the biom package
     if config.output_format=="biom":
@@ -644,21 +667,27 @@ def main():
         translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
         
+    # Compute or load in gene families
+    output_files=[]
+    if args.input_format in ["fasta","fastq","sam","blastm8"]:
+        # Compute the gene families
+        message="Computing gene families ..."
+        logger.info(message)
+        print("\n"+message)
+        
+        families_file=quantify_families.gene_families(alignments,gene_scores)
+        output_files.append(families_file)
+    
+        message=str(int(time.time() - start_time)) + " seconds from start"
+        logger.info(message)
+        if config.verbose:
+            print(message)
+    elif args.input_format in ["genetable"]:
+        # Load the gene scores
+        gene_scores.add_from_file(args.input) 
     # Handle input files of unknown formats
     else:
         sys.exit("CRITICAL ERROR: Input file of unknown format.")
-
-    # Compute the gene families
-    message="Computing gene families ..."
-    logger.info(message)
-    print("\n"+message)
-    
-    families_file=quantify_families.gene_families(alignments,gene_scores)
-
-    message=str(int(time.time() - start_time)) + " seconds from start"
-    logger.info(message)
-    if config.verbose:
-        print(message)
     
     # Identify reactions and then pathways from the alignments
     message="Computing pathways abundance and coverage ..."
@@ -670,13 +699,14 @@ def main():
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
         pathways_and_reactions_store, pathways_database)
+    output_files.append(abundance_file)
+    output_files.append(coverage_file)
 
     message=str(int(time.time() - start_time)) + " seconds from start"
     logger.info(message)
     if config.verbose:
         print(message)
 
-    output_files=[families_file,abundance_file,coverage_file]
     message="\nOutput files created: \n" + "\n".join(output_files) + "\n"
     logger.info(message)
     print(message)

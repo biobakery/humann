@@ -318,12 +318,12 @@ def print_pathways(pathways, file, header):
         all_score=all_pathways.get_score(pathway)
         if all_score>0:
             # Print the computation of all bugs for pathway
-            tsv_output.append(pathway+delimiter+str(all_score))
+            tsv_output.append(pathway+delimiter+utilities.format_float_to_string(all_score))
             # Print scores per bug for pathway ordered with those with the highest values first
             if pathway in all_pathways_scores_by_bug:
                 for bug in utilities.double_sort(all_pathways_scores_by_bug[pathway]):
                     tsv_output.append(pathway+category_delimiter+bug+delimiter
-                                      +str(all_pathways_scores_by_bug[pathway][bug]))
+                        +utilities.format_float_to_string(all_pathways_scores_by_bug[pathway][bug]))
  
     if config.output_format == "biom":
         # Open a temp file if a conversion to biom is selected
@@ -332,7 +332,7 @@ def print_pathways(pathways, file, header):
         file_out.write("\n".join(tsv_output))
         file_out.close()
         
-        utilities.tsv_to_biom(tmpfile,file)
+        utilities.tsv_to_biom(tmpfile,file,"Pathway")
             
     else:
         # Write the final file as tsv

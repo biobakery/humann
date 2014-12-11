@@ -141,12 +141,12 @@ def gene_families(alignments,gene_scores):
         all_score=all_scores[gene]
         if all_score>0:
             # Print the computation of all bugs for gene family
-            tsv_output.append(gene+delimiter+str(all_score))
+            tsv_output.append(gene+delimiter+utilities.format_float_to_string(all_score))
             # Print scores per bug for family ordered with those with the highest values first
             if gene in all_scores_by_bug:
                 for bug in utilities.double_sort(all_scores_by_bug[gene]):
                     tsv_output.append(gene+category_delimiter+bug+delimiter
-                                      +str(all_scores_by_bug[gene][bug]))       
+                                      +utilities.format_float_to_string(all_scores_by_bug[gene][bug]))       
         
     if config.output_format=="biom":
         # Open a temp file if a conversion to biom is selected
@@ -155,7 +155,7 @@ def gene_families(alignments,gene_scores):
         file_handle.write("\n".join(tsv_output))
         file_handle.close()
         
-        utilities.tsv_to_biom(tmpfile,config.genefamilies_file)
+        utilities.tsv_to_biom(tmpfile,config.genefamilies_file,"Gene")
         
     else:
         # Write output as tsv format

@@ -110,7 +110,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                     species=organism_info.split("|")[-1]
                     genus=organism_info.split("|")[-2]
                     message=("Found " + genus + "|" + species + " : " +
-                        "{0:.2f}".format(read_percent) + "% of mapped reads")
+                        "{:.2f}".format(read_percent) + "% of mapped reads")
                     logger.info(message)
                     print(message)
                     species_found.append(genus + "." + species)
@@ -122,7 +122,7 @@ def create_custom_database(chocophlan_dir, bug_file):
         message="Total species identified in prescreen: " + str(len(species_found))
         logger.info(message)
         print("\n"+message+"\n")
-        message="Species cover " + "{0:.2f}".format(total_reads_covered) + "% of all mapped reads"
+        message="Species cover " + "{:.2f}".format(total_reads_covered) + "% of all mapped reads"
         print(message+"\n")
 
     # identify the files to be used from the ChocoPhlAn database

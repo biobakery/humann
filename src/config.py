@@ -35,6 +35,9 @@ bypass_translated_search = False
 # number of threads
 threads=1
 
+# output file decimal places
+output_max_decimals=10
+
 # log options
 log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
 log_level=log_level_choices[0]
@@ -47,7 +50,7 @@ minpath_toggle = "on"
 # file format
 output_format_choices=["tsv", "biom"]
 output_format=output_format_choices[0]
-input_format_choices=["fastq","fastq.gz","fasta","fasta.gz","sam","blastm8","bam"]
+input_format_choices=["fastq","fastq.gz","fasta","fasta.gz","sam","bam","blastm8","genetable","biom"]
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch"]
@@ -129,6 +132,14 @@ blast_total_columns=12
 # output file formats
 output_file_column_delimiter="\t"
 output_file_category_delimiter="|"
+
+# gene table file formats
+gene_table_comment_indicator="^#"
+gene_table_delimiter="\t"
+gene_table_category_delimiter="|"
+gene_table_gene_index=0
+gene_table_value_index=1
+gene_table_total_columns=2
 
 # usearch options
 usearch_database_extension=".udb"
