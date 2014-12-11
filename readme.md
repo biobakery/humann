@@ -13,15 +13,15 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 ### Software ###
 
-1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan2/)
+1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
 1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.1)
 1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/)
 1. [Python](http://www.python.org/) (version >= 2.7)
-1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded)
+1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
 1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
 1. [usearch](http://www.drive5.com/usearch/) (version = v7.0.1001) (optional)
 
-If MetaPhlAn, bowtie2, and rapsearch (or usearch) are not installed in a location in your $PATH,
+If MetaPhlAn2, bowtie2, and rapsearch2 (or usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
 directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARCH/ (or --usearch $USEARCH/)). By default rapsearch is run for the translated alignment but this can be changed to usearch by setting "--translated_alignment usearch".
 
@@ -40,7 +40,7 @@ HUMAnN2 can be downloaded in two ways:
 	
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
-Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg -u pull`` from within the repository which will download the latest release.
+Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository which will download the latest release.
 
 For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
 
@@ -98,7 +98,7 @@ Type the command:
 
 `` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
 
-$SAMPLE = a single file that is one of the following types
+$SAMPLE = a single file that is one of the following types:
 
 1. filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format)
 1. mapping results file (sam, bam or blastm8 format)
@@ -114,7 +114,7 @@ Three output files will be created:
 
 where $SAMPLENAME is the basename of $SAMPLE
 
-* The gene families file will not be created if the input file type is a gene table.
+*The gene families file will not be created if the input file type is a gene table.
 
 NOTE: To keep all of the intermediate temp files use the "--temp" flag.
 
