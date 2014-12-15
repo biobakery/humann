@@ -242,9 +242,9 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 ### Complete option list ###
 ```
 usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
-                  [--bypass_nucleotide_index] -i <input.fastq> -o <output>
-                  [-c <chocophlan>] [-u <uniref>] [--metaphlan <metaplhan>]
-                  [--o_log <sample.log>]
+                  [--bypass_nucleotide_index] [--bypass_translated_search] -i
+                  <input.fastq> -o <output> [-c <chocophlan>] [-u <uniref>]
+                  [--metaphlan <metaplhan>] [--o_log <sample.log>]
                   [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [--temp]
                   [--bowtie2 <bowtie2>] [--threads <1>]
                   [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
@@ -256,6 +256,7 @@ usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
                   [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
                   [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
 
+
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 
 optional arguments:
@@ -265,6 +266,8 @@ optional arguments:
   --bypass_prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
   --bypass_nucleotide_index
                         bypass the nucleotide index step and run on the indexed ChocoPhlAn database
+  --bypass_translated_search
+                        bypass the translated search step
   -i <input.fastq>, --input <input.fastq>
                         input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8} 
                         [REQUIRED]

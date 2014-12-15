@@ -88,6 +88,11 @@ def parse_arguments (args):
         action="store_true",
         default=config.bypass_nucleotide_index)
     parser.add_argument(
+        "--bypass_translated_search", 
+        help="bypass the translated search step\n", 
+        action="store_true",
+        default=config.bypass_translated_search)
+    parser.add_argument(
         "-i", "--input", 
         help="input file of type {" +",".join(config.input_format_choices)+ "} \n[REQUIRED]", 
         metavar="<input.fastq>", 
@@ -263,6 +268,10 @@ def update_configuration(args):
     if args.bypass_nucleotide_index:
         config.bypass_nucleotide_index=True  
         config.bypass_prescreen=True  
+        
+    # if set, update the config run mode to bypass translated search step
+    if args.bypass_translated_search:
+        config.bypass_translated_search=True
         
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
