@@ -13,6 +13,9 @@ $ ./create_uniref_database.py -i <uniref50.fasta> -o <uniref50>
 To Run with filtering: 
 $ ./create_uniref_database.py -i <uniref50.fasta> -o <uniref50> -f <uncharacterized>
 
+To Run with filtering using a list of ids: 
+$ ./create_uniref_database.py -i <uniref50.fasta> -o <uniref50> -l <id_list.tsv>
+
 """
 
 import argparse
@@ -24,10 +27,10 @@ import os
 import subprocess
 
 # pathways databases with uniref ids
-humann2_test_fullpath=os.path.dirname(os.path.realpath(__file__))
-PATHWAYS_DATABASE1=os.path.join(humann2_test_fullpath,
+humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
+PATHWAYS_DATABASE1=os.path.join(humann2_fullpath,
     "pathways/metacyc_reactions.uniref")
-PATHWAYS_DATABASE2=os.path.join(humann2_test_fullpath,
+PATHWAYS_DATABASE2=os.path.join(humann2_fullpath,
     "pathways/unipathway_pathways")
 PATHWAYS_DATABASES=[PATHWAYS_DATABASE1,PATHWAYS_DATABASE2]
 PATHWAYS_DELIMITER="\t"
@@ -43,8 +46,10 @@ ANNOTATION_DELIMITER="|"
 # the location to add the gene length annotation
 ANNOTATION_INDEX=0
 
-# the total number of files to split the database
-RAPSEARCH_SPLIT=4
+# the delimiter for the file id list
+FILTER_ID_DELIMITER="\t"
+# the index of the ids in the file
+FILTER_ID_INDEX=0
 
 def store_pathways(verbose):
     """
@@ -90,7 +95,7 @@ def add_gene_length(sequence_name, sequence):
     
     return new_sequence_name
 
-def check_sequence(sequence_name,uniref_pathways,filter):
+def check_sequence(sequence_name,uniref_pathways,filter,filter_ids):
     """
     Check the name of the sequence to determine if it should
     be removed from the final set
@@ -98,29 +103,71 @@ def check_sequence(sequence_name,uniref_pathways,filter):
     """
     
     filter_value="store"
+    #check for the filter sequence
+    tokens=sequence_name.split(UNIREF_DELIMITER)
     if filter:
-        #check for the filter sequence
         if re.search(filter, sequence_name, re.IGNORECASE):
             #check that the id is not in a pathway
-            tokens=sequence_name.split(UNIREF_DELIMITER)
             if not tokens[UNIREF_ID_INDEX] in uniref_pathways:
                 filter_value="remove"
             else:
                 filter_value="store_pathways"
+    if filter_ids:
+        if tokens[UNIREF_ID_INDEX] in filter_ids:
+            #check that the id is not in a pathway
+            if not tokens[UNIREF_ID_INDEX] in uniref_pathways:
+                filter_value="remove"
+            else:
+                filter_value="store_pathways"  
         
     return filter_value
 
-def process_fasta_file(fasta_file,uniref_pathways,verbose,filter):
+def process_id_list_file(file):
+    """
+    Read through the file and store ids
+    """
+    
+    # if set, read in the list of ids from the filter file
+    filter_ids={}
+    # check file exists
+    if not os.path.isfile(file):
+        sys.exit("List file can not be found: " + file)
+        
+    if not os.access(file, os.R_OK):
+        sys.exit("List file is not readable: " +  file)
+        
+    # read through file for ids
+    file_handle_read=open(file,"r")
+    for line in file_handle_read:
+        # bypass comment lines
+        if not re.search("^#",line):
+            # file format should be a single column of ids
+            data=line.rstrip().split(FILTER_ID_DELIMITER)
+            filter_ids[data[FILTER_ID_INDEX]]=1
+                
+    file_handle_read.close()
+    
+    return filter_ids
+    
+
+def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,list_file):
     """
     Read through the fasta file, storing headers and sequences
-    Filter to remove sequences 
+    Filter to remove sequences based on string or list
     Add gene lengths to annotations
     """
 
     if verbose:
         if filter:
             print("Filter set on, using string: " + filter)
+        if list_file:
+            print("Using ids to filter from file: " + list_file)
             
+    # get set of filter ids if file set
+    filter_ids={}
+    if list_file:
+        filter_ids=process_id_list_file(list_file)
+        
     # check file exists
     if not os.path.isfile(fasta_file):
         sys.exit("Fasta file can not be found: " + fasta_file)
@@ -148,7 +195,7 @@ def process_fasta_file(fasta_file,uniref_pathways,verbose,filter):
             if sequence_name:
                 # store the sequence just read
                 # if it is not to be filtered
-                filter_type=check_sequence(sequence_name,uniref_pathways,filter)
+                filter_type=check_sequence(sequence_name,uniref_pathways,filter,filter_ids)
                 if "store" in filter_type:
                     new_sequence_name=add_gene_length(sequence_name, sequence)
                     fasta[new_sequence_name]=sequence
@@ -164,7 +211,7 @@ def process_fasta_file(fasta_file,uniref_pathways,verbose,filter):
 
     # store the last sequence if not filtered
     if sequence_name:
-        filter_type=check_sequence(sequence_name,uniref_pathways,filter)
+        filter_type=check_sequence(sequence_name,uniref_pathways,filter,filter_ids)
         if "store" in filter_type:
             new_sequence_name=add_gene_length(sequence_name, sequence)
             fasta[new_sequence_name]=sequence
@@ -220,6 +267,9 @@ def parse_arguments(args):
     parser.add_argument(
         "-f","--filter",
         help="string to use for filtering (example: uncharacterized)\n")
+    parser.add_argument(
+        "-l","--list",
+        help="file of id list to use for filtering (example: id_list.tsv)\n")
 
     return parser.parse_args()
 
@@ -251,7 +301,7 @@ def main():
     if args.verbose:
         print("Annotating fasta file: " + args.input)
         
-    fasta=process_fasta_file(args.input,uniref_pathways,args.verbose,args.filter)
+    fasta=process_fasta_file(args.input,uniref_pathways,args.verbose,args.filter,args.list)
     
     # create a temp file of the fasta sequences
     file_out, temp_fasta_file=tempfile.mkstemp(dir=temp_dir)
@@ -267,7 +317,7 @@ def main():
         print("Creating database from temp fasta file")
         
     # create the database
-    cmd=[database_software,"-d",temp_fasta_file,"-n",args.output,"-s",str(RAPSEARCH_SPLIT)]
+    cmd=[database_software,"-d",temp_fasta_file,"-n",args.output]
     try:
         p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except (EnvironmentError, subprocess.CalledProcessError):
