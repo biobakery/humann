@@ -80,7 +80,7 @@ The input Uniprot files can be downloaded from the following sites:
   
 SECOND FILE: unipathway_pathways (Build_mapping_Pathways_Uniprot)
 
-The objective of this program is to map  Swissprot Pathways to Uniprot ACs  and Uniref50 and 90    
+The objective of this program is to map  Swissprot Pathways to Uniprot ACs    
 
 This program reads the Swissprot pathways file /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt
 that looks as follows:
@@ -92,7 +92,10 @@ Alkaloid biosynthesis; ajmaline biosynthesis
      PNAE_RAUSE  (Q9SE93)
 ****
 And builds the relations: AC --> Reaction and Reaction --> AC 
-Then it proceeds to read the Uniref50 and Uniref90 files in the same fashion as ReadSwisport.py does (Unzip the 50, 90 files,
+
+At this point,  it generates the unipathway_pathways file and it can complete here.
+However, it has the option to generate also a file with relations: Reaction --> Uniref50 and 90
+If so,  it proceeds to read the Uniref50 and Uniref90 files in the same fashion as ReadSwisport.py does (Unzip the 50, 90 files,
 glue them) and treats, like in the case of ReadSwissprot.py,  the AC table, as a transaction file and runs a Transaction vs.
 Master process (AC Table vs. U5090 file of 80 million recs)  and this way updates the U50 and U90 for the particular AC and generates 
 the extract:  Reaction, AC{s}, U50{s},U90{s}
