@@ -37,7 +37,87 @@ $ python Reaction_to_Uniref5090.py --i_reactions $METACYC/18.1/data/reactions.da
 2.4. Create the humann2/data/metacyc_pathways data file (pathways database file2).
 $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways
 
-2.5  Instructions to run the ReadUniref.py   
+ *********************************************************************************
+2.5  ********      GENERATION OF THE PATHWAYS FILES        ********
+ *********************************************************************************
+There are two important pathway files whose source is Swissprot:
+
+	a. unipathway_uniprots.uniref
+	b. unipathway_pathways
+	
+FIRST FILE: unipathway_uniprots.uniref  (ReadSwissprot.py)
+	
+unipathway_uniprots.uniref is generated in the program ReadSwissprot.py by reading the uniprot_sprot.dat to gather the AC and all
+ECs related to it,  and by gathering the Uniref50 and Uniref90 cluster names associated to it 
+from the map_uniprot_UniRef50.dat.gz and map_uniprot_UniRef90.dat.gz files.
+The logic of the program consists of building a table of ACs where each AC entry
+contains all ECs related to it - this is gathered from uniprot_sprot.dat.
+Once this table is built, we proceed to process Uniref50 and 90 files as following:
+   a. We create a temporary directory 
+   b Unzip the U50 and U90 files
+   c. Because they contain exactly the same number of records (One record per AC, containing is Uniref cluster)
+      we literally glue them together and generate a U50,90 singe file
+   d. Because the U5090 file and the AC table that we gathered before from Swissprot are 
+      sorted in the same sequence (AC)  we treat the AC table as a Transaction File (~250,00 records)
+      which is processed against a Master (U5090 80 million records).
+      When there is a match in the keys, we build the record: AC, EC{s}, U50,U90
+      where the AC, EC(s) are taken from the table and the U50,90 are taken from the matched U5090 rec.
+
+To run the job:	  
+$ python ReadSwissprot.py \
+  --i   /n/huttenhower_lab/data/uniprot/2014-09/uniprot_sprot.dat \
+  --o unipathway_uniprots.uniref \
+  --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz \
+  --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz
+  
+The input Uniprot files can be downloaded from the following sites:
+  http://www.uniprot.org/downloads
+  ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
+  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/
+  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/
+  
+  
+  
+SECOND FILE: unipathway_pathways (Build_mapping_Pathways_Uniprot)
+
+The objective of this program is to map  Swissprot Pathways to Uniprot ACs  and Uniref50 and 90    
+
+This program reads the Swissprot pathways file /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt
+that looks as follows:
+****
+Alkaloid biosynthesis; 3alpha(S)-strictosidine biosynthesis; 3alpha(S)-strictosidine from secologanin and tryptamine: step 1/1
+     STS1_ARATH  (P94111)    , STS3_ARATH  (P92976)    , STSY_CATRO  (P18417)    ,
+     STSY_RAUMA  (P68174)    , STSY_RAUSE  (P68175)
+Alkaloid biosynthesis; ajmaline biosynthesis
+     PNAE_RAUSE  (Q9SE93)
+****
+And builds the relations: AC --> Reaction and Reaction --> AC 
+Then it proceeds to read the Uniref50 and Uniref90 files in the same fashion as ReadSwisport.py does (Unzip the 50, 90 files,
+glue them) and treats, like in the case of ReadSwissprot.py,  the AC table, as a transaction file and runs a Transaction vs.
+Master process (AC Table vs. U5090 file of 80 million recs)  and this way updates the U50 and U90 for the particular AC and generates 
+the extract:  Reaction, AC{s}, U50{s},U90{s}
+
+
+To run the program:  
+ python Build_mapping_Pathways_Uniprot.py --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
+ --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz \
+ --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz \
+ --oPathwaysACs  unipathway_pathways \
+ --oPathwaysUniref5090 PathwaysUniref5090   
+  
+  
+The input Uniprot files can be downloaded from the following sites:
+  http://www.uniprot.org/downloads
+  http://www.uniprot.org/docs/pathway
+  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/
+  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/
+  
+
+ *********************************************************************************
+2.5  ********      End doc GENERATION OF THE PATHWAYS FILES        ********
+ *********************************************************************************
+
+2.6  Instructions to run the ReadUniref.py   
 #********************************************************************************************
 #    Read Uniref Program                                                                    *
 #    This program reads the mappings uniprot --> Uniref50                                   *
@@ -96,7 +176,7 @@ $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways
 #   Written by George Weingart - george.weingart@gmail.com   8/28/2014                      *  
 #********************************************************************************************
 
-2.6  Instructions to run the  Build_mapping_Pathways_Uniprot.py
+2.7  Instructions to run the  Build_mapping_Pathways_Uniprot.py
 
 #********************************************************************************************
 #    Map Pathways to Uniprot IDs  and Uniref50 and 90                                       *
@@ -129,7 +209,7 @@ $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways
 #   Written by George Weingart  Oct. 20, 2014   george.weingart@gmail.com                   *
 #********************************************************************************************
 
-2.7  Instructions to run the  Reaction_to_Uniref5090.py
+2.8  Instructions to run the  Reaction_to_Uniref5090.py
 
 
 #********************************************************************************************
@@ -166,31 +246,7 @@ $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways
 #********************************************************************************************
 
 
-2.7  Instructions to run the  ReadSwissprot.py
 
-
-#********************************************************************************************
-#    Read Swissprot program                                                                 *
-#    This program reads the unprot.dat file and creates an                                  *
-#    extract containing in each line                                                        *
-#    The Protein AC and all the ECs related to it                                           *
-
-#  -----------------------------------------------------------------------------------------*
-#  Invoking the program:                                                                    *
-#  ---------------------                                                                    *
-#   python ReadSwissprot.py  --i  input_file  --o output_file                               *
-#   Where:                                                                                  *
-#   --i input_file is the UniprotKB Swissprot text file, which can be downloaded from       *
-#    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz *
-#                                                                                           *
-#   The current downloaded file, which serves as input,  resides on hutlab3 in              *
-#    /n/huttenhower_lab/data/uniprot/2014-09/uniprot_sprot.dat                              *
-#                                                                                           *
-#   The current output of thei program is stored in humann2_test directory under the name   *
-#   swissprot_mapping_AC_to_EC                                                              * 
-#                                                                                           *
-#   Written by George Weingart - george.weingart@gmail.com   10/06/2014                     *  
-#********************************************************************************************
 
 
 
