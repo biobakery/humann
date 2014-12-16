@@ -31,7 +31,7 @@ humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
 PATHWAYS_DATABASE1=os.path.join(humann2_fullpath,
     "pathways/metacyc_reactions.uniref")
 PATHWAYS_DATABASE2=os.path.join(humann2_fullpath,
-    "pathways/unipathway_pathways")
+    "pathways/unipathway_uniprots.uniref")
 PATHWAYS_DATABASES=[PATHWAYS_DATABASE1,PATHWAYS_DATABASE2]
 PATHWAYS_DELIMITER="\t"
 PATHWAYS_UNIREF_IDENTIFIER="uniref50"
