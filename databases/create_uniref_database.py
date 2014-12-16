@@ -146,7 +146,7 @@ def process_id_list_file(file):
             filter_ids[data[FILTER_ID_INDEX]]=1
                 
     file_handle_read.close()
-    
+   
     return filter_ids
     
 
@@ -167,6 +167,8 @@ def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,list_file):
     filter_ids={}
     if list_file:
         filter_ids=process_id_list_file(list_file)
+        if verbose:
+            print("Total ids to filter: " + str(len(filter_ids.keys())))
         
     # check file exists
     if not os.path.isfile(fasta_file):
