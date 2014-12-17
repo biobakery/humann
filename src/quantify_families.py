@@ -127,26 +127,19 @@ def gene_families(alignments,gene_scores):
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter
 
-    # Filter out any unknown genes that we do not want to print
-    delete_list=[]
-    for gene in all_scores:
-        if gene in config.uniref_gene_filters:
-            delete_list.append(gene)
-    
-    for gene in delete_list:
-        del all_scores[gene]
-
     # Print out the gene families with those with the highest scores first
     for gene in utilities.double_sort(all_scores):
-        all_score=all_scores[gene]
-        if all_score>0:
-            # Print the computation of all bugs for gene family
-            tsv_output.append(gene+delimiter+utilities.format_float_to_string(all_score))
-            # Print scores per bug for family ordered with those with the highest values first
-            if gene in all_scores_by_bug:
-                for bug in utilities.double_sort(all_scores_by_bug[gene]):
-                    tsv_output.append(gene+category_delimiter+bug+delimiter
-                                      +utilities.format_float_to_string(all_scores_by_bug[gene][bug]))       
+        # Filter out any unknown genes that we do not want to print
+        if not gene in config.uniref_gene_filters:
+            all_score=all_scores[gene]
+            if all_score>0:
+                # Print the computation of all bugs for gene family
+                tsv_output.append(gene+delimiter+utilities.format_float_to_string(all_score))
+                # Print scores per bug for family ordered with those with the highest values first
+                if gene in all_scores_by_bug:
+                    for bug in utilities.double_sort(all_scores_by_bug[gene]):
+                        tsv_output.append(gene+category_delimiter+bug+delimiter
+                                          +utilities.format_float_to_string(all_scores_by_bug[gene][bug]))       
         
     if config.output_format=="biom":
         # Open a temp file if a conversion to biom is selected
