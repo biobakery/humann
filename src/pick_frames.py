@@ -1,16 +1,26 @@
-#! /usr/bin/env python
-
 """
-Standalone pipe for converting DNA reads in FASTA
-format to FASTA formatted peptides.
+HUMAnN2: pick_frames module
+Screen nucleotide reads for protein-like reading frames
 
-Examines all 6 reading frames and prints those that
-(1) do not contain a stop codon and 
-(2) do not contain a non-amino acid character (here, "X")
+Copyright (c) 2014 Harvard School of Public Health
 
-Usage: cat reads.fasta | python <this>
------------------------------------------------
-Author: Eric Franzosa (eric.franzosa@gmail.com)
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 """
 
 import sys
@@ -64,9 +74,11 @@ for line in genetic_code.split( "\n" ):
 # ---------------------------------------------------------------
         
 def reverse_complement ( dna ):
+    """ convert a dna strand to its reverse complement """
     return "".join( [switch[nuc] for nuc in dna[::-1]] )
     
 def translate ( dna, frame=0 ):
+    """ translate a dna sequence in the desired frame (0,1,2) """
     peptide = ""
     i = frame
     while i + 3 <= len( dna ):
@@ -74,37 +86,48 @@ def translate ( dna, frame=0 ):
         i += 3
     return peptide
 
-def pick_frames ( header, sequence ):
+def pick_frames ( sequence ):
+    """ identify +/- frames with no bad chars (including "*"=stop) """
     sequence_rc = reverse_complement( sequence )
-    peptides = []
+    valid_peptides = []
     # forward translations
     for i in range( 3 ):
-        peptides.append( translate( sequence, frame=i ) )
+        p = translate( sequence, frame=i )
+        if "*" not in p and bad_aa_char not in p:
+            valid_peptides.append( p )
     # reverse translations
     for i in range( 3 ):
-        peptides.append( translate( sequence_rc, frame=i ) )
-    for peptide in peptides:
-        if not ( "*" in peptide or bad_aa_char in peptide ):
-            print header
-            print peptide
+        p = translate( sequence_rc, frame=i )
+        if "*" not in p and bad_aa_char not in p:
+            valid_peptides.append( p )
+    # return / output
+    return valid_peptides
+
+def write ( header, sequence ):
+    """ find a print valid frames from sequence in fasta format """
+    valid_peptides = pick_frames( sequence )
+    for p in valid_peptides:
+        print header
+        print p
 
 # ---------------------------------------------------------------
-# main
+# main (script mode)
 # ---------------------------------------------------------------
 
 def main ( ):
+    """ called to stream dna -> protein in script mode """
     header, sequence = None, ""
     for line in sys.stdin:
         line = line.strip()
         if line[0] == ">":
             # new record, process active record and reset
             if header is not None:
-                pick_frames( header, sequence )
+                write( header, sequence )
             header, sequence = line, ""
         else:
             sequence += line
     # process last record
-    pick_frames( header, sequence )
+    write( header, sequence )
 
 if __name__ == "__main__":
     main()
