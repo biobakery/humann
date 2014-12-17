@@ -45,7 +45,49 @@ There are two important pathway files whose source is Swissprot:
 	a. unipathway_uniprots.uniref
 	b. unipathway_pathways
 	
-FIRST FILE: unipathway_uniprots.uniref  (ReadSwissprot.py)
+
+  
+  
+FIRST FILE: unipathway_pathways (Build_mapping_Pathways_Uniprot)
+
+The objective of this program is to map  Swissprot Pathways to Uniprot ACs    
+
+This program reads the Swissprot pathways file /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt
+that looks as follows:
+****
+Alkaloid biosynthesis; 3alpha(S)-strictosidine biosynthesis; 3alpha(S)-strictosidine from secologanin and tryptamine: step 1/1
+     STS1_ARATH  (P94111)    , STS3_ARATH  (P92976)    , STSY_CATRO  (P18417)    ,
+     STSY_RAUMA  (P68174)    , STSY_RAUSE  (P68175)
+Alkaloid biosynthesis; ajmaline biosynthesis
+     PNAE_RAUSE  (Q9SE93)
+****
+And builds the relations: AC --> Reaction and Reaction --> AC 
+It also builds an extract file controlled by the parameter --oValidACs    which contains a list of the ACs that were output 
+  **** This means that if all files need to be generated, the first step must be run first ****
+
+At this point,  it generates the unipathway_pathways file and it can complete here.
+However, it has the option to generate also a file with relations: Reaction --> Uniref50 and 90
+If so,  it proceeds to read the Uniref50 and Uniref90 files in the same fashion as ReadSwisport.py does (Unzip the 50, 90 files,
+glue them) and treats, like in the case of ReadSwissprot.py,  the AC table, as a transaction file and runs a Transaction vs.
+Master process (AC Table vs. U5090 file of 80 million recs)  and this way updates the U50 and U90 for the particular AC and generates 
+the extract:  Reaction, AC{s}, U50{s},U90{s}
+
+
+To run the program:  
+ python Build_mapping_Pathways_Uniprot.py --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
+ --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz \
+ --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz \
+ --oPathwaysACs  unipathway_pathways \
+ --oPathwaysUniref5090 PathwaysUniref5090   
+  
+  
+The input Uniprot files can be downloaded from the following sites:
+  http://www.uniprot.org/downloads
+  http://www.uniprot.org/docs/pathway
+  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/
+  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/
+  
+SECOND FILE: unipathway_uniprots.uniref  (ReadSwissprot.py)
 	
 unipathway_uniprots.uniref is generated in the program ReadSwissprot.py by reading the uniprot_sprot.dat to gather the AC and all
 ECs related to it,  and by gathering the Uniref50 and Uniref90 cluster names associated to it 
@@ -78,44 +120,7 @@ The input Uniprot files can be downloaded from the following sites:
   
   
   
-SECOND FILE: unipathway_pathways (Build_mapping_Pathways_Uniprot)
-
-The objective of this program is to map  Swissprot Pathways to Uniprot ACs    
-
-This program reads the Swissprot pathways file /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt
-that looks as follows:
-****
-Alkaloid biosynthesis; 3alpha(S)-strictosidine biosynthesis; 3alpha(S)-strictosidine from secologanin and tryptamine: step 1/1
-     STS1_ARATH  (P94111)    , STS3_ARATH  (P92976)    , STSY_CATRO  (P18417)    ,
-     STSY_RAUMA  (P68174)    , STSY_RAUSE  (P68175)
-Alkaloid biosynthesis; ajmaline biosynthesis
-     PNAE_RAUSE  (Q9SE93)
-****
-And builds the relations: AC --> Reaction and Reaction --> AC 
-
-At this point,  it generates the unipathway_pathways file and it can complete here.
-However, it has the option to generate also a file with relations: Reaction --> Uniref50 and 90
-If so,  it proceeds to read the Uniref50 and Uniref90 files in the same fashion as ReadSwisport.py does (Unzip the 50, 90 files,
-glue them) and treats, like in the case of ReadSwissprot.py,  the AC table, as a transaction file and runs a Transaction vs.
-Master process (AC Table vs. U5090 file of 80 million recs)  and this way updates the U50 and U90 for the particular AC and generates 
-the extract:  Reaction, AC{s}, U50{s},U90{s}
-
-
-To run the program:  
- python Build_mapping_Pathways_Uniprot.py --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
- --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz \
- --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz \
- --oPathwaysACs  unipathway_pathways \
- --oPathwaysUniref5090 PathwaysUniref5090   
   
-  
-The input Uniprot files can be downloaded from the following sites:
-  http://www.uniprot.org/downloads
-  http://www.uniprot.org/docs/pathway
-  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/
-  ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/
-  
-
  *********************************************************************************
 2.5  ********      End doc GENERATION OF THE PATHWAYS FILES        ********
  *********************************************************************************

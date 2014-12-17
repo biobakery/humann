@@ -26,6 +26,7 @@ import argparse
 # --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz\
 # --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz\
 # --oPathwaysACs  unipathway_uniprots.uniref \
+# --oValidACs  list_of_ACs \
 # --oPathwaysUniref5090 PathwaysUniref5090                                            
 #                                                                                           *
 #   Where:                                                                                  *
@@ -57,6 +58,9 @@ def read_params(x):
 	parser.add_argument('--i', action="store", dest='i',nargs='?')
 	parser.add_argument('--uniref50gz', action="store", dest='Uniref50gz',nargs='?')
 	parser.add_argument('--uniref90gz', action="store", dest='Uniref90gz',nargs='?')
+	parser.add_argument('--oValidACs', action="store", dest='oValidACs',nargs='?')
+
+	
 	CommonArea['parser'] = parser
 	return  CommonArea
  
@@ -202,6 +206,8 @@ def Map_Pathways_to_UniprotIDs(CommonArea):
 		if iLine[1] != " ":
 			if len(lOutputLine) > 0:
 				strBuiltRecord = "\t".join(lOutputLine) + 	"\n"
+				strBuiltRecord = strBuiltRecord.replace (" ", "_")   #Modified 20141216
+				strBuiltRecord = strBuiltRecord.replace (";_", ";")  #Modified 20141216
 				OutputFile.write(strBuiltRecord )
 				iLine = iLine.replace("\t"," ",3)
 				sCurrentPathway = iLine
@@ -220,6 +226,8 @@ def Map_Pathways_to_UniprotIDs(CommonArea):
   	else:
 		if len(lOutputLine) > 0:
 			strBuiltRecord = "\t".join(lOutputLine) + 	"\n"
+			strBuiltRecord = strBuiltRecord.replace (" ", "_")   #Modified 20141216
+			strBuiltRecord = strBuiltRecord.replace (";_", ";")  #Modified 20141216
 			OutputFile.write(strBuiltRecord )
 			
 	CommonArea['dPathwaysACs'] = dPathwaysACs
@@ -228,6 +236,11 @@ def Map_Pathways_to_UniprotIDs(CommonArea):
 	print "There are ", len(CommonArea['sTableACs'] ) ," AC entries in the set of ACs\n"
  	InputFile.close()
 	OutputFile.close()
+	OutputValidACsFile = open(CommonArea['oValidACs'],'w')    #Create the file of valid ACs to be used in ReadSwissprot.py
+	for ValidAC in CommonArea['sTableACs']:
+	    OutRecValidAC = str(ValidAC) + "\n"
+	    OutputValidACsFile.write(OutRecValidAC)
+	OutputValidACsFile.close()
 	return CommonArea 
 
 
@@ -297,6 +310,8 @@ CommonArea['oPathwaysUniref5090'] = results.oPathwaysUniref5090
 CommonArea['iFile'] = results.i 
 CommonArea['Uniref50gz'] = results.Uniref50gz
 CommonArea['Uniref90gz'] = results.Uniref90gz
+CommonArea['oValidACs'] = results.oValidACs
+
  
 CommonArea = Map_Pathways_to_UniprotIDs(CommonArea)
  
