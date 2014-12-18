@@ -25,7 +25,7 @@ import argparse
 #  python Build_mapping_Pathways_Uniprot.py --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
 # --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz\
 # --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz\
-# --oPathwaysACs  unipathway_uniprots.uniref \
+# --oPathwaysACs  unipathway_pathways \
 # --oValidACs  list_of_ACs \
 # --oPathwaysUniref5090 PathwaysUniref5090                                            
 #                                                                                           *

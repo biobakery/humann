@@ -78,6 +78,7 @@ To run the program:
  --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz \
  --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz \
  --oPathwaysACs  unipathway_pathways \
+ --oValidACs  ../list_of_ACs \
  --oPathwaysUniref5090 PathwaysUniref5090   
   
   

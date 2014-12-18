@@ -9,18 +9,16 @@ import tempfile
 
 #********************************************************************************************
 #    Read Swissprot program                                                                 *
-#    This program reads the unprot.dat file and creates an                                  *
-#    extract containing in each line                                                        *
-#    The Protein AC and all the ECs related to it                                           *
+#  
 
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:  (Using the current location of the files)                         *
 #  ---------------------                                                                    *
 #   python ReadSwissprot.py  --i  /n/huttenhower_lab/data/uniprot/2014-09/uniprot_sprot.dat\
-#   --o output_file \                          
+#   --o unipathway_uniprots.uniref \                          
 #   --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz\
 #   --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz \
-#   --cross_reference_acs    unipathway_uniprots.uniref
+#   --cross_reference_acs ../list_of_ACs    
 #                                                                                           *
 #   Where:                                                                                  *
 #   --i input_file is the UniprotKB Swissprot text file, which can be downloaded from       *
@@ -235,14 +233,16 @@ def  GenerateOutputFile(CommonArea):
 	for AC in sorted(CommonArea['dAC'].keys()):
 		lOutputRecord = [AC]
 		try:
-			for EC in CommonArea['dAC'][AC]['ECs']:
-				lOutputRecord.append(EC)
-			U50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0]
-			U90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1]
-			lOutputRecord.append(U50)
-			lOutputRecord.append(U90)
-			strBuiltRecord = strTab.join(lOutputRecord) +  strNewLine
-			if AC in CommonArea['sValidACs']:				#Create extract only for valid ACs
+		    strECs = ""
+		    for EC in CommonArea['dAC'][AC]['ECs']:
+				strECs =  strECs + "," + EC 
+		    lOutputRecord.append(strECs[1:])
+		    U50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0]
+		    U90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1]
+		    lOutputRecord.append(U50)
+		    lOutputRecord.append(U90)
+		    strBuiltRecord = strTab.join(lOutputRecord) +  strNewLine
+		    if AC in CommonArea['sValidACs']:				#Create extract only for valid ACs
 				strBuiltRecord = strBuiltRecord.replace (" ", "_")   #Modified 20141216
 				strBuiltRecord = strBuiltRecord.replace (";_", ";")  #Modified 20141216
 				OutputFile.write(strBuiltRecord)
@@ -268,7 +268,7 @@ def LoadCrossReferenceACs(CommonArea):   	# Load the ACs into a set for lookup.
 		AC = iLineAC.split()[0]
 		lValidACs.append(AC)	# Add this AC
 	CommonArea['sValidACs'] = set(lValidACs)
-	print "The number of valid ACs (From the cross reference file) = ", str(len(set(lValidACs))), '\n'
+	print "The number of valid ACs (From the cross reference file) = ", str(len( lValidACs )), '\n'
 	return CommonArea
 	
 	
