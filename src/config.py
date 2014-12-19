@@ -46,6 +46,7 @@ log_level=log_level_choices[0]
 toggle_choices=["on","off"]
 xipe_toggle = "off"
 minpath_toggle = "on"
+pick_frames_toggle = "off"
 
 # file format
 output_format_choices=["tsv", "biom"]
@@ -70,6 +71,7 @@ bowtie2_index_name="_bowtie2_index"
 chocophlan_alignment_name="_bowtie2_aligned.sam"
 
 nucleotide_unaligned_reads_name_no_ext="_bowtie2_unaligned"
+nucleotide_unaligned_reads_picked_frames_name_no_ext="_bowtie2_unaligned_picked_frames"
 nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 
 translated_alignment_name="_aligned.tsv"
