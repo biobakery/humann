@@ -621,6 +621,18 @@ def estimate_unaligned_reads(input_fastq, unaligned_fastq):
 
     return str(percent)
 
+def estimate_unaligned_reads_stored(input_fastq, unaligned_store):
+    """
+    Calculate an estimate of the percent of reads unaligned and stored
+    """
+
+    # check files exist and are readable
+    file_exists_readable(input_fastq)
+
+    percent=int(unaligned_store.count_reads()/float(count_reads(input_fastq)) * 100)
+
+    return str(percent)
+
 def remove_directory(dir):
     """
     Remove directory if exists

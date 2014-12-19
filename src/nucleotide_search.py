@@ -32,6 +32,7 @@ import traceback
 import utilities
 import config
 import store
+import pick_frames
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -119,6 +120,16 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
     #even if original reads file is fastq
     unaligned_reads_file_fasta= utilities.name_temp_file(
         config.nucleotide_unaligned_reads_name_no_ext + config.fasta_extension)
+    
+    # if set to run frame picker, create named temp file
+    write_picked_frames=False
+    if config.pick_frames_toggle == "on":
+        logger.debug("Creating picked frames file")
+        unaligned_reads_file_picked_frames_fasta = utilities.name_temp_file( 
+            config.nucleotide_unaligned_reads_picked_frames_name_no_ext + 
+            config.fasta_extension)
+        file_handle_write_unaligned_frames=open(unaligned_reads_file_picked_frames_fasta, "w")
+        write_picked_frames=True
 
     #name the reduced aligned reads file with tsv extension
     reduced_aligned_reads_file=utilities.name_temp_file(
@@ -144,6 +155,16 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
                 file_handle_write_unaligned.write(">"+
                     info[config.sam_read_name_index]+"\n")
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
+                
+                # find the frames for the sequence and write to file
+                if write_picked_frames:
+                    picked_frames=pick_frames.pick_frames(info[config.sam_read_index])
+                    if not picked_frames:
+                        logger.debug("No frames found for sequence: " + info[config.sam_read_name_index])
+                    for frame in picked_frames:
+                        file_handle_write_unaligned_frames.write(">"+
+                            info[config.sam_read_name_index]+"\n")
+                        file_handle_write_unaligned_frames.write(frame+"\n")
                 
                 # store the unaligned reads data
                 unaligned_reads_store.add(info[config.sam_read_name_index], 
@@ -180,6 +201,9 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
     file_handle_read.close()
     file_handle_write_unaligned.close()   
     file_handle_write_aligned.close()
+    
+    if write_picked_frames:
+        file_handle_write_unaligned_frames.close()
 
     # remove the alignment file as it will be replaced by the two files created
     if not config.resume:
@@ -189,4 +213,9 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
             logger.debug("Remove sam file")
             utilities.remove_file(sam_alignment_file)
 
-    return [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ]
+    # return the picked frames file if written
+    return_list=[unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file]
+    if write_picked_frames:
+        return_list=[unaligned_reads_file_picked_frames_fasta, unaligned_reads_store, reduced_aligned_reads_file]
+
+    return return_list

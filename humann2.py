@@ -187,6 +187,12 @@ def parse_arguments (args):
         default=config.minpath_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
+        "--pick_frames",
+        help="turn on/off the pick_frames computation\n[DEFAULT: " + 
+        config.pick_frames_toggle + " ]",
+        default=config.pick_frames_toggle,
+        choices=config.toggle_choices)
+    parser.add_argument(
         "--output_format",
         help="the format of the output files\n[DEFAULT: " +
         config.output_format + " ]",
@@ -270,8 +276,12 @@ def update_configuration(args):
         config.bypass_prescreen=True  
         
     # if set, update the config run mode to bypass translated search step
+    # set the pick_frames toggle based on the bypass
     if args.bypass_translated_search:
         config.bypass_translated_search=True
+        config.pick_frames_toggle="off"
+    else:
+        config.pick_frames_toggle=args.pick_frames
         
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
@@ -609,8 +619,8 @@ def main():
             print("\n"+message)
     
             # Report reads unaligned
-            message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-                args.input, unaligned_reads_file_fasta) + "%"
+            message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads_stored(
+                args.input, unaligned_reads_store) + "%"
             logger.info(message)
             print("\n"+message+"\n")  
         else:
@@ -647,8 +657,8 @@ def main():
                 print("\n"+message)
         
                 # Report reads unaligned
-                message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads(
-                    args.input, translated_unaligned_reads_file_fastq) + "%"
+                message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads_stored(
+                    args.input, unaligned_reads_store) + "%"
                 logger.info(message)
                 print("\n"+message+"\n")  
             else:
@@ -662,6 +672,9 @@ def main():
     
     # Process input files of sam format
     elif args.input_format in ["sam"]:
+        # Turn off frame picker if set on
+        config.pick_frames_toggle="off"
+        
         # Store the sam mapping results
         [unaligned_reads_file_fasta, unaligned_reads_store, 
             reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
