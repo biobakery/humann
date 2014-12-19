@@ -98,6 +98,25 @@ def ReadSwissprot(CommonArea):
 	print "Read " + str(LineCntr) + " Input Lines from the Swissprot text file"
 	print "Loaded  " + str(ACsPostedCounter) + " ACs into the AC table"
 	CommonArea['dAC'] = dAC
+	############################################################################
+	# dAC contains all ACs (with respective ECs) that were read from Swissprot *
+	#   Now, we will augment it with all ACs that are in the ValidACs          *
+	#   but not in the CommonArea - these are ACs that are in the Pathways file*
+	#   but do not have an EC - and we will force an empty EC                  *
+	#   The purpose of that is that we want that unipath-pathways  and         *
+	#   unipathway_uniprots.unirefs have exactly the same number of ACs        *
+	############################################################################
+	
+
+	
+	sACsFromUniProtWithECs =  set(CommonArea['dAC'].keys())
+	lACsNoECYesPath = list(set(CommonArea['sValidACs']) - set(sACsFromUniProtWithECs))
+	dACEntry = dict()
+	dACEntry['ECs'] = list()
+	for ACAdded  in lACsNoECYesPath:
+		CommonArea['dAC'][ACAdded] = dACEntry 
+
+
 	InputFile.close()
  	return CommonArea
 
@@ -183,7 +202,6 @@ def TxnVsMaster(CommonArea):
 	MasterLine = CommonArea['File5090'].readline()						# Read the Line
 	MKey = MasterLine.split()[0]							# This is the Master Key
 	TxnKey = CommonArea['lACsSorted'][0]
-	
 
 	while  FlagEnd == False:
 		if MKey == TxnKey:
@@ -229,8 +247,8 @@ def  GenerateOutputFile(CommonArea):
 	strTab = "\t"
 	strNewLine = "\n"
 	OutputLineCntr = 0
-	OutputFile = open(CommonArea['oFile'],'w')
-	for AC in sorted(CommonArea['dAC'].keys()):
+ 	OutputFile = open(CommonArea['oFile'],'w')
+ 	for AC in sorted(CommonArea['dAC'].keys()):
 		lOutputRecord = [AC]
 		try:
 		    strECs = ""
@@ -249,7 +267,6 @@ def  GenerateOutputFile(CommonArea):
 				OutputLineCntr = OutputLineCntr + 1
 		except:
 			pass
-	
 	OutputFile.close()
 	print "Total number of AC,EC(s), Uniref_50,Uniref_90 records generated is: ", str(OutputLineCntr),"\n"
 	return CommonArea
@@ -284,11 +301,12 @@ results = parser.parse_args()
 
 CommonArea['iFile'] = results.i
 CommonArea['oFile'] = results.o
+CommonArea['CrossRefACsIFile'] = results.CrossRefACsIFile  # Take the Cross reference ACs
+CommonArea  = LoadCrossReferenceACs(CommonArea)	# Load the ACs into a set for lookup.
 CommonArea = ReadSwissprot(CommonArea)			#Read Swissprot and resolve the relation AC --> EC{s}
 
 
-CommonArea['CrossRefACsIFile'] = results.CrossRefACsIFile  # Take the Cross reference ACs
-CommonArea  = LoadCrossReferenceACs(CommonArea)	# Load the ACs into a set for lookup.
+
 
 strUniref50gz = results.Uniref50gz					# The first file is the zipped version of the Uniref50 Translation file
 strUniref90gz = results.Uniref90gz					# The 2nd file is the zipped version of the Uniref90 Translation file

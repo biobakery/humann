@@ -26,7 +26,7 @@ import argparse
 # --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz\
 # --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz\
 # --oPathwaysACs  unipathway_pathways \
-# --oValidACs  list_of_ACs \
+# --oValidACs  ../list_of_ACs \
 # --oPathwaysUniref5090 PathwaysUniref5090                                            
 #                                                                                           *
 #   Where:                                                                                  *
@@ -188,7 +188,7 @@ def TxnVsMaster(CommonArea):
  
 
 #*************************************************************************************
-#* Read the file                                                                     *
+#* Map Pathways to UniprotIDs                                                        *
 #*************************************************************************************
 def Map_Pathways_to_UniprotIDs(CommonArea):
 	dPathwaysACs = dict()
@@ -232,8 +232,12 @@ def Map_Pathways_to_UniprotIDs(CommonArea):
 			
 	CommonArea['dPathwaysACs'] = dPathwaysACs
 	sTableACs = set(lTableACs) 	#*** Remove dups of ACs
-	CommonArea['sTableACs'] = lTableACs
-	print "There are ", len(CommonArea['sTableACs'] ) ," AC entries in the set of ACs\n"
+	CommonArea['sTableACs'] = sTableACs
+	lListOfACs = list(sTableACs)
+	print "There are ", len(lListOfACs) ," unique AC entries in the set of ACs\n"
+	
+
+	
  	InputFile.close()
 	OutputFile.close()
 	OutputValidACsFile = open(CommonArea['oValidACs'],'w')    #Create the file of valid ACs to be used in ReadSwissprot.py
