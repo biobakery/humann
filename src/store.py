@@ -30,6 +30,7 @@ import os
 import re
 import logging
 import copy
+import math
 
 import config
 import utilities
@@ -43,9 +44,11 @@ class Alignments:
     """
     
     def __init__(self):
-        self.__hits=[]
-        self.__bugs={}
-        self.__genes={}
+        self.__total_scores_by_query={}
+        self.__hits_by_bug_gene={}
+        self.__total_scores_by_bug_query={}
+        self.__gene_counts={}
+        self.__bug_counts={}
         
     def add(self, reference, reference_length, query, evalue, bug): 
         """ 
@@ -59,39 +62,54 @@ class Alignments:
         
         # store the reference length as per kilobase
         length=reference_length/1000.0
-            
-        self.__hits.append([bug, reference, length, query, evalue]) 
         
-        index=len(self.__hits)-1
-        if bug in self.__bugs:
-            self.__bugs[bug].append(index)
-        else:
-            self.__bugs[bug]=[index]
+        # store the score instead of the evalue
+        try:
+            score=math.exp(-evalue)
+        except ValueError:
+            logger.debug("Could not convert evalue to score: " +  str(evalue))
+            score=0
             
-        if reference in self.__genes:
-            self.__genes[reference].append(index)
+        # Increase the counts for gene and bug
+        self.__bug_counts[bug]=self.__bug_counts.get(bug,0)+1
+        self.__gene_counts[reference]=self.__gene_counts.get(reference,0)+1
+            
+        # Add to the scores by query
+        self.__total_scores_by_query[query]=self.__total_scores_by_query.get(query,0)+score
+        
+        if bug in self.__total_scores_by_bug_query:
+            self.__total_scores_by_bug_query[bug][query]=self.__total_scores_by_bug_query[bug].get(query,0)+score
         else:
-            self.__genes[reference]=[index]
+            self.__total_scores_by_bug_query[bug]={query:score}
+        
+        # Store the hit
+        if bug in self.__hits_by_bug_gene:
+            if reference in self.__hits_by_bug_gene[bug]:
+                self.__hits_by_bug_gene[bug][reference].append([query,score,length])
+            else:
+                self.__hits_by_bug_gene[bug][reference]=[[query,score,length]]
+        else:
+            self.__hits_by_bug_gene[bug]={reference:[[query,score,length]]}
             
     def count_bugs(self):
         """ 
         Return total number of bugs
         """
-        return len(self.__bugs.keys())
+        return len(self.__bug_counts)
     
     def count_genes(self):
         """ 
         Return total number of genes
         """
-        return len(self.__genes.keys())    
+        return len(self.__gene_counts)    
             
     def counts_by_bug(self):
         """
         Return each bug and the total number of hits
         """
         lines=[]
-        for bug in self.__bugs.keys():
-            lines.append(bug + ": " + str(len(self.__bugs[bug])) + " hits")
+        for bug in self.__bug_counts:
+            lines.append(bug + ": " + str(self.__bug_counts.get(bug,0)) + " hits")
             
         return "\n".join(lines)
             
@@ -100,117 +118,85 @@ class Alignments:
         Return a list of all of the gene families
         """
         
-        return self.__genes.keys()
+        return self.__gene_counts.keys()
     
     def bug_list(self):
         """
         Return a list of all of the bugs
         """
         
-        return self.__bugs.keys()
+        return self.__bug_counts.keys()
+    
+    def get_hit_list(self):
+        """
+        Return a list of all of the hits
+        """
+        
+        list=[]
+        for bug in self.__hits_by_bug_gene:
+            for gene in self.__hits_by_bug_gene[bug]:
+                for hit in self.__hits_by_bug_gene[bug][gene]:
+                    list.append([bug,gene]+hit)
+                
+        return list
     
     def hits_for_gene(self,gene):
         """
-        Return the alignments for the selected gene
+        Return a list of all of the hits for a specific gene
         """
         
-        hit_list=[]        
-        for index in self.__genes[gene]:
-            hit_list.append(self.__hits[index])
-            
-        return hit_list
-    
-    def hits_for_bug(self,bug):
-        """
-        Return the alignments for the selected bug
-        """
-        hit_list=[]        
-        for index in self.__bugs[bug]:
-            hit_list.append(self.__hits[index])
-            
-        return hit_list
-    
-    def all_hits(self):
-        """
-        Return all of the hits
-        """
-        hit_list=[]
-        for hit in self.__hits:
-            if hit:
-                hit_list.append(hit)
+        list=[]
+        for bug in self.__hits_by_bug_gene:
+            if gene in self.__hits_by_bug_gene[bug]:
+                for hit in self.__hits_by_bug_gene[bug][gene]:
+                    list.append([bug]+hit)
                 
-        return hit_list
+        return list
     
-    def delete_gene_and_hits(self,gene):
+    def convert_alignments_to_gene_scores(self,gene_scores_store):
         """
-        Remove the gene and all data for all hits associated with the gene
+        Computes the scores for all genes per bug
+        Add to the gene_scores store
+        Remove the alignments data as it is no longer needed
         """
-        
-        if gene in self.__genes:
-            for index in self.__genes[gene]:
-                # Remove the data for the hit
-                self.__hits[index]=[]
-            # Remove the gene entry
-            del self.__genes[gene]
             
-    def update_hits_for_bugs(self):
-        """
-        Update the hit indexes associated with all of the bugs to remove
-        any indexes that point to deleted hits
-        """
+        # compute the scores for the genes
+        all_gene_scores={}
+        messages=[]
+        for bug in self.__bug_counts:
+            gene_scores={}
+            total_gene_families_for_bug=0
+            for gene in self.__hits_by_bug_gene[bug]:
+                current_gene_score=0
+                all_current_gene_score=0
+                total_gene_families_for_bug+=1
+                for query,score,gene_length in self.__hits_by_bug_gene[bug][gene]:
+                    current_gene_score+=(score/self.__total_scores_by_bug_query[bug].get(query,1))/gene_length
+                    all_current_gene_score+=(score/self.__total_scores_by_query[query])/gene_length
+                gene_scores[gene]=current_gene_score
+                all_gene_scores[gene]=all_gene_scores.get(gene,0)+all_current_gene_score
+            # add to the gene scores structure
+            gene_scores_store.add(gene_scores,bug)
+            messages.append(bug + " : " + str(total_gene_families_for_bug) + " gene families")
+             
+            # remove the hits for the bug as they are no longer needed
+            del self.__hits_by_bug_gene[bug]
+        # add all gene scores to structure
+        gene_scores_store.add(all_gene_scores,"all")
         
-        bugs_to_delete=[]
-        for bug in self.__bugs:
-            updated_indexes=[]
-            for index in self.__bugs[bug]:
-                # Check if the hit is empty
-                if self.__hits[index]:
-                    updated_indexes.append(index)
-            if updated_indexes:
-                self.__bugs[bug]=updated_indexes
-            else:
-                # if there are no hits remaining for the bug,
-                # then indicate the bug should be deleted
-                bugs_to_delete.append(bug)
-        
-        # delete the bugs that do not have any hits
-        for bug in bugs_to_delete:
-            logger.debug("Bug removed because no longer associated with any hits: %s", bug)
-            del self.__bugs[bug]
-            
-    def filter_hits(self,reactions_database):
-        """
-        Remove hits from the alignments database that are not associated with
-        a gene in the reactions database
-        """
-        
-        # Remove the hits from the alignments that are not associated with a gene
-        # in the gene to reactions database
-        message="Remove hits to genes not in reactions database ..."
-        logger.info(message)
+        # print messages if in verbose mode
+        message="\n".join(messages)
+        message="Total gene families  : " +str(len(all_gene_scores))+"\n"+message
         if config.verbose:
             print(message)
-    
-        logger.debug("Remove gene and hits")
-        for gene in self.gene_list():
-            if not reactions_database.gene_present(gene):
-                self.delete_gene_and_hits(gene)
-                
-        # Update the bugs index list to remove any indexes that point to deleted hits
-        logger.debug("Update hits for bugs to reflect removed hits")        
-        self.update_hits_for_bugs()
-                
-        message="Total bugs after filtering: " + str(self.count_bugs())
-        logger.info(message)        
-        print(message)
+        logger.debug(message)
         
-        message=self.counts_by_bug()
-        logger.info(message)
-        print(message)            
-                
-        message="Total gene families after filtering: " + str(len(self.gene_list()))
-        logger.info(message)
-        print(message)
+        # remove other hit information as no longer needed
+        self.__total_scores_by_query.clear()
+        self.__total_scores_by_bug_query.clear()
+        self.__gene_counts.clear()
+        self.__bug_counts.clear()
+            
         
 class GeneScores:
     """
@@ -235,7 +221,7 @@ class GeneScores:
         Count the total number of genes stored for all bugs
         """
         
-        return len(self.__scores[bug].keys())
+        return len(self.__scores[bug])
         
     def get_score(self,bug,gene):
         """
@@ -246,6 +232,18 @@ class GeneScores:
             score=self.__scores[bug].get(gene,0)
         
         return score
+    
+    def get_scores_for_gene_by_bug(self,gene):
+        """
+        Get the score for all bugs for a gene
+        """
+        scores={}
+        for bug in self.__scores:
+            score=self.__scores[bug].get(gene,0)
+            if score>0 and bug != "all":
+                scores[bug]=score
+        
+        return scores
 
     def bug_list(self):
         """
@@ -264,6 +262,13 @@ class GeneScores:
                 genes[gene]=1
         
         return genes.keys()
+    
+    def gene_list_sorted_by_score(self,bug):
+        """
+        Return a list of the genes sorted by score for the bug
+        """
+        
+        return utilities.double_sort(self.__scores.get(bug,{}))
     
     def scores_for_bug(self,bug):
         """
@@ -718,4 +723,12 @@ class Reads:
         """
             
         return len(self.__reads.keys())
+    
+    def clear(self):
+        """
+        Clear all of the stored reads
+        """
+        
+        self.__reads.clear()
+         
     

@@ -523,8 +523,7 @@ def check_requirements(args):
             if not utilities.find_exe_in_path(config.translated_alignment_selected):
                 sys.exit("CRITICAL ERROR: The " +  config.translated_alignment_selected + 
                     " executable can not be found. Please check the install.")
-        
-        
+              
 def main():
     # Parse arguments from command line
     args=parse_arguments(sys.argv)
@@ -688,6 +687,9 @@ def main():
         # Store the blastm8 mapping results
         translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
+        
+    # Clear all of the unaligned reads as they are no longer needed
+    unaligned_reads_store.clear()
         
     # Compute or load in gene families
     output_files=[]
