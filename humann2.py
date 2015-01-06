@@ -199,6 +199,12 @@ def parse_arguments (args):
         default=config.output_format,
         choices=config.output_format_choices)
     parser.add_argument(
+        "--output_basename",
+        help="the basename for the output files\n[DEFAULT: " +
+        "input file basename ]",
+        default=config.file_basename,
+        metavar="<sample_name>")
+    parser.add_argument(
         "--input_format",
         help="the format of the input file\n[DEFAULT: format identified by software ]",
         choices=config.input_format_choices)
@@ -324,9 +330,21 @@ def update_configuration(args):
             "Please select another directory.")
         
     print("Output files will be written to: " + output_dir) 
-
-    # Set the basename of the temp files to the sample name
-    config.file_basename=os.path.basename(args.input).split('.')[0]
+    
+    # Set the basename of the output files if specified as an option
+    if args.output_basename:
+        config.file_basename=args.output_basename
+    else:
+        # Determine the basename of the input file to use as output file basename
+        input_file_basename=os.path.basename(args.input)
+        # Remove gzip extension if present
+        if re.search('.gz$',input_file_basename):
+            input_file_basename='.'.join(input_file_basename.split('.')[:-1])
+        # Remove input file extension if present
+        if '.' in input_file_basename:
+            input_file_basename='.'.join(input_file_basename.split('.')[:-1])
+    
+        config.file_basename=input_file_basename
     
     # Set the output format
     config.output_format=args.output_format
