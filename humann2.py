@@ -48,7 +48,22 @@ try:
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
         " Please check your install.") 
-    
+
+# Check the python version
+try:
+    if (sys.version_info[0] != config.required_python_version_major or
+        sys.version_info[1] < config.required_python_version_minor):
+        sys.exit("CRITICAL ERROR: The python version found (version "+
+            str(sys.version_info[0])+"."+str(sys.version_info[1])+") "+
+            "does not match the version required (version "+
+            str(config.required_python_version_major)+"."+
+            str(config.required_python_version_minor)+"+)")
+except (AttributeError,IndexError):
+    sys.exit("CRITICAL ERROR: The python version found (version 1) " +
+        "does not match the version required (version "+
+        str(config.required_python_version_major)+"."+
+        str(config.required_python_version_minor)+"+)")    
+
 from src import prescreen
 from src import nucleotide_search
 from src import store

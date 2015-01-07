@@ -25,6 +25,10 @@ THE SOFTWARE.
 
 import os
 
+# required python version
+required_python_version_major = 2
+required_python_version_minor = 7
+
 # software run modes
 resume = False
 verbose = False
