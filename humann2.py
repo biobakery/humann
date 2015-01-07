@@ -33,15 +33,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import argparse
-import sys
-import subprocess
-import os
-import time
-import tempfile
-import re
-import logging
-
 # Try to load one of the humann2 src modules to check the installation
 try:
     from src import config
@@ -50,6 +41,7 @@ except ImportError:
         " Please check your install.") 
 
 # Check the python version
+import sys
 try:
     if (sys.version_info[0] != config.required_python_version_major or
         sys.version_info[1] < config.required_python_version_minor):
@@ -62,7 +54,15 @@ except (AttributeError,IndexError):
     sys.exit("CRITICAL ERROR: The python version found (version 1) " +
         "does not match the version required (version "+
         str(config.required_python_version_major)+"."+
-        str(config.required_python_version_minor)+"+)")    
+        str(config.required_python_version_minor)+"+)")  
+    
+import argparse
+import subprocess
+import os
+import time
+import tempfile
+import re
+import logging  
 
 from src import prescreen
 from src import nucleotide_search
