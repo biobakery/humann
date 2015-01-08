@@ -708,6 +708,10 @@ def main():
         config.pick_frames_toggle="off"
         
         # Store the sam mapping results
+        message="Process the sam mapping results ..."
+        logger.info(message)
+        print("\n"+message)
+            
         [unaligned_reads_file_fasta, unaligned_reads_store, 
             reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
             args.input, alignments, keep_sam=True)
@@ -718,6 +722,10 @@ def main():
         unaligned_reads_store=store.Reads()
         
         # Store the blastm8 mapping results
+        message="Process the blastm8 mapping results ..."
+        logger.info(message)
+        print("\n"+message)
+        
         translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
         
@@ -745,6 +753,9 @@ def main():
     # Handle input files of unknown formats
     else:
         sys.exit("CRITICAL ERROR: Input file of unknown format.")
+        
+    # Clear all of the alignments data as they are no longer needed
+    alignments.clear()
     
     # Identify reactions and then pathways from the alignments
     message="Computing pathways abundance and coverage ..."

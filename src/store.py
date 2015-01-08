@@ -45,8 +45,10 @@ class Alignments:
     
     def __init__(self):
         self.__total_scores_by_query={}
+        self.__total_hits_by_query={}
+        self.__multiple_hits_queries={}
+        self.__hits_by_query={}
         self.__hits_by_bug_gene={}
-        self.__total_scores_by_bug_query={}
         self.__gene_counts={}
         self.__bug_counts={}
         
@@ -77,19 +79,26 @@ class Alignments:
         # Add to the scores by query
         self.__total_scores_by_query[query]=self.__total_scores_by_query.get(query,0)+score
         
-        if bug in self.__total_scores_by_bug_query:
-            self.__total_scores_by_bug_query[bug][query]=self.__total_scores_by_bug_query[bug].get(query,0)+score
-        else:
-            self.__total_scores_by_bug_query[bug]={query:score}
+        # Add to the total hits by query
+        self.__total_hits_by_query[query]=self.__total_hits_by_query.get(query,0)+1
+        if self.__total_hits_by_query[query]>1:
+            self.__multiple_hits_queries[query]=1
         
-        # Store the hit
+        # Store the hit by bug and reference
+        hit=[score,1/length]
         if bug in self.__hits_by_bug_gene:
             if reference in self.__hits_by_bug_gene[bug]:
-                self.__hits_by_bug_gene[bug][reference].append([query,score,length])
+                self.__hits_by_bug_gene[bug][reference].append(hit)
             else:
-                self.__hits_by_bug_gene[bug][reference]=[[query,score,length]]
+                self.__hits_by_bug_gene[bug][reference]=[hit]
         else:
-            self.__hits_by_bug_gene[bug]={reference:[[query,score,length]]}
+            self.__hits_by_bug_gene[bug]={reference:[hit]}
+            
+        # Point to the hit by query
+        if query in self.__hits_by_query:
+            self.__hits_by_query[query].append(hit)
+        else:
+            self.__hits_by_query[query]=[hit]
             
     def count_bugs(self):
         """ 
@@ -132,11 +141,21 @@ class Alignments:
         Return a list of all of the hits
         """
         
+        # Add the query to the hits
+        for query in self.__hits_by_query:
+            for i,j in enumerate(self.__hits_by_query[query]):
+                self.__hits_by_query[query][i].insert(0,query)
+        
         list=[]
         for bug in self.__hits_by_bug_gene:
             for gene in self.__hits_by_bug_gene[bug]:
                 for hit in self.__hits_by_bug_gene[bug][gene]:
                     list.append([bug,gene]+hit)
+                    
+        # Remove the query from the hits
+        for query in self.__hits_by_query:
+            for i,j in enumerate(self.__hits_by_query[query]):
+                del self.__hits_by_query[query][i][0]
                 
         return list
     
@@ -145,11 +164,21 @@ class Alignments:
         Return a list of all of the hits for a specific gene
         """
         
+        # Add the query to the hits
+        for query in self.__hits_by_query:
+            for i,j in enumerate(self.__hits_by_query[query]):
+                self.__hits_by_query[query][i].insert(0,query)
+        
         list=[]
         for bug in self.__hits_by_bug_gene:
             if gene in self.__hits_by_bug_gene[bug]:
                 for hit in self.__hits_by_bug_gene[bug][gene]:
                     list.append([bug]+hit)
+                    
+        # Remove the query from the hits
+        for query in self.__hits_by_query:
+            for i,j in enumerate(self.__hits_by_query[query]):
+                del self.__hits_by_query[query][i][0]
                 
         return list
     
@@ -157,9 +186,17 @@ class Alignments:
         """
         Computes the scores for all genes per bug
         Add to the gene_scores store
-        Remove the alignments data as it is no longer needed
         """
-            
+        
+        # Normalize by query hits for all queries with multiple hits
+        # Hits where it is the only match per query will have scores of 1
+        # as this is the result of normalizing (ie score/score)
+        # So in this case the value of the hit is hit[-1]*1 
+        for query in self.__multiple_hits_queries:
+            length_normalize=self.__total_scores_by_query[query]
+            for i,hit in enumerate(self.__hits_by_query[query]):
+                self.__hits_by_query[query][i][-1]=hit[-1]*hit[-2]/length_normalize
+        
         # compute the scores for the genes
         all_gene_scores={}
         messages=[]
@@ -167,20 +204,15 @@ class Alignments:
             gene_scores={}
             total_gene_families_for_bug=0
             for gene in self.__hits_by_bug_gene[bug]:
-                current_gene_score=0
-                all_current_gene_score=0
                 total_gene_families_for_bug+=1
-                for query,score,gene_length in self.__hits_by_bug_gene[bug][gene]:
-                    current_gene_score+=(score/self.__total_scores_by_bug_query[bug].get(query,1))/gene_length
-                    all_current_gene_score+=(score/self.__total_scores_by_query[query])/gene_length
+                # sum all the normalized scores for each hit for the bug and gene
+                current_gene_score=sum(hit[-1] for hit in self.__hits_by_bug_gene[bug][gene])
                 gene_scores[gene]=current_gene_score
-                all_gene_scores[gene]=all_gene_scores.get(gene,0)+all_current_gene_score
+                all_gene_scores[gene]=all_gene_scores.get(gene,0)+current_gene_score
             # add to the gene scores structure
             gene_scores_store.add(gene_scores,bug)
             messages.append(bug + " : " + str(total_gene_families_for_bug) + " gene families")
              
-            # remove the hits for the bug as they are no longer needed
-            del self.__hits_by_bug_gene[bug]
         # add all gene scores to structure
         gene_scores_store.add(all_gene_scores,"all")
         
@@ -191,12 +223,19 @@ class Alignments:
             print(message)
         logger.debug(message)
         
-        # remove other hit information as no longer needed
-        self.__total_scores_by_query.clear()
-        self.__total_scores_by_bug_query.clear()
-        self.__gene_counts.clear()
-        self.__bug_counts.clear()
-            
+    def clear(self):
+        """
+        Clear all of the stored data
+        """
+        
+        self.__total_scores_by_query={}
+        self.__total_hits_by_query={}
+        self.__multiple_hits_queries={}
+        self.__hits_by_query={}
+        self.__hits_by_bug_gene={}
+        self.__gene_counts={}
+        self.__bug_counts={}
+
         
 class GeneScores:
     """
@@ -729,6 +768,6 @@ class Reads:
         Clear all of the stored reads
         """
         
-        self.__reads.clear()
+        self.__reads={}
          
     
