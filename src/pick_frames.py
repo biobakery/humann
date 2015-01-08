@@ -75,7 +75,7 @@ for line in genetic_code.split( "\n" ):
         
 def reverse_complement ( dna ):
     """ convert a dna strand to its reverse complement """
-    return "".join( [switch[nuc] for nuc in dna[::-1]] )
+    return "".join( [switch.get(nuc,"N") for nuc in dna[::-1]] )
     
 def translate ( dna, frame=0 ):
     """ translate a dna sequence in the desired frame (0,1,2) """
@@ -88,6 +88,7 @@ def translate ( dna, frame=0 ):
 
 def pick_frames ( sequence ):
     """ identify +/- frames with no bad chars (including "*"=stop) """
+    sequence = sequence.upper()
     sequence_rc = reverse_complement( sequence )
     valid_peptides = []
     # forward translations
