@@ -198,6 +198,9 @@ xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
 
+# Max pathways threads
+max_pathways_threads=2
+
 def get_humann2_base_directory():
     """ 
     Return the location of the humann2 base directory

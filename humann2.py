@@ -569,6 +569,7 @@ def main():
 
     # Initialize alignments and gene scores
     alignments=store.Alignments()
+    unaligned_reads_store=store.Reads()
     gene_scores=store.GeneScores()
     
     # Load in the reactions database
@@ -596,7 +597,7 @@ def main():
         # Run prescreen to identify bugs
         bug_file = "Empty"
         if args.metaphlan_output:
-            bug_file = args.metaphlan_output
+            bug_file = os.path.abspath(args.metaphlan_output)
         else:
             if not config.bypass_prescreen:
                 bug_file = prescreen.alignment(args.input)
@@ -634,8 +635,8 @@ def main():
     
             # Determine which reads are unaligned and reduce aligned reads file
             # Remove the alignment_file as we only need the reduced aligned reads file
-            [ unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
-                nucleotide_alignment_file, alignments, keep_sam=True)
+            [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+                nucleotide_alignment_file, alignments, unaligned_reads_store, keep_sam=True)
     
             # Print out total alignments per bug
             message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
@@ -712,14 +713,11 @@ def main():
         logger.info(message)
         print("\n"+message)
             
-        [unaligned_reads_file_fasta, unaligned_reads_store, 
-            reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
-            args.input, alignments, keep_sam=True)
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
+            args.input, alignments, unaligned_reads_store, keep_sam=True)
             
     # Process input files of tab-delimited blast format
     elif args.input_format in ["blastm8"]:
-        # Create new unaligned reads store
-        unaligned_reads_store=store.Reads()
         
         # Store the blastm8 mapping results
         message="Process the blastm8 mapping results ..."
@@ -749,6 +747,10 @@ def main():
             print(message)
     elif args.input_format in ["genetable"]:
         # Load the gene scores
+        message="Process the gene table ..."
+        logger.info(message)
+        print("\n"+message)
+        
         gene_scores.add_from_file(args.input) 
     # Handle input files of unknown formats
     else:

@@ -110,7 +110,7 @@ def alignment(user_fastq, index_name):
 
 
 
-def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
+def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_sam=None):
     """ 
     Return file and data structure of the unaligned reads 
     Store the alignments and return
@@ -144,7 +144,6 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
 
     # read through the file line by line
     line = file_handle_read.readline()
-    unaligned_reads_store=store.Reads()
     
     while line:
         # ignore headers ^@ 
@@ -214,8 +213,8 @@ def unaligned_reads(sam_alignment_file, alignments, keep_sam=None):
             utilities.remove_file(sam_alignment_file)
 
     # return the picked frames file if written
-    return_list=[unaligned_reads_file_fasta, unaligned_reads_store, reduced_aligned_reads_file]
+    return_list=[unaligned_reads_file_fasta, reduced_aligned_reads_file]
     if write_picked_frames:
-        return_list=[unaligned_reads_file_picked_frames_fasta, unaligned_reads_store, reduced_aligned_reads_file]
+        return_list=[unaligned_reads_file_picked_frames_fasta, reduced_aligned_reads_file]
 
     return return_list

@@ -174,6 +174,8 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
     threads=config.threads
     if config.minpath_toggle == "on":
         threads=1
+    elif threads>config.max_pathways_threads:
+        threads=config.max_pathways_threads
         
     pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
         function=identify_reactions_and_pathways_by_bug)
@@ -346,19 +348,22 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     Compute the abundance and coverage of the pathways
     """
     
+    threads=config.threads
+    if threads>config.max_pathways_threads:
+        threads=config.max_pathways_threads
+    
     # Compute abundance for all pathways
     args=[]
     for bug_pathway_and_reactions_store in pathways_and_reactions_store:
          args.append([bug_pathway_and_reactions_store, pathways_database])
         
-    pathways_abundance=utilities.command_multiprocessing(config.threads, args, 
+    pathways_abundance=utilities.command_multiprocessing(threads, args, 
         function=pathways_abundance_by_bug)
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance (reads per kilobase)")
 
     # Compute coverage
-    threads=config.threads 
     if config.xipe_toggle == "on":
         threads=1
 
