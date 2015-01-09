@@ -45,10 +45,9 @@ class Alignments:
     
     def __init__(self):
         self.__total_scores_by_query={}
-        self.__total_hits_by_query={}
         self.__multiple_hits_queries={}
         self.__hits_by_query={}
-        self.__hits_by_bug_gene={}
+        self.__scores_by_bug_gene={}
         self.__gene_counts={}
         self.__bug_counts={}
         
@@ -79,24 +78,19 @@ class Alignments:
         # Add to the scores by query
         self.__total_scores_by_query[query]=self.__total_scores_by_query.get(query,0)+score
         
-        # Add to the total hits by query
-        self.__total_hits_by_query[query]=self.__total_hits_by_query.get(query,0)+1
-        if self.__total_hits_by_query[query]>1:
-            self.__multiple_hits_queries[query]=1
-        
-        # Store the hit by bug and reference
-        hit=[score,1/length]
-        if bug in self.__hits_by_bug_gene:
-            if reference in self.__hits_by_bug_gene[bug]:
-                self.__hits_by_bug_gene[bug][reference].append(hit)
-            else:
-                self.__hits_by_bug_gene[bug][reference]=[hit]
+        # Store the scores by bug and gene
+        normalized_length=1/length
+        if bug in self.__scores_by_bug_gene:
+            self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_length
         else:
-            self.__hits_by_bug_gene[bug]={reference:[hit]}
+            self.__scores_by_bug_gene[bug]={reference:normalized_length}
             
         # Point to the hit by query
+        # Add to dictionary if multiple hits per query
+        hit=[bug,reference,score,length]
         if query in self.__hits_by_query:
             self.__hits_by_query[query].append(hit)
+            self.__multiple_hits_queries[query]=1
         else:
             self.__hits_by_query[query]=[hit]
             
@@ -142,20 +136,10 @@ class Alignments:
         """
         
         # Add the query to the hits
-        for query in self.__hits_by_query:
-            for i,j in enumerate(self.__hits_by_query[query]):
-                self.__hits_by_query[query][i].insert(0,query)
-        
         list=[]
-        for bug in self.__hits_by_bug_gene:
-            for gene in self.__hits_by_bug_gene[bug]:
-                for hit in self.__hits_by_bug_gene[bug][gene]:
-                    list.append([bug,gene]+hit)
-                    
-        # Remove the query from the hits
         for query in self.__hits_by_query:
-            for i,j in enumerate(self.__hits_by_query[query]):
-                del self.__hits_by_query[query][i][0]
+            for [bug,reference,score,length] in self.__hits_by_query[query]:
+                list.append([query]+[bug,reference,score,length])
                 
         return list
     
@@ -165,20 +149,11 @@ class Alignments:
         """
         
         # Add the query to the hits
-        for query in self.__hits_by_query:
-            for i,j in enumerate(self.__hits_by_query[query]):
-                self.__hits_by_query[query][i].insert(0,query)
-        
         list=[]
-        for bug in self.__hits_by_bug_gene:
-            if gene in self.__hits_by_bug_gene[bug]:
-                for hit in self.__hits_by_bug_gene[bug][gene]:
-                    list.append([bug]+hit)
-                    
-        # Remove the query from the hits
         for query in self.__hits_by_query:
-            for i,j in enumerate(self.__hits_by_query[query]):
-                del self.__hits_by_query[query][i][0]
+            for [bug,reference,score,length] in self.__hits_by_query[query]:
+                if reference==gene:
+                    list.append([query]+[bug,reference,score,length])
                 
         return list
     
@@ -193,24 +168,24 @@ class Alignments:
         # as this is the result of normalizing (ie score/score)
         # So in this case the value of the hit is hit[-1]*1 
         for query in self.__multiple_hits_queries:
-            length_normalize=self.__total_scores_by_query[query]
-            for i,hit in enumerate(self.__hits_by_query[query]):
-                self.__hits_by_query[query][i][-1]=hit[-1]*hit[-2]/length_normalize
+            query_normalize=self.__total_scores_by_query[query]
+            for [bug,reference,score,length] in self.__hits_by_query[query]:
+                normalized_score=score/query_normalize/length
+                # Update the scores by bug and gene
+                # Subtract the original score added of 1/length
+                # Add the new normalized score
+                self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-1/length+normalized_score
         
         # compute the scores for the genes
         all_gene_scores={}
         messages=[]
-        for bug in self.__bug_counts:
-            gene_scores={}
-            total_gene_families_for_bug=0
-            for gene in self.__hits_by_bug_gene[bug]:
-                total_gene_families_for_bug+=1
-                # sum all the normalized scores for each hit for the bug and gene
-                current_gene_score=sum(hit[-1] for hit in self.__hits_by_bug_gene[bug][gene])
-                gene_scores[gene]=current_gene_score
-                all_gene_scores[gene]=all_gene_scores.get(gene,0)+current_gene_score
-            # add to the gene scores structure
-            gene_scores_store.add(gene_scores,bug)
+        for bug in self.__scores_by_bug_gene:
+            # Add up all genes scores for each bug
+            for gene in self.__scores_by_bug_gene[bug]:
+                all_gene_scores[gene]=all_gene_scores.get(gene,0)+self.__scores_by_bug_gene[bug][gene]
+            # Add to the gene scores structure
+            gene_scores_store.add(self.__scores_by_bug_gene[bug],bug)
+            total_gene_families_for_bug=len(self.__scores_by_bug_gene[bug])
             messages.append(bug + " : " + str(total_gene_families_for_bug) + " gene families")
              
         # add all gene scores to structure
@@ -229,10 +204,9 @@ class Alignments:
         """
         
         self.__total_scores_by_query={}
-        self.__total_hits_by_query={}
         self.__multiple_hits_queries={}
         self.__hits_by_query={}
-        self.__hits_by_bug_gene={}
+        self.__scores_by_bug_gene={}
         self.__gene_counts={}
         self.__bug_counts={}
 
