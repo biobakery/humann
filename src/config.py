@@ -34,6 +34,7 @@ resume = False
 verbose = False
 bypass_prescreen = False
 bypass_nucleotide_index = False
+bypass_nucleotide_search = False
 bypass_translated_search = False
 
 # number of threads

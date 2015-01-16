@@ -108,6 +108,11 @@ def parse_arguments (args):
         action="store_true",
         default=config.bypass_translated_search)
     parser.add_argument(
+        "--bypass_nucleotide_search", 
+        help="bypass the nucleotide search steps\n", 
+        action="store_true",
+        default=config.bypass_nucleotide_search)
+    parser.add_argument(
         "-i", "--input", 
         help="input file of type {" +",".join(config.input_format_choices)+ "} \n[REQUIRED]", 
         metavar="<input.fastq>", 
@@ -303,6 +308,12 @@ def update_configuration(args):
         config.pick_frames_toggle="off"
     else:
         config.pick_frames_toggle=args.pick_frames
+        
+    # if set, update the config run mode to bypass nucleotide search steps
+    if args.bypass_nucleotide_search:
+        config.bypass_prescreen=True
+        config.bypass_nucleotide_index=True
+        config.bypass_nucleotide_search=True
         
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
@@ -511,9 +522,10 @@ def check_requirements(args):
                     "Please check the install.")
 
         # Check that the bowtie2 executable can be found
-        if not utilities.find_exe_in_path("bowtie2"): 
-            sys.exit("CRITICAL ERROR: The bowtie2 executable can not be found. "  
-                "Please check the install.")
+        if not config.bypass_nucleotide_search:
+            if not utilities.find_exe_in_path("bowtie2"): 
+                sys.exit("CRITICAL ERROR: The bowtie2 executable can not be found. "  
+                    "Please check the install.")
  
         if not config.bypass_translated_search:
             # Check that the uniref directory exists
@@ -556,6 +568,17 @@ def check_requirements(args):
             if not utilities.find_exe_in_path(config.translated_alignment_selected):
                 sys.exit("CRITICAL ERROR: The " +  config.translated_alignment_selected + 
                     " executable can not be found. Please check the install.")
+              
+def timestamp_message(task, start_time):
+    """
+    Print and log a message about the task completed and the time
+    Messages are tab delimited for quick task/time access with awk
+    """
+    message="TIMESTAMP: Completed \t " + task + " \t" + str(int(time.time() - start_time)) + \
+        "\t seconds from start"
+    logger.info(message)
+    if config.verbose:
+        print("\n"+message+"\n")    
               
 def main():
     # Parse arguments from command line
@@ -601,42 +624,35 @@ def main():
         else:
             if not config.bypass_prescreen:
                 bug_file = prescreen.alignment(args.input)
-    
-        message=str(int(time.time() - start_time)) + " seconds from start"
-        logger.info(message)
-        if config.verbose:
-            print(message)
+                timestamp_message("prescreen",start_time)
     
         # Create the custom database from the bugs list
         custom_database = ""
         if not config.bypass_nucleotide_index:
             custom_database = prescreen.create_custom_database(config.chocophlan, bug_file)
+            timestamp_message("custom database creation",start_time)
         else:
             custom_database = "Bypass"
     
-        message=str(int(time.time() - start_time)) + " seconds from start"
-        logger.info(message)
-        if config.verbose:
-            print(message)
-    
         # Run nucleotide search on custom database
-        if custom_database != "Empty":
+        if custom_database != "Empty" and not config.bypass_nucleotide_search:
             if not config.bypass_nucleotide_index:
                 nucleotide_index_file = nucleotide_search.index(custom_database)
+                timestamp_message("database index",start_time)
             else:
                 nucleotide_index_file = config.chocophlan
+                
             nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
                 nucleotide_index_file)
     
-            message=str(int(time.time() - start_time)) + " seconds from start"
-            logger.info(message)
-            if config.verbose:
-                print(message)
+            timestamp_message("nucleotide alignment",start_time)
     
             # Determine which reads are unaligned and reduce aligned reads file
             # Remove the alignment_file as we only need the reduced aligned reads file
             [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
                 nucleotide_alignment_file, alignments, unaligned_reads_store, keep_sam=True)
+            
+            timestamp_message("nucleotide alignment post-processing",start_time)
     
             # Print out total alignments per bug
             message="Total bugs from nucleotide alignment: " + str(alignments.count_bugs())
@@ -669,12 +685,13 @@ def main():
                 translated_alignment_file = translated_search.alignment(config.uniref, 
                     unaligned_reads_file_fasta)
         
-                if config.verbose:
-                    print(str(int(time.time() - start_time)) + " seconds from start")
+                timestamp_message("translated alignment",start_time)
         
                 # Determine which reads are unaligned
                 translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
                     unaligned_reads_store, translated_alignment_file, alignments)
+                
+                timestamp_message("translated alignment post-processing",start_time)
         
                 # Print out total alignments per bug
                 message="Total bugs after translated alignment: " + str(alignments.count_bugs())
@@ -715,6 +732,8 @@ def main():
             
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
             args.input, alignments, unaligned_reads_store, keep_sam=True)
+        
+        timestamp_message("alignment post-processing",start_time)
             
     # Process input files of tab-delimited blast format
     elif args.input_format in ["blastm8"]:
@@ -726,6 +745,8 @@ def main():
         
         translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
+        
+        timestamp_message("alignment post-processing",start_time)
         
     # Clear all of the unaligned reads as they are no longer needed
     unaligned_reads_store.clear()
@@ -741,10 +762,8 @@ def main():
         families_file=quantify_families.gene_families(alignments,gene_scores)
         output_files.append(families_file)
     
-        message=str(int(time.time() - start_time)) + " seconds from start"
-        logger.info(message)
-        if config.verbose:
-            print(message)
+        timestamp_message("computing gene families",start_time)
+
     elif args.input_format in ["genetable"]:
         # Load the gene scores
         message="Process the gene table ..."
@@ -752,6 +771,9 @@ def main():
         print("\n"+message)
         
         gene_scores.add_from_file(args.input) 
+        
+        timestamp_message("processing gene table",start_time)
+
     # Handle input files of unknown formats
     else:
         sys.exit("CRITICAL ERROR: Input file of unknown format.")
@@ -772,10 +794,7 @@ def main():
     output_files.append(abundance_file)
     output_files.append(coverage_file)
 
-    message=str(int(time.time() - start_time)) + " seconds from start"
-    logger.info(message)
-    if config.verbose:
-        print(message)
+    timestamp_message("computing pathways",start_time)
 
     message="\nOutput files created: \n" + "\n".join(output_files) + "\n"
     logger.info(message)

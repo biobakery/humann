@@ -38,6 +38,7 @@ import gzip
 import shutil
 
 import config
+import pick_frames
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -688,9 +689,10 @@ def break_up_fasta_file(fasta_file, max_seqs):
 
     return fasta_files
 
-def fastq_to_fasta(file):
+def fastq_to_fasta(file, apply_pick_frames=None):
     """
     Convert fastq file to fasta
+    Also pick frames for sequences if set
 	
     Fastq format short example:
     @SEQ_ID
@@ -717,13 +719,20 @@ def fastq_to_fasta(file):
 
     while line:
         if re.search("^@",line):
-            file_out.write(line.replace("@",">",1))
+            sequence_id=line.replace("@",">",1)
             line=file_handle_read.readline()
+            sequence=""
             while line:
                 if re.search("^\\+",line):
+                    sequences=[sequence]
+                    if apply_pick_frames:
+                        sequences=pick_frames.pick_frames(sequence)
+                    for sequence in sequences:
+                        file_out.write(sequence_id)
+                        file_out.write(sequence+"\n")
                     break
                 else:
-                    file_out.write(line)
+                    sequence+=line.rstrip()
                 line=file_handle_read.readline()
         line=file_handle_read.readline()
   	
@@ -731,6 +740,46 @@ def fastq_to_fasta(file):
     file_handle_read.close()
 
     return new_file	
+
+def pick_frames_from_fasta(file):
+    """
+    Convert fasta file to picked frames
+    """
+    
+    # check file exists
+    file_exists_readable(file)
+    
+    file_handle_read = open(file, "r")
+    
+    line = file_handle_read.readline()
+    
+    new_file=unnamed_temp_file()
+    file_out=open(new_file,"w")
+
+    sequence=""
+    while line:
+        if not re.search("^>",line):
+            sequence+=line.rstrip()
+        else:
+            # if a sequence has been read in then pick frames and write
+            if sequence:
+                sequences=pick_frames.pick_frames(sequence)
+                for sequence in sequences:
+                    file_out.write(sequence_id)
+                    file_out.write(sequence+"\n")
+                sequence=""
+            sequence_id=line
+        line=file_handle_read.readline()
+    # if a sequence has been read in then pick frames and write
+    if sequence:
+        sequences=pick_frames.pick_frames(sequence)
+        for sequence in sequences:
+            file_out.write(sequence_id)
+            file_out.write(sequence+"\n")
+    file_out.close()    
+    file_handle_read.close()
+
+    return new_file    
 		
 def install_minpath():
     """
