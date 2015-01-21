@@ -148,6 +148,14 @@ gene_table_gene_index=0
 gene_table_value_index=1
 gene_table_total_columns=2
 
+# id mapping formats
+id_mapping_comment_indicator="^#"
+id_mapping_delimiter="\t"
+id_mapping_reference_index=0
+id_mapping_gene_index=1
+id_mapping_gene_length_index=2
+id_mapping_bug_index=3
+
 # usearch options
 usearch_database_extension=".udb"
 identity_threshold=0.4

@@ -189,6 +189,10 @@ def parse_arguments (args):
         help="output file created by metaphlan\n[DEFAULT: file will be created]", 
         metavar="<bugs_list.tsv>")
     parser.add_argument(
+        "--id_mapping", 
+        help="id mapping file for alignments\n[DEFAULT: alignment reference used]", 
+        metavar="<id_mapping.tsv>")
+    parser.add_argument(
         "--translated_alignment", 
         help="software to use for translated alignment\n[DEFAULT: " + 
             config.translated_alignment_selected + "]", 
@@ -597,6 +601,10 @@ def main():
     alignments=store.Alignments()
     unaligned_reads_store=store.Reads()
     gene_scores=store.GeneScores()
+    
+    # If id mapping is provided then store
+    if args.id_mapping:
+        alignments.store_id_mapping(args.id_mapping)
     
     # Load in the reactions database
     reactions_database=store.ReactionsDatabase(config.pathways_database_part1)

@@ -842,60 +842,6 @@ def biom_to_tsv(biom_file):
     
     return new_tsv_file
     
-def process_chocophlan_length(location,uniref):
-    """
-    Return the length given the sequence location
-    """
-    
-    try:
-        if config.chocophlan_multiple_location_delimiter in location:
-            locations=location.split(config.chocophlan_multiple_location_delimiter)
-        else:
-            locations=[location]
-        length=0
-        for location in locations:
-            start, end = re.sub(config.chocophlan_location_extra_characters,
-                '',location).split(config.chocophlan_location_delimiter)
-            length=length+abs(int(end)-int(start))+1
-    except (ValueError, IndexError):
-        length=0
-        logger.debug("Unable to compute length for gene: " + uniref)
-    
-    return length
-
-def process_reference_annotation(reference):
-    """
-    Process the reference string for information on gene, gene length, and bug
-    Allow for chocophlan annotations, gene|gene_length, gene_length|gene, and gene
-    """
-    
-    reference_info=reference.split(config.chocophlan_delimiter)
-    
-    # identify bug and gene families
-    location=""
-    length=0
-    uniref=reference_info[0]
-    try:
-        bug=reference_info[config.chocophlan_bug_index]
-        uniref=reference_info[config.chocophlan_uniref_index]
-        location=reference_info[config.chocophlan_location_index]
-    except IndexError:
-        # try to find gene length if present
-        bug="unclassified"
-        if len(reference_info)==2:
-            if re.search("^[0-9]+$",reference_info[0]):
-                length=int(reference_info[0])
-                uniref=reference_info[1]
-            elif re.search("^[0-9]+$",reference_info[1]):
-                length=int(reference_info[1])
-                uniref=reference_info[0]
-                        
-    # compute the length of the gene from the location provided
-    if location:
-        length=process_chocophlan_length(location, uniref)
-        
-    return [uniref,length,bug]
-    
 def format_float_to_string(number):
     """
     Format a float to a string using the config max number of decimals

@@ -50,7 +50,123 @@ class Alignments:
         self.__scores_by_bug_gene={}
         self.__gene_counts={}
         self.__bug_counts={}
+        self.__id_mapping={}
         
+    def store_id_mapping(self,file):
+        """
+        Store the id mapping data from the tab delimited file
+        """
+
+        # Check the file exists and is readable
+        utilities.file_exists_readable(file)
+         
+        file_handle=open(file,"r")
+         
+        line=file_handle.readline()
+        while line:
+            # Ignore comment lines
+            if not re.search(config.id_mapping_comment_indicator,line):
+                data=line.rstrip().split(config.id_mapping_delimiter) 
+                # set the default values for the mapping
+                reference=""
+                gene=""
+                length=0
+                bug="unclassified"
+                try:
+                    reference=data[config.id_mapping_reference_index]
+                    gene=data[config.id_mapping_gene_index]
+                    length=data[config.id_mapping_gene_length_index]
+                    bug=data[config.id_mapping_bug_index]  
+                except IndexError:
+                    logger.debug("Unable to read full mapping for id")
+                    
+                try:
+                    length=int(length)
+                except ValueError:
+                    length=0
+                    
+                # if the reference and gene are found, store the mapping
+                if reference and gene:
+                    self.__id_mapping[reference]=[gene,length,bug]
+                
+            line=file_handle.readline()
+        
+        file_handle.close()     
+        
+    def process_chocophlan_length(self,location,gene):
+        """
+        Return the length given the sequence location
+        """
+        
+        try:
+            if config.chocophlan_multiple_location_delimiter in location:
+                locations=location.split(config.chocophlan_multiple_location_delimiter)
+            else:
+                locations=[location]
+            length=0
+            for location in locations:
+                start, end = re.sub(config.chocophlan_location_extra_characters,
+                    '',location).split(config.chocophlan_location_delimiter)
+                length=length+abs(int(end)-int(start))+1
+        except (ValueError, IndexError):
+            length=0
+            logger.debug("Unable to compute length for gene: " + gene)
+        
+        return length
+
+    def process_reference_annotation(self,reference):
+        """
+        Process the reference string for information on gene, gene length, and bug
+        Allow for chocophlan annotations, gene|gene_length, gene_length|gene, and gene
+        Also use id mapping if provided
+        """
+        
+        # if id mapping is provided first try to use it for the annotation data
+        gene=""
+        if self.__id_mapping:
+            if reference in self.__id_mapping:
+                [gene,length,bug]=self.__id_mapping[reference]
+                
+        # if id mapping is not provided or not found for the reference then
+        # try to process the reference string
+        if not gene:
+            reference_info=reference.split(config.chocophlan_delimiter)
+            
+            # identify bug and gene families
+            location=""
+            length=0
+            gene=reference_info[0]
+            try:
+                bug=reference_info[config.chocophlan_bug_index]
+                gene=reference_info[config.chocophlan_uniref_index]
+                location=reference_info[config.chocophlan_location_index]
+            except IndexError:
+                # try to find gene length if present
+                bug="unclassified"
+                if len(reference_info)==2:
+                    if re.search("^[0-9]+$",reference_info[0]):
+                        length=int(reference_info[0])
+                        gene=reference_info[1]
+                    elif re.search("^[0-9]+$",reference_info[1]):
+                        length=int(reference_info[1])
+                        gene=reference_info[0]
+                                
+            # compute the length of the gene from the location provided
+            if location:
+                length=self.process_chocophlan_length(location, gene)
+            
+        return [gene,length,bug]
+
+    def add_annotated(self, query, evalue, annotated_reference):
+        """
+        Add an alignment with an annotated reference
+        """
+        
+        # Obtain the reference id length and bug
+        [referenceid,length,bug]=self.process_reference_annotation(annotated_reference)
+        
+        self.add(referenceid, length, query, evalue, bug)
+
     def add(self, reference, reference_length, query, evalue, bug): 
         """ 
         Add the hit to the list

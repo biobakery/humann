@@ -178,9 +178,6 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                     logger.warning("Traceback: \n" + traceback.format_exc())
                     evalue=1.0 
                 
-                # read in the data from the reference annotation
-                [uniref,length,bug]=utilities.process_reference_annotation(info[config.sam_reference_index])
-                
                 query=info[config.sam_read_name_index]
                 # write output to be blastm8-like
                 new_info=[""] * config.blast_total_columns
@@ -191,7 +188,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                    
                 # only store alignments with evalues less than threshold
                 if evalue<1.0:
-                    alignments.add(uniref,length,query,evalue,bug)
+                    alignments.add_annotated(query,evalue,info[config.sam_reference_index])
                 else:
                     logger.debug("Not including alignment based on large e-value: %s", evalue)
                     

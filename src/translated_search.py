@@ -240,9 +240,6 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                     identity="NA"
             
             if process_alignment:
-                
-                [uniref,length,bug]=utilities.process_reference_annotation(
-                    alignment_info[config.blast_reference_index])
                     
                 queryid=alignment_info[config.blast_query_index]
                 evalue=alignment_info[config.blast_evalue_index]
@@ -268,7 +265,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             
                 # only store alignments with evalues less than threshold
                 if evalue<1.0:
-                    alignments.add(uniref, length, queryid, evalue, bug)
+                    alignments.add_annotated(queryid, evalue, 
+                        alignment_info[config.blast_reference_index])
                 else:
                     logger.debug("Not including alignment based on large e-value: %s", evalue)
             
