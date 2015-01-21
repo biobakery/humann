@@ -344,6 +344,16 @@ class GeneScores:
             self.__scores[bug]=dict(self.__scores[bug].items() + gene_scores.items())
         else:
             self.__scores[bug]=gene_scores
+
+    def add_single_score(self,bug,gene,score):
+        """ 
+        Add a score for a specific bug and gene
+        """
+        
+        if bug in self.__scores:
+            self.__scores[bug][gene]=score
+        else:
+            self.__scores[bug]={gene:score}
         
     def count_genes_for_bug(self,bug):
         """
@@ -422,7 +432,8 @@ class GeneScores:
          
         file_handle=open(file,"r")
          
-        for line in file_handle:
+        line=file_handle.readline()
+        while line:
             # Ignore comment lines
             if not re.search(config.gene_table_comment_indicator,line):
                 data=line.rstrip().split(config.gene_table_delimiter)
@@ -438,8 +449,9 @@ class GeneScores:
                     value=0
                     logger.debug("Unable to convert gene table value to float: %s",
                         data[config.gene_table_value_index])
-                self.add({gene: value},bug)
-    
+                self.add_single_score(bug,gene,value)
+            line=file_handle.readline()
+
         file_handle.close()
     
 class PathwaysAndReactions:
