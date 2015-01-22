@@ -235,11 +235,11 @@ def parse_arguments (args):
         default=config.file_basename,
         metavar="<sample_name>")
     parser.add_argument(
-        "--output_collapse", 
-        help="collapse output to remove data by bug\n" + 
-            "[DEFAULT: all data is printed]", 
+        "--remove_stratified_output", 
+        help="remove stratification from output\n" + 
+            "[DEFAULT: output is stratified]", 
         action="store_true",
-        default=config.output_collapse)
+        default=config.remove_stratified_output)
     parser.add_argument(
         "--input_format",
         help="the format of the input file\n[DEFAULT: format identified by software ]",
@@ -380,7 +380,7 @@ def update_configuration(args):
         sys.exit("CRITICAL ERROR: Not able to read input file selected: " + args.input)
         
     # Update the output format
-    config.output_collapse=args.output_collapse
+    config.remove_stratified_output=args.remove_stratified_output
      
     # Check that the output directory is writeable
     output_dir = os.path.abspath(args.output)

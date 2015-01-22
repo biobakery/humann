@@ -322,7 +322,7 @@ def print_pathways(pathways, file, header):
             # Print the computation of all bugs for pathway
             tsv_output.append(pathway+delimiter+utilities.format_float_to_string(all_score))
             # Process and print per bug if selected
-            if not config.output_collapse:
+            if not config.remove_stratified_output:
                 # Print scores per bug for pathway ordered with those with the highest values first
                 if pathway in all_pathways_scores_by_bug:
                     for bug in utilities.double_sort(all_pathways_scores_by_bug[pathway]):
