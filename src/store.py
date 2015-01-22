@@ -38,6 +38,51 @@ import utilities
 # name global logging instance
 logger=logging.getLogger(__name__)
 
+def store_id_mapping(file):
+    """
+    Store the id mapping data from the tab delimited file
+    """
+
+    id_mapping={}
+
+    # Check the file exists and is readable
+    utilities.file_exists_readable(file)
+         
+    file_handle=open(file,"r")
+         
+    line=file_handle.readline()
+    while line:
+        # Ignore comment lines
+        if not re.search(config.id_mapping_comment_indicator,line):
+            data=line.rstrip().split(config.id_mapping_delimiter) 
+            # set the default values for the mapping
+            reference=""
+            gene=""
+            length=0
+            bug="unclassified"
+            try:
+                reference=data[config.id_mapping_reference_index]
+                gene=data[config.id_mapping_gene_index]
+                length=data[config.id_mapping_gene_length_index]
+                bug=data[config.id_mapping_bug_index]  
+            except IndexError:
+                logger.debug("Unable to read full mapping for id")
+                    
+            try:
+                length=int(length)
+            except ValueError:
+                length=0
+                    
+            # if the reference and gene are found, store the mapping
+            if reference and gene:
+                id_mapping[reference]=[gene,length,bug]
+                
+        line=file_handle.readline()
+        
+    file_handle.close() 
+    
+    return id_mapping 
+
 class Alignments:
     """
     Holds all of the alignments for all bugs
@@ -50,48 +95,14 @@ class Alignments:
         self.__scores_by_bug_gene={}
         self.__gene_counts={}
         self.__bug_counts={}
-        self.__id_mapping={}
+        self.__id_mapping={}   
         
-    def store_id_mapping(self,file):
+    def process_id_mapping(self,file):
         """
-        Store the id mapping data from the tab delimited file
+        Process the id mapping file
         """
-
-        # Check the file exists and is readable
-        utilities.file_exists_readable(file)
-         
-        file_handle=open(file,"r")
-         
-        line=file_handle.readline()
-        while line:
-            # Ignore comment lines
-            if not re.search(config.id_mapping_comment_indicator,line):
-                data=line.rstrip().split(config.id_mapping_delimiter) 
-                # set the default values for the mapping
-                reference=""
-                gene=""
-                length=0
-                bug="unclassified"
-                try:
-                    reference=data[config.id_mapping_reference_index]
-                    gene=data[config.id_mapping_gene_index]
-                    length=data[config.id_mapping_gene_length_index]
-                    bug=data[config.id_mapping_bug_index]  
-                except IndexError:
-                    logger.debug("Unable to read full mapping for id")
-                    
-                try:
-                    length=int(length)
-                except ValueError:
-                    length=0
-                    
-                # if the reference and gene are found, store the mapping
-                if reference and gene:
-                    self.__id_mapping[reference]=[gene,length,bug]
-                
-            line=file_handle.readline()
         
-        file_handle.close()     
+        self.__id_mapping=store_id_mapping(file)
         
     def process_chocophlan_length(self,location,gene):
         """
@@ -349,7 +360,7 @@ class GeneScores:
         """ 
         Add a score for a specific bug and gene
         """
-        
+
         if bug in self.__scores:
             self.__scores[bug][gene]=score
         else:
@@ -422,10 +433,16 @@ class GeneScores:
         
         return scores
     
-    def add_from_file(self,file):
+    def add_from_file(self,file,id_mapping_file=None):
         """
         Add all of the gene scores from the file
+        Use id mapping if provided
         """
+        
+        # Process the id mapping file if present
+        id_mapping={}
+        if id_mapping_file:
+            id_mapping=store_id_mapping(id_mapping_file)
         
         # Check the file exists and is readable
         utilities.file_exists_readable(file)
@@ -437,12 +454,24 @@ class GeneScores:
             # Ignore comment lines
             if not re.search(config.gene_table_comment_indicator,line):
                 data=line.rstrip().split(config.gene_table_delimiter)
-                gene=data[config.gene_table_gene_index]
+                gene=""
                 bug="all"
-                if config.gene_table_category_delimiter in gene:
-                    gene_data=gene.split(config.gene_table_category_delimiter)
-                    gene=gene_data[0]
-                    bug=gene_data[1]
+                
+                # Use id mapping if present
+                if id_mapping:
+                    if data[config.gene_table_gene_index] in id_mapping:
+                         [gene,length,bug]=id_mapping[data[config.gene_table_gene_index]]
+                
+                # If gene not set with id mapping, then process
+                if not gene:
+                    if config.gene_table_category_delimiter in data[config.gene_table_gene_index]:
+                        gene_data=data[config.gene_table_gene_index].split(
+                            config.gene_table_category_delimiter)
+                        gene=gene_data[0]
+                        bug=gene_data[1]
+                    else:
+                        gene=data[config.gene_table_gene_index]
+                    
                 try:
                     value=float(data[config.gene_table_value_index])
                 except ValueError:

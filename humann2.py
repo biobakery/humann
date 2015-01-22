@@ -602,9 +602,9 @@ def main():
     unaligned_reads_store=store.Reads()
     gene_scores=store.GeneScores()
     
-    # If id mapping is provided then store
+    # If id mapping is provided then process
     if args.id_mapping:
-        alignments.store_id_mapping(args.id_mapping)
+        alignments.process_id_mapping(args.id_mapping)
     
     # Load in the reactions database
     reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
@@ -781,7 +781,7 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        gene_scores.add_from_file(args.input) 
+        gene_scores.add_from_file(args.input,id_mapping_file=args.id_mapping) 
         
         start_time=timestamp_message("processing gene table",start_time)
 
