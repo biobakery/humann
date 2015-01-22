@@ -229,6 +229,12 @@ def parse_arguments (args):
         default=config.file_basename,
         metavar="<sample_name>")
     parser.add_argument(
+        "--output_collapse", 
+        help="collapse output to remove data by bug\n" + 
+            "[DEFAULT: all data is printed]", 
+        action="store_true",
+        default=config.output_collapse)
+    parser.add_argument(
         "--input_format",
         help="the format of the input file\n[DEFAULT: format identified by software ]",
         choices=config.input_format_choices)
@@ -343,6 +349,9 @@ def update_configuration(args):
         
     if not os.access(args.input, os.R_OK):
         sys.exit("CRITICAL ERROR: Not able to read input file selected: " + args.input)
+        
+    # Update the output format
+    config.output_collapse=args.output_collapse
      
     # Check that the output directory is writeable
     output_dir = os.path.abspath(args.output)

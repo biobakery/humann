@@ -139,6 +139,7 @@ blast_total_columns=12
 # output file formats
 output_file_column_delimiter="\t"
 output_file_category_delimiter="|"
+output_collapse=False
 
 # gene table file formats
 gene_table_comment_indicator="^#"
