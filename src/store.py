@@ -149,7 +149,12 @@ class Alignments:
             gene=reference_info[0]
             try:
                 bug=reference_info[config.chocophlan_bug_index]
-                gene=reference_info[config.chocophlan_uniref_index]
+                # Join all genes selected
+                gene_set=[]
+                for index in config.chocophlan_gene_indexes:
+                    gene_set.append(reference_info[index])
+                if gene_set:
+                    gene=config.chocophlan_delimiter.join(gene_set)
                 location=reference_info[config.chocophlan_location_index]
             except IndexError:
                 # try to find gene length if present

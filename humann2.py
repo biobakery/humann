@@ -128,6 +128,12 @@ def parse_arguments (args):
             + config.chocophlan + " ]", 
         metavar="<chocophlan>")
     parser.add_argument(
+        "--chocophlan_gene_index",
+        help="the index of the gene in the sequence annotation\n[DEFAULT: " 
+            + ",".join(str(i) for i in config.chocophlan_gene_indexes) + " ]", 
+        metavar="<"+",".join(str(i) for i in config.chocophlan_gene_indexes)+">",
+        default=",".join(str(i) for i in config.chocophlan_gene_indexes))
+    parser.add_argument(
         "-u", "--uniref",
         help="directory containing the UniRef database\n[DEFAULT: " 
             + config.uniref + " ]", 
@@ -338,6 +344,29 @@ def update_configuration(args):
     # Update the computation toggle choices
     config.xipe_toggle=args.xipe
     config.minpath_toggle=args.minpath
+    
+    # Update the chocophlan gene indexes
+    config.chocophlan_gene_indexes=[]
+    for index in args.chocophlan_gene_index.split(","):
+        # Look for array range
+        if ":" in index:
+            split_index=index.split(":")
+            start=split_index[0]
+            end=split_index[1]
+            
+            try:
+                start=int(start)
+                end=int(end)
+                config.chocophlan_gene_indexes+=range(start,end)
+            except ValueError:
+                pass
+        else:
+            # Convert to int
+            try:
+                index=int(index)
+                config.chocophlan_gene_indexes.append(index)
+            except ValueError:
+                pass
         
     # If minpath is set to run, install if not already installed
     if config.minpath_toggle == "on":
