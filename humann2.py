@@ -160,9 +160,9 @@ def parse_arguments (args):
         default=config.log_level,
         choices=config.log_level_choices)
     parser.add_argument(
-        "--temp", 
-        help="keep temp output files\n" + 
-            "[DEFAULT: temp files are removed]", 
+        "--remove_temp_output", 
+        help="remove temp output files\n" + 
+            "[DEFAULT: temp files are not removed]", 
         action="store_true")
     parser.add_argument(
         "--bowtie2",
@@ -438,8 +438,8 @@ def update_configuration(args):
             config.output_format)
 
     # set the location of the temp directory
-    if args.temp:
-        config.temp_dir=os.path.join(output_dir,config.file_basename+"_HUMAnN2_temp")
+    if not args.remove_temp_output:
+        config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann2_temp")
         if not os.path.isdir(config.temp_dir):
             try:
                 os.mkdir(config.temp_dir)
@@ -447,7 +447,7 @@ def update_configuration(args):
                 sys.exit("Unable to create temp directory: " + config.temp_dir)
     else:
         config.temp_dir=tempfile.mkdtemp( 
-            prefix=config.file_basename+'_HUMAnN2_temp_',dir=output_dir)
+            prefix=config.file_basename+'_humann2_temp_',dir=output_dir)
         
     # create the unnamed temp directory
     config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
@@ -862,7 +862,7 @@ def main():
     utilities.remove_directory(config.unnamed_temp_dir)
 
     # Remove named temp directory
-    if not args.temp:
+    if args.remove_temp_output:
         utilities.remove_directory(config.temp_dir)
         
 

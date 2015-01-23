@@ -116,7 +116,33 @@ where $SAMPLENAME is the basename of $SAMPLE
 
 *The gene families file will not be created if the input file type is a gene table.
 
-NOTE: To keep all of the intermediate temp files use the "--temp" flag.
+Intermediate temp files will also be created in the folder $OUTPUT_DIR/$SAMPLENAME_humann2_temp/.
+	* The intermediate temp files are:
+		1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
+			* the full alignment output from bowtie2 
+		1. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
+			* only the reduced aligned data from the bowtie2 output
+		1. $DIR/$SAMPLENAME_bowtie2_index*
+			* bowtie2 index files created from the custom chochophlan database
+		1. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
+			* a fasta file of unaligned reads after the bowtie2 step
+		1. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
+			* a custom chocophlan database of fasta sequences
+		1. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
+			* the bowtie2 output from metaphlan
+		1. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
+			* the bugs list output from metaphlan
+		1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
+			* the alignment results from the translated alignment step
+		1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
+			* a fasta file of unaligned reads after the translated alignment step
+		1. $DIR/$SAMPLENAME.log 
+			* a log of the run
+	* $DIR=$OUTPUT_DIR/$SAMPLENAME_humann2_temp/
+	* $SAMPLENAME is the basename of the fastq/fasta input file
+	* $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
+
+NOTE: $SAMPLENAME can be set by the user with the option "--output_basename <$NEWNAME>". 
 
 ### Demo runs ###
 
@@ -207,32 +233,7 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 
 1. To run with additional output printed to stdout: add the ``--verbose`` flag
 1. To run using multiple cores: add the ``--threads $CORES`` option
-1. To keep the intermediate output files: add the ``--temp`` flag
-	* The intermediate files are:
-		1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
-			* the full alignment output from bowtie2 
-		1. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
-			* only the aligned data from the bowtie2 output
-		1. $DIR/$SAMPLENAME_bowtie2_index*
-			* bowtie2 index files created from the custom chochophlan database
-		1. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
-			* a fasta file of unaligned reads after the bowtie2 step
-		1. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
-			* a custom chocophlan database of fasta sequences
-		1. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
-			* the bowtie2 output from metaphlan
-		1. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
-			* the bugs list output from metaphlan
-		1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
-			* the alignment results from the translated alignment step
-		1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
-			* a fasta file of unaligned reads after the translated alignment step
-		1. $DIR/$SAMPLENAME.log 
-			* a log of the run
-	* $DIR=$OUTPUT_DIR/$SAMPLENAME_HUMAnN2_temp/
-	* $SAMPLENAME is the basename of the fastq/fasta input file
-	* $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
-
+1. To remove the intermediate temp output files: add the ``--remove_temp_output`` flag
 1. To bypass the MetaPhlAn prescreen step: add the ``--bypass_prescreen`` flag
 1. To bypass the prescreen and the nucleotide alignment index step and start with the bowtie2 alignment step: add the ``--bypass_nucleotide_index`` flag
 	* If using this flag provide the bowtie2 index as the input to the chocophlan parameter instead of the chocoplan directory. For example, run with "--bypass_nucleotide_index --chocophlan chocophlan_dir/chocophlan_bowtie2_index"  if the first bowtie2 index file is located at chocophlan_dir/chocophlan_bowtie2_index.1.bt2 .
@@ -242,20 +243,24 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 ### Complete option list ###
 ```
 usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
-                  [--bypass_nucleotide_index] [--bypass_translated_search] -i
-                  <input.fastq> -o <output> [-c <chocophlan>] [-u <uniref>]
+                  [--bypass_nucleotide_index] [--bypass_translated_search]
+                  [--bypass_nucleotide_search] -i <input.fastq> -o <output>
+                  [-c <chocophlan>] [--chocophlan_gene_index <-1>]
+                  [-u <uniref>] [--average_read_length <1>]
                   [--metaphlan <metaplhan>] [--o_log <sample.log>]
-                  [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}] [--temp]
-                  [--bowtie2 <bowtie2>] [--threads <1>]
+                  [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+                  [--remove_temp_output] [--bowtie2 <bowtie2>] [--threads <1>]
                   [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
                   [--usearch <usearch>] [--rapsearch <rapsearch>]
                   [--metaphlan_output <bugs_list.tsv>]
+                  [--id_mapping <id_mapping.tsv>]
                   [--translated_alignment {usearch,rapsearch}]
                   [--xipe {on,off}] [--minpath {on,off}]
-                  [--output_format {tsv,biom}]
+                  [--pick_frames {on,off}] [--output_format {tsv,biom}]
+                  [--output_basename <sample_name>]
+                  [--remove_stratified_output]
                   [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
                   [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
-
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 
@@ -268,18 +273,26 @@ optional arguments:
                         bypass the nucleotide index step and run on the indexed ChocoPhlAn database
   --bypass_translated_search
                         bypass the translated search step
+  --bypass_nucleotide_search
+                        bypass the nucleotide search steps
   -i <input.fastq>, --input <input.fastq>
-                        input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,blastm8} 
+                        input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom} 
                         [REQUIRED]
   -o <output>, --output <output>
                         directory to write output files
                         [REQUIRED]
   -c <chocophlan>, --chocophlan <chocophlan>
                         directory containing the ChocoPhlAn database
-                        [DEFAULT: databases/chocophlan/ ]
+                        [DEFAULT: databases/chocophlan/]
+  --chocophlan_gene_index <-1>
+                        the index of the gene in the sequence annotation
+                        [DEFAULT: -1]
   -u <uniref>, --uniref <uniref>
                         directory containing the UniRef database
-                        [DEFAULT: databases/uniref/ ]
+                        [DEFAULT: databases/uniref/]
+  --average_read_length <1>
+                        the average length of the reads
+                        [DEFAULT: 1]
   --metaphlan <metaplhan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
@@ -287,13 +300,13 @@ optional arguments:
                         [DEFAULT: temp/sample.log]
   --log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         level of messages to display in log
-                        [DEFAULT: DEBUG ]
-  --temp                keep temp output files
-                        [DEFAULT: temp files are removed]
+                        [DEFAULT: DEBUG]
+  --remove_temp_output  remove temp output files
+                        [DEFAULT: temp files are not removed]
   --bowtie2 <bowtie2>   directory of the bowtie2 executable
                         [DEFAULT: $PATH]
   --threads <1>         number of threads/processes
-                        [DEFAULT: 1 ]
+                        [DEFAULT: 1]
   --prescreen_threshold <0.01>
                         minimum percentage of reads matching a species
                         [DEFAULT: 0.01]
@@ -308,20 +321,32 @@ optional arguments:
   --metaphlan_output <bugs_list.tsv>
                         output file created by metaphlan
                         [DEFAULT: file will be created]
+  --id_mapping <id_mapping.tsv>
+                        id mapping file for alignments
+                        [DEFAULT: alignment reference used]
   --translated_alignment {usearch,rapsearch}
                         software to use for translated alignment
                         [DEFAULT: rapsearch]
   --xipe {on,off}       turn on/off the xipe computation
-                        [DEFAULT: off ]
+                        [DEFAULT: off]
   --minpath {on,off}    turn on/off the minpath computation
-                        [DEFAULT: on ]
+                        [DEFAULT: on]
+  --pick_frames {on,off}
+                        turn on/off the pick_frames computation
+                        [DEFAULT: off]
   --output_format {tsv,biom}
                         the format of the output files
-                        [DEFAULT: tsv ]
+                        [DEFAULT: tsv]
+  --output_basename <sample_name>
+                        the basename for the output files
+                        [DEFAULT: input file basename]
+  --remove_stratified_output
+                        remove stratification from output
+                        [DEFAULT: output is stratified]
   --input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
                         the format of the input file
-                        [DEFAULT: format identified by software ]
+                        [DEFAULT: format identified by software]
   --pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
                         the two mapping files to use for pathway computations
-                        [DEFAULT: databases/pathways/metacyc_reactions.uniref , databases/pathways/metacyc_pathways ]
+                        [DEFAULT: databases/pathways/metacyc_reactions.uniref , databases/pathways/metacyc_pathways]
 ```
