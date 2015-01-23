@@ -106,7 +106,7 @@ $SAMPLE = a single file that is one of the following types:
 
 $OUTPUT_DIR = the output directory
 
-Three output files will be created:
+**Three output files will be created:**
 
 1. $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv*
 1. $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv
@@ -116,9 +116,7 @@ where $SAMPLENAME is the basename of $SAMPLE
 
 *The gene families file will not be created if the input file type is a gene table.
 
-Intermediate temp files will also be created in the folder $OUTPUT_DIR/$SAMPLENAME_humann2_temp/.
-
-The intermediate temp files are:
+**Intermediate temp files will also be created:**
 
 1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
 	* the full alignment output from bowtie2 
