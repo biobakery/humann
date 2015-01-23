@@ -125,19 +125,25 @@ def parse_arguments (args):
     parser.add_argument(
         "-c", "--chocophlan",
         help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
-            + config.chocophlan + " ]", 
+            + config.chocophlan + "]", 
         metavar="<chocophlan>")
     parser.add_argument(
         "--chocophlan_gene_index",
         help="the index of the gene in the sequence annotation\n[DEFAULT: " 
-            + ",".join(str(i) for i in config.chocophlan_gene_indexes) + " ]", 
+            + ",".join(str(i) for i in config.chocophlan_gene_indexes) + "]", 
         metavar="<"+",".join(str(i) for i in config.chocophlan_gene_indexes)+">",
         default=",".join(str(i) for i in config.chocophlan_gene_indexes))
     parser.add_argument(
         "-u", "--uniref",
         help="directory containing the UniRef database\n[DEFAULT: " 
-            + config.uniref + " ]", 
+            + config.uniref + "]", 
         metavar="<uniref>")
+    parser.add_argument(
+        "--average_read_length", 
+        help="the average length of the reads\n[DEFAULT: " + str(config.average_read_length) + "]", 
+        metavar="<" + str(config.average_read_length) + ">", 
+        type=int,
+        default=config.average_read_length) 
     parser.add_argument(
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
@@ -150,7 +156,7 @@ def parse_arguments (args):
     parser.add_argument(
         "--log_level", 
         help="level of messages to display in log\n" + 
-        "[DEFAULT: " + config.log_level + " ]", 
+        "[DEFAULT: " + config.log_level + "]", 
         default=config.log_level,
         choices=config.log_level_choices)
     parser.add_argument(
@@ -164,7 +170,7 @@ def parse_arguments (args):
         metavar="<bowtie2>")
     parser.add_argument(
         "--threads", 
-        help="number of threads/processes\n[DEFAULT: " + str(config.threads) + " ]", 
+        help="number of threads/processes\n[DEFAULT: " + str(config.threads) + "]", 
         metavar="<" + str(config.threads) + ">", 
         type=int,
         default=config.threads) 
@@ -207,31 +213,31 @@ def parse_arguments (args):
     parser.add_argument(
         "--xipe",
         help="turn on/off the xipe computation\n[DEFAULT: " +
-        config.xipe_toggle + " ]",
+        config.xipe_toggle + "]",
         default=config.xipe_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
         "--minpath",
         help="turn on/off the minpath computation\n[DEFAULT: " + 
-        config.minpath_toggle + " ]",
+        config.minpath_toggle + "]",
         default=config.minpath_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
         "--pick_frames",
         help="turn on/off the pick_frames computation\n[DEFAULT: " + 
-        config.pick_frames_toggle + " ]",
+        config.pick_frames_toggle + "]",
         default=config.pick_frames_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
         "--output_format",
         help="the format of the output files\n[DEFAULT: " +
-        config.output_format + " ]",
+        config.output_format + "]",
         default=config.output_format,
         choices=config.output_format_choices)
     parser.add_argument(
         "--output_basename",
         help="the basename for the output files\n[DEFAULT: " +
-        "input file basename ]",
+        "input file basename]",
         default=config.file_basename,
         metavar="<sample_name>")
     parser.add_argument(
@@ -242,12 +248,12 @@ def parse_arguments (args):
         default=config.remove_stratified_output)
     parser.add_argument(
         "--input_format",
-        help="the format of the input file\n[DEFAULT: format identified by software ]",
+        help="the format of the input file\n[DEFAULT: format identified by software]",
         choices=config.input_format_choices)
     parser.add_argument(
         "--pathways_databases",
         help="the two mapping files to use for pathway computations\n[DEFAULT: " +
-        config.pathways_database_part1 + " , " + config.pathways_database_part2 + " ]",
+        config.pathways_database_part1 + " , " + config.pathways_database_part2 + "]",
         metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
         nargs=2)
 
@@ -337,6 +343,9 @@ def update_configuration(args):
     
     # Update threads
     config.threads=args.threads
+    
+    # Update the average read length
+    config.average_read_length=args.average_read_length
     
     # Update translated alignment software
     config.translated_alignment_selected=args.translated_alignment

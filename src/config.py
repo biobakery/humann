@@ -43,6 +43,9 @@ threads=1
 # output file decimal places
 output_max_decimals=10
 
+# average read length
+average_read_length=1
+
 # log options
 log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
 log_level=log_level_choices[0]

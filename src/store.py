@@ -83,6 +83,14 @@ def store_id_mapping(file):
     
     return id_mapping 
 
+def normalized_gene_length(gene_length):
+    """
+    Compute the normalized gene length using the average read length
+    Report in reads per kilobase
+    """
+
+    return (abs(gene_length - config.average_read_length)+1)/1000.0
+
 class Alignments:
     """
     Holds all of the alignments for all bugs
@@ -193,9 +201,6 @@ class Alignments:
             reference_length=1000
             logger.debug("Reference length of 0 found for gene: " + reference)
         
-        # store the reference length as per kilobase
-        length=reference_length/1000.0
-        
         # store the score instead of the evalue
         try:
             score=math.exp(-evalue)
@@ -211,15 +216,15 @@ class Alignments:
         self.__total_scores_by_query[query]=self.__total_scores_by_query.get(query,0)+score
         
         # Store the scores by bug and gene
-        normalized_length=1/length
+        normalized_score=1/normalized_gene_length(reference_length)
         if bug in self.__scores_by_bug_gene:
-            self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_length
+            self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_score
         else:
-            self.__scores_by_bug_gene[bug]={reference:normalized_length}
+            self.__scores_by_bug_gene[bug]={reference:normalized_score}
             
         # Point to the hit by query
         # Add to dictionary if multiple hits per query
-        hit=[bug,reference,score,length]
+        hit=[bug,reference,score,reference_length]
         if query in self.__hits_by_query:
             self.__hits_by_query[query].append(hit)
             self.__multiple_hits_queries[query]=1
@@ -302,11 +307,12 @@ class Alignments:
         for query in self.__multiple_hits_queries:
             query_normalize=self.__total_scores_by_query[query]
             for [bug,reference,score,length] in self.__hits_by_query[query]:
-                normalized_score=score/query_normalize/length
                 # Update the scores by bug and gene
-                # Subtract the original score added of 1/length
+                # Subtract the original score added of 1/abs(length-average_read_length)+1
                 # Add the new normalized score
-                self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-1/length+normalized_score
+                original_score=1/normalized_gene_length(length)
+                updated_score=score/query_normalize*original_score
+                self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
         
         # compute the scores for the genes
         all_gene_scores={}
