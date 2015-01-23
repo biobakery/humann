@@ -117,30 +117,33 @@ where $SAMPLENAME is the basename of $SAMPLE
 *The gene families file will not be created if the input file type is a gene table.
 
 Intermediate temp files will also be created in the folder $OUTPUT_DIR/$SAMPLENAME_humann2_temp/.
-	* The intermediate temp files are:
-		1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
-			* the full alignment output from bowtie2 
-		1. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
-			* only the reduced aligned data from the bowtie2 output
-		1. $DIR/$SAMPLENAME_bowtie2_index*
-			* bowtie2 index files created from the custom chochophlan database
-		1. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
-			* a fasta file of unaligned reads after the bowtie2 step
-		1. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
-			* a custom chocophlan database of fasta sequences
-		1. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
-			* the bowtie2 output from metaphlan
-		1. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
-			* the bugs list output from metaphlan
-		1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
-			* the alignment results from the translated alignment step
-		1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
-			* a fasta file of unaligned reads after the translated alignment step
-		1. $DIR/$SAMPLENAME.log 
-			* a log of the run
-	* $DIR=$OUTPUT_DIR/$SAMPLENAME_humann2_temp/
-	* $SAMPLENAME is the basename of the fastq/fasta input file
-	* $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
+
+The intermediate temp files are:
+
+1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
+	* the full alignment output from bowtie2 
+1. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
+	* only the reduced aligned data from the bowtie2 output
+1. $DIR/$SAMPLENAME_bowtie2_index*
+	* bowtie2 index files created from the custom chochophlan database
+1. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
+	* a fasta file of unaligned reads after the bowtie2 step
+1. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
+	* a custom chocophlan database of fasta sequences
+1. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
+	* the bowtie2 output from metaphlan
+1. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
+	* the bugs list output from metaphlan
+1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
+	* the alignment results from the translated alignment step
+1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
+	* a fasta file of unaligned reads after the translated alignment step
+1. $DIR/$SAMPLENAME.log 
+	* a log of the run
+	
+* $DIR=$OUTPUT_DIR/$SAMPLENAME_humann2_temp/
+* $SAMPLENAME is the basename of the fastq/fasta input file
+* $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
 
 NOTE: $SAMPLENAME can be set by the user with the option "--output_basename <$NEWNAME>". 
 
