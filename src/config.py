@@ -62,7 +62,7 @@ output_format=output_format_choices[0]
 input_format_choices=["fastq","fastq.gz","fasta","fasta.gz","sam","bam","blastm8","genetable","biom"]
 
 # translated alignment options
-translated_alignment_choices = ["usearch","rapsearch"]
+translated_alignment_choices = ["usearch","rapsearch","diamond"]
 translated_alignment_selected = translated_alignment_choices[1]
 
 # file naming
@@ -171,6 +171,12 @@ usearch_opts=["-maxhits",20,"-evalue",1.0]
 rapsearch_database_extension=".info"
 rapsearch_opts=["-v",20,"-e",0]
 rapsearch_output_file_extension=".m8"
+
+# diamond options
+diamond_database_extension=".dmnd"
+diamond_opts=["--max-target-seqs",20,"--evalue",1.0,"--sensitive"]
+diamond_cmmd_protein_search="blastp"
+diamond_cmmd_nucleotide_search="blastx"
 
 # data files
 chocophlan="databases/chocophlan/"

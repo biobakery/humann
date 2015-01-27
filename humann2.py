@@ -197,6 +197,10 @@ def parse_arguments (args):
         help="directory containing the rapsearch executable\n[DEFAULT: $PATH]", 
         metavar="<rapsearch>")
     parser.add_argument(
+        "--diamond", 
+        help="directory containing the diamond executable\n[DEFAULT: $PATH]", 
+        metavar="<diamond>")
+    parser.add_argument(
         "--metaphlan_output", 
         help="output file created by metaphlan\n[DEFAULT: file will be created]", 
         metavar="<bugs_list.tsv>")
@@ -280,6 +284,9 @@ def update_configuration(args):
 
     if args.rapsearch:
         utilities.add_exe_to_path(os.path.abspath(args.rapsearch))
+        
+    if args.diamond:
+        utilities.add_exe_to_path(os.path.abspath(args.diamond))
  
     humann2_base_directory=config.get_humann2_base_directory() 
  
@@ -610,6 +617,16 @@ def check_requirements(args):
                     sys.exit("CRITICAL ERROR: The UniRef directory provided at " + config.uniref 
                         + " has not been formatted to run with"
                         " the rapsearch translated alignment software. Please format these files.")
+                    
+            # Check that some of the database files are of the *.dmnd extension
+            if config.translated_alignment_selected == "diamond":
+                for file in os.listdir(config.uniref):
+                    if file.endswith(config.diamond_database_extension):
+                        valid_format_count+=1
+                if valid_format_count == 0:
+                    sys.exit("CRITICAL ERROR: The UniRef directory provided at " + config.uniref
+                        + " has not been formatted to run with the diamond translated" 
+                        + " alignment software. Please format these files.")
 
             # Check for correct usearch version
             if config.translated_alignment_selected == "usearch":
