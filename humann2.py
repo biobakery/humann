@@ -33,6 +33,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import sys
 # Try to load one of the humann2 src modules to check the installation
 try:
     from src import config
@@ -41,7 +42,6 @@ except ImportError:
         " Please check your install.") 
 
 # Check the python version
-import sys
 try:
     if (sys.version_info[0] != config.required_python_version_major or
         sys.version_info[1] < config.required_python_version_minor):
