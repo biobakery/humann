@@ -174,115 +174,116 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
     threads=config.threads
     if config.minpath_toggle == "on":
         threads=1
-    elif threads>config.max_pathways_threads:
-        threads=config.max_pathways_threads
         
     pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
         function=identify_reactions_and_pathways_by_bug)
 
     return pathways_and_reactions_store
 
-def pathways_coverage_by_bug(args):
+def compute_pathways_coverage_by_bug(pathways_and_reactions_store,pathways_database):
     """
-    Compute the coverage of pathways for one bug
+    Compute the coverage of pathways for each bug
     """
+
+    pathways_coverage_store=store.Pathways()
+    for pathways_and_reactions_store_one_bug in pathways_and_reactions_store:
     
-    pathways_and_reactions_store, pathways_database = args
-    
-    logger.debug("Compute pathway coverage for bug: " + pathways_and_reactions_store.get_bug())
-    
-    # Process through each pathway to compute coverage
-    pathways_coverages={}
-    xipe_input=[]
-    median_score_value=pathways_and_reactions_store.median_score()
-    
-    for pathway in pathways_and_reactions_store.get_pathways():
-            
-        reaction_scores=pathways_and_reactions_store.get_reactions(pathway)
-        # Count the reactions with scores greater than the median
-        count_greater_than_median=0
-        for reaction, score in reaction_scores.items():
-            if score > median_score_value:
-               count_greater_than_median+=1
+        bug=pathways_and_reactions_store_one_bug.get_bug()
+        logger.debug("Compute pathway coverage for bug: " + bug)
         
-        # Compute coverage
-        coverage=0
-        total_reactions_for_pathway=len(pathways_database.find_reactions(pathway))
-        if total_reactions_for_pathway:
-            coverage=count_greater_than_median/float(total_reactions_for_pathway)
+        # Process through each pathway to compute coverage
+        xipe_input=[]
+        median_score_value=pathways_and_reactions_store_one_bug.median_score()
         
-        pathways_coverages[pathway]=coverage
-        xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
-    
-    # Check config to determine if xipe should be run
-    if config.xipe_toggle == "on":
-        # Run xipe
-        xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-            config.xipe_script)
-        
-        cmmd=[xipe_exe,"--file2",config.xipe_percent]
-        
-        message="Run xipe ...."
-        logger.info(message)
-        if config.verbose:
-            print(message)
-        xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
-            stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-        xipe_stdout, xipe_stderr = xipe_subprocess.communicate("\n".join(xipe_input))
-        
-        # Record the pathways to remove based on the xipe error messages
-        pathways_to_remove=[]
-        for line in xipe_stderr.split("\n"):
-            data=line.strip().split(config.xipe_delimiter)
-            if len(data) == 2:
-                pathways_to_remove.append(data[1])
-        
-        # Keep some of the pathways to remove based on their xipe scores
-        for line in xipe_stdout.split("\n"):
-            data=line.strip().split(config.xipe_delimiter)
-            if len(data) == 2:
-                pathway, pathway_data = data
-                if pathway in pathways_to_remove:
-                    score, bin = pathway_data[1:-1].split(", ")
-                    if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
-                        pathways_to_remove.remove(pathway)
+        for pathway in pathways_and_reactions_store_one_bug.get_pathways():
                 
-        # Remove the selected pathways
-        for pathway in pathways_to_remove:
-            del pathways_coverages[pathway]
-    
-    return store.Pathways(pathways_and_reactions_store.get_bug(), pathways_coverages)
-
-def pathways_abundance_by_bug(args):
-    """
-    Compute the abundance of pathways for one bug
-    """
-    
-    pathways_and_reactions_store, pathways_database = args
-    
-    logger.debug("Compute pathway abundance for bug: " + pathways_and_reactions_store.get_bug())
-
-    # Process through each pathway to compute abundance
-    pathways_abundances={}
-    for pathway in pathways_and_reactions_store.get_pathways():
-        
-        reaction_scores=pathways_and_reactions_store.get_reactions(pathway)
-        # Initialize any reactions in the pathway not found to 0
-        for reaction in pathways_database.find_reactions(pathway):
-            reaction_scores.setdefault(reaction, 0)
+            reaction_scores=pathways_and_reactions_store_one_bug.get_reactions(pathway)
+            # Count the reactions with scores greater than the median
+            count_greater_than_median=0
+            for reaction, score in reaction_scores.items():
+                if score > median_score_value:
+                   count_greater_than_median+=1
             
-        # Sort the scores for all of the reactions in the pathway from low to high
-        sorted_reaction_scores=sorted(reaction_scores.values())
+            # Compute coverage
+            coverage=0
+            total_reactions_for_pathway=len(pathways_database.find_reactions(pathway))
+            if total_reactions_for_pathway:
+                coverage=count_greater_than_median/float(total_reactions_for_pathway)
             
-        # Select the second half of the list of reaction scores
-        abundance_set=sorted_reaction_scores[(len(sorted_reaction_scores)/ 2):]
+            pathways_coverage_store.add(bug,pathway,coverage)
+            xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
         
-        # Compute abundance
-        abundance=sum(abundance_set)/len(abundance_set)
-        
-        pathways_abundances[pathway]=abundance
+        # Check config to determine if xipe should be run
+        if config.xipe_toggle == "on":
+            # Run xipe
+            xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                config.xipe_script)
+            
+            cmmd=[xipe_exe,"--file2",config.xipe_percent]
+            
+            message="Run xipe ...."
+            logger.info(message)
+            if config.verbose:
+                print(message)
+            xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
+                stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+            xipe_stdout, xipe_stderr = xipe_subprocess.communicate("\n".join(xipe_input))
+            
+            # Record the pathways to remove based on the xipe error messages
+            pathways_to_remove=[]
+            for line in xipe_stderr.split("\n"):
+                data=line.strip().split(config.xipe_delimiter)
+                if len(data) == 2:
+                    pathways_to_remove.append(data[1])
+            
+            # Keep some of the pathways to remove based on their xipe scores
+            for line in xipe_stdout.split("\n"):
+                data=line.strip().split(config.xipe_delimiter)
+                if len(data) == 2:
+                    pathway, pathway_data = data
+                    if pathway in pathways_to_remove:
+                        score, bin = pathway_data[1:-1].split(", ")
+                        if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
+                            pathways_to_remove.remove(pathway)
+                    
+            # Remove the selected pathways
+            for pathway in pathways_to_remove:
+                pathways_coverage_store.delete(bug,pathway)
+
+    return pathways_coverage_store
+
+def compute_pathways_abundance_by_bug(pathways_and_reactions_store, pathways_database):
+    """
+    Compute the abundance of pathways for each bug
+    """
     
-    return store.Pathways(pathways_and_reactions_store.get_bug(), pathways_abundances)
+    # Process through each pathway for each bug to compute abundance
+    pathways_abundance_store=store.Pathways()
+    for pathways_and_reactions_store_one_bug in pathways_and_reactions_store:
+        
+        bug=pathways_and_reactions_store_one_bug.get_bug()
+        logger.debug("Compute pathway abundance for bug: " + bug)
+        
+        for pathway in pathways_and_reactions_store_one_bug.get_pathways():
+            
+            reaction_scores=pathways_and_reactions_store_one_bug.get_reactions(pathway)
+            # Initialize any reactions in the pathway not found to 0
+            for reaction in pathways_database.find_reactions(pathway):
+                reaction_scores.setdefault(reaction, 0)
+                
+            # Sort the scores for all of the reactions in the pathway from low to high
+            sorted_reaction_scores=sorted(reaction_scores.values())
+                
+            # Select the second half of the list of reaction scores
+            abundance_set=sorted_reaction_scores[(len(sorted_reaction_scores)/ 2):]
+            
+            # Compute abundance
+            abundance=sum(abundance_set)/len(abundance_set)
+            
+            # Store the abundance
+            pathways_abundance_store.add(bug, pathway, abundance)
+    
+    return pathways_abundance_store
     
     
 def print_pathways(pathways, file, header):
@@ -293,41 +294,25 @@ def print_pathways(pathways, file, header):
     logger.debug("Print pathways %s", header)
     
     delimiter=config.output_file_column_delimiter
-    category_delimiter=config.output_file_category_delimiter
-    
-    # Compile data for all bugs by pathways
-    all_pathways=store.Pathways()
-    all_pathways_scores_by_bug={}
-    for bug_pathways in pathways:
-        bug=bug_pathways.get_bug()
-        # Compile all scores based on score for each bug for each pathway
-        if bug == "all":
-            all_pathways=bug_pathways
-        else:
-            for pathway in bug_pathways.get_pathways():
-                score=bug_pathways.get_score(pathway)
-                if score>0:
-                    if not pathway in all_pathways_scores_by_bug:
-                        all_pathways_scores_by_bug[pathway]={bug: score}
-                    else:
-                        all_pathways_scores_by_bug[pathway][bug]=score             
+    category_delimiter=config.output_file_category_delimiter            
  
     # Create the header
     tsv_output=["# Pathway"+ delimiter + header]       
             
     # Print out the pathways with those with the highest scores first
-    for pathway in all_pathways.get_pathways_double_sorted():
-        all_score=all_pathways.get_score(pathway)
+    for pathway in pathways.get_pathways_double_sorted():
+        all_score=pathways.get_score(pathway)
         if all_score>0:
             # Print the computation of all bugs for pathway
             tsv_output.append(pathway+delimiter+utilities.format_float_to_string(all_score))
             # Process and print per bug if selected
             if not config.remove_stratified_output:
                 # Print scores per bug for pathway ordered with those with the highest values first
-                if pathway in all_pathways_scores_by_bug:
-                    for bug in utilities.double_sort(all_pathways_scores_by_bug[pathway]):
+                for bug in pathways.get_bugs_double_sorted(pathway):
+                    score=pathways.get_score_for_bug(bug,pathway)
+                    if score>0:
                         tsv_output.append(pathway+category_delimiter+bug+delimiter
-                            +utilities.format_float_to_string(all_pathways_scores_by_bug[pathway][bug]))
+                            +utilities.format_float_to_string(score))
  
     if config.output_format == "biom":
         # Open a temp file if a conversion to biom is selected
@@ -350,27 +335,16 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     Compute the abundance and coverage of the pathways
     """
     
-    threads=config.threads
-    if threads>config.max_pathways_threads:
-        threads=config.max_pathways_threads
-    
     # Compute abundance for all pathways
-    args=[]
-    for bug_pathway_and_reactions_store in pathways_and_reactions_store:
-         args.append([bug_pathway_and_reactions_store, pathways_database])
-        
-    pathways_abundance=utilities.command_multiprocessing(threads, args, 
-        function=pathways_abundance_by_bug)
+    pathways_abundance=compute_pathways_abundance_by_bug(pathways_and_reactions_store,
+        pathways_database)
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance (reads per kilobase)")
 
-    # Compute coverage
-    if config.xipe_toggle == "on":
-        threads=1
-
-    pathways_coverage=utilities.command_multiprocessing(threads, args, 
-        function=pathways_coverage_by_bug)
+    # Compute coverage for all pathways
+    pathways_coverage=compute_pathways_coverage_by_bug(pathways_and_reactions_store,
+        pathways_database)
     
     # Print the pathways abundance data to file
     print_pathways(pathways_coverage, config.pathcoverage_file, "Coverage")

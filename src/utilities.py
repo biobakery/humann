@@ -463,8 +463,12 @@ def command_multiprocessing(threads, args, function=None, lock=None):
                 for i in range(len(args)):
                     results.append(results_queue.get())
             else:
-                pool=multiprocessing.Pool(threads)
-                results=pool.map(function, args)
+                results=[]
+                for i in range(0,len(args),threads):
+                    pool=multiprocessing.Pool(threads,maxtasksperchild=1)
+                    results+=pool.map(function, args[i:i+threads])
+                    pool.close()
+                    pool.join()
         else:
             results=[function(arg) for arg in args]
     except (EnvironmentError, ValueError, subprocess.CalledProcessError):

@@ -572,16 +572,44 @@ class Pathways:
     Holds the pathways coverage or abundance data for a bug
     """
     
-    def __init__(self, bug="None", pathways={}):
-        self.__bug=bug
-        self.__pathways=pathways
-
-    def get_bug(self):
+    def __init__(self):
+        self.__pathways={}
+        self.__pathways_per_bug={}
+        
+    def add(self, bug, pathway, score):
         """
-        Return the bug associated with the pathways data
+        Add the pathway score for the bug
         """
         
-        return str(self.__bug)
+        # Try to convert the score to a float
+        try:
+            score=float(score)
+        except ValueError:
+            score=0
+            logger.debug("Non-float value found for pathway: " + pathway)
+        
+        # Store all scores greater than 0
+        if score>0:
+            if bug == "all":
+                self.__pathways[pathway]=score
+            else:
+                if pathway in self.__pathways_per_bug:
+                    self.__pathways_per_bug[pathway][bug]=score
+                else:
+                    self.__pathways_per_bug[pathway]={bug:score}
+            
+    def delete(self, bug, pathway):
+        """
+        Delete the pathway for the bug
+        """
+        
+        try:
+            if bug == "all":
+                del self.__pathways[pathway]
+            else:
+                del self.__pathways_per_bug[pathway][bug]
+        except (KeyError,TypeError):
+            pass
     
     def get_score(self, pathway):
         """
@@ -589,19 +617,19 @@ class Pathways:
         If the pathway does does not have a score, return 0
         """
         
-        try:
-            score=float(self.__pathways.get(pathway,0))
-        except ValueError:
-            score=0
-            logger.debug("Non-float value found for pathway: " + pathway)
-        return score
+        return self.__pathways.get(pathway,0)
     
-    def get_pathways(self):
+    def get_score_for_bug(self, bug, pathway):
         """
-        Return the keys in the pathways dictionary
+        Return the score for the pathway for bug
+        If the pathway does does not have a score, return 0
         """
         
-        return self.__pathways.keys()
+        score=0
+        if pathway in self.__pathways_per_bug:
+            score=self.__pathways_per_bug[pathway].get(bug,0)
+         
+        return score
     
     def get_pathways_double_sorted(self):
         """
@@ -609,6 +637,13 @@ class Pathways:
         """
         
         return utilities.double_sort(self.__pathways)
+    
+    def get_bugs_double_sorted(self,pathway):
+        """
+        Return the bugs sorted by score for pathway
+        """
+        
+        return utilities.double_sort(self.__pathways_per_bug.get(pathway,{}))
         
     
 class ReactionsDatabase:
