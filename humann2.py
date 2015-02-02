@@ -596,37 +596,33 @@ def check_requirements(args):
                         + config.uniref + " does not exist. Please provide the location "
                         + "of the UniRef directory using the --uniref option.")            	
     
-            # Check that all files in the uniref folder are of *.udb extension or fasta
-            # if translated search selected is usearch
+            # Check that some files in the uniref folder are of the expected extension
+            expected_database_extension=""
             if config.translated_alignment_selected == "usearch":
-                for file in os.listdir(config.uniref):
-                    if not file.endswith(config.usearch_database_extension):
-                        if utilities.fasta_or_fastq(os.path.join(config.uniref,file)) != "fasta":
-                            sys.exit("CRITICAL ERROR: The directory provided for the UniRef database "
-                                + "at " + config.uniref + " "
-                                + "contains files of an unexpected format. Only files of the"
-                                + " udb or fasta format are allowed.") 
-    
-            # Check that some of the database files are of the *.info extension
+                expected_database_extension=config.usearch_database_extension
+            elif config.translated_alignment_selected == "rapsearch":
+                expected_database_extension=config.rapsearch_database_extension
+            elif config.translated_alignment_selected == "diamond":
+                expected_database_extension=config.diamond_database_extension
+            
             valid_format_count=0
-            if config.translated_alignment_selected == "rapsearch":
-                for file in os.listdir(config.uniref):
-                    if file.endswith(config.rapsearch_database_extension):
+            database_files=os.listdir(config.uniref)
+            for file in database_files:
+                if file.endswith(expected_database_extension):
+                    # if rapsearch check for the second database file
+                    if config.translated_alignment_selected == "rapsearch":
+                        database_file=re.sub(config.rapsearch_database_extension+"$","",file)
+                        if database_file in database_files:
+                            valid_format_count+=1
+                    else:
                         valid_format_count+=1
-                if valid_format_count == 0:
-                    sys.exit("CRITICAL ERROR: The UniRef directory provided at " + config.uniref 
-                        + " has not been formatted to run with"
-                        " the rapsearch translated alignment software. Please format these files.")
-                    
-            # Check that some of the database files are of the *.dmnd extension
-            if config.translated_alignment_selected == "diamond":
-                for file in os.listdir(config.uniref):
-                    if file.endswith(config.diamond_database_extension):
-                        valid_format_count+=1
-                if valid_format_count == 0:
-                    sys.exit("CRITICAL ERROR: The UniRef directory provided at " + config.uniref
-                        + " has not been formatted to run with the diamond translated" 
-                        + " alignment software. Please format these files.")
+                        
+            if valid_format_count == 0:
+                sys.exit("CRITICAL ERROR: The UniRef directory provided ( " + config.uniref 
+                    + " ) does not contain any files that have been formatted to run with"
+                    " the translated alignment software selected ( " +
+                    config.translated_alignment_selected + " ). Please format these files so"
+                    + " they are of the expected extension ( " + expected_database_extension +" ).")
 
             # Check for correct usearch version
             if config.translated_alignment_selected == "usearch":

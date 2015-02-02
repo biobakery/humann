@@ -68,16 +68,17 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
         command_args=[]
         for input_file in temp_in_files:
             for database in os.listdir(uniref):
-                input_database=os.path.join(uniref,database)
-                full_args=["-ublast",input_file]+args+["-db",input_database]
-
-                # create temp output file
-                temp_out_file=utilities.unnamed_temp_file()
-                temp_out_files.append(temp_out_file)
-
-                full_args+=["-blast6out",temp_out_file]
-
-                command_args.append([exe,full_args,[input_database],[],"",""])
+                if database.endswith(config.usearch_database_extension):
+                    input_database=os.path.join(uniref,database)
+                    full_args=["-ublast",input_file]+args+["-db",input_database]
+    
+                    # create temp output file
+                    temp_out_file=utilities.unnamed_temp_file()
+                    temp_out_files.append(temp_out_file)
+    
+                    full_args+=["-blast6out",temp_out_file]
+    
+                    command_args.append([exe,full_args,[input_database],[],"",""])
                 
         results=utilities.command_multiprocessing(config.threads,command_args)
 
@@ -117,21 +118,31 @@ def rapsearch_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
         args+=opts
 
         temp_out_files=[]
-        for database in os.listdir(uniref):
-            # ignore the *.info database files
-            if not database.endswith(config.rapsearch_database_extension):
-                input_database=os.path.join(uniref,database)
-                full_args=args+["-d",input_database]
+        
+        # Find the rapsearch database files in the directory
+        # These will be files of the same name as the *.info files
+        files=os.listdir(uniref)
+        rapsearch_databases=[]
+        for file in files:
+            if file.endswith(config.rapsearch_database_extension):
+                # Check for the corresponding database file
+                database_file=re.sub(config.rapsearch_database_extension+"$","",file)
+                if database_file in files:
+                    rapsearch_databases.append(database_file)
+                
+        for database in rapsearch_databases:
+            input_database=os.path.join(uniref,database)
+            full_args=args+["-d",input_database]
 
-                # create temp output file
-                temp_out_file=utilities.unnamed_temp_file()
-                utilities.remove_file(temp_out_file)
+            # create temp output file
+            temp_out_file=utilities.unnamed_temp_file()
+            utilities.remove_file(temp_out_file)
 
-                temp_out_files.append(temp_out_file+config.rapsearch_output_file_extension)
+            temp_out_files.append(temp_out_file+config.rapsearch_output_file_extension)
 
-                full_args+=["-o",temp_out_file]
+            full_args+=["-o",temp_out_file]
 
-                utilities.execute_command(exe,full_args,[input_database],[])
+            utilities.execute_command(exe,full_args,[input_database],[])
         
         # merge the temp output files
         utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
