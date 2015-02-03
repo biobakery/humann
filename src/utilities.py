@@ -586,8 +586,6 @@ def fasta_or_fastq(file):
 
     return format
 
-
-
 def count_reads(file):
     """
     Count the total number of reads in a file
@@ -597,15 +595,27 @@ def count_reads(file):
 
     line=file_handle_read.readline()
 
-    if fasta_or_fastq(file) == "fastq":
+    file_type=fasta_or_fastq(file)
+    if file_type == "fastq":
         read_token="@"
     else:
         read_token=">"
 
     sequence_count=0
+    lines_since_last_sequence_id=0
     while line:
         if re.search("^"+read_token,line):
-            sequence_count+=1
+            # check that this is not a quality score line
+            if file_type == "fastq":
+                if lines_since_last_sequence_id>2 or not sequence_count:
+                    sequence_count+=1
+                    lines_since_last_sequence_id=0
+                else:
+                    lines_since_last_sequence_id+=1
+            else:
+                sequence_count+=1
+        elif file_type == "fastq":
+            lines_since_last_sequence_id+=1
         line=file_handle_read.readline()
 
     file_handle_read.close()
@@ -631,10 +641,13 @@ def estimate_unaligned_reads_stored(input_fastq, unaligned_store):
     Calculate an estimate of the percent of reads unaligned and stored
     """
 
-    # check files exist and are readable
-    file_exists_readable(input_fastq)
+    # check if the total number of reads from the input file is stored
+    if not unaligned_store.get_initial_read_count():
+        # check files exist and are readable
+        file_exists_readable(input_fastq)
+        unaligned_store.set_initial_read_count(count_reads(input_fastq))
 
-    percent=int(unaligned_store.count_reads()/float(count_reads(input_fastq)) * 100)
+    percent=int(unaligned_store.count_reads()/float(unaligned_store.get_initial_read_count()) * 100)
 
     return str(percent)
 

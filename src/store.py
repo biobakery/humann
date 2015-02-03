@@ -241,7 +241,7 @@ class Alignments:
         """ 
         Return total number of genes
         """
-        return len(self.__gene_counts)    
+        return len(self.__gene_counts)      
             
     def counts_by_bug(self):
         """
@@ -869,6 +869,7 @@ class Reads:
         Create initial data structures and load if file name provided
         """
         self.__reads={}
+        self.__initial_read_count=0
               
         if file:
             
@@ -893,6 +894,7 @@ class Reads:
                     # store the prior sequence
                     if id:
                         self.add(id, sequence)
+                        self.__initial_read_count+=1
                     id=line.rstrip().replace(">","")
                     sequence=""
                 else:
@@ -900,13 +902,14 @@ class Reads:
             
             # add the last sequence
             self.add(id, sequence)
+            self.__initial_read_count+=1
                 
             file_handle.close()
             
             # Remove the temp fasta file if exists
             if temp_file:
                 utilities.remove_file(temp_file)
-    
+
     def remove_id(self, id):
         """
         Remove the id and sequence from the read structure
@@ -946,5 +949,19 @@ class Reads:
         """
         
         self.__reads={}
+        
+    def set_initial_read_count(self,total):
+        """
+        Set the total number of reads from the original input file
+        """
+        
+        self.__initial_read_count=total
+        
+    def get_initial_read_count(self):
+        """
+        Get the total number of reads from the original input file
+        """
+        
+        return self.__initial_read_count
          
     

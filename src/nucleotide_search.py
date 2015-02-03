@@ -144,11 +144,12 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
     # read through the file line by line
     line = file_handle_read.readline()
-    
+    query_ids={}
     while line:
         # ignore headers ^@ 
         if not re.search("^@",line):
             info=line.split(config.sam_delimiter)
+            query_ids[info[config.blast_query_index]]=1
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 file_handle_write_unaligned.write(">"+
@@ -197,6 +198,9 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     file_handle_read.close()
     file_handle_write_unaligned.close()   
     file_handle_write_aligned.close()
+    
+    # set the total number of queries
+    unaligned_reads_store.set_initial_read_count(len(query_ids))
     
     if write_picked_frames:
         file_handle_write_unaligned_frames.close()
