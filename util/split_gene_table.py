@@ -25,8 +25,9 @@ GENE_TABLE_DELIMITER="\t"
 GENE_TABLE_COMMENT_LINE="^#"
 BIOM_FILE_EXTENSION=".biom"
 TSV_FILE_EXTENSION=".tsv"
+TAXONOMY_DELIMITER="; "
         
-def split_gene_table(gene_table,output_dir):
+def split_gene_table(gene_table,output_dir,taxonomy_index=None):
     """
     Split the gene table into a table per sample
     """
@@ -47,8 +48,15 @@ def split_gene_table(gene_table,output_dir):
     # create files for each sample
     new_file_handles=[]
     new_file_names=[]
+    sample_names=samples[1:]
+    
+    # if taxonomy is set the last column is not a sample but taxonomy
+    # taxonomy_index can be set to zero
+    if taxonomy_index != None:
+        header_taxonomy=samples.pop()
+    
     for sample in samples[1:]:
-        simple_sample_name=re.sub("[^a-zA-Z0-9_|-]|@|\\?|\\]|\\[|\\^","_",sample)
+        simple_sample_name=re.sub("[^a-zA-Z0-9_|-|.]|@|\\?|\\]|\\[|\\^","_",sample)
         try:
             new_file_name=os.path.join(output_dir,simple_sample_name+TSV_FILE_EXTENSION)
             new_file_names.append(new_file_name)
@@ -60,18 +68,41 @@ def split_gene_table(gene_table,output_dir):
         except EnvironmentError:
             sys.exit("Unable to create split gene table files")
     
+    gene_table_data_by_column={}
     while line:
         # write the data to each of the new files
         data=line.rstrip().split(GENE_TABLE_DELIMITER)        
         gene=data.pop(0)
+        # process the taxonomy
+        # taxonomy_index can be set to zero
+        if taxonomy_index != None:
+            # taxonomy data is the last column
+            taxonomy_data=data.pop().split(TAXONOMY_DELIMITER)
+            try:
+                gene=taxonomy_data[taxonomy_index]
+            except IndexError:
+                sys.exit("The taxonomy index provide is not valid: " + str(taxonomy_index))
+                
         for i, data_point in enumerate(data):
-            new_file_handles[i].write(GENE_TABLE_DELIMITER.join([gene,data_point])+"\n")
+            try:
+                float_data_point=float(data_point)
+            except ValueError:
+                float_data_point=0
+            
+            if i in gene_table_data_by_column:
+                # add the data point to the other data for the gene
+                gene_table_data_by_column[i][gene]=gene_table_data_by_column[i].get(gene,0)+float_data_point
+            else:
+                gene_table_data_by_column[i]={gene : float_data_point}
         line = file_handle.readline()
         
     file_handle.close()
         
-    # close the new files
-    for new_file_handle in new_file_handles:
+    # write the genes to the files
+    for i,new_file_handle in enumerate(new_file_handles):
+        for gene in gene_table_data_by_column.get(i,{}):
+            data_point=str(gene_table_data_by_column[i].get(gene,0))
+            new_file_handle.write(GENE_TABLE_DELIMITER.join([gene,data_point])+"\n")
         new_file_handle.close()   
     
     return new_file_names
@@ -98,7 +129,7 @@ def parse_arguments(args):
         help="the directory for output files\n",
         required=True)
     parser.add_argument(
-        "--taxonomy",
+        "--taxonomy_index",
         help="the index of the gene in the taxonomy data\n",
         type=int)
 
@@ -141,14 +172,14 @@ def main():
         os.close(file_out)
         
         # convert biom file to tsv
-        util.biom_to_tsv(args.input,new_file,taxonomy=args.taxonomy)
+        util.biom_to_tsv(args.input,new_file,taxonomy=args.taxonomy_index)
         
     # split the gene table
     if args.verbose:
         print("Spliting gene table")
         
     if biom_flag:
-        new_file_names=split_gene_table(new_file,temp_dir)
+        new_file_names=split_gene_table(new_file,temp_dir,taxonomy_index=args.taxonomy_index)
     else:
         new_file_names=split_gene_table(args.input,output_dir)
         

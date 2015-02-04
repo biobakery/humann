@@ -27,8 +27,8 @@ def biom_to_tsv(biom_file, new_tsv_file, taxonomy=None):
 
     cmd=["biom","convert","-i",biom_file,"-o",new_tsv_file,"--to-tsv"]
 
-    # try to convert
-    if taxonomy:
+    # check if taxonomy is set (can be set to zero)
+    if taxonomy != None:
         cmd+=["--header-key","taxonomy"]
     
     try:
@@ -36,7 +36,8 @@ def biom_to_tsv(biom_file, new_tsv_file, taxonomy=None):
             os.unlink(new_tsv_file)
         p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except (EnvironmentError, subprocess.CalledProcessError):
-        sys.exit("Unable to convert biom file to tsv")
+        command=" ".join(cmd)
+        sys.exit("Unable to convert biom file to tsv"+"\n"+command)
         
 def tsv_to_biom(tsv_file, biom_file):
     """
@@ -50,7 +51,8 @@ def tsv_to_biom(tsv_file, biom_file):
             os.unlink(biom_file)
         p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except (EnvironmentError, subprocess.CalledProcessError):
-        sys.exit("Unable to convert tsv file to biom")
+        command=" ".join(cmd)
+        sys.exit("Unable to convert tsv file to biom"+"\n"+command)
         
 def process_gene_table_header(gene_table):
     """
