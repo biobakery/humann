@@ -177,7 +177,7 @@ HUMAnN2 produces three output files which by default are tab-delimited text. The
 #### Gene Families ####
 
 ```
-Gene Family	Abundance (reads per kilobase)
+# Gene Family	$SAMPLENAME
 UniRef50_A6L0N6	67.0
 UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
@@ -195,7 +195,7 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 #### Pathway Coverage ####
 
 ```
-Pathway	Coverage
+# Pathway	$SAMPLENAME
 PWY0-1301	1.0
 PWY0-1301|s__Bacteroides_caccae	1.0
 PWY0-1301|s__Bacteroides_finegoldii	1.0
@@ -214,7 +214,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 #### Pathway Abundance ####
 
 ```
-Pathway	Abundance (reads per kilobase)
+# Pathway	$SAMPLENAME
 PWY-1921	57.0136768635
 PWY-1921|unclassified	32.2636768635
 PWY-1921|s__Bacteroides_ovatus	4.5
