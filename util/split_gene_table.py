@@ -81,7 +81,7 @@ def split_gene_table(gene_table,output_dir,taxonomy_index=None):
             try:
                 gene=taxonomy_data[taxonomy_index]
             except IndexError:
-                sys.exit("The taxonomy index provide is not valid: " + str(taxonomy_index))
+                sys.exit("The taxonomy index provided is not valid: " + str(taxonomy_index))
                 
         for i, data_point in enumerate(data):
             try:

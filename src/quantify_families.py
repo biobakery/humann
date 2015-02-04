@@ -44,7 +44,7 @@ def gene_families(alignments,gene_scores):
     alignments.convert_alignments_to_gene_scores(gene_scores)
         
     # Write the scores ordered with the top first
-    tsv_output=["# Gene Family"+config.output_file_column_delimiter+"Abundance (reads per kilobase)"]
+    tsv_output=["# Gene Family"+config.output_file_column_delimiter+config.file_basename]
     
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter

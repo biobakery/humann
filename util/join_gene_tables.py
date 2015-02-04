@@ -58,7 +58,7 @@ def join_gene_tables(gene_tables,output):
         for sample in sample_data:
             if sample in gene_table_data:
                 sys.exit("Duplicate sample name: " + sample + ". Please remove " +
-                    " duplicate sample names.")
+                    "duplicate sample names.")
             else:
                 gene_table_data[sample]=sample_data[sample]
                 

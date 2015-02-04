@@ -297,7 +297,7 @@ def print_pathways(pathways, file, header):
     category_delimiter=config.output_file_category_delimiter            
  
     # Create the header
-    tsv_output=["# Pathway"+ delimiter + header]       
+    tsv_output=["# Pathway"+ delimiter + config.file_basename]       
             
     # Print out the pathways with those with the highest scores first
     for pathway in pathways.get_pathways_double_sorted():
