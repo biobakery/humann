@@ -17,6 +17,7 @@ import sys
 import tempfile
 import os
 import shutil
+import re
 
 import util
 
@@ -102,6 +103,9 @@ def parse_arguments(args):
         "-o","--output",
         help="the gene table to write\n",
         required=True)
+    parser.add_argument(
+        "--file_name",
+        help="only join gene tables with this string included in the file name")
 
     return parser.parse_args()
 
@@ -112,6 +116,12 @@ def main():
     
     # check for format of the gene tables
     input_dir=os.path.abspath(args.input)
+    
+    # check the directory exists
+    if not os.path.isdir(input_dir):
+        sys.exit("The input directory provided can not be found." + 
+            "  Please enter a new directory.")
+    
     biom_flag=False
     for file in os.listdir(input_dir):
         if file.endswith(BIOM_FILE_EXTENSION):
@@ -134,7 +144,17 @@ def main():
             print("Temp folder created: " + temp_dir)
         
     gene_tables=[]
-    for file in os.listdir(input_dir):
+    file_list=os.listdir(input_dir)
+    
+    # filter out files which do not meet the name requirement if set
+    if args.file_name:
+        reduced_file_list=[]
+        for file in file_list:
+            if re.search(args.file_name,file):
+                reduced_file_list.append(file)
+        file_list=reduced_file_list
+    
+    for file in file_list:
         if file.endswith(BIOM_FILE_EXTENSION):
             # create a new temp file
             file_out, new_file=tempfile.mkstemp(dir=temp_dir)
