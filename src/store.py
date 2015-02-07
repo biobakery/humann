@@ -496,54 +496,56 @@ class GeneScores:
     
 class PathwaysAndReactions:
     """
-    Holds all of the pathways and reaction scores for one bug
+    Holds all of the pathways and reaction scores for all bugs
     """
     
-    def __init__(self, bug):
+    def __init__(self):
         self.__pathways={}
-        self.__bug=bug
         
-    def add(self, reaction, pathway, score): 
+    def add(self, bug, reaction, pathway, score): 
         """ 
         Add the pathway data to the dictionary
         """
         
-        if pathway in self.__pathways:
-            if reaction in self.__pathways[pathway]:
-                logger.debug("Overwrite of pathway/reaction score: %s %s", pathway, reaction)
-            self.__pathways[pathway][reaction]=score
-        else:
-            self.__pathways[pathway]={ reaction : score }
-    
-    def get_bug(self):
-        """
-        Return the bug associated with the pathways data
-        """
+        if not bug in self.__pathways:
+            self.__pathways[bug]={}
         
-        return str(self.__bug)
-    
-    def get_pathways(self):
+        if pathway in self.__pathways[bug]:
+            if reaction in self.__pathways[bug][pathway]:
+                logger.debug("Overwrite of pathway/reaction score: %s %s", pathway, reaction)
+            self.__pathways[bug][pathway][reaction]=score
+        else:
+            self.__pathways[bug][pathway]={ reaction : score }
+            
+    def bug_list(self):
         """
-        Return the keys in the pathways dictionary
+        Get a list of the bugs
         """
         
         return self.__pathways.keys()
     
-    def get_reactions(self, pathway):
+    def pathway_list(self, bug):
         """
-        Return the reactions in the pathways dictionary for a pathway
+        Return the keys in the pathways dictionary for a bug
         """
         
-        return copy.copy(self.__pathways.get(pathway,{}))
+        return self.__pathways.get(bug,{}).keys()
     
-    def median_score(self):
+    def reaction_scores(self, bug, pathway):
         """
-        Compute the median score for all scores in all pathways
+        Return the reactions in the pathways dictionary for a pathway and bug
+        """
+        
+        return copy.copy(self.__pathways.get(bug,{}).get(pathway,{}))
+    
+    def median_score(self, bug):
+        """
+        Compute the median score for all scores in all pathways for one bug
         """
         
         # Create a list of all of the scores in all pathways
         all_scores=[]
-        for item in self.__pathways.values():
+        for item in self.__pathways.get(bug,{}).values():
             all_scores+=item.values()
         
         all_scores.sort()
@@ -560,12 +562,12 @@ class PathwaysAndReactions:
             
         return median_score_value
     
-    def count_pathways(self):
+    def count_pathways(self,bug):
         """
-        Return the total number of pathways
+        Return the total number of pathways for a bug
         """
         
-        return len(self.__pathways.keys())
+        return len(self.__pathways.get(bug,{}).keys())
     
 class Pathways:
     """

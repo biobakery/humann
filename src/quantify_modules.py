@@ -66,44 +66,12 @@ def run_minpath(reactions_file,metacyc_datafile):
     
     return tmpfile
 
-
-def identify_reactions_and_pathways_by_bug(args):
+def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database):
     """
-    Identify the reactions from the hits found for a specific bug
+    Identify the reactions and then pathways from the hits found
     """
-    
-    reactions_database, pathways_database, gene_scores, bug = args
-    
-    # Merge the gene scores to reaction scores   
-    message="Compute reaction scores for bug: " + bug
-    logger.info(message)
-    
-    reactions={}
-    reactions_file_lines=[]
-    for reaction in reactions_database.reaction_list():
-        genes_list=reactions_database.find_genes(reaction)
-        abundance=0
-        # Add the scores for each gene to the total score for the reaction
-        for gene in genes_list:
-            abundance+=gene_scores.get(gene,0)  
-        
-        # Only write out reactions where the abundance is greater than 0
-        if abundance>0: 
-            reactions_file_lines.append(reaction+config.output_file_column_delimiter
-                +str(abundance)+"\n")
-            # Store the abundance data to compile with the minpath pathways
-            reactions[reaction]=abundance
-
-    pathways={}
-    # Run minpath if toggle on and also if there is more than one reaction   
-    if config.minpath_toggle == "on" and len(reactions_file_lines)>3:   
-
-        # Create a temp file for the reactions results
-        reactions_file=utilities.unnamed_temp_file()
-        file_handle=open(reactions_file,"w")
-        file_handle.write("".join(reactions_file_lines))
-        file_handle.close()
- 
+            
+    if config.minpath_toggle == "on":
         # Write a flat reactions to pathways file
         logger.debug("Write flat reactions to pathways file for Minpath")
         pathways_database_file=utilities.unnamed_temp_file()
@@ -111,93 +79,104 @@ def identify_reactions_and_pathways_by_bug(args):
         file_handle.write(pathways_database.get_database())
         file_handle.close()
     
-        # Run minpath to identify the pathways
-        logger.info("Run MinPath on " + bug)
-            
-        tmpfile=run_minpath(reactions_file, pathways_database_file)
+    # Run through each of the score sets by bug
+    pathways_and_reactions_store=store.PathwaysAndReactions()
+    for bug in gene_scores.bug_list():
+        gene_scores_for_bug=gene_scores.scores_for_bug(bug)
         
-        # Process the minpath results
-        if os.path.isfile(tmpfile):
-
-            file_handle_read=open(tmpfile, "r")
-            
-            line=file_handle_read.readline()
-            
-            while line:
-                data=line.strip().split(config.minpath_pathway_delimiter)
-                if re.search(config.minpath_pathway_identifier,line):
-                    current_pathway=data[config.minpath_pathway_index]
-                else:
-                    current_reaction=data[config.minpath_reaction_index]
-                    # store the pathway and reaction
-                    pathways[current_reaction]=pathways.get(
-                        current_reaction,[]) + [current_pathway]      
-                line=file_handle_read.readline()
+        # Merge the gene scores to reaction scores   
+        message="Compute reaction scores for bug: " + bug
+        logger.info(message)
         
-            file_handle_read.close()
+        reactions={}
+        reactions_file_lines=[]
+        for reaction in reactions_database.reaction_list():
+            genes_list=reactions_database.find_genes(reaction)
+            abundance=0
+            # Add the scores for each gene to the total score for the reaction
+            for gene in genes_list:
+                abundance+=gene_scores_for_bug.get(gene,0)  
             
-        else:
-            message="Empty results file from MinPath run for bug: " + bug
-            print(message)
-            logger.warning(message)
-    else:
-        # Add all pathways associated with each reaction if not using minpath
-        for current_reaction in reactions:
-            pathways[current_reaction]=pathways.get(
-                current_reaction, []) + pathways_database.find_pathways(current_reaction) 
-     
-    pathways_and_reactions_store=store.PathwaysAndReactions(bug)
+            # Only write out reactions where the abundance is greater than 0
+            if abundance>0: 
+                reactions_file_lines.append(reaction+config.output_file_column_delimiter
+                    +str(abundance)+"\n")
+                # Store the abundance data to compile with the minpath pathways
+                reactions[reaction]=abundance
     
-    # Store the pathway abundance for each reaction
-    for current_reaction in reactions:
-        # Find the pathways associated with reaction
-        for current_pathway in pathways.get(current_reaction,[""]):
-            # Only store data for items with pathway names
-            if current_pathway:
-                pathways_and_reactions_store.add(current_reaction, current_pathway, 
-                    reactions[current_reaction])
+        pathways={}
+        # Run minpath if toggle on and also if there is more than one reaction   
+        if config.minpath_toggle == "on" and len(reactions_file_lines)>3:   
+    
+            # Create a temp file for the reactions results
+            reactions_file=utilities.unnamed_temp_file()
+            file_handle=open(reactions_file,"w")
+            file_handle.write("".join(reactions_file_lines))
+            file_handle.close()
+        
+            # Run minpath to identify the pathways
+            logger.info("Run MinPath on " + bug)
+                
+            tmpfile=run_minpath(reactions_file, pathways_database_file)
+            
+            # Process the minpath results
+            if os.path.isfile(tmpfile):
+    
+                file_handle_read=open(tmpfile, "r")
+                
+                line=file_handle_read.readline()
+                
+                while line:
+                    data=line.strip().split(config.minpath_pathway_delimiter)
+                    if re.search(config.minpath_pathway_identifier,line):
+                        current_pathway=data[config.minpath_pathway_index]
+                    else:
+                        current_reaction=data[config.minpath_reaction_index]
+                        # store the pathway and reaction
+                        pathways[current_reaction]=pathways.get(
+                            current_reaction,[]) + [current_pathway]      
+                    line=file_handle_read.readline()
+            
+                file_handle_read.close()
+                
+            else:
+                message="Empty results file from MinPath run for bug: " + bug
+                print(message)
+                logger.warning(message)
+        else:
+            # Add all pathways associated with each reaction if not using minpath
+            for current_reaction in reactions:
+                pathways[current_reaction]=pathways.get(
+                    current_reaction, []) + pathways_database.find_pathways(current_reaction) 
+         
+        # Store the pathway abundance for each reaction
+        for current_reaction in reactions:
+            # Find the pathways associated with reaction
+            for current_pathway in pathways.get(current_reaction,[""]):
+                # Only store data for items with pathway names
+                if current_pathway:
+                    pathways_and_reactions_store.add(bug,current_reaction, current_pathway, 
+                        reactions[current_reaction])
    
     return pathways_and_reactions_store
-    
-    
-def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database):
-    """
-    Identify the reactions and then pathways from the hits found
-    """
-            
-    # Set up a command to run through each of the hits by bug
-    args=[]
-    for bug in gene_scores.bug_list():
-        scores=gene_scores.scores_for_bug(bug)
-        args.append([reactions_database, pathways_database, scores, bug])
-    
-    threads=config.threads
-    if config.minpath_toggle == "on":
-        threads=1
-        
-    pathways_and_reactions_store=utilities.command_multiprocessing(threads, args, 
-        function=identify_reactions_and_pathways_by_bug)
 
-    return pathways_and_reactions_store
-
-def compute_pathways_coverage_by_bug(pathways_and_reactions_store,pathways_database):
+def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
     """
     Compute the coverage of pathways for each bug
     """
 
     pathways_coverage_store=store.Pathways()
-    for pathways_and_reactions_store_one_bug in pathways_and_reactions_store:
+    for bug in pathways_and_reactions_store.bug_list():
     
-        bug=pathways_and_reactions_store_one_bug.get_bug()
         logger.debug("Compute pathway coverage for bug: " + bug)
         
         # Process through each pathway to compute coverage
         xipe_input=[]
-        median_score_value=pathways_and_reactions_store_one_bug.median_score()
+        median_score_value=pathways_and_reactions_store.median_score(bug)
         
-        for pathway in pathways_and_reactions_store_one_bug.get_pathways():
+        for pathway in pathways_and_reactions_store.pathway_list(bug):
                 
-            reaction_scores=pathways_and_reactions_store_one_bug.get_reactions(pathway)
+            reaction_scores=pathways_and_reactions_store.reaction_scores(bug,pathway)
             # Count the reactions with scores greater than the median
             count_greater_than_median=0
             for reaction, score in reaction_scores.items():
@@ -221,10 +200,7 @@ def compute_pathways_coverage_by_bug(pathways_and_reactions_store,pathways_datab
             
             cmmd=[xipe_exe,"--file2",config.xipe_percent]
             
-            message="Run xipe ...."
-            logger.info(message)
-            if config.verbose:
-                print(message)
+            logger.info("Run xipe")
             xipe_subprocess = subprocess.Popen(cmmd, stdin = subprocess.PIPE,
                 stdout = subprocess.PIPE, stderr = subprocess.PIPE )
             xipe_stdout, xipe_stderr = xipe_subprocess.communicate("\n".join(xipe_input))
@@ -252,21 +228,20 @@ def compute_pathways_coverage_by_bug(pathways_and_reactions_store,pathways_datab
 
     return pathways_coverage_store
 
-def compute_pathways_abundance_by_bug(pathways_and_reactions_store, pathways_database):
+def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     """
     Compute the abundance of pathways for each bug
     """
     
     # Process through each pathway for each bug to compute abundance
     pathways_abundance_store=store.Pathways()
-    for pathways_and_reactions_store_one_bug in pathways_and_reactions_store:
+    for bug in pathways_and_reactions_store.bug_list():
         
-        bug=pathways_and_reactions_store_one_bug.get_bug()
         logger.debug("Compute pathway abundance for bug: " + bug)
         
-        for pathway in pathways_and_reactions_store_one_bug.get_pathways():
+        for pathway in pathways_and_reactions_store.pathway_list(bug):
             
-            reaction_scores=pathways_and_reactions_store_one_bug.get_reactions(pathway)
+            reaction_scores=pathways_and_reactions_store.reaction_scores(bug,pathway)
             # Initialize any reactions in the pathway not found to 0
             for reaction in pathways_database.find_reactions(pathway):
                 reaction_scores.setdefault(reaction, 0)
@@ -336,14 +311,14 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     """
     
     # Compute abundance for all pathways
-    pathways_abundance=compute_pathways_abundance_by_bug(pathways_and_reactions_store,
+    pathways_abundance=compute_pathways_abundance(pathways_and_reactions_store,
         pathways_database)
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance (reads per kilobase)")
 
     # Compute coverage for all pathways
-    pathways_coverage=compute_pathways_coverage_by_bug(pathways_and_reactions_store,
+    pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
         pathways_database)
     
     # Print the pathways abundance data to file
