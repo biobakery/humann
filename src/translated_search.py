@@ -48,7 +48,7 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
     exe="usearch"
     opts=config.usearch_opts
 
-    args=["-id",config.identity_threshold]
+    args=["-id",config.identity_threshold,"-evalue",config.evalue_threshold]
 
     message="Running " + exe + " ........"
     logger.info(message)
@@ -104,7 +104,7 @@ def rapsearch_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
     exe="rapsearch"
     opts=config.rapsearch_opts
 
-    args=["-q",unaligned_reads_file_fasta,"-b",0]
+    args=["-q",unaligned_reads_file_fasta,"-b",0,"-e",math.log10(config.evalue_threshold)]
 
     if config.threads > 1:
         args+=["-z",config.threads]
@@ -172,7 +172,7 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
         
     opts=config.diamond_opts
 
-    args+=["--query",unaligned_reads_file_fasta]
+    args+=["--query",unaligned_reads_file_fasta,"--evalue",config.evalue_threshold]
 
     if config.threads > 1:
         args+=["--threads",config.threads]
@@ -339,7 +339,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                         evalue=1.0 
             
                 # only store alignments with evalues less than threshold
-                if evalue<1.0:
+                if evalue<config.evalue_threshold:
                     alignments.add_annotated(queryid, evalue, 
                         alignment_info[config.blast_reference_index])
                 else:

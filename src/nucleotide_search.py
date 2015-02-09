@@ -188,7 +188,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
                    
                 # only store alignments with evalues less than threshold
-                if evalue<1.0:
+                if evalue<config.evalue_threshold:
                     alignments.add_annotated(query,evalue,info[config.sam_reference_index])
                 else:
                     logger.debug("Not including alignment based on large e-value: %s", evalue)

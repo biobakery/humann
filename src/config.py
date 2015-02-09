@@ -40,6 +40,9 @@ bypass_translated_search = False
 # number of threads
 threads=1
 
+# evalue threshold
+evalue_threshold=1.0
+
 # output file decimal places
 output_max_decimals=10
 
@@ -165,16 +168,16 @@ usearch_database_extension=".udb"
 identity_threshold=0.4
 usearch_max_seqs=10000
 usearch_version="usearch v7.0.1001"
-usearch_opts=["-maxhits",20,"-evalue",1.0]
+usearch_opts=["-maxhits",20]
 
 # rapsearch options
 rapsearch_database_extension=".info"
-rapsearch_opts=["-v",20,"-e",0]
+rapsearch_opts=["-v",20]
 rapsearch_output_file_extension=".m8"
 
 # diamond options
 diamond_database_extension=".dmnd"
-diamond_opts=["--max-target-seqs",20,"--evalue",1.0,"--sensitive"]
+diamond_opts=["--max-target-seqs",20,"--sensitive"]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 

@@ -145,6 +145,12 @@ def parse_arguments (args):
         type=int,
         default=config.average_read_length) 
     parser.add_argument(
+        "--evalue", 
+        help="the evalue threshold\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
+        metavar="<" + str(config.evalue_threshold) + ">", 
+        type=float,
+        default=config.evalue_threshold) 
+    parser.add_argument(
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaplhan>")
@@ -353,6 +359,9 @@ def update_configuration(args):
     
     # Update the average read length
     config.average_read_length=args.average_read_length
+    
+    # Update the evalue threshold
+    config.evalue_threshold=args.evalue
     
     # Update translated alignment software
     config.translated_alignment_selected=args.translated_alignment
