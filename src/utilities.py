@@ -323,6 +323,19 @@ def return_exe_path(exe):
                 full_path=path
     return full_path
 
+def return_module_path(module):
+    """
+    Return the full path to the python module
+    """
+    
+    logger.debug("Find module, %s, in pythonpath", module)
+    
+    for path in sys.path:
+        full_module = os.path.join(path,module)
+        if os.path.exists(full_module):
+            return path
+    return ""
+
 def check_software_version(exe,version_flag,
     version_required):
     """
@@ -490,18 +503,32 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
     Execute third party software or shell command with files
     """
 	
-    # check that the executable can be found
-    exe_path=return_exe_path(exe)
-    if not exe_path:
-        message="Can not find executable " + exe
-        logger.critical(message)
-        if raise_error:
-            raise EnvironmentError
+    if exe == sys.executable:
+        # check that the python module can be found
+        module_path=return_module_path(args[0])
+        if not module_path:
+            message="Can not find python module " + args[0]
+            logger.critical(message)
+            if raise_error:
+                raise EnvironmentError
+            else:
+                sys.exit("CRITICAL ERROR: " + message)
+        # update the module to the full path
         else:
-            sys.exit("CRITICAL ERROR: " + message)
-    # Update the executable to the full path
+            args[0]=os.path.join(module_path,args[0])
     else:
-        exe=os.path.join(exe_path,exe)
+        # check that the executable can be found
+        exe_path=return_exe_path(exe)
+        if not exe_path:
+            message="Can not find executable " + exe
+            logger.critical(message)
+            if raise_error:
+                raise EnvironmentError
+            else:
+                sys.exit("CRITICAL ERROR: " + message)
+        # update the executable to the full path
+        else:
+            exe=os.path.join(exe_path,exe)
 	
     # check that the input files exist and are readable
     for file in infiles:
