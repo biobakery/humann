@@ -491,13 +491,17 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
     """
 	
     # check that the executable can be found
-    if not find_exe_in_path(exe):
+    exe_path=return_exe_path(exe)
+    if not exe_path:
         message="Can not find executable " + exe
         logger.critical(message)
         if raise_error:
             raise EnvironmentError
         else:
             sys.exit("CRITICAL ERROR: " + message)
+    # Update the executable to the full path
+    else:
+        exe=os.path.join(exe_path,exe)
 	
     # check that the input files exist and are readable
     for file in infiles:
