@@ -78,7 +78,7 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
     
                     full_args+=["-blast6out",temp_out_file]
     
-                    command_args.append([exe,full_args,[input_database],[],"",""])
+                    command_args.append([exe,full_args,[input_database],[],None,None,True])
                 
         results=utilities.command_multiprocessing(config.threads,command_args)
 
