@@ -31,11 +31,12 @@ import shutil
 import tempfile
 import urllib
 import tarfile
-import multiprocessing
 import logging
 import traceback
 import gzip
 import shutil
+import threading
+import Queue
 
 import config
 import pick_frames
@@ -421,73 +422,79 @@ def check_outfiles(outfiles):
     else:
         return True
     
-class MultiprocessingWorker(multiprocessing.Process):
+class Worker(threading.Thread):
     """
-    Class to get/put to worker queue
+    Create a worker class for threads with a work queue
+    Threads also record exit codes to a locked dictionary
     """
-    
-    def __init__(self, work_queue, results_queue, function):
-        super(MultiprocessingWorker, self).__init__()
-        self.work_queue=work_queue
-        self.results_queue=results_queue
-        self.function=function
+
+    exit_codes_lock = threading.Lock()
+
+    def __init__(self, work_queue, exit_codes):
+        super(Worker, self).__init__()
+        self.work_queue = work_queue
+        self.exit_codes = exit_codes
         
     def run(self):
+        """
+        Get work from the queue and process
+        """
         while True:
             try:
-                args = self.work_queue.get()
-                results = self.function(args)
-                self.results_queue.put(results)
+                id,command = self.work_queue.get()
+                self.process(id,command)
             finally:
                 self.work_queue.task_done()
-        
-
-def command_multiprocessing(threads, args, function=None, lock=None):
-    """
-    Execute command in parallel, maximum of threads total
-    """
-    
-    if not function:
-        function=execute_command_args_convert
-    
-    try:
-        if threads>1:
-            logger.debug("Create %s processes for function %s", threads, function)
-            if lock:
-                work_queue = multiprocessing.JoinableQueue()
-                results_queue = multiprocessing.Queue()
-                # set up thread number of workers
-                for i in range(threads):
-                    worker=MultiprocessingWorker(work_queue, results_queue, function)
-                    worker.daemon=True
-                    worker.start()
-                    
-                # add the arguments for each run to the queue
-                for arg in args:
-                    work_queue.put(arg)
-                work_queue.join()
                 
-                # collect the results
-                results=[]
-                for i in range(len(args)):
-                    results.append(results_queue.get())
-            else:
-                results=[]
-                for i in range(0,len(args),threads):
-                    pool=multiprocessing.Pool(threads,maxtasksperchild=1)
-                    results+=pool.map(function, args[i:i+threads])
-                    pool.close()
-                    pool.join()
-        else:
-            results=[function(arg) for arg in args]
-    except (EnvironmentError, ValueError, subprocess.CalledProcessError):
-        logger.critical("TRACEBACK: \n" + traceback.format_exc())
-        message=("Error in one of the processes. See the log file for additional" + 
-            " details including tracebacks.")
+    def process(self, id, command):
+        """
+        Execute the command for the task id
+        Record the exit code
+        """
+        try:
+            execute_command_args_convert(command)
+            with self.exit_codes_lock:
+                self.exit_codes[id]=0
+        # Record the error in the exit codes              
+        except (EnvironmentError, subprocess.CalledProcessError):
+            with self.exit_codes_lock:
+                self.exit_codes[id]=-1
+        
+def command_threading(threads,commands):
+    """
+    Process a set of commands using a set of worker threads
+    """
+    
+    # Create a queue to hold work
+    work_queue = Queue.Queue()
+    
+    # Create a set of worker threads
+    exit_codes={}
+    for number in range(threads):
+        worker = Worker(work_queue, exit_codes)
+        worker.daemon = True
+        worker.start()
+    
+    # Add the work to the queue and start the queue
+    commands_by_id={}
+    for id,command in enumerate(commands):
+        work_queue.put((id,command))
+        command=" ".join([command[0]]+[str(i) for i in command[1]])
+        commands_by_id[id]=command
+    work_queue.join()
+    
+    # Check for any errors in the threads
+    error_commands=[]
+    for id in exit_codes:
+        if exit_codes[id] != 0:
+            error_commands.append("Error message returned from command for threading task " 
+                + str(id) + ": " + commands_by_id[id])
+            
+    if error_commands:
+        message="CRITICAL ERROR: Unable to process all threading commands.\n"
+        message+="\n".join(error_commands)
         logger.critical(message)
         sys.exit(message)
-        
-    return results
 
 def execute_command_args_convert(args):
     """
