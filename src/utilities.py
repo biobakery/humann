@@ -171,11 +171,7 @@ def bam_to_sam(bam_file):
     print(message)
     logger.info(message)
     
-    try:
-        execute_command(exe, args, [bam_file], [new_file])
-    except (EnvironmentError, subprocess.CalledProcessError):
-        new_file=""
-        logger.warning("ERROR: Unable to convert bam file to sam.")
+    execute_command(exe, args, [bam_file], [new_file])
     
     return new_file
 
@@ -479,7 +475,7 @@ def command_multiprocessing(threads, args, function=None, lock=None):
         sys.exit(message)
         
     return results
-    
+
 def execute_command_args_convert(args):
     """
     Convert the list of args to function arguments
@@ -487,7 +483,9 @@ def execute_command_args_convert(args):
     
     return execute_command(*args)
 
-def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=None):
+
+def execute_command(exe, args, infiles, outfiles, stdout_file=None, 
+        stdin_file=None, raise_error=None):
     """
     Execute third party software or shell command with files
     """
@@ -495,14 +493,16 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
     # check that the executable can be found
     if not find_exe_in_path(exe):
         message="Can not find executable " + exe
-        print("CRITICAL ERROR: " + message)
         logger.critical(message)
-        raise EnvironmentError
+        if raise_error:
+            raise EnvironmentError
+        else:
+            sys.exit("CRITICAL ERROR: " + message)
 	
     # check that the input files exist and are readable
     for file in infiles:
         logger.debug("Check input file exists and is readable: %s",file)
-        file_exists_readable(file, raise_IOError=True)
+        file_exists_readable(file, raise_IOError=raise_error)
         
     # check if outfiles already exist
     bypass=check_outfiles(outfiles)
@@ -532,13 +532,15 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None, stdin_file=N
             message="Problem executing " + " ".join(cmd) + "\n"
             logger.critical(message)
             logger.critical("TRACEBACK: \n" + traceback.format_exc())
-            print("CRITICAL ERROR: " + message)
-            raise
+            if raise_error:
+                raise
+            else:
+                sys.exit("CRITICAL ERROR: " + message)
 
         # check that the output files exist and are readable
         for file in outfiles:
             logger.debug("Check output file exists and is readable: %s",file)
-            file_exists_readable(file, raise_IOError=True)
+            file_exists_readable(file, raise_IOError=raise_error)
     
     else:
         if config.verbose:
@@ -832,10 +834,8 @@ def tsv_to_biom(tsv_file, biom_file, table_type):
     # Remove output file if already exists
     if os.path.isfile(biom_file):
         remove_file(biom_file)
-    try:
-        execute_command(exe, args, [tsv_file], [biom_file])
-    except (EnvironmentError, subprocess.CalledProcessError):
-        sys.exit("CRITICAL ERROR: Unable to convert tsv file to biom format")
+    
+    execute_command(exe, args, [tsv_file], [biom_file])
     
 def biom_to_tsv(biom_file):
     """
@@ -851,11 +851,7 @@ def biom_to_tsv(biom_file):
     message="Converting biom file to tsv ..."
     logger.info(message)
     
-    try:
-        execute_command(exe, args, [biom_file], [new_tsv_file])
-    except (EnvironmentError, subprocess.CalledProcessError):
-        new_tsv_file=""
-        logger.warning("Unable to convert biom file to tsv")
+    execute_command(exe, args, [biom_file], [new_tsv_file])
     
     return new_tsv_file
     
