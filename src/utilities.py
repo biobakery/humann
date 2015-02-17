@@ -331,10 +331,16 @@ def return_module_path(module):
     
     logger.debug("Find module, %s, in pythonpath", module)
     
-    for path in sys.path:
-        full_module = os.path.join(path,module)
-        if os.path.exists(full_module):
-            return path
+    # if this is the full path to the module then return the parent directory
+    if os.path.isabs(module):
+        if os.path.exists(module):
+            return os.path.abspath(os.path.join(module,os.pardir))
+    else:
+    # search for the path to the module
+        for path in sys.path:
+            full_module = os.path.join(path,module)
+            if os.path.exists(full_module):
+                return path
     return ""
 
 def check_software_version(exe,version_flag,
@@ -520,8 +526,8 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
                 raise EnvironmentError
             else:
                 sys.exit("CRITICAL ERROR: " + message)
-        # update the module to the full path
-        else:
+        # update the module to the full path if not already the full path
+        elif not os.path.isabs(args[0]):
             args[0]=os.path.join(module_path,args[0])
     else:
         # check that the executable can be found
@@ -848,7 +854,7 @@ def install_minpath():
     
     fullpath_scripts=os.path.dirname(os.path.realpath(__file__))
     minpath_exe=os.path.join(fullpath_scripts,config.minpath_folder,
-        config.minpath_script)
+        config.minpath_original_script)
 
     # Check for write permission to the target folder
     if not os.access(fullpath_scripts, os.W_OK):

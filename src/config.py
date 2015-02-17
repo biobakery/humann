@@ -206,7 +206,8 @@ minpath_file="minpath1.2.tar.gz"
 minpath_url=("http://omics.informatics.indiana.edu/mg/get.php?" + 
     "justdoit=yes&software=" + minpath_file)
 minpath_folder="MinPath"
-minpath_script="MinPath1.2.py"
+minpath_script="MinPath12hmp.py"
+minpath_original_script="MinPath1.2.py"
 minpath_reaction_index=0
 minpath_pathway_index=7
 minpath_pathway_identifier="^path"

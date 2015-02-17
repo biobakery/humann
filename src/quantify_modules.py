@@ -34,7 +34,6 @@ import logging
 import utilities
 import config
 import store
-import MinPath12hmp
 import quantify_families
 
 # name global logging instance
@@ -52,17 +51,16 @@ def run_minpath(reactions_file,metacyc_datafile):
     if os.path.getsize(reactions_file):
     
         tmpfile2=utilities.unnamed_temp_file()
+        tmpfile3=utilities.unnamed_temp_file()     
 
-        # Redirect stdout
-        sys.stdout=open(os.devnull,"w")
-    
-        # Call minpath to identify pathways
-        MinPath12hmp.Orth2Path(infile = reactions_file, reportfile = "/dev/null", 
-            detailfile = tmpfile, whichdb = "ANY", mapfile=metacyc_datafile,
-            mpsfile = tmpfile2)
-    
-        # Undo stdout redirect
-        sys.stdout=sys.__stdout__
+        minpath_script=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+            config.minpath_script)
+        args=[minpath_script,"-any",reactions_file]
+        args+=["-map",metacyc_datafile,"-report",tmpfile3]
+        args+=["-details",tmpfile,"-mps",tmpfile2]
+        
+        command=[sys.executable,args,[reactions_file,metacyc_datafile],[],None,None,True]
+        utilities.execute_command_args_convert(command)
     
     return tmpfile
 
