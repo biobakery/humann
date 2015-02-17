@@ -511,7 +511,7 @@ def execute_command_args_convert(args):
 
 
 def execute_command(exe, args, infiles, outfiles, stdout_file=None, 
-        stdin_file=None, raise_error=None):
+        stdin_file=None, raise_error=None, stderr_file=None):
     """
     Execute third party software or shell command with files
     """
@@ -566,7 +566,11 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
         try:
             if stdout_file:
                 if stdin_file:
-                    p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
+                    if stderr_file:
+                        p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"),
+                                stderr=open(stderr_file,"w"))
+                    else:
+                        p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
                 else:
                     p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
             else:
