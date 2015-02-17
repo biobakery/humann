@@ -39,30 +39,25 @@ import quantify_families
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def run_minpath(reactions_file,metacyc_datafile):
+def minpath_command(reactions_file,metacyc_datafile):
     """
-    Run minpath on the reactions file using the datafile of pathways
+    Return the minpath command for the reactions file using the datafile of pathways
     """
     
     # Create temp files for the results
     tmpfile=utilities.unnamed_temp_file()
-    
-    # Bypass minpath run if reactions file is empty
-    if os.path.getsize(reactions_file):
-    
-        tmpfile2=utilities.unnamed_temp_file()
-        tmpfile3=utilities.unnamed_temp_file()     
+    tmpfile2=utilities.unnamed_temp_file()
+    tmpfile3=utilities.unnamed_temp_file()     
 
-        minpath_script=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-            config.minpath_script)
-        args=[minpath_script,"-any",reactions_file]
-        args+=["-map",metacyc_datafile,"-report",tmpfile3]
-        args+=["-details",tmpfile,"-mps",tmpfile2]
+    minpath_script=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        config.minpath_script)
+    args=[minpath_script,"-any",reactions_file]
+    args+=["-map",metacyc_datafile,"-report",tmpfile3]
+    args+=["-details",tmpfile,"-mps",tmpfile2]
         
-        command=[sys.executable,args,[reactions_file,metacyc_datafile],[],None,None,True]
-        utilities.execute_command_args_convert(command)
+    command=[sys.executable,args,[reactions_file,metacyc_datafile],[],None,None,True]
     
-    return tmpfile
+    return tmpfile, command
 
 def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database):
     """
@@ -77,8 +72,13 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
         file_handle.write(pathways_database.get_database())
         file_handle.close()
     
-    # Run through each of the score sets by bug
+    # Create a store for the pathways and reactions by bug
     pathways_and_reactions_store=store.PathwaysAndReactions()
+    reactions={}
+    
+    minpath_results={}
+    minpath_commands=[]
+    # Run through each of the score sets by bug
     for bug in gene_scores.bug_list():
         gene_scores_for_bug=gene_scores.scores_for_bug(bug)
         
@@ -86,7 +86,7 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
         message="Compute reaction scores for bug: " + bug
         logger.info(message)
         
-        reactions={}
+        reactions[bug]={}
         reactions_file_lines=[]
         for reaction in reactions_database.reaction_list():
             genes_list=reactions_database.find_genes(reaction)
@@ -100,7 +100,7 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
                 reactions_file_lines.append(reaction+config.output_file_column_delimiter
                     +str(abundance)+"\n")
                 # Store the abundance data to compile with the minpath pathways
-                reactions[reaction]=abundance
+                reactions[bug][reaction]=abundance
     
         pathways={}
         # Run minpath if toggle on and also if there is more than one reaction   
@@ -115,15 +115,25 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
             # Run minpath to identify the pathways
             logger.info("Run MinPath on " + bug)
                 
-            tmpfile=run_minpath(reactions_file, pathways_database_file)
+            tmpfile, command=minpath_command(reactions_file, pathways_database_file)
+            minpath_results[bug]=tmpfile
+            minpath_commands.append(command)
             
+    # Run through the minpath commands if minpath is to be run
+    if minpath_commands:
+        utilities.command_threading(config.threads,minpath_commands)
+    
+    # Link the pathways to reactions
+    for bug in gene_scores.bug_list():
+        pathways={}
+        if bug in minpath_results:
+            tmpfile=minpath_results[bug]
             # Process the minpath results
             if os.path.isfile(tmpfile):
-    
+        
                 file_handle_read=open(tmpfile, "r")
-                
                 line=file_handle_read.readline()
-                
+                    
                 while line:
                     data=line.strip().split(config.minpath_pathway_delimiter)
                     if re.search(config.minpath_pathway_identifier,line):
@@ -134,27 +144,26 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
                         pathways[current_reaction]=pathways.get(
                             current_reaction,[]) + [current_pathway]      
                     line=file_handle_read.readline()
-            
-                file_handle_read.close()
                 
+                file_handle_read.close()
             else:
                 message="Empty results file from MinPath run for bug: " + bug
                 print(message)
                 logger.warning(message)
         else:
             # Add all pathways associated with each reaction if not using minpath
-            for current_reaction in reactions:
+            for current_reaction in reactions.get(bug,{}):
                 pathways[current_reaction]=pathways.get(
                     current_reaction, []) + pathways_database.find_pathways(current_reaction) 
          
         # Store the pathway abundance for each reaction
-        for current_reaction in reactions:
+        for current_reaction in reactions.get(bug,{}):
             # Find the pathways associated with reaction
             for current_pathway in pathways.get(current_reaction,[""]):
                 # Only store data for items with pathway names
                 if current_pathway:
                     pathways_and_reactions_store.add(bug,current_reaction, current_pathway, 
-                        reactions[current_reaction])
+                        reactions[bug][current_reaction])
    
     return pathways_and_reactions_store
 

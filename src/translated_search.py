@@ -80,7 +80,7 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
     
                     command_args.append([exe,full_args,[input_database],[],None,None,True])
                 
-        results=utilities.command_threading(config.threads,command_args)
+        utilities.command_threading(config.threads,command_args)
 
         # merge the temp output files
         exe="cat"
