@@ -562,17 +562,48 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
         logger.info("Execute command: "+ message)
         if config.verbose:
             print("\n"+message+"\n")
+            
+        # Open the input and output files (stdin, stdout, stderr)
+        stdin=None
+        stdout=None
+        stderr=None
+        
+        if stdin_file:
+            try:
+                stdin=open(stdin_file,"r")
+            except EnvironmentError:
+                message="Unable to open file: " + stdin_file
+                logger.critical(message)
+                if raise_error:
+                    raise
+                else:
+                    sys.exit("CRITICAL ERROR: " + message)
+        
+        if stdout_file:
+            try:
+                stdout=open(stdout_file,"w")
+            except EnvironmentError:
+                message="Unable to open file: " + stdout_file
+                logger.critical(message)
+                if raise_error:
+                    raise
+                else:
+                    sys.exit("CRITICAL ERROR: " + message)
+                    
+        if stderr_file:
+            try:
+                stderr=open(stderr_file,"w")
+            except EnvironmentError:
+                message="Unable to open file: " + stderr_file
+                logger.critical(message)
+                if raise_error:
+                    raise
+                else:
+                    sys.exit("CRITICAL ERROR: " + message)
 	
         try:
-            if stdout_file:
-                if stdin_file:
-                    if stderr_file:
-                        p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"),
-                                stderr=open(stderr_file,"w"))
-                    else:
-                        p = subprocess.call(cmd, stdin=open(stdin_file,"r"),stdout=open(stdout_file,"w"))
-                else:
-                    p = subprocess.call(cmd, stdout=open(stdout_file,"w"))
+            if stdin_file or stdout_file or stderr_file:
+                p = subprocess.call(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
             else:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 logger.debug(p_out)            
