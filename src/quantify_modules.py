@@ -205,8 +205,6 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
             xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
                 config.xipe_script)
             
-            cmmd=[xipe_exe,"--file2",config.xipe_percent]
-            
             logger.info("Run xipe")
             
             # Create temp files for input and output
@@ -217,11 +215,13 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
             file_handle.write("\n".join(xipe_input))
             file_handle.close()
             
+            cmmd=[xipe_exe,"--file1",infile,"--file2",config.xipe_percent]
+            
             stdout_file=utilities.unnamed_temp_file()
             stderr_file=utilities.unnamed_temp_file()
             
             utilities.execute_command(sys.executable,cmmd,[infile],[],stdout_file,
-                infile,None,stderr_file)
+                None,None,stderr_file)
             
             try:
                 xipe_stderr=open(stderr_file,"r")
