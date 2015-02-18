@@ -41,7 +41,7 @@ logger=logging.getLogger(__name__)
 
 def minpath_command(reactions_file,metacyc_datafile):
     """
-    Return the minpath command for the reactions file using the datafile of pathways
+    Return the minpath command and the name of the output file
     """
     
     # Create temp files for the results
@@ -58,6 +58,24 @@ def minpath_command(reactions_file,metacyc_datafile):
     command=[sys.executable,args,[reactions_file,metacyc_datafile],[],None,None,True,None]
     
     return tmpfile, command
+
+def xipe_command(infile):
+    """
+    Return the xipe command and the name of the output files
+    """
+    
+    xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+    config.xipe_script)
+            
+    args=[xipe_exe,"--file1",infile,"--file2",config.xipe_percent]
+            
+    stdout_file=utilities.unnamed_temp_file()
+    stderr_file=utilities.unnamed_temp_file()
+    
+    command=[sys.executable,args,[infile],[],stdout_file,None,True,stderr_file]
+    
+    return stdout_file, stderr_file, command
+    
 
 def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database):
     """
@@ -173,6 +191,9 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
     """
 
     pathways_coverage_store=store.Pathways()
+    xipe_stdout_results={}
+    xipe_stderr_results={}
+    xipe_commands=[]
     for bug in pathways_and_reactions_store.bug_list():
     
         logger.debug("Compute pathway coverage for bug: " + bug)
@@ -201,13 +222,8 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
         
         # Check config to determine if xipe should be run
         if config.xipe_toggle == "on":
-            # Run xipe
-            xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                config.xipe_script)
-            
-            logger.info("Run xipe")
-            
-            # Create temp files for input and output
+
+            # Create temp file for input
             infile=utilities.unnamed_temp_file()
             
             # Write the input to xipe
@@ -215,44 +231,49 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
             file_handle.write("\n".join(xipe_input))
             file_handle.close()
             
-            cmmd=[xipe_exe,"--file1",infile,"--file2",config.xipe_percent]
+            stdout_file, stderr_file, command = xipe_command(infile)
             
-            stdout_file=utilities.unnamed_temp_file()
-            stderr_file=utilities.unnamed_temp_file()
+            xipe_commands.append(command)
+            xipe_stdout_results[bug]=stdout_file
+            xipe_stderr_results[bug]=stderr_file
             
-            utilities.execute_command(sys.executable,cmmd,[infile],[],stdout_file,
-                None,None,stderr_file)
+    # Run xipe
+    if xipe_commands:
+        utilities.command_threading(config.threads,xipe_commands)
             
-            try:
-                xipe_stderr=open(stderr_file,"r")
-                xipe_stdout=open(stdout_file,"r")
-            except EnvironmentError:
-                logger.debug("Empty results file from Xipe")
-                continue
+    # Process the xipe output
+    for bug in xipe_stdout_results:
             
-            # Record the pathways to remove based on the xipe error messages
-            pathways_to_remove=[]
-            for line in xipe_stderr:
-                data=line.strip().split(config.xipe_delimiter)
-                if len(data) == 2:
-                    pathways_to_remove.append(data[1])
+        try:
+            xipe_stderr=open(xipe_stderr_results[bug],"r")
+            xipe_stdout=open(xipe_stdout_results[bug],"r")
+        except EnvironmentError:
+            logger.debug("Empty results file from xipe")
+            continue
             
-            # Keep some of the pathways to remove based on their xipe scores
-            for line in xipe_stdout:
-                data=line.strip().split(config.xipe_delimiter)
-                if len(data) == 2:
-                    pathway, pathway_data = data
-                    if pathway in pathways_to_remove:
-                        score, bin = pathway_data[1:-1].split(", ")
-                        if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
-                            pathways_to_remove.remove(pathway)
+        # Record the pathways to remove based on the xipe error messages
+        pathways_to_remove=[]
+        for line in xipe_stderr:
+            data=line.strip().split(config.xipe_delimiter)
+            if len(data) == 2:
+                pathways_to_remove.append(data[1])
+            
+        # Keep some of the pathways to remove based on their xipe scores
+        for line in xipe_stdout:
+            data=line.strip().split(config.xipe_delimiter)
+            if len(data) == 2:
+                pathway, pathway_data = data
+                if pathway in pathways_to_remove:
+                    score, bin = pathway_data[1:-1].split(", ")
+                    if float(score) >= config.xipe_probability and int(bin) == config.xipe_bin:
+                        pathways_to_remove.remove(pathway)
                     
-            xipe_stderr.close()
-            xipe_stdout.close()        
+        xipe_stderr.close()
+        xipe_stdout.close()        
             
-            # Remove the selected pathways
-            for pathway in pathways_to_remove:
-                pathways_coverage_store.delete(bug,pathway)
+        # Remove the selected pathways
+        for pathway in pathways_to_remove:
+            pathways_coverage_store.delete(bug,pathway)
 
     return pathways_coverage_store
 
