@@ -35,7 +35,7 @@ directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARC
 ### Downloading HUMAnN2 ###
 HUMAnN2 can be downloaded in two ways:
 
-* [Download](https://bitbucket.org/biobakery/humann2/downloads) a compressed set of files.
+* [Download](https://bitbucket.org/biobakery/humann2/get/tip.tar.gz) a compressed set of files.
 * Create a clone of the repository on your computer with the command: 
 	
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
