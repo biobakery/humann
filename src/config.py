@@ -228,7 +228,7 @@ config_database_section="database_folders"
 config_uniref_key="uniref"
 config_chochoplan_key="chocophlan"
 
-def get_chochophlan_folder_location():
+def get_chocophlan_folder_location():
     """
     Return the location of the chocophlan folder from the user edit config
     """

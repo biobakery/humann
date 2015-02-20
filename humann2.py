@@ -125,7 +125,7 @@ def parse_arguments (args):
     parser.add_argument(
         "-c", "--chocophlan",
         help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
-            + config.get_chochophlan_folder_location() + "]", 
+            + config.get_chocophlan_folder_location() + "]", 
         metavar="<chocophlan>")
     parser.add_argument(
         "--chocophlan_gene_index",
@@ -312,7 +312,7 @@ def update_configuration(args):
     if args.chocophlan:
         config.chocophlan=os.path.abspath(args.chocophlan)
     else:
-        config.chocophlan=config.get_chochophlan_folder_location()
+        config.chocophlan=config.get_chocophlan_folder_location()
         
     if args.uniref:
         config.uniref=os.path.abspath(args.uniref)
