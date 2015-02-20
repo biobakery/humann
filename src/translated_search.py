@@ -289,6 +289,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
 
     aligned_ids=[]
     log_evalue=False
+    large_evalue_count=0
     while line:
         if re.search("^#",line):
             # Check for the rapsearch2 header to determine if these are log(e-value)
@@ -343,11 +344,13 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                     alignments.add_annotated(queryid, evalue, 
                         alignment_info[config.blast_reference_index])
                 else:
-                    logger.debug("Not including alignment based on large e-value: %s", evalue)
+                    large_evalue_count+=1
             
                 aligned_ids+=[queryid]
         line=file_handle.readline()
 
+    logger.debug("Total translated alignments not included based on large e-value: " + 
+        str(large_evalue_count))
     file_handle.close()
 
     # create unaligned file using list of remaining unaligned stored data

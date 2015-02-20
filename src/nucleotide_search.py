@@ -145,6 +145,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     # read through the file line by line
     line = file_handle_read.readline()
     query_ids={}
+    no_frames_found_count=0
+    large_evalue_count=0
     while line:
         # ignore headers ^@ 
         if not re.search("^@",line):
@@ -160,7 +162,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 if write_picked_frames:
                     picked_frames=pick_frames.pick_frames(info[config.sam_read_index])
                     if not picked_frames:
-                        logger.debug("No frames found for sequence: " + info[config.sam_read_name_index])
+                        no_frames_found_count+=1
                     for frame in picked_frames:
                         file_handle_write_unaligned_frames.write(">"+
                             info[config.sam_read_name_index]+"\n")
@@ -191,10 +193,15 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 if evalue<config.evalue_threshold:
                     alignments.add_annotated(query,evalue,info[config.sam_reference_index])
                 else:
-                    logger.debug("Not including alignment based on large e-value: %s", evalue)
+                    large_evalue_count+=1
                     
         line=file_handle_read.readline()
 
+    if write_picked_frames:
+        logger.debug("Total sequences without frames found: " + str(no_frames_found_count))
+    logger.debug("Total nucleotide alignments not included based on large e-value: " +
+        str(large_evalue_count))
+    
     file_handle_read.close()
     file_handle_write_unaligned.close()   
     file_handle_write_aligned.close()
