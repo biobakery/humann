@@ -147,24 +147,24 @@ NOTE: $SAMPLENAME can be set by the user with the option "--output_basename <$NE
 
 ### Demo runs ###
 
-The input folder contains four demo input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
+The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
 
 To run the fasta demo type the command:
 
-`` humann2.py --input input/demo.fasta --output $OUTPUT_DIR``
+`` humann2.py --input examples/demo.fasta --output $OUTPUT_DIR``
 
 To run the fastq demo type the command:
 
-`` humann2.py --input input/demo.fastq --output $OUTPUT_DIR``
+`` humann2.py --input examples/demo.fastq --output $OUTPUT_DIR``
 
 To run the sam demo type the command:
 
-`` humann2.py --input input/demo.sam --output $OUTPUT_DIR``
+`` humann2.py --input examples/demo.sam --output $OUTPUT_DIR``
 
 To run the blastm8 demo type the command:
 
-`` humann2.py --input input/demo.m8 --output $OUTPUT_DIR``
+`` humann2.py --input examples/demo.m8 --output $OUTPUT_DIR``
 
 $OUTPUT_DIR is the output directory
 
