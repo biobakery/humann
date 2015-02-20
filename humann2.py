@@ -125,7 +125,7 @@ def parse_arguments (args):
     parser.add_argument(
         "-c", "--chocophlan",
         help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
-            + config.chocophlan + "]", 
+            + config.get_chochophlan_folder_location() + "]", 
         metavar="<chocophlan>")
     parser.add_argument(
         "--chocophlan_gene_index",
@@ -136,7 +136,7 @@ def parse_arguments (args):
     parser.add_argument(
         "-u", "--uniref",
         help="directory containing the UniRef database\n[DEFAULT: " 
-            + config.uniref + "]", 
+            + config.get_uniref_folder_location() + "]", 
         metavar="<uniref>")
     parser.add_argument(
         "--average_read_length", 
@@ -312,12 +312,12 @@ def update_configuration(args):
     if args.chocophlan:
         config.chocophlan=os.path.abspath(args.chocophlan)
     else:
-        config.chocophlan=os.path.join(humann2_base_directory,config.chocophlan)
+        config.chocophlan=config.get_chochophlan_folder_location()
         
     if args.uniref:
         config.uniref=os.path.abspath(args.uniref)
     else:
-        config.uniref=os.path.join(humann2_base_directory,config.uniref)
+        config.uniref=config.get_uniref_folder_location()
 
     # if set, update the config run mode to resume
     if args.resume:

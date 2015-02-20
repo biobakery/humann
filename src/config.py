@@ -24,6 +24,7 @@ THE SOFTWARE.
 """
 
 import os
+import ConfigParser
 
 # required python version
 required_python_version_major = 2
@@ -182,8 +183,8 @@ diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 
 # data files
-chocophlan="databases/chocophlan/"
-uniref="databases/uniref/"
+chocophlan=""
+uniref=""
 
 metacyc_gene_to_reactions="databases/pathways/metacyc_reactions.uniref"
 metacyc_reactions_to_pathways="databases/pathways/metacyc_pathways"
@@ -220,6 +221,109 @@ xipe_delimiter="\t"
 xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
+
+# User config file
+user_edit_config_file="humann2.cfg"
+config_database_section="database_folders"
+config_uniref_key="uniref"
+config_chochoplan_key="chocophlan"
+
+def get_chochophlan_folder_location():
+    """
+    Return the location of the chocophlan folder from the user edit config
+    """
+    
+    requested_keys={config_chochoplan_key:""}
+    requested_keys=read_user_edit_config_file(config_database_section, requested_keys)
+
+    return requested_keys.get(config_chochoplan_key,"")
+
+def get_uniref_folder_location():
+    """
+    Return the location of the uniref folder from the user edit config
+    """
+    
+    requested_keys={config_uniref_key:""}
+    requested_keys=read_user_edit_config_file(config_database_section, requested_keys)
+
+    return requested_keys.get(config_uniref_key,"")
+
+def write_user_edit_config_file_database_folders(uniref=None,chocophlan=None):
+    """
+    Write the two database folders to the user edit config file
+    """
+    
+    # if one of the keys is not provided, find the setting from the config file
+    if not uniref or not chocophlan:
+        requested_keys={config_uniref_key:"",config_chochoplan_key:""}
+        requested_keys = read_user_edit_config_file(config_database_section, requested_keys)
+    
+        # if uniref not provided, set to current config file
+        if not uniref:
+            uniref=requested_keys[config_uniref_key]
+        
+        # if chocophlan not provided, set to the current config file
+        if not chocophlan:
+            chocophlan=requested_keys[config_chochoplan_key]
+    
+    new_settings={}
+    new_settings[config_database_section]={}
+    new_settings[config_database_section][config_uniref_key]=uniref
+    new_settings[config_database_section][config_chochoplan_key]=chocophlan
+    
+    write_user_edit_config_file(new_settings)
+
+def write_user_edit_config_file(new_settings):
+    """
+    Write the settings to the user editable config file
+    """
+    
+    config = ConfigParser.RawConfigParser()
+    
+    for section in new_settings:
+        config.add_section(section)
+        for key,value in new_settings[section].items():
+            value=str(value)
+            if "file" in section or "folder" in section:
+                # convert to absolute path if needed
+                if not os.path.isabs(value):
+                    value=os.path.abspath(value)
+            config.set(section,key,str(value))
+            
+    full_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        user_edit_config_file)
+    
+    try:
+        file_handle=open(full_user_edit_config_file,"wb")
+        config.write(file_handle)
+        file_handle.close()
+    except EnvironmentError:
+        sys.exit("Unable to write to the config file: " + full_user_edit_config_file)
+    
+def read_user_edit_config_file(section,keys):
+    """
+    Read the settings from the config file
+    """
+    
+    config = ConfigParser.ConfigParser()
+    
+    full_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+        user_edit_config_file)
+    
+    try:
+        config.read(full_user_edit_config_file)
+    except EnvironmentError:
+        sys.exit("Unable to read from the config file: " + full_user_edit_config_file)
+        
+    for key in keys:
+        value=str(config.get(section,key))
+        if "file" in section or "folder" in section:
+            # if not absolute path, then return absolute path relative to this folder
+            if not os.path.isabs(value):
+                value=os.path.abspath(os.path.join(os.path.dirname(full_user_edit_config_file),value))
+        keys[key]=value
+        
+    return keys
 
 def get_humann2_base_directory():
     """ 
