@@ -27,11 +27,11 @@ import os
 import subprocess
 
 # pathways databases with uniref ids
-humann2_fullpath=os.path.dirname(os.path.realpath(__file__))
+humann2_fullpath=os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.pardir))
 PATHWAYS_DATABASE1=os.path.join(humann2_fullpath,
-    "pathways/metacyc_reactions.uniref")
+    "databases/pathways/metacyc_reactions.uniref")
 PATHWAYS_DATABASE2=os.path.join(humann2_fullpath,
-    "pathways/unipathway_uniprots.uniref")
+    "databases/pathways/unipathway_uniprots.uniref")
 PATHWAYS_DATABASES=[PATHWAYS_DATABASE1,PATHWAYS_DATABASE2]
 PATHWAYS_DELIMITER="\t"
 PATHWAYS_UNIREF_IDENTIFIER="uniref50"
