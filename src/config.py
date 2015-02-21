@@ -233,62 +233,59 @@ def get_chocophlan_folder_location():
     Return the location of the chocophlan folder from the user edit config
     """
     
-    requested_keys={config_chochoplan_key:""}
-    requested_keys=read_user_edit_config_file(config_database_section, requested_keys)
+    config_items=read_user_edit_config_file()
 
-    return requested_keys.get(config_chochoplan_key,"")
+    return config_items.get(config_database_section,{}).get(config_chochoplan_key,"")
 
 def get_uniref_folder_location():
     """
     Return the location of the uniref folder from the user edit config
     """
     
-    requested_keys={config_uniref_key:""}
-    requested_keys=read_user_edit_config_file(config_database_section, requested_keys)
+    config_items=read_user_edit_config_file()
 
-    return requested_keys.get(config_uniref_key,"")
+    return config_items.get(config_database_section,{}).get(config_uniref_key,"")
 
-def write_user_edit_config_file_database_folders(uniref=None,chocophlan=None):
+def update_user_edit_config_file_database_folders(uniref=None,chocophlan=None):
     """
-    Write the two database folders to the user edit config file
+    Update the two database folders to the user edit config file
     """
     
-    # if one of the keys is not provided, find the setting from the config file
-    if not uniref or not chocophlan:
-        requested_keys={config_uniref_key:"",config_chochoplan_key:""}
-        requested_keys = read_user_edit_config_file(config_database_section, requested_keys)
+    config_items={}
+    config_items[config_database_section]={}
     
-        # if uniref not provided, set to current config file
-        if not uniref:
-            uniref=requested_keys[config_uniref_key]
+    if uniref:
+        config_items[config_database_section][config_uniref_key]=uniref
         
-        # if chocophlan not provided, set to the current config file
-        if not chocophlan:
-            chocophlan=requested_keys[config_chochoplan_key]
+    if chocophlan:
+        config_items[config_database_section][config_chochoplan_key]=chocophlan
     
-    new_settings={}
-    new_settings[config_database_section]={}
-    new_settings[config_database_section][config_uniref_key]=uniref
-    new_settings[config_database_section][config_chochoplan_key]=chocophlan
-    
-    write_user_edit_config_file(new_settings)
+    update_user_edit_config_file(config_items)
 
-def write_user_edit_config_file(new_settings):
+def update_user_edit_config_file(new_config_items):
     """
-    Write the settings to the user editable config file
+    Update the settings to the user editable config file
     """
     
     config = ConfigParser.RawConfigParser()
     
-    for section in new_settings:
+    # start with the current config settings
+    config_items = read_user_edit_config_file()
+    
+    # update with the new config items
+    for section in new_config_items:
+        for name,value in new_config_items[section].items():
+            config_items[section][name]=value
+    
+    for section in config_items:
         config.add_section(section)
-        for key,value in new_settings[section].items():
+        for name,value in config_items[section].items():
             value=str(value)
             if "file" in section or "folder" in section:
                 # convert to absolute path if needed
                 if not os.path.isabs(value):
                     value=os.path.abspath(value)
-            config.set(section,key,str(value))
+            config.set(section,name,value)
             
     full_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
         user_edit_config_file)
@@ -300,7 +297,7 @@ def write_user_edit_config_file(new_settings):
     except EnvironmentError:
         sys.exit("Unable to write to the config file: " + full_user_edit_config_file)
     
-def read_user_edit_config_file(section,keys):
+def read_user_edit_config_file():
     """
     Read the settings from the config file
     """
@@ -315,15 +312,19 @@ def read_user_edit_config_file(section,keys):
     except EnvironmentError:
         sys.exit("Unable to read from the config file: " + full_user_edit_config_file)
         
-    for key in keys:
-        value=str(config.get(section,key))
-        if "file" in section or "folder" in section:
-            # if not absolute path, then return absolute path relative to this folder
-            if not os.path.isabs(value):
-                value=os.path.abspath(os.path.join(os.path.dirname(full_user_edit_config_file),value))
-        keys[key]=value
+    # read through all of the sections
+    config_items = {}
+    for section in config.sections():
+        config_list = config.items(section)
+        config_items[section]={}
+        for name,value in config_list:
+            if "file" in section or "folder" in section:
+                # if not absolute path, then return absolute path relative to this folder
+                if not os.path.isabs(value):
+                    value=os.path.abspath(os.path.join(os.path.dirname(full_user_edit_config_file),value))
+            config_items[section][name]=value
         
-    return keys
+    return config_items
 
 def get_humann2_base_directory():
     """ 
