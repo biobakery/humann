@@ -122,10 +122,24 @@ def main():
         sys.exit("The input directory provided can not be found." + 
             "  Please enter a new directory.")
     
+    
+    gene_tables=[]
+    file_list=os.listdir(input_dir)
+    
+    # filter out files which do not meet the name requirement if set
     biom_flag=False
-    for file in os.listdir(input_dir):
-        if file.endswith(BIOM_FILE_EXTENSION):
-            biom_flag=True
+    if args.file_name:
+        reduced_file_list=[]
+        for file in file_list:
+            if re.search(args.file_name,file):
+                reduced_file_list.append(file)
+                if file.endswith(BIOM_FILE_EXTENSION):
+                    biom_flag=True
+        file_list=reduced_file_list
+    else: 
+        for file in file_list:
+            if file.endswith(BIOM_FILE_EXTENSION):
+                biom_flag=True
             
     # Check for the biom software if running with a biom input file
     if biom_flag:
@@ -142,17 +156,6 @@ def main():
             prefix='humann2_split_gene_tables_', dir=output_dir)
         if args.verbose:
             print("Temp folder created: " + temp_dir)
-        
-    gene_tables=[]
-    file_list=os.listdir(input_dir)
-    
-    # filter out files which do not meet the name requirement if set
-    if args.file_name:
-        reduced_file_list=[]
-        for file in file_list:
-            if re.search(args.file_name,file):
-                reduced_file_list.append(file)
-        file_list=reduced_file_list
     
     for file in file_list:
         if file.endswith(BIOM_FILE_EXTENSION):
