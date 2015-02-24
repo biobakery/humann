@@ -170,16 +170,16 @@ bypass_translated_search=get_item(config_items, "run_modes", "bypass_translated_
 threads=get_item(config_items, "run_modes", "threads", "int")
     
 # evalue threshold
-evalue_threshold=get_item(config_items, "alignment", "evalue_threshold", "float")
+evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold", "float")
     
 # average read length
-average_read_length=get_item(config_items, "alignment", "average_read_length", "int")
+average_read_length=get_item(config_items, "alignment_settings", "average_read_length", "int")
     
 # prescreen threshold
-prescreen_threshold=get_item(config_items, "alignment", "prescreen_threshold", "float")
+prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")
 
 # translated search identity threshold
-identity_threshold=get_item(config_items, "alignment", "identity_threshold", "float")
+identity_threshold=get_item(config_items, "alignment_settings", "identity_threshold", "float")
     
 # output file decimal places
 output_max_decimals=get_item(config_items, "output_format", "output_max_decimals", "int")
