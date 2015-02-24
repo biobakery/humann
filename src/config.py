@@ -24,31 +24,179 @@ THE SOFTWARE.
 """
 
 import os
+import sys
 import ConfigParser
 
-# required python version
-required_python_version_major = 2
-required_python_version_minor = 7
+# User config file
+user_edit_config_file="humann2.cfg"
 
-# software run modes
-resume = False
-verbose = False
-bypass_prescreen = False
-bypass_nucleotide_index = False
-bypass_nucleotide_search = False
-bypass_translated_search = False
+full_path_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+    user_edit_config_file)
 
+def update_user_edit_config_file_database_folders(uniref=None,chocophlan=None):
+    """
+    Update the two database folders to the user edit config file
+    """
+    
+    config_items={}
+    config_items[config_database_section]={}
+    
+    if uniref:
+        config_items[config_database_section][config_uniref_key]=uniref
+        
+    if chocophlan:
+        config_items[config_database_section][config_chochoplan_key]=chocophlan
+    
+    update_user_edit_config_file(config_items)
+
+def update_user_edit_config_file(new_config_items):
+    """
+    Update the settings to the user editable config file
+    """
+    
+    config = ConfigParser.RawConfigParser()
+    
+    # start with the current config settings
+    config_items = read_user_edit_config_file()
+    
+    # update with the new config items
+    for section in new_config_items:
+        for name,value in new_config_items[section].items():
+            config_items[section][name]=value
+    
+    for section in config_items:
+        config.add_section(section)
+        for name,value in config_items[section].items():
+            value=str(value)
+            if "file" in section or "folder" in section:
+                # convert to absolute path if needed
+                if not os.path.isabs(value):
+                    value=os.path.abspath(value)
+            config.set(section,name,value)
+    
+    try:
+        file_handle=open(full_path_user_edit_config_file,"wb")
+        config.write(file_handle)
+        file_handle.close()
+    except EnvironmentError:
+        sys.exit("Unable to write to the config file: " + full_path_user_edit_config_file)
+    
+def read_user_edit_config_file():
+    """
+    Read the settings from the config file
+    """
+    
+    config = ConfigParser.ConfigParser()
+    
+    try:
+        config.read(full_path_user_edit_config_file)
+    except EnvironmentError:
+        sys.exit("Unable to read from the config file: " + full_path_user_edit_config_file)
+        
+    # read through all of the sections
+    config_items = {}
+    for section in config.sections():
+        config_list = config.items(section)
+        config_items[section]={}
+        for name,value in config_list:
+            if "file" in section or "folder" in section:
+                # if not absolute path, then return absolute path relative to this folder
+                if not os.path.isabs(value):
+                    value=os.path.abspath(os.path.join(os.path.dirname(full_path_user_edit_config_file),value))
+            config_items[section][name]=value
+        
+    return config_items
+
+def get_item(config_items, section, name, type=None):
+    """
+    Get the item from the dictionary of section/names from the user edit config file
+    """
+    
+    # try to obtain the value from the config dictionary
+    try:
+        value=config_items[section][name]
+    except KeyError:
+        sys.exit("CRITICAL ERROR: Unable to load value from " + full_path_user_edit_config_file +
+            " . \nItem not found. \nItem should be in section (" + section + ") with name (" + name + ").")
+        
+    # if present, try to change the value type
+    if type:
+        try:
+            if type == "string":
+                value=str(value)
+            elif type == "int":
+                value=int(value)
+            elif type == "float":
+                value=float(value)
+            elif type == "bool":
+                if value in ["False","false","F","f"]:
+                    value=False
+                elif value in ["True","true","T","t"]:
+                    value=True
+                else:
+                    raise ValueError
+        except ValueError:
+            sys.exit("CRITICAL ERROR: Unable to load value from " + full_path_user_edit_config_file +
+                     " . \nItem found in section (" + section + ") with name (" + name + "). " +
+                     "\nItem is not of type (" + type + ").")
+        
+    return value
+
+# get the base settings from the user edit config file
+config_items=read_user_edit_config_file()
+
+# set those items that are included in the user edit config file
+
+# database folders
+chocophlan=get_item(config_items, "database_folders" , "chocophlan", "string")
+uniref=get_item(config_items, "database_folders", "uniref", "string")
+    
+# pathways files
+metacyc_gene_to_reactions=get_item(config_items, "pathways_files", "metacyc_gene_to_reactions", "string")
+metacyc_reactions_to_pathways=get_item(config_items, "pathways_files", "metacyc_reactions_to_pathways", "string")
+    
+unipathway_database_part1=get_item(config_items, "pathways_files", "unipathway_database_part1", "string")
+unipathway_database_part2=get_item(config_items, "pathways_files", "unipathway_database_part2", "string")
+    
+# run modes
+resume=get_item(config_items, "run_modes", "resume", "bool")
+verbose=get_item(config_items, "run_modes", "verbose", "bool")
+bypass_prescreen=get_item(config_items, "run_modes", "bypass_prescreen", "bool")
+bypass_nucleotide_index=get_item(config_items, "run_modes", "bypass_nucleotide_index", "bool")
+bypass_nucleotide_search=get_item(config_items, "run_modes", "bypass_nucleotide_search", "bool")
+bypass_translated_search=get_item(config_items, "run_modes", "bypass_translated_search", "bool")
+    
 # number of threads
-threads=1
-
+threads=get_item(config_items, "run_modes", "threads", "int")
+    
 # evalue threshold
-evalue_threshold=1.0
-
-# output file decimal places
-output_max_decimals=10
-
+evalue_threshold=get_item(config_items, "alignment", "evalue_threshold", "float")
+    
 # average read length
-average_read_length=1
+average_read_length=get_item(config_items, "alignment", "average_read_length", "int")
+    
+# prescreen threshold
+prescreen_threshold=get_item(config_items, "alignment", "prescreen_threshold", "float")
+
+# translated search identity threshold
+identity_threshold=get_item(config_items, "alignment", "identity_threshold", "float")
+    
+# output file decimal places
+output_max_decimals=get_item(config_items, "output_format", "output_max_decimals", "int")
+    
+# stratified output flag
+remove_stratified_output=get_item(config_items, "output_format", "remove_stratified_output", "bool")
+
+# selected pathways
+pathways_database_part1=metacyc_gene_to_reactions
+pathways_database_part2=metacyc_reactions_to_pathways
+
+# pathways settings
+reactions_database_delimiter="\t"
+pathways_database_delimiter="\t"
+
+pathway_identifier="PWY"
+pathways_recursion=True
 
 # log options
 log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
@@ -94,7 +242,6 @@ pathcoverage_file="_pathcoverage"
 genefamilies_file="_genefamilies"
 
 # metaphlan options
-prescreen_threshold=0.01
 metaphlan_opts=["-t","rel_ab"]
 metaphlan_pkl_file="db_v20/mpa_v20_m200.pkl"
 metaphlan_mpa_index="db_v20/mpa_v20_m200"
@@ -146,7 +293,6 @@ blast_total_columns=12
 # output file formats
 output_file_column_delimiter="\t"
 output_file_category_delimiter="|"
-remove_stratified_output=False
 
 # gene table file formats
 gene_table_comment_indicator="^#"
@@ -166,7 +312,6 @@ id_mapping_bug_index=3
 
 # usearch options
 usearch_database_extension=".udb"
-identity_threshold=0.4
 usearch_max_seqs=10000
 usearch_version="usearch v7.0.1001"
 usearch_opts=["-maxhits",20]
@@ -181,26 +326,6 @@ diamond_database_extension=".dmnd"
 diamond_opts=["--max-target-seqs",20,"--sensitive"]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
-
-# data files
-chocophlan=""
-uniref=""
-
-metacyc_gene_to_reactions="databases/pathways/metacyc_reactions.uniref"
-metacyc_reactions_to_pathways="databases/pathways/metacyc_pathways"
-pathway_identifier="PWY"
-pathways_recursion=True
-
-unipathway_database_part1="databases/pathways/unipathway_uniprots.uniref"
-unipathway_database_part2="databases/pathways/unipathway_pathways"
-
-reactions_database_delimiter="\t"
-pathways_database_delimiter="\t"
-
-
-# pathways databases
-pathways_database_part1=metacyc_gene_to_reactions
-pathways_database_part2=metacyc_reactions_to_pathways
 
 # MinPath
 minpath_file="minpath1.2.tar.gz"
@@ -222,118 +347,3 @@ xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
 
-# User config file
-user_edit_config_file="humann2.cfg"
-config_database_section="database_folders"
-config_uniref_key="uniref"
-config_chochoplan_key="chocophlan"
-
-def get_chocophlan_folder_location():
-    """
-    Return the location of the chocophlan folder from the user edit config
-    """
-    
-    config_items=read_user_edit_config_file()
-
-    return config_items.get(config_database_section,{}).get(config_chochoplan_key,"")
-
-def get_uniref_folder_location():
-    """
-    Return the location of the uniref folder from the user edit config
-    """
-    
-    config_items=read_user_edit_config_file()
-
-    return config_items.get(config_database_section,{}).get(config_uniref_key,"")
-
-def update_user_edit_config_file_database_folders(uniref=None,chocophlan=None):
-    """
-    Update the two database folders to the user edit config file
-    """
-    
-    config_items={}
-    config_items[config_database_section]={}
-    
-    if uniref:
-        config_items[config_database_section][config_uniref_key]=uniref
-        
-    if chocophlan:
-        config_items[config_database_section][config_chochoplan_key]=chocophlan
-    
-    update_user_edit_config_file(config_items)
-
-def update_user_edit_config_file(new_config_items):
-    """
-    Update the settings to the user editable config file
-    """
-    
-    config = ConfigParser.RawConfigParser()
-    
-    # start with the current config settings
-    config_items = read_user_edit_config_file()
-    
-    # update with the new config items
-    for section in new_config_items:
-        for name,value in new_config_items[section].items():
-            config_items[section][name]=value
-    
-    for section in config_items:
-        config.add_section(section)
-        for name,value in config_items[section].items():
-            value=str(value)
-            if "file" in section or "folder" in section:
-                # convert to absolute path if needed
-                if not os.path.isabs(value):
-                    value=os.path.abspath(value)
-            config.set(section,name,value)
-            
-    full_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-        user_edit_config_file)
-    
-    try:
-        file_handle=open(full_user_edit_config_file,"wb")
-        config.write(file_handle)
-        file_handle.close()
-    except EnvironmentError:
-        sys.exit("Unable to write to the config file: " + full_user_edit_config_file)
-    
-def read_user_edit_config_file():
-    """
-    Read the settings from the config file
-    """
-    
-    config = ConfigParser.ConfigParser()
-    
-    full_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
-        user_edit_config_file)
-    
-    try:
-        config.read(full_user_edit_config_file)
-    except EnvironmentError:
-        sys.exit("Unable to read from the config file: " + full_user_edit_config_file)
-        
-    # read through all of the sections
-    config_items = {}
-    for section in config.sections():
-        config_list = config.items(section)
-        config_items[section]={}
-        for name,value in config_list:
-            if "file" in section or "folder" in section:
-                # if not absolute path, then return absolute path relative to this folder
-                if not os.path.isabs(value):
-                    value=os.path.abspath(os.path.join(os.path.dirname(full_user_edit_config_file),value))
-            config_items[section][name]=value
-        
-    return config_items
-
-def get_humann2_base_directory():
-    """ 
-    Return the location of the humann2 base directory
-    """
-    
-    config_file_location=os.path.dirname(os.path.realpath(__file__))
-    
-    # The humann2 base directory is parent directory of the config file location
-    humann2_base_directory=os.path.abspath(os.path.join(config_file_location,os.pardir))
-    
-    return humann2_base_directory

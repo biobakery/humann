@@ -34,27 +34,32 @@ THE SOFTWARE.
 """
 
 import sys
+
+# required python version
+required_python_version_major = 2
+required_python_version_minor = 7
+
+# Check the python version
+try:
+    if (sys.version_info[0] != required_python_version_major or
+        sys.version_info[1] < required_python_version_minor):
+        sys.exit("CRITICAL ERROR: The python version found (version "+
+            str(sys.version_info[0])+"."+str(sys.version_info[1])+") "+
+            "does not match the version required (version "+
+            str(required_python_version_major)+"."+
+            str(required_python_version_minor)+"+)")
+except (AttributeError,IndexError):
+    sys.exit("CRITICAL ERROR: The python version found (version 1) " +
+        "does not match the version required (version "+
+        str(required_python_version_major)+"."+
+        str(required_python_version_minor)+"+)")  
+    
 # Try to load one of the humann2 src modules to check the installation
 try:
     from src import config
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
         " Please check your install.") 
-
-# Check the python version
-try:
-    if (sys.version_info[0] != config.required_python_version_major or
-        sys.version_info[1] < config.required_python_version_minor):
-        sys.exit("CRITICAL ERROR: The python version found (version "+
-            str(sys.version_info[0])+"."+str(sys.version_info[1])+") "+
-            "does not match the version required (version "+
-            str(config.required_python_version_major)+"."+
-            str(config.required_python_version_minor)+"+)")
-except (AttributeError,IndexError):
-    sys.exit("CRITICAL ERROR: The python version found (version 1) " +
-        "does not match the version required (version "+
-        str(config.required_python_version_major)+"."+
-        str(config.required_python_version_minor)+"+)")  
     
 import argparse
 import subprocess
@@ -125,7 +130,7 @@ def parse_arguments (args):
     parser.add_argument(
         "-c", "--chocophlan",
         help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
-            + config.get_chocophlan_folder_location() + "]", 
+            + config.chocophlan + "]", 
         metavar="<chocophlan>")
     parser.add_argument(
         "--chocophlan_gene_index",
@@ -136,7 +141,7 @@ def parse_arguments (args):
     parser.add_argument(
         "-u", "--uniref",
         help="directory containing the UniRef database\n[DEFAULT: " 
-            + config.get_uniref_folder_location() + "]", 
+            + config.uniref + "]", 
         metavar="<uniref>")
     parser.add_argument(
         "--average_read_length", 
@@ -294,30 +299,18 @@ def update_configuration(args):
     if args.diamond:
         utilities.add_exe_to_path(os.path.abspath(args.diamond))
  
-    humann2_base_directory=config.get_humann2_base_directory() 
- 
     # Set the locations of the pathways databases
     if args.pathways_databases:
         config.pathways_database_part1=os.path.abspath(args.pathways_databases[0])
         config.pathways_database_part2=os.path.abspath(args.pathways_databases[1])
         config.pathways_recursion=False
-    else:
-        # add the full path to the database
-        config.pathways_database_part1=os.path.join(humann2_base_directory, 
-            config.pathways_database_part1)
-        config.pathways_database_part2=os.path.join(humann2_base_directory,
-            config.pathways_database_part2)
         
     # Set the locations of the other databases
     if args.chocophlan:
         config.chocophlan=os.path.abspath(args.chocophlan)
-    else:
-        config.chocophlan=config.get_chocophlan_folder_location()
         
     if args.uniref:
         config.uniref=os.path.abspath(args.uniref)
-    else:
-        config.uniref=config.get_uniref_folder_location()
 
     # if set, update the config run mode to resume
     if args.resume:
