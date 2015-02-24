@@ -271,6 +271,12 @@ def parse_arguments (args):
         config.pathways_database_part1 + " , " + config.pathways_database_part2 + "]",
         metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
         nargs=2)
+    parser.add_argument(
+        "--pathways",
+        help="the database to use for pathway computations\n[DEFAULT: " +
+        config.pathways_database + "]",
+        default=config.pathways_database,
+        choices=config.pathways_database_choices)
 
     return parser.parse_args()
 	
@@ -299,7 +305,19 @@ def update_configuration(args):
     if args.diamond:
         utilities.add_exe_to_path(os.path.abspath(args.diamond))
  
+    # Set the pathways database selection
+    if args.pathways == "metacyc":
+        config.pathways_database_part1=config.metacyc_gene_to_reactions
+        config.pathways_database_part2=config.metacyc_reactions_to_pathways
+        config.pathway_identifier="PWY"
+        config.pathways_recursion=True
+    elif args.pathways == "unipathway":
+        config.pathways_database_part1=config.unipathway_database_part1
+        config.pathways_database_part2=config.unipathway_database_part2
+        config.pathways_recursion=False
+ 
     # Set the locations of the pathways databases
+    # If provided by the user, this will take precedence over the pathways database selection
     if args.pathways_databases:
         config.pathways_database_part1=os.path.abspath(args.pathways_databases[0])
         config.pathways_database_part2=os.path.abspath(args.pathways_databases[1])

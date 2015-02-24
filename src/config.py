@@ -187,6 +187,10 @@ output_max_decimals=get_item(config_items, "output_format", "output_max_decimals
 # stratified output flag
 remove_stratified_output=get_item(config_items, "output_format", "remove_stratified_output", "bool")
 
+# pathways database selection
+pathways_database_choices=["metacyc","unipathway"]
+pathways_database=pathways_database_choices[0]
+
 # selected pathways
 pathways_database_part1=metacyc_gene_to_reactions
 pathways_database_part2=metacyc_reactions_to_pathways
@@ -195,8 +199,8 @@ pathways_database_part2=metacyc_reactions_to_pathways
 reactions_database_delimiter="\t"
 pathways_database_delimiter="\t"
 
-pathway_identifier="PWY"
-pathways_recursion=True
+pathway_identifier="NA"
+pathways_recursion=False
 
 # log options
 log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
