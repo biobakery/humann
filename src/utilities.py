@@ -37,6 +37,7 @@ import gzip
 import shutil
 import threading
 import Queue
+import datetime
 
 import config
 import pick_frames
@@ -938,33 +939,63 @@ def format_float_to_string(number):
     
     return "{:.{digits}f}".format(number, digits=config.output_max_decimals)
 
+def byte_to_gigabyte(byte):
+    """
+    Convert byte value to gigabyte
+    """
+    
+    return byte / (1024.0**3)
+
 def log_system_status():
     """
     Print the status of the system
     """
     
+    module_available=True
     try:
         import psutil
+    except ImportError:
+        module_available=False
         
-        # record the memory used
-        memory = psutil.virtual_memory()
-        logger.info("Total memory = " + str(memory.total))
-        logger.info("Available memory = " + str(memory.available))
-        logger.info("Used memory = " + str(memory.used))
-        logger.info("Percent memory used = " + str(memory.percent) + " %")
+    if module_available:
+        try:
+            # record the memory used
+            memory = psutil.virtual_memory()
+            logger.info("Total memory = " + str(byte_to_gigabyte(memory.total)) + " GB")
+            logger.info("Available memory = " + str(byte_to_gigabyte(memory.available)) + " GB")
+            logger.info("Free memory = " + str(byte_to_gigabyte(memory.free)) + " GB")
+            logger.info("Percent memory used = " + str(memory.percent) + " %")
+    
+            # record the cpu info
+            logger.info("CPU percent = " + str(psutil.cpu_percent()) + " %")
+            logger.info("Total cores count = " + str(psutil.cpu_count()))
+            
+            # record the disk usage
+            disk = psutil.disk_usage('/')
+            logger.info("Total disk = " + str(byte_to_gigabyte(disk.total)) + " GB")
+            logger.info("Used disk = "+ str(byte_to_gigabyte(disk.used)) + " GB")
+            logger.info("Percent disk used = " + str(disk.percent) + " %")
 
-        # record the cpu info
-        logger.info("CPU percent = " + str(psutil.cpu_percent()))
-        logger.info("Total cores count = " + str(psutil.cpu_count()))
-        
-        # record the disk usage
-        disk = psutil.disk_usage('/')
-        logger.info("Total disk = " + str(disk.total))
-        logger.info("Used disk = "+ str(disk.used))
-        logger.info("Percent disk used = " + str(disk.percent) + " %")
-
-    except (ImportError, AttributeError, OSError):
-        pass
+            # record information about this current process
+            process=psutil.Process()
+            process_memory=process.memory_info()
+            process_create_time=datetime.datetime.fromtimestamp(
+                process.create_time()).strftime("%Y-%m-%d %H:%M:%S")
+            process_cpu_times=process.cpu_times()
+            # two calls required to cpu percent for non-blocking as per documentation
+            process_cpu_percent=process.cpu_percent()
+            process_cpu_percent=process.cpu_percent()
+            
+            logger.info("Process create time = " + process_create_time)
+            logger.info("Process user time = " + str(process_cpu_times.user) + " seconds")
+            logger.info("Process system time = " + str(process_cpu_times.system) + " seconds")
+            logger.info("Process CPU percent = " + str(process_cpu_percent) + " %")
+            logger.info("Process memory RSS = " + str(byte_to_gigabyte(process_memory.rss)) + " GB")
+            logger.info("Process memory VMS = " + str(byte_to_gigabyte(process_memory.vms)) + " GB")
+            logger.info("Process memory percent = " + str(process.memory_percent()) + " %")
+            
+        except (AttributeError, OSError, TypeError, psutil.Error):
+            pass
     
     
     
