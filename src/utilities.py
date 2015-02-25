@@ -572,7 +572,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
                 message="Unable to open file: " + stdin_file
                 logger.critical(message)
                 if raise_error:
-                    raise
+                    raise EnvironmentError
                 else:
                     sys.exit("CRITICAL ERROR: " + message)
         
@@ -583,7 +583,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
                 message="Unable to open file: " + stdout_file
                 logger.critical(message)
                 if raise_error:
-                    raise
+                    raise EnvironmentError
                 else:
                     sys.exit("CRITICAL ERROR: " + message)
                     
@@ -594,7 +594,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
                 message="Unable to open file: " + stderr_file
                 logger.critical(message)
                 if raise_error:
-                    raise
+                    raise EnvironmentError
                 else:
                     sys.exit("CRITICAL ERROR: " + message)
 	
@@ -610,7 +610,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
             logger.critical("TRACEBACK: \n" + traceback.format_exc())
             log_system_status()
             if raise_error:
-                raise
+                raise subprocess.CalledProcessError
             else:
                 sys.exit("CRITICAL ERROR: " + message)
 
