@@ -119,10 +119,10 @@ def create_custom_database(chocophlan_dir, bug_file):
     
     # compute total species found
     if not config.bypass_prescreen:
-        message="Total species identified in prescreen: " + str(len(species_found))
+        message="Total species selected from prescreen: " + str(len(species_found))
         logger.info(message)
         print("\n"+message+"\n")
-        message="Species cover " + "{:.2f}".format(total_reads_covered) + "% of all mapped reads"
+        message="Selected species explain " + "{:.2f}".format(total_reads_covered) + "% of predicted community composition"
         print(message+"\n")
 
     # identify the files to be used from the ChocoPhlAn database
