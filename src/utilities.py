@@ -608,6 +608,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
             message="Problem executing " + " ".join(cmd) + "\n"
             logger.critical(message)
             logger.critical("TRACEBACK: \n" + traceback.format_exc())
+            log_system_status()
             if raise_error:
                 raise
             else:
@@ -936,3 +937,35 @@ def format_float_to_string(number):
     """
     
     return "{:.{digits}f}".format(number, digits=config.output_max_decimals)
+
+def log_system_status():
+    """
+    Print the status of the system
+    """
+    
+    try:
+        import psutil
+        
+        # record the memory used
+        memory = psutil.virtual_memory()
+        logger.info("Total memory = " + str(memory.total))
+        logger.info("Available memory = " + str(memory.available))
+        logger.info("Used memory = " + str(memory.used))
+        logger.info("Percent memory used = " + str(memory.percent) + " %")
+
+        # record the cpu info
+        logger.info("CPU percent = " + str(psutil.cpu_percent()))
+        logger.info("Total cores count = " + str(psutil.cpu_count()))
+        
+        # record the disk usage
+        disk = psutil.disk_usage('/')
+        logger.info("Total disk = " + str(disk.total))
+        logger.info("Used disk = "+ str(disk.used))
+        logger.info("Percent disk used = " + str(disk.percent) + " %")
+
+    except (ImportError, AttributeError, OSError):
+        pass
+    
+    
+    
+    
