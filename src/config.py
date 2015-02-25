@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 HUMAnN2: config module
 Configuration settings
@@ -23,10 +25,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import check
+
+# Check the current python version
+check.python_version()
+
 import os
 import sys
 import ConfigParser
 import logging
+import argparse
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -84,21 +92,14 @@ user_edit_config_file="humann2.cfg"
 full_path_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
     user_edit_config_file)
 
-def update_user_edit_config_file_database_folders(uniref=None,chocophlan=None):
+def update_user_edit_config_file_single_item(section,name,value):
     """
-    Update the two database folders to the user edit config file
+    Update the settings to the user editable config file for one item
     """
     
-    config_items={}
-    config_items[config_database_section]={}
+    new_config_items={section:{ name : value }}
     
-    if uniref:
-        config_items[config_database_section][config_uniref_key]=uniref
-        
-    if chocophlan:
-        config_items[config_database_section][config_chochoplan_key]=chocophlan
-    
-    update_user_edit_config_file(config_items)
+    update_user_edit_config_file(new_config_items)
 
 def update_user_edit_config_file(new_config_items):
     """
@@ -113,7 +114,16 @@ def update_user_edit_config_file(new_config_items):
     # update with the new config items
     for section in new_config_items:
         for name,value in new_config_items[section].items():
-            config_items[section][name]=value
+            if section in config_items:
+                if name in config_items[section]:
+                    config_items[section][name]=value
+                else:
+                    sys.exit("ERROR: Unable to add new name ( " + name + 
+                        " ) to existing section ( " + section + " ) to " +
+                        " config file: " + full_path_user_edit_config_file)
+            else:
+                sys.exit("ERROR: Unable to add new section ( " + section + 
+                    " ) to config file: " + full_path_user_edit_config_file)
     
     for section in config_items:
         config.add_section(section)
@@ -403,3 +413,42 @@ xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
 
+def parse_arguments(args):
+    """ 
+    Parse the arguments from the user
+    """
+    parser = argparse.ArgumentParser(
+        description= "HUMAnN2 Configuration\n",
+        formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument(
+        "--print", 
+        dest="print_config",
+        action="store_true",
+        help="print the configuration\n")
+    parser.add_argument(
+        "--update", 
+        nargs=3,
+        metavar=("<section>","<name>","<value>"),
+        help="update the section : name to the value provided\n")
+    
+    return parser.parse_args()
+
+def main():
+    # Parse arguments from the command line
+    args=parse_arguments(sys.argv)
+    
+    if args.update:
+        # update the config file
+        update_user_edit_config_file_single_item(args.update[0],args.update[1],args.update[2])
+    
+    if args.print_config or not args.update:
+        # print the current configuration
+        current_config_items=read_user_edit_config_file()
+        print("HUMANnN2 Configuration ( Section : Name = Value )")
+        for section in current_config_items:
+            for name,value in current_config_items[section].items():
+                print(section+" : "+name+" = "+str(value))
+                
+if __name__ == "__main__":
+    main()
+    

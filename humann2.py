@@ -32,35 +32,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
-
-import sys
-
-# required python version
-required_python_version_major = 2
-required_python_version_minor = 7
-
-# Check the python version
-try:
-    if (sys.version_info[0] != required_python_version_major or
-        sys.version_info[1] < required_python_version_minor):
-        sys.exit("CRITICAL ERROR: The python version found (version "+
-            str(sys.version_info[0])+"."+str(sys.version_info[1])+") "+
-            "does not match the version required (version "+
-            str(required_python_version_major)+"."+
-            str(required_python_version_minor)+"+)")
-except (AttributeError,IndexError):
-    sys.exit("CRITICAL ERROR: The python version found (version 1) " +
-        "does not match the version required (version "+
-        str(required_python_version_major)+"."+
-        str(required_python_version_minor)+"+)")  
     
 # Try to load one of the humann2 src modules to check the installation
 try:
-    from src import config
+    from src import check
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
         " Please check your install.") 
+
+# Check the python version
+check.python_version()
     
+import sys
 import argparse
 import subprocess
 import os
@@ -69,6 +52,7 @@ import tempfile
 import re
 import logging  
 
+from src import config
 from src import prescreen
 from src import nucleotide_search
 from src import store
@@ -80,7 +64,7 @@ from src import quantify_modules
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def parse_arguments (args):
+def parse_arguments(args):
     """ 
     Parse the arguments from the user
     """
