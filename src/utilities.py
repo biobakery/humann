@@ -256,8 +256,6 @@ def file_exists_readable(file, raise_IOError=None):
     Or raise an IOerror if selected
     """
     
-    logger.debug("Check file exists and is readable: %s",file)
-    
     if not os.path.isfile(file):
         message="Can not find file "+ file
         logger.critical(message)
@@ -301,8 +299,6 @@ def find_exe_in_path(exe):
     Check that an executable exists in $PATH
     """
     
-    logger.debug("Find executable, %s, in path", exe)
-    
     paths = os.environ["PATH"].split(os.pathsep)
     for path in paths:
         fullexe = os.path.join(path,exe)
@@ -328,8 +324,6 @@ def return_module_path(module):
     """
     Return the full path to the python module
     """
-    
-    logger.debug("Find module, %s, in pythonpath", module)
     
     # if this is the full path to the module then return the parent directory
     if os.path.isabs(module):
@@ -529,6 +523,8 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
         # update the module to the full path if not already the full path
         elif not os.path.isabs(args[0]):
             args[0]=os.path.join(module_path,args[0])
+            
+        logger.debug("Using python module : " + args[0])
     else:
         # check that the executable can be found
         exe_path=return_exe_path(exe)
@@ -543,9 +539,10 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
         else:
             exe=os.path.join(exe_path,exe)
 	
+        logger.debug("Using software: " + exe)
+    
     # check that the input files exist and are readable
     for file in infiles:
-        logger.debug("Check input file exists and is readable: %s",file)
         file_exists_readable(file, raise_IOError=raise_error)
         
     # check if outfiles already exist
@@ -618,7 +615,6 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
 
         # check that the output files exist and are readable
         for file in outfiles:
-            logger.debug("Check output file exists and is readable: %s",file)
             file_exists_readable(file, raise_IOError=raise_error)
     
     else:

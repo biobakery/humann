@@ -334,7 +334,7 @@ class Alignments:
         message="Total gene families  : " +str(len(all_gene_scores))+"\n"+message
         if config.verbose:
             print(message)
-        logger.debug(message)
+        logger.info("\n"+message)
         
     def clear(self):
         """

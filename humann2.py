@@ -495,12 +495,6 @@ def update_configuration(args):
     logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
     
-    # write the locations of the databases to the log file
-    logger.info("Chocophlan database: " + config.chocophlan)
-    logger.info("UniRef database: " + config.uniref)
-    logger.info("Pathways database part 1: " + config.pathways_database_part1)
-    logger.info("Pathways database part 2: " + config.pathways_database_part2)
-     
      
 def check_requirements(args):
     """
@@ -518,6 +512,8 @@ def check_requirements(args):
         if args.input_format == "unknown":
             sys.exit("CRITICAL ERROR: Unable to determine the input file format." +
                 " Please provide the format with the --input_format argument.")
+    
+    config.input_format = args.input_format
         
     # If the input file is compressed, then decompress
     if args.input_format.endswith(".gz"):
@@ -676,6 +672,9 @@ def main():
     
     # Check for required files, software, databases, and also permissions
     check_requirements(args)
+    
+    # Write the config settings to the log file
+    config.log_settings()
 
     # Initialize alignments and gene scores
     alignments=store.Alignments()

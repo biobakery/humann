@@ -48,6 +48,7 @@ def minpath_command(reactions_file,metacyc_datafile):
     tmpfile=utilities.unnamed_temp_file()
     tmpfile2=utilities.unnamed_temp_file()
     tmpfile3=utilities.unnamed_temp_file()     
+    tmpfile4=utilities.unnamed_temp_file()  
 
     minpath_script=os.path.join(os.path.dirname(os.path.realpath(__file__)),
         config.minpath_script)
@@ -55,7 +56,7 @@ def minpath_command(reactions_file,metacyc_datafile):
     args+=["-map",metacyc_datafile,"-report",tmpfile3]
     args+=["-details",tmpfile,"-mps",tmpfile2]
         
-    command=[sys.executable,args,[reactions_file,metacyc_datafile],[],None,None,True,None]
+    command=[sys.executable,args,[reactions_file,metacyc_datafile],[],tmpfile4,None,True,None]
     
     return tmpfile, command
 

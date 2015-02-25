@@ -64,7 +64,12 @@ def index(custom_database):
 
     args+=opts
     
-    utilities.execute_command(exe,args,[custom_database],outfiles)
+    # create temp file for stdout and stderr
+    tmpfile=utilities.unnamed_temp_file()
+    tmpfile2=utilities.unnamed_temp_file()
+    
+    utilities.execute_command(exe,args,[custom_database],outfiles,
+        stdout_file=tmpfile, stderr_file=tmpfile2)
 
     return index_name
 

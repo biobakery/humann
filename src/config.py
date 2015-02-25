@@ -26,6 +26,57 @@ THE SOFTWARE.
 import os
 import sys
 import ConfigParser
+import logging
+
+# name global logging instance
+logger=logging.getLogger(__name__)
+
+def log_settings():
+    """
+    Write to the log file the config settings for the run
+    """
+    
+    lines=[]    
+    lines.append("DATABASE SETTINGS")
+    lines.append("chocophlan database folder = " + chocophlan)
+    lines.append("uniref database folder = " + uniref)
+    lines.append("pathways database file 1 = " + pathways_database_part1)
+    lines.append("pathways database file 2 = " + pathways_database_part2)
+    lines.append("")
+    
+    lines.append("RUN MODES")
+    lines.append("resume = " + str(resume))
+    lines.append("verbose = " + str(verbose))
+    lines.append("bypass prescreen = " + str(bypass_prescreen))
+    lines.append("bypass nucleotide index = " + str(bypass_nucleotide_index))
+    lines.append("bypass nucleotide search = " + str(bypass_nucleotide_search))
+    lines.append("bypass translated search = " + str(bypass_translated_search))
+    lines.append("translated search = " + translated_alignment_selected)
+    lines.append("pick frames = " + pick_frames_toggle)
+    lines.append("threads = " + str(threads))
+    lines.append("")
+    
+    lines.append("ALIGNMENT SETTINGS")
+    lines.append("evalue threshold = " + str(evalue_threshold))
+    lines.append("average read length = " + str(average_read_length))
+    lines.append("prescreen threshold = " + str(prescreen_threshold))
+    lines.append("identity threshold = " + str(identity_threshold))
+    lines.append("")
+    
+    lines.append("PATHWAYS SETTINGS")
+    lines.append("minpath = " + minpath_toggle)
+    lines.append("xipe = " + xipe_toggle)
+    lines.append("")    
+    
+    lines.append("INPUT AND OUTPUT FORMATS")
+    lines.append("input file format = " + input_format)
+    lines.append("output file format = " + output_format)
+    lines.append("output max decimals = " + str(output_max_decimals))
+    lines.append("remove stratified output = " + str(remove_stratified_output))
+    lines.append("log level = " + log_level)
+    lines.append("")
+    
+    logger.info("\nRun config settings: \n\n" + "\n".join(lines))
 
 # User config file
 user_edit_config_file="humann2.cfg"
@@ -216,6 +267,7 @@ pick_frames_toggle = "off"
 output_format_choices=["tsv", "biom"]
 output_format=output_format_choices[0]
 input_format_choices=["fastq","fastq.gz","fasta","fasta.gz","sam","bam","blastm8","genetable","biom"]
+input_format=""
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch","diamond"]
