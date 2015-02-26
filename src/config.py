@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 HUMAnN2: config module
 Configuration settings
@@ -25,16 +23,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import check
-
-# Check the current python version
-check.python_version()
-
 import os
 import sys
 import ConfigParser
 import logging
-import argparse
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -413,42 +405,4 @@ xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
 
-def parse_arguments(args):
-    """ 
-    Parse the arguments from the user
-    """
-    parser = argparse.ArgumentParser(
-        description= "HUMAnN2 Configuration\n",
-        formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument(
-        "--print", 
-        dest="print_config",
-        action="store_true",
-        help="print the configuration\n")
-    parser.add_argument(
-        "--update", 
-        nargs=3,
-        metavar=("<section>","<name>","<value>"),
-        help="update the section : name to the value provided\n")
-    
-    return parser.parse_args()
-
-def main():
-    # Parse arguments from the command line
-    args=parse_arguments(sys.argv)
-    
-    if args.update:
-        # update the config file
-        update_user_edit_config_file_single_item(args.update[0],args.update[1],args.update[2])
-    
-    if args.print_config or not args.update:
-        # print the current configuration
-        current_config_items=read_user_edit_config_file()
-        print("HUMANnN2 Configuration ( Section : Name = Value )")
-        for section in current_config_items:
-            for name,value in current_config_items[section].items():
-                print(section+" : "+name+" = "+str(value))
-                
-if __name__ == "__main__":
-    main()
     

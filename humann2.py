@@ -32,6 +32,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
+
+import sys
     
 # Try to load one of the humann2 src modules to check the installation
 try:
@@ -43,7 +45,6 @@ except ImportError:
 # Check the python version
 check.python_version()
     
-import sys
 import argparse
 import subprocess
 import os
