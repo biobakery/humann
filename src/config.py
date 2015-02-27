@@ -205,14 +205,7 @@ config_items=read_user_edit_config_file()
 # database folders
 chocophlan=get_item(config_items, "database_folders" , "chocophlan", "string")
 uniref=get_item(config_items, "database_folders", "uniref", "string")
-    
-# pathways files
-metacyc_gene_to_reactions=get_item(config_items, "pathways_files", "metacyc_gene_to_reactions", "string")
-metacyc_reactions_to_pathways=get_item(config_items, "pathways_files", "metacyc_reactions_to_pathways", "string")
-    
-unipathway_database_part1=get_item(config_items, "pathways_files", "unipathway_database_part1", "string")
-unipathway_database_part2=get_item(config_items, "pathways_files", "unipathway_database_part2", "string")
-    
+        
 # run modes
 resume=get_item(config_items, "run_modes", "resume", "bool")
 verbose=get_item(config_items, "run_modes", "verbose", "bool")
@@ -241,6 +234,14 @@ output_max_decimals=get_item(config_items, "output_format", "output_max_decimals
     
 # stratified output flag
 remove_stratified_output=get_item(config_items, "output_format", "remove_stratified_output", "bool")
+
+# pathways files
+humann2_install_directory=os.path.join(os.path.dirname(os.path.realpath(__file__)),os.pardir)
+metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","metacyc_reactions.uniref"))
+metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","metacyc_pathways"))
+    
+unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","unipathway_uniprots.uniref"))
+unipathway_database_part2=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","unipathway_pathways"))
 
 # pathways database selection
 pathways_database_choices=["metacyc","unipathway"]
