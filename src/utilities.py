@@ -29,7 +29,7 @@ import subprocess
 import re
 import shutil
 import tempfile
-import urllib
+import urllib2
 import tarfile
 import logging
 import traceback
@@ -369,24 +369,44 @@ def download_tar_and_extract(url, filename, folder):
     Download the file at the url
     """
     
-    message="Download URL:" + url
-    logger.info(message)
-    if config.verbose:
-        print(message) 
+    print("Download URL: " + url) 
 
     try:
-        file, headers = urllib.urlretrieve(url,filename)
-        message="Extracting:" + filename
-        logger.info(message)
-        if config.verbose:
-            print(message)
-        tarfile_handle=tarfile.open(filename,'r:gz')
+        url_handle = urllib2.urlopen(url)
+        file_handle = open(filename, 'wb')
+        # check for the size of the downlad in the headers
+        url_content = url_handle.info().getheaders("Content-Length")
+        download_size=0
+        if url_content:
+            download_size=int(url_content[0])
+            print("Downloading file of size: " + str(byte_to_gigabyte(download_size)) + " GB\n")
+        else:
+            print("Downloading file of unknown size")
+            
+        total_downloaded=0
+        # download using the same block size as the tarfile extract default
+        block_size = 10240
+        buffer = url_handle.read(block_size)
+        while buffer:
+            total_downloaded+=len(buffer)
+            file_handle.write(buffer)
+                
+            # if the total download size is known, print progress
+            if download_size:
+                percent_downloaded=total_downloaded * 100.0 / download_size
+                # use carriage return plus sys.stdout to overwrite stdout
+                status = "Total downloaded: " + "{:3.2f}".format(percent_downloaded) + " %   \r"
+                sys.stdout.write(status)
+                
+            buffer = url_handle.read(block_size)
+        
+        file_handle.close()
+        print("\nExtracting: " + filename)
+            
+        tarfile_handle=tarfile.open(filename)
         tarfile_handle.extractall(path=folder)
-    except EnvironmentError:
-        message="Unable to download and extract from URL: " + url
-        logger.critical(message)
-        logger.critical("Traceback: \n" + traceback.format_exc())
-        sys.exit("CRITICAL ERROR: " + message)
+    except (EnvironmentError,urllib2.URLError):
+        sys.exit("CRITICAL ERROR: Unable to download and extract from URL: " + url)
 
 def remove_file(file):
     """

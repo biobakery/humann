@@ -92,6 +92,8 @@ def update_user_edit_config_file_single_item(section,name,value):
     new_config_items={section:{ name : value }}
     
     update_user_edit_config_file(new_config_items)
+    
+    print("HUMAnN2 configuration file updated: "+ section + " : " + name + " = " + str(value))
 
 def update_user_edit_config_file(new_config_items):
     """
@@ -252,8 +254,8 @@ pathways_database_part2=metacyc_reactions_to_pathways
 reactions_database_delimiter="\t"
 pathways_database_delimiter="\t"
 
-pathway_identifier="NA"
-pathways_recursion=False
+pathway_identifier="PWY"
+pathways_recursion=True
 
 # log options
 log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
