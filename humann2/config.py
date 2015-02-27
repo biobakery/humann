@@ -236,12 +236,12 @@ output_max_decimals=get_item(config_items, "output_format", "output_max_decimals
 remove_stratified_output=get_item(config_items, "output_format", "remove_stratified_output", "bool")
 
 # pathways files
-humann2_install_directory=os.path.join(os.path.dirname(os.path.realpath(__file__)),os.pardir)
-metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","metacyc_reactions.uniref"))
-metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","metacyc_pathways"))
+humann2_install_directory=os.path.dirname(os.path.realpath(__file__))
+metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_reactions.uniref"))
+metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_pathways"))
     
-unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","unipathway_uniprots.uniref"))
-unipathway_database_part2=os.path.abspath(os.path.join(humann2_install_directory,"databases","pathways","unipathway_pathways"))
+unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_uniprots.uniref"))
+unipathway_database_part2=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_pathways"))
 
 # pathways database selection
 pathways_database_choices=["metacyc","unipathway"]
