@@ -28,8 +28,8 @@ import re
 import sys
 import logging
 
-import utilities
-import config
+from humann2 import utilities
+from humann2 import config
 
 # name global logging instance
 logger=logging.getLogger(__name__)

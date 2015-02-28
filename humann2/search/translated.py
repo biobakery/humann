@@ -30,9 +30,9 @@ import logging
 import math
 import traceback
 
-import utilities
-import config
-import store
+from humann2 import utilities
+from humann2 import config
+from humann2 import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)

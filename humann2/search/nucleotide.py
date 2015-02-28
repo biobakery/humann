@@ -29,10 +29,10 @@ import math
 import logging
 import traceback
 
-import utilities
-import config
-import store
-import pick_frames
+from humann2 import utilities
+from humann2 import config
+from humann2 import store
+from humann2.search import pick_frames
 
 # name global logging instance
 logger=logging.getLogger(__name__)
