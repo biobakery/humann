@@ -27,8 +27,8 @@ import os
 import logging
 import math
 
-import config
-import utilities
+from humann2 import config
+from humann2 import utilities
 
 # name global logging instance
 logger=logging.getLogger(__name__)

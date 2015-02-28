@@ -31,10 +31,9 @@ import sys
 import subprocess
 import logging
 
-import utilities
-import config
-import store
-import quantify_families
+from humann2 import utilities
+from humann2 import config
+from humann2 import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)
