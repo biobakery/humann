@@ -276,7 +276,7 @@ input_format=""
 
 # translated alignment options
 translated_alignment_choices = ["usearch","rapsearch","diamond"]
-translated_alignment_selected = translated_alignment_choices[1]
+translated_alignment_selected = translated_alignment_choices[2]
 
 # file naming
 temp_dir=""
