@@ -10,7 +10,7 @@ of short DNA/RNA reads.
 
 Dependencies: MetaPhlAn2, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
 
-To Run: ./Humann2.py -i <input.fastq> -o <output_dir>
+To Run: ./humann2.py -i <input.fastq> -o <output_dir>
 
 Copyright (c) 2014 Harvard School of Public Health
 
