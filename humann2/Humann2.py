@@ -10,7 +10,7 @@ of short DNA/RNA reads.
 
 Dependencies: MetaPhlAn2, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
 
-To Run: ./humann2.py -i <input.fastq> -o <output_dir>
+To Run: ./Humann2.py -i <input.fastq> -o <output_dir>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -37,9 +37,9 @@ import sys
     
 # Try to load one of the humann2 src modules to check the installation
 try:
-    from src import check
+    from . import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -53,14 +53,14 @@ import tempfile
 import re
 import logging  
 
-from src import config
-from src import prescreen
-from src import nucleotide_search
-from src import store
-from src import translated_search
-from src import utilities
-from src import quantify_families
-from src import quantify_modules
+from . import config
+from . import store
+from . import utilities
+from .search import prescreen
+from .search import nucleotide
+from .search import translated
+from .quantify import families
+from .quantify import modules
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -253,7 +253,7 @@ def parse_arguments(args):
     parser.add_argument(
         "--pathways_databases",
         help="the two mapping files to use for pathway computations\n[DEFAULT: " +
-        config.pathways_database_part1 + " , " + config.pathways_database_part2 + "]",
+        config.pathways_database + " databases ]",
         metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
         nargs=2)
     parser.add_argument(
@@ -388,10 +388,6 @@ def update_configuration(args):
                 config.chocophlan_gene_indexes.append(index)
             except ValueError:
                 pass
-        
-    # If minpath is set to run, install if not already installed
-    if config.minpath_toggle == "on":
-        utilities.install_minpath() 
     
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):
@@ -712,19 +708,19 @@ def main():
         # Run nucleotide search on custom database
         if custom_database != "Empty" and not config.bypass_nucleotide_search:
             if not config.bypass_nucleotide_index:
-                nucleotide_index_file = nucleotide_search.index(custom_database)
+                nucleotide_index_file = nucleotide.index(custom_database)
                 start_time=timestamp_message("database index",start_time)
             else:
                 nucleotide_index_file = config.chocophlan
                 
-            nucleotide_alignment_file = nucleotide_search.alignment(args.input, 
+            nucleotide_alignment_file = nucleotide.alignment(args.input, 
                 nucleotide_index_file)
     
             start_time=timestamp_message("nucleotide alignment",start_time)
     
             # Determine which reads are unaligned and reduce aligned reads file
             # Remove the alignment_file as we only need the reduced aligned reads file
-            [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide_search.unaligned_reads(
+            [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide.unaligned_reads(
                 nucleotide_alignment_file, alignments, unaligned_reads_store, keep_sam=True)
             
             start_time=timestamp_message("nucleotide alignment post-processing",start_time)
@@ -757,13 +753,13 @@ def main():
         if not config.bypass_translated_search:
             # Run translated search on UniRef database if unaligned reads exit
             if unaligned_reads_store.count_reads()>0:
-                translated_alignment_file = translated_search.alignment(config.uniref, 
+                translated_alignment_file = translated.alignment(config.uniref, 
                     unaligned_reads_file_fasta)
         
                 start_time=timestamp_message("translated alignment",start_time)
         
                 # Determine which reads are unaligned
-                translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+                translated_unaligned_reads_file_fastq = translated.unaligned_reads(
                     unaligned_reads_store, translated_alignment_file, alignments)
                 
                 start_time=timestamp_message("translated alignment post-processing",start_time)
@@ -805,7 +801,7 @@ def main():
         logger.info(message)
         print("\n"+message)
             
-        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide_search.unaligned_reads(
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             args.input, alignments, unaligned_reads_store, keep_sam=True)
         
         start_time=timestamp_message("alignment post-processing",start_time)
@@ -818,7 +814,7 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        translated_unaligned_reads_file_fastq = translated_search.unaligned_reads(
+        translated_unaligned_reads_file_fastq = translated.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
         
         start_time=timestamp_message("alignment post-processing",start_time)
@@ -834,7 +830,7 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        families_file=quantify_families.gene_families(alignments,gene_scores)
+        families_file=families.gene_families(alignments,gene_scores)
         output_files.append(families_file)
     
         start_time=timestamp_message("computing gene families",start_time)
@@ -860,11 +856,11 @@ def main():
     message="Computing pathways abundance and coverage ..."
     logger.info(message)
     print("\n"+message)
-    pathways_and_reactions_store=quantify_modules.identify_reactions_and_pathways(
+    pathways_and_reactions_store=modules.identify_reactions_and_pathways(
         gene_scores, reactions_database, pathways_database)
 
     # Compute pathway abundance and coverage
-    abundance_file, coverage_file=quantify_modules.compute_pathways_abundance_and_coverage(
+    abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
         pathways_and_reactions_store, pathways_database)
     output_files.append(abundance_file)
     output_files.append(coverage_file)
