@@ -39,8 +39,8 @@ import threading
 import Queue
 import datetime
 
-import config
-import pick_frames
+from . import config
+from .search import pick_frames
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -364,7 +364,7 @@ def check_software_version(exe,version_flag,
         logger.critical(message) 
         sys.exit("CRITICAL ERROR: " + message)
 
-def download_tar_and_extract(url, filename, folder):
+def download_tar_and_extract_with_progress_messages(url, filename, folder):
     """
     Download the file at the url
     """
@@ -896,29 +896,6 @@ def pick_frames_from_fasta(file):
     file_handle_read.close()
 
     return new_file    
-		
-def install_minpath():
-    """
-    Download and install the minpath software
-    """
-    
-    # Download the minpath software v1.2
-    # Check to see if already downloaded
-    
-    fullpath_scripts=os.path.dirname(os.path.realpath(__file__))
-    minpath_exe=os.path.join(fullpath_scripts,config.minpath_folder,
-        config.minpath_original_script)
-
-    # Check for write permission to the target folder
-    if not os.access(fullpath_scripts, os.W_OK):
-        sys.exit("ERROR: The directory set to install MinPath is not writeable: "+
-            fullpath_scripts + " . Please modify the permissions.")
-
-    if not os.path.isfile(minpath_exe):
-        if config.verbose:
-            print("Installing minpath ... ")
-        download_tar_and_extract(config.minpath_url, 
-            os.path.join(fullpath_scripts, config.minpath_file),fullpath_scripts)
     
 def tsv_to_biom(tsv_file, biom_file, table_type):
     """
