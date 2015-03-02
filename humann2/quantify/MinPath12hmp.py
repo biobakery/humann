@@ -18,9 +18,21 @@ import operator
 import math
 
 # LJM Add location to minpath directory
-import config
 import subprocess
-minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),config.minpath_folder)
+minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),"MinPath")
+
+# LJM Add search for latest glpk install
+glpk_versions=[]
+for file in os.listdir(minpath):
+	if os.path.isdir(os.path.join(minpath,file)) and re.match("glpk-4.",file):
+		glpk_version=int(file.replace("glpk-4.",""))
+		glpk_versions.append(glpk_version)
+		
+if glpk_versions:
+	glpk_versions.sort()
+	latest_glpk_version=str(glpk_versions[-1])
+else:
+	latest_glpk_version="6"
 
 # LJM Remove search for minpath directory
 #minpath = os.environ.get('MinPath')
@@ -31,7 +43,8 @@ minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),config.minpath_
 #else:
 #        sys.exit("Environment variable MinPath not set")
 
-keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4.6/examples/glpsol"
+#keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4.6/examples/glpsol"
+keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4." + latest_glpk_version + "/examples/glpsol"
 
 def intmatrix(dim1, dim2):
 	mat = []
