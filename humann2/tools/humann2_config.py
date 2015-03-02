@@ -33,9 +33,9 @@ import sys
     
 # Try to load one of the humann2 src modules to check the installation
 try:
-    import check
+    from .. import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -43,7 +43,7 @@ check.python_version()
 
 import argparse
 
-import config
+from .. import config
 
 def parse_arguments(args):
     """ 
@@ -76,7 +76,7 @@ def main():
     if args.print_config or not args.update:
         # print the current configuration
         current_config_items=config.read_user_edit_config_file()
-        print("HUMANnN2 Configuration ( Section : Name = Value )")
+        print("HUMAnN2 Configuration ( Section : Name = Value )")
         for section in current_config_items:
             for name,value in current_config_items[section].items():
                 print(section+" : "+name+" = "+str(value))

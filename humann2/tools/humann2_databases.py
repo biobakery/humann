@@ -33,9 +33,9 @@ import sys
     
 # Try to load one of the humann2 src modules to check the installation
 try:
-    import check
+    from .. import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 src directory." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -44,8 +44,8 @@ check.python_version()
 import argparse
 import os
 
-import config
-import utilities
+from .. import config
+from .. import utilities
 
 # the locations of the current databases to download
 current_downloads={
@@ -79,7 +79,8 @@ def download_database(database, build, location):
 
             # download the database
             downloaded_file=os.path.join(location,current_downloads[database][build].split('/')[-1])
-            utilities.download_tar_and_extract(current_downloads[database][build], downloaded_file, install_location)
+            utilities.download_tar_and_extract_with_progress_messages(current_downloads[database][build], 
+                downloaded_file, install_location)
             
             # remove the download
             try:
