@@ -26,12 +26,12 @@ import shutil
 import os
 import subprocess
 
+from .. import config
+
 # pathways databases with uniref ids
-humann2_fullpath=os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)),os.pardir))
-PATHWAYS_DATABASE1=os.path.join(humann2_fullpath,
-    "databases/pathways/metacyc_reactions.uniref")
-PATHWAYS_DATABASE2=os.path.join(humann2_fullpath,
-    "databases/pathways/unipathway_uniprots.uniref")
+PATHWAYS_DATABASE1=config.metacyc_gene_to_reactions
+PATHWAYS_DATABASE2=config.metacyc_reactions_to_pathways
+
 PATHWAYS_DATABASES=[PATHWAYS_DATABASE1,PATHWAYS_DATABASE2]
 PATHWAYS_DELIMITER="\t"
 PATHWAYS_UNIREF_IDENTIFIER="uniref50"
