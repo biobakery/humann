@@ -31,9 +31,9 @@ import sys
 import subprocess
 import logging
 
-from humann2 import utilities
-from humann2 import config
-from humann2 import store
+from .. import utilities
+from .. import config
+from .. import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)
