@@ -8,13 +8,13 @@ This module will create the uniref database used by HUMAnN2.
 Dependencies: Rapsearch2 or Usearch
 
 To Run: 
-$ ./create_uniref_database.py -i <uniref50.fasta> -o <uniref50>
+$ humann2_create_uniref_database -i <uniref50.fasta> -o <uniref50>
 
 To Run with filtering: 
-$ ./create_uniref_database.py -i <uniref50.fasta> -o <uniref50> -f <uncharacterized>
+$ humann2_create_uniref_database -i <uniref50.fasta> -o <uniref50> -f <uncharacterized>
 
 To Run with filtering using a list of ids: 
-$ ./create_uniref_database.py -i <uniref50.fasta> -o <uniref50> -l <id_list.tsv>
+$ humann2_create_uniref_database -i <uniref50.fasta> -o <uniref50> -l <id_list.tsv>
 
 """
 
@@ -333,5 +333,3 @@ def main():
     
     print("Database created: " + args.output)
 
-if __name__ == "__main__":
-    main()

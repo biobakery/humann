@@ -6,7 +6,7 @@ Configuration settings print and update
 
 Dependencies: None
 
-To Run: ./humann2_config.py --update <section> <name> <value>
+To Run: humann2_config --update <section> <name> <value>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -81,6 +81,4 @@ def main():
             for name,value in current_config_items[section].items():
                 print(section+" : "+name+" = "+str(value))
                 
-if __name__ == "__main__":
-    main()
 
