@@ -15,19 +15,20 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
 1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.1)
-1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/)
+1. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/)
 1. [Python](http://www.python.org/) (version >= 2.7)
 1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
 1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
+1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (optional)
 1. [usearch](http://www.drive5.com/usearch/) (version = v7.0.1001) (optional)
 
-If MetaPhlAn2, bowtie2, and rapsearch2 (or usearch) are not installed in a location in your $PATH,
+If MetaPhlAn2, bowtie2, and diamond (or rapsearch2, usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
-directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --rapsearch $RAPSEARCH/ (or --usearch $USEARCH/)). By default rapsearch is run for the translated alignment but this can be changed to usearch by setting "--translated_alignment usearch".
+directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (or --rapsearch $RAPSEARCH, --usearch $USEARCH/)). By default diamond is run for the translated alignment but this can be changed to rapsearch2 or usearch by setting "--translated_alignment {rapsearch|usearch}".
 
 ### Other ###
 1. Memory (>= 10 Gb)
-1. Disk space (>= 40 Gb)
+1. Disk space (>= 10 Gb)
 1. Operating system (Linux or Mac)
 
 ## Installation ##
@@ -42,52 +43,60 @@ HUMAnN2 can be downloaded in two ways:
 
 Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository which will download the latest release.
 
-For the steps that follow, $HUMANn2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with the file "humann2.py" found in this folder).
+For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
+
+### Installing HUMAnN2 ###
+
+1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
+1. Install HUMAnN2 : ``$ python setup.py install ``
+
+If you do not have administrator permissions on the computer you are installing HUMAnN2 on, please use the following steps:
+1. Select a directory where you have write permissions to install HUMAnN2 ($DIR)
+1. Create the directory where the HUMAnN2 executables will be installed : ``$mkdir -p $DIR/bin/ ``
+1. Add the bin directory to your path : ``$ export PATH=$PATH:$DIR/bin/ ``
+1. Create the directory where the HUMAnN2 libraries will be installed : ``$ mkdir -p $DIR/lib/ ``
+1. Add the lib directory to your pythonpath : ``$ export PYTHONPATH=$PYTHONPATH:$DIR/lib/ ``
+1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
+1. Install HUMAnN2 : ``$ python setup.py install --install-scripts $DIR/bin/ --install-lib $DIR/lib/ ``
+
+NOTE: These changes to the paths will only be in effect while your shell is open. Closing your shell or opening a new shell will not include these changes to the paths. If you are running in a bash shell (you can check this by typing: $ ps -p $$ ), add the two export statements to your bashrc file located at ~/.bashrc . Then run: $ source ~/.bashrc so the updates are made to your current shell. Now every time you open a new shell these changes to the paths will always be included.
+
+### Try out a demo run ###
+
+With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
+`` $ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
+
+Output from this demo run will be written to the folder $OUTPUT_DIR.
+
+Please continue with the install directions to download the full databases before running with your sequencing data.
 
 
-### Downloading the databases ###
+### Download the databases ###
 
-#### Downloading the [ChocoPhlAn database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz) ####
+Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
+
+#### Download the ChocoPhlAn database ####
+
+Run humann2_databases to download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
 
 ```
-$ cd $HUMANn2_PATH/databases
-$ wget http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz
-$ tar zxvf chocophlan.tar.gz 
-$ rm chocophlan.tar.gz
+$ humann2_databases --download chocophlan full $INSTALL_LOCATION
 ```
 
-$HUMANn2_PATH = the full path to the HUMAnN2 download
-
-NOTE: These steps download the ChocoPhlAn database to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--chocophlan $DIR" option.
+NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocoplan>" option to humann2.
 
 
+#### Download the UniRef50 database ####
 
-#### Downloading the [UniRef50 database](http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz) ####
+Run humann2_databases to download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
 
 ```
-$ cd $HUMANn2_PATH/databases
-$ wget http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz
-$ tar zxvf uniref50_rapsearch.tar.gz
-$ rm uniref50_rapsearch.tar.gz
+$ humann2_databases --download uniref diamond $INSTALL_LOCATION
 ```
 
-$HUMANn2_PATH = the full path to the HUMAnN2 download
+NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--uniref <uniref>" option to humann2.
 
-
-NOTE: These steps download the UniRef50 database formatted for rapsearch2 to the humann2/databases folder. This folder is the default location that HUMAnN2 will look for this database. If you place it in another location (ie $DIR), provide this to HUMAnN2 with the "--uniref $DIR" option.
-
-NOTE: By default HUMAnN2 runs rapsearch2 for translated alignment. If usearch is selected for translated alignment, provide a database that has been formatted for usearch.
-
-### Updating the environment ###
-To update the environment, add the path to the HUMAnN2 download directory ($HUMAnN2_PATH) to your $PATH.
-
-1. Add this line to the .bashrc file located in your home directory ($HOME) : `` export PATH=$PATH:$HUMAnN2_PATH ``
-1.  Run this command to update your current environment: ``$ source $HOME/.bashrc ``
-1. HUMAnN2 can now be run without providing the location of the install directory: `` $ humann2.py --help ``
-
-
-The update environment step is optional if the path to the HUMAnN2 executable is always provided. 
-For example, calling HUMAnN2 as follows does not require updates to the environment: `` $ $HUMAnN2_PATH/humann2.py --help ``
+NOTE: By default HUMAnN2 runs diamond for translated alignment. If rapsearch2 is selected for translated alignment, download the rapsearch2 formatted database using the same command but seleting the rapsearch2 formatted database. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software with out having to specify a different location for the database.
 
 
 ## How to Run ##
@@ -96,7 +105,7 @@ For example, calling HUMAnN2 as follows does not require updates to the environm
 
 Type the command:
 
-`` humann2.py --input $SAMPLE --output $OUTPUT_DIR``
+`` humann2 --input $SAMPLE --output $OUTPUT_DIR``
 
 $SAMPLE = a single file that is one of the following types:
 
@@ -152,19 +161,19 @@ The examples folder contains four demo example input files. These files are of f
 
 To run the fasta demo type the command:
 
-`` humann2.py --input examples/demo.fasta --output $OUTPUT_DIR``
+`` humann2 --input examples/demo.fasta --output $OUTPUT_DIR``
 
 To run the fastq demo type the command:
 
-`` humann2.py --input examples/demo.fastq --output $OUTPUT_DIR``
+`` humann2 --input examples/demo.fastq --output $OUTPUT_DIR``
 
 To run the sam demo type the command:
 
-`` humann2.py --input examples/demo.sam --output $OUTPUT_DIR``
+`` humann2 --input examples/demo.sam --output $OUTPUT_DIR``
 
 To run the blastm8 demo type the command:
 
-`` humann2.py --input examples/demo.m8 --output $OUTPUT_DIR``
+`` humann2 --input examples/demo.m8 --output $OUTPUT_DIR``
 
 $OUTPUT_DIR is the output directory
 
@@ -243,25 +252,25 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 
 ### Complete option list ###
 ```
-usage: humann2.py [-h] [-v] [-r] [--bypass_prescreen]
-                  [--bypass_nucleotide_index] [--bypass_translated_search]
-                  [--bypass_nucleotide_search] -i <input.fastq> -o <output>
-                  [-c <chocophlan>] [--chocophlan_gene_index <-1>]
-                  [-u <uniref>] [--average_read_length <1>]
-                  [--metaphlan <metaplhan>] [--o_log <sample.log>]
-                  [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-                  [--remove_temp_output] [--bowtie2 <bowtie2>] [--threads <1>]
-                  [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
-                  [--usearch <usearch>] [--rapsearch <rapsearch>]
-                  [--metaphlan_output <bugs_list.tsv>]
-                  [--id_mapping <id_mapping.tsv>]
-                  [--translated_alignment {usearch,rapsearch}]
-                  [--xipe {on,off}] [--minpath {on,off}]
-                  [--pick_frames {on,off}] [--output_format {tsv,biom}]
-                  [--output_basename <sample_name>]
-                  [--remove_stratified_output]
-                  [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
-                  [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
+usage: humann2 [-h] [-v] [-r] [--bypass_prescreen] [--bypass_nucleotide_index]
+               [--bypass_translated_search] [--bypass_nucleotide_search] -i
+               <input.fastq> -o <output> [-c <chocophlan>]
+               [--chocophlan_gene_index <-1>] [-u <uniref>]
+               [--average_read_length <1>] [--evalue <1.0>]
+               [--metaphlan <metaplhan>] [--o_log <sample.log>]
+               [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+               [--remove_temp_output] [--bowtie2 <bowtie2>] [--threads <1>]
+               [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
+               [--usearch <usearch>] [--rapsearch <rapsearch>]
+               [--diamond <diamond>] [--metaphlan_output <bugs_list.tsv>]
+               [--id_mapping <id_mapping.tsv>]
+               [--translated_alignment {usearch,rapsearch,diamond}]
+               [--xipe {on,off}] [--minpath {on,off}] [--pick_frames {on,off}]
+               [--output_format {tsv,biom}] [--output_basename <sample_name>]
+               [--remove_stratified_output]
+               [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
+               [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
+               [--pathways {metacyc,unipathway}]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 
@@ -284,16 +293,18 @@ optional arguments:
                         [REQUIRED]
   -c <chocophlan>, --chocophlan <chocophlan>
                         directory containing the ChocoPhlAn database
-                        [DEFAULT: databases/chocophlan/]
+                        [DEFAULT: data/chocophlan_DEMO]
   --chocophlan_gene_index <-1>
                         the index of the gene in the sequence annotation
                         [DEFAULT: -1]
   -u <uniref>, --uniref <uniref>
                         directory containing the UniRef database
-                        [DEFAULT: databases/uniref/]
+                        [DEFAULT: data/uniref_DEMO]
   --average_read_length <1>
                         the average length of the reads
                         [DEFAULT: 1]
+  --evalue <1.0>        the evalue threshold
+                        [DEFAULT: 1.0]
   --metaphlan <metaplhan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
@@ -319,15 +330,17 @@ optional arguments:
   --rapsearch <rapsearch>
                         directory containing the rapsearch executable
                         [DEFAULT: $PATH]
+  --diamond <diamond>   directory containing the diamond executable
+                        [DEFAULT: $PATH]
   --metaphlan_output <bugs_list.tsv>
                         output file created by metaphlan
                         [DEFAULT: file will be created]
   --id_mapping <id_mapping.tsv>
                         id mapping file for alignments
                         [DEFAULT: alignment reference used]
-  --translated_alignment {usearch,rapsearch}
+  --translated_alignment {usearch,rapsearch,diamond}
                         software to use for translated alignment
-                        [DEFAULT: rapsearch]
+                        [DEFAULT: diamond]
   --xipe {on,off}       turn on/off the xipe computation
                         [DEFAULT: off]
   --minpath {on,off}    turn on/off the minpath computation
@@ -349,5 +362,8 @@ optional arguments:
                         [DEFAULT: format identified by software]
   --pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
                         the two mapping files to use for pathway computations
-                        [DEFAULT: databases/pathways/metacyc_reactions.uniref , databases/pathways/metacyc_pathways]
+                        [DEFAULT: metacyc databases ]
+  --pathways {metacyc,unipathway}
+                        the database to use for pathway computations
+                        [DEFAULT: metacyc]
 ```
