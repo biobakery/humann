@@ -38,6 +38,7 @@ import shutil
 import threading
 import Queue
 import datetime
+import time
 
 from . import config
 from .search import pick_frames
@@ -379,7 +380,7 @@ def download_tar_and_extract_with_progress_messages(url, filename, folder):
         download_size=0
         if url_content:
             download_size=int(url_content[0])
-            print("Downloading file of size: " + str(byte_to_gigabyte(download_size)) + " GB\n")
+            print("Downloading file of size: " + "{:.2f}".format(byte_to_gigabyte(download_size)) + " GB\n")
         else:
             print("Downloading file of unknown size")
             
@@ -387,6 +388,7 @@ def download_tar_and_extract_with_progress_messages(url, filename, folder):
         # download using the same block size as the tarfile extract default
         block_size = 10240
         buffer = url_handle.read(block_size)
+        start_time=time.time()
         while buffer:
             total_downloaded+=len(buffer)
             file_handle.write(buffer)
@@ -395,7 +397,15 @@ def download_tar_and_extract_with_progress_messages(url, filename, folder):
             if download_size:
                 percent_downloaded=total_downloaded * 100.0 / download_size
                 # use carriage return plus sys.stdout to overwrite stdout
-                status = "Total downloaded: " + "{:3.2f}".format(percent_downloaded) + " %   \r"
+                download_rate=total_downloaded/(time.time()-start_time)
+                estimated_time=(download_size-total_downloaded)/download_rate
+                estimated_minutes=int(estimated_time/60.0)
+                estimated_seconds=estimated_time-estimated_minutes*60.0
+                status = "{:3.2f} GB ".format(byte_to_gigabyte(total_downloaded)) + \
+                    "{:3.2f}".format(percent_downloaded) + " %  " + \
+                    "{:5.2f}".format(byte_to_kilobyte(download_rate)) + " KB/sec " + \
+                    "{:2.0f}".format(estimated_minutes) + " min " + \
+                    "{:2.0f}".format(estimated_seconds) + " sec         \r"
                 sys.stdout.write(status)
                 
             buffer = url_handle.read(block_size)
@@ -405,7 +415,7 @@ def download_tar_and_extract_with_progress_messages(url, filename, folder):
             
         tarfile_handle=tarfile.open(filename)
         tarfile_handle.extractall(path=folder)
-    except (EnvironmentError,urllib2.URLError):
+    except (EnvironmentError,urllib2.URLError,tarfile.ReadError):
         sys.exit("CRITICAL ERROR: Unable to download and extract from URL: " + url)
 
 def remove_file(file):
@@ -942,6 +952,13 @@ def byte_to_gigabyte(byte):
     """
     
     return byte / (1024.0**3)
+
+def byte_to_kilobyte(byte):
+    """
+    Convert byte value to kilobyte
+    """
+    
+    return byte / 1024.0
 
 def log_system_status():
     """
