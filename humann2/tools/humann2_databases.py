@@ -6,7 +6,7 @@ Download databases an update config settings
 
 Dependencies: None
 
-To Run: ./humann2_databases.py --download <database> <build> <install_location>
+To Run: humann2_databases --download <database> <build> <install_location>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -51,11 +51,14 @@ from .. import utilities
 current_downloads={
     "chocophlan" : 
         {
-            "standard" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz"
+            "full" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/full_chocophlan.tar.gz",
+            "DEMO" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/DEMO_chocophlan.tar.gz"
         },
     "uniref" : 
         {
-            "rapsearch2" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_rapsearch/uniref50_rapsearch.tar.gz"
+            "rapsearch2" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_rapsearch2.tar.gz",
+            "diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_diamond.tar.gz",
+            "DEMO_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_DEMO_diamond.tar.gz"
         }
 }
 
@@ -146,6 +149,4 @@ def main():
             for build, location in current_downloads[database].items():
                 print(database+" : "+build+" = "+location)
                 
-if __name__ == "__main__":
-    main()
 
