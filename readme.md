@@ -79,7 +79,7 @@ Downloading the databases is a required step if your input is a filtered shotgun
 
 #### Download the ChocoPhlAn database ####
 
-Run humann2_databases to download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
+Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
 
 ```
 $ humann2_databases --download chocophlan full $INSTALL_LOCATION
@@ -90,7 +90,7 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 #### Download the UniRef50 database ####
 
-Run humann2_databases to download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
+Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
 
 ```
 $ humann2_databases --download uniref diamond $INSTALL_LOCATION
@@ -98,7 +98,7 @@ $ humann2_databases --download uniref diamond $INSTALL_LOCATION
 
 NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--uniref <uniref>" option to humann2.
 
-NOTE: By default HUMAnN2 runs diamond for translated alignment. If rapsearch2 is selected for translated alignment, download the rapsearch2 formatted database using the same command but seleting the rapsearch2 formatted database. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software with out having to specify a different location for the database.
+NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would like to use rapsearch2 for translated alignment, first download the rapsearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
 
 
 ## How to Run ##
