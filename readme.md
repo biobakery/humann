@@ -48,15 +48,17 @@ For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was downlo
 ### Installing HUMAnN2 ###
 
 1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
+1. Install MinPath : ``$ python setup.py minpath ``
 1. Install HUMAnN2 : ``$ python setup.py install ``
 
-If you do not have administrator permissions on the computer you are installing HUMAnN2 on, please use the following steps:
+If you do not have administrator permissions, please use the following steps:
 1. Select a directory where you have write permissions to install HUMAnN2 ($DIR)
 1. Create the directory where the HUMAnN2 executables will be installed : ``$mkdir -p $DIR/bin/ ``
 1. Add the bin directory to your path : ``$ export PATH=$PATH:$DIR/bin/ ``
 1. Create the directory where the HUMAnN2 libraries will be installed : ``$ mkdir -p $DIR/lib/ ``
 1. Add the lib directory to your pythonpath : ``$ export PYTHONPATH=$PYTHONPATH:$DIR/lib/ ``
 1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
+1. Install MinPath : ``$ python setup.py minpath ``
 1. Install HUMAnN2 : ``$ python setup.py install --install-scripts $DIR/bin/ --install-lib $DIR/lib/ ``
 
 NOTE: These changes to the paths will only be in effect while your shell is open. Closing your shell or opening a new shell will not include these changes to the paths. If you are running in a bash shell (you can check this by typing: $ ps -p $$ ), add the two export statements to your bashrc file located at ~/.bashrc . Then run: $ source ~/.bashrc so the updates are made to your current shell. Now every time you open a new shell these changes to the paths will always be included.
