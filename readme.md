@@ -52,6 +52,7 @@ For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was downlo
 1. Install HUMAnN2 : ``$ python setup.py install ``
 
 If you do not have administrator permissions, please use the following steps:
+
 1. Select a directory where you have write permissions to install HUMAnN2 ($DIR)
 1. Create the directory where the HUMAnN2 executables will be installed : ``$ mkdir -p $DIR/bin/ ``
 1. Add the bin directory to your path : ``$ export PATH=$PATH:$DIR/bin/ ``
@@ -66,11 +67,13 @@ NOTE: These changes to the paths will only be in effect while your shell is open
 ### Test the install ###
 
 Test out the install of HUMAnN2 by running the unit tests.
+
 ``$ python setup.py test ``
 
 ### Try out a demo run ###
 
 With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
+
 ``$ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
 
 Output from this demo run will be written to the folder $OUTPUT_DIR.
