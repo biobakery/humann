@@ -53,7 +53,7 @@ For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was downlo
 
 If you do not have administrator permissions, please use the following steps:
 1. Select a directory where you have write permissions to install HUMAnN2 ($DIR)
-1. Create the directory where the HUMAnN2 executables will be installed : ``$mkdir -p $DIR/bin/ ``
+1. Create the directory where the HUMAnN2 executables will be installed : ``$ mkdir -p $DIR/bin/ ``
 1. Add the bin directory to your path : ``$ export PATH=$PATH:$DIR/bin/ ``
 1. Create the directory where the HUMAnN2 libraries will be installed : ``$ mkdir -p $DIR/lib/ ``
 1. Add the lib directory to your pythonpath : ``$ export PYTHONPATH=$PYTHONPATH:$DIR/lib/ ``
