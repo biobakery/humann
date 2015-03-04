@@ -1,0 +1,7 @@
+# ID mapping file
+# reference	gene	length	bug
+UniRef50_A0A015Q7T6|s__Bacteroides_xylanisolvens	gene1	1	bug1	
+UniRef50_A7ALT1|s__Parabacteroides_merdae	gene2	0	s__Parabacteroides_merdae		
+ref3	gene3	10	bug3
+UniRef50_Q5L8C7|s__Bacteroides_uniformis				
+UniRef50_A0A015Q7T6	gene5	1	all

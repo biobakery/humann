@@ -63,10 +63,15 @@ If you do not have administrator permissions, please use the following steps:
 
 NOTE: These changes to the paths will only be in effect while your shell is open. Closing your shell or opening a new shell will not include these changes to the paths. If you are running in a bash shell (you can check this by typing: $ ps -p $$ ), add the two export statements to your bashrc file located at ~/.bashrc . Then run: $ source ~/.bashrc so the updates are made to your current shell. Now every time you open a new shell these changes to the paths will always be included.
 
+### Test the install ###
+
+Test out the install of HUMAnN2 by running the unit tests.
+``$ python setup.py test ``
+
 ### Try out a demo run ###
 
 With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
-`` $ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
+``$ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
 
 Output from this demo run will be written to the folder $OUTPUT_DIR.
 
