@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 """
-Split a gene table into a table per sample
+Split a gene/pathway table into a table per sample
 
 This module will create gene tables used as input by HUMAnN2. 
 
 Dependencies: Biom (only required if running with .biom files)
 
 To Run: 
-$ ./split_gene_table.py -i <gene_table.{tsv,biom}> -o <output_dir>
+$ ./split_table.py -i <gene_table.{tsv,biom}> -o <output_dir>
 
 """
 

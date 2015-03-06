@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 """
-Join a set of gene tables into a single table
+Join a set of gene/pathway tables into a single table
 
 This module will join gene tables output by HUMAnN2. 
 
 Dependencies: Biom (only required if running with .biom files)
 
 To Run: 
-$ ./join_gene_tables.py -i <input_dir> -o <gene_table.{tsv,biom}>
+$ ./join_tables.py -i <input_dir> -o <gene_table.{tsv,biom}>
 
 """
 

@@ -161,8 +161,8 @@ setuptools.setup(
             'humann2 = humann2.humann2:main',
             'humann2_databases = humann2.tools.humann2_databases:main',
             'humann2_config = humann2.tools.humann2_config:main',
-            'humann2_join_gene_tables = humann2.tools.join_gene_tables:main',
-            'humann2_split_gene_table = humann2.tools.split_gene_table:main',
+            'humann2_join_tables = humann2.tools.join_tables:main',
+            'humann2_split_table = humann2.tools.split_table:main',
             'humann2_create_uniref_database = humann2.tools.create_uniref_database:main'
         ]},
     test_suite= 'humann2.tests.humann2_test.main',
