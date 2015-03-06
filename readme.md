@@ -24,7 +24,7 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 If MetaPhlAn2, bowtie2, and diamond (or rapsearch2, usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
-directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (or --rapsearch $RAPSEARCH, --usearch $USEARCH/)). By default diamond is run for the translated alignment but this can be changed to rapsearch2 or usearch by setting "--translated_alignment {rapsearch|usearch}".
+directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (or --rapsearch $RAPSEARCH, --usearch $USEARCH/)). By default diamond is run for the translated alignment but this can be changed to rapsearch2 or usearch by setting "--translated-alignment {rapsearch|usearch}".
 
 ### Other ###
 1. Memory (>= 10 Gb)
@@ -162,7 +162,7 @@ where $SAMPLENAME is the basename of $SAMPLE
 * $SAMPLENAME is the basename of the fastq/fasta input file
 * $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
 
-NOTE: $SAMPLENAME can be set by the user with the option "--output_basename <$NEWNAME>". 
+NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NEWNAME>". 
 
 ### Demo runs ###
 
@@ -253,33 +253,34 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 
 1. To run with additional output printed to stdout: add the ``--verbose`` flag
 1. To run using multiple cores: add the ``--threads $CORES`` option
-1. To remove the intermediate temp output files: add the ``--remove_temp_output`` flag
-1. To bypass the MetaPhlAn prescreen step: add the ``--bypass_prescreen`` flag
-1. To bypass the prescreen and the nucleotide alignment index step and start with the bowtie2 alignment step: add the ``--bypass_nucleotide_index`` flag
-	* If using this flag provide the bowtie2 index as the input to the chocophlan parameter instead of the chocoplan directory. For example, run with "--bypass_nucleotide_index --chocophlan chocophlan_dir/chocophlan_bowtie2_index"  if the first bowtie2 index file is located at chocophlan_dir/chocophlan_bowtie2_index.1.bt2 .
+1. To remove the intermediate temp output files: add the ``--remove-temp-output`` flag
+1. To bypass the MetaPhlAn prescreen step: add the ``--bypass-prescreen`` flag
+1. To bypass the prescreen and the nucleotide alignment index step and start with the bowtie2 alignment step: add the ``--bypass-nucleotide-index`` flag
+	* If using this flag provide the bowtie2 index as the input to the chocophlan parameter instead of the chocoplan directory. For example, run with "--bypass-nucleotide-index --chocophlan chocophlan_dir/chocophlan_bowtie2_index"  if the first bowtie2 index file is located at chocophlan_dir/chocophlan_bowtie2_index.1.bt2 .
 1. To provide the location of the ChocoPhlAn database: add the ``--chocophlan $DIR `` option
 1. To provide the location of the UniRef database: add the ``--uniref $DIR`` option
 
 ### Complete option list ###
 ```
-usage: humann2 [-h] [-v] [-r] [--bypass_prescreen] [--bypass_nucleotide_index]
-               [--bypass_translated_search] [--bypass_nucleotide_search] -i
+usage: humann2 [-h] [-v] [-r] [--bypass-prescreen] [--bypass-nucleotide-index]
+               [--bypass-translated-search] [--bypass-nucleotide-search] -i
                <input.fastq> -o <output> [-c <chocophlan>]
-               [--chocophlan_gene_index <-1>] [-u <uniref>]
-               [--average_read_length <1>] [--evalue <1.0>]
-               [--metaphlan <metaplhan>] [--o_log <sample.log>]
-               [--log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-               [--remove_temp_output] [--bowtie2 <bowtie2>] [--threads <1>]
-               [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
+               [--chocophlan-gene-index <-1>] [-u <uniref>]
+               [--average-read-length <1>] [--evalue <1.0>]
+               [--metaphlan <metaplhan>] [--o-log <sample.log>]
+               [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+               [--remove-temp-output] [--bowtie2 <bowtie2>] [--threads <1>]
+               [--prescreen-threshold <0.01>] [--identity-threshold <0.4>]
                [--usearch <usearch>] [--rapsearch <rapsearch>]
-               [--diamond <diamond>] [--taxonomic_profile <taxonomic_profile.tsv>]
-               [--id_mapping <id_mapping.tsv>]
-               [--translated_alignment {usearch,rapsearch,diamond}]
-               [--xipe {on,off}] [--minpath {on,off}] [--pick_frames {on,off}]
-               [--output_format {tsv,biom}] [--output_basename <sample_name>]
-               [--remove_stratified_output]
-               [--input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
-               [--pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
+               [--diamond <diamond>]
+               [--taxonomic-profile <taxonomic_profile.tsv>]
+               [--id-mapping <id_mapping.tsv>]
+               [--translated-alignment {usearch,rapsearch,diamond}]
+               [--xipe {on,off}] [--minpath {on,off}] [--pick-frames {on,off}]
+               [--output-format {tsv,biom}] [--output-basename <sample_name>]
+               [--remove-stratified-output]
+               [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
+               [--pathways-databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
                [--pathways {metacyc,unipathway}]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
@@ -288,12 +289,12 @@ optional arguments:
   -h, --help            show this help message and exit
   -v, --verbose         additional output is printed
   -r, --resume          bypass commands if the output files exist
-  --bypass_prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
-  --bypass_nucleotide_index
+  --bypass-prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
+  --bypass-nucleotide-index
                         bypass the nucleotide index step and run on the indexed ChocoPhlAn database
-  --bypass_translated_search
+  --bypass-translated-search
                         bypass the translated search step
-  --bypass_nucleotide_search
+  --bypass-nucleotide-search
                         bypass the nucleotide search steps
   -i <input.fastq>, --input <input.fastq>
                         input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom} 
@@ -304,13 +305,13 @@ optional arguments:
   -c <chocophlan>, --chocophlan <chocophlan>
                         directory containing the ChocoPhlAn database
                         [DEFAULT: data/chocophlan_DEMO]
-  --chocophlan_gene_index <-1>
+  --chocophlan-gene-index <-1>
                         the index of the gene in the sequence annotation
                         [DEFAULT: -1]
   -u <uniref>, --uniref <uniref>
                         directory containing the UniRef database
                         [DEFAULT: data/uniref_DEMO]
-  --average_read_length <1>
+  --average-read-length <1>
                         the average length of the reads
                         [DEFAULT: 1]
   --evalue <1.0>        the evalue threshold
@@ -318,21 +319,21 @@ optional arguments:
   --metaphlan <metaplhan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
-  --o_log <sample.log>  log file
+  --o-log <sample.log>  log file
                         [DEFAULT: temp/sample.log]
-  --log_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+  --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         level of messages to display in log
                         [DEFAULT: DEBUG]
-  --remove_temp_output  remove temp output files
+  --remove-temp-output  remove temp output files
                         [DEFAULT: temp files are not removed]
   --bowtie2 <bowtie2>   directory of the bowtie2 executable
                         [DEFAULT: $PATH]
   --threads <1>         number of threads/processes
                         [DEFAULT: 1]
-  --prescreen_threshold <0.01>
+  --prescreen-threshold <0.01>
                         minimum percentage of reads matching a species
                         [DEFAULT: 0.01]
-  --identity_threshold <0.4>
+  --identity-threshold <0.4>
                         identity threshold to use with the translated search
                         [DEFAULT: 0.4]
   --usearch <usearch>   directory containing the usearch executable
@@ -342,35 +343,35 @@ optional arguments:
                         [DEFAULT: $PATH]
   --diamond <diamond>   directory containing the diamond executable
                         [DEFAULT: $PATH]
-  --taxonomic_profile <taxonomic_profile.tsv>
+  --taxonomic-profile <taxonomic_profile.tsv>
                         a taxonomic profile (the output file created by metaphlan)
                         [DEFAULT: file will be created]
-  --id_mapping <id_mapping.tsv>
+  --id-mapping <id_mapping.tsv>
                         id mapping file for alignments
                         [DEFAULT: alignment reference used]
-  --translated_alignment {usearch,rapsearch,diamond}
+  --translated-alignment {usearch,rapsearch,diamond}
                         software to use for translated alignment
                         [DEFAULT: diamond]
   --xipe {on,off}       turn on/off the xipe computation
                         [DEFAULT: off]
   --minpath {on,off}    turn on/off the minpath computation
                         [DEFAULT: on]
-  --pick_frames {on,off}
+  --pick-frames {on,off}
                         turn on/off the pick_frames computation
                         [DEFAULT: off]
-  --output_format {tsv,biom}
+  --output-format {tsv,biom}
                         the format of the output files
                         [DEFAULT: tsv]
-  --output_basename <sample_name>
+  --output-basename <sample_name>
                         the basename for the output files
                         [DEFAULT: input file basename]
-  --remove_stratified_output
+  --remove-stratified-output
                         remove stratification from output
                         [DEFAULT: output is stratified]
-  --input_format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
+  --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
                         the format of the input file
                         [DEFAULT: format identified by software]
-  --pathways_databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
+  --pathways-databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
                         the two mapping files to use for pathway computations
                         [DEFAULT: metacyc databases ]
   --pathways {metacyc,unipathway}

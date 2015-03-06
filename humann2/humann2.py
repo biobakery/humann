@@ -83,22 +83,22 @@ def parse_arguments(args):
         action="store_true",
         default=config.resume)
     parser.add_argument(
-        "--bypass_prescreen", 
+        "--bypass-prescreen", 
         help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
         action="store_true",
         default=config.bypass_prescreen)
     parser.add_argument(
-        "--bypass_nucleotide_index", 
+        "--bypass-nucleotide-index", 
         help="bypass the nucleotide index step and run on the indexed ChocoPhlAn database\n", 
         action="store_true",
         default=config.bypass_nucleotide_index)
     parser.add_argument(
-        "--bypass_translated_search", 
+        "--bypass-translated-search", 
         help="bypass the translated search step\n", 
         action="store_true",
         default=config.bypass_translated_search)
     parser.add_argument(
-        "--bypass_nucleotide_search", 
+        "--bypass-nucleotide-search", 
         help="bypass the nucleotide search steps\n", 
         action="store_true",
         default=config.bypass_nucleotide_search)
@@ -118,7 +118,7 @@ def parse_arguments(args):
             + config.chocophlan + "]", 
         metavar="<chocophlan>")
     parser.add_argument(
-        "--chocophlan_gene_index",
+        "--chocophlan-gene-index",
         help="the index of the gene in the sequence annotation\n[DEFAULT: " 
             + ",".join(str(i) for i in config.chocophlan_gene_indexes) + "]", 
         metavar="<"+",".join(str(i) for i in config.chocophlan_gene_indexes)+">",
@@ -129,7 +129,7 @@ def parse_arguments(args):
             + config.uniref + "]", 
         metavar="<uniref>")
     parser.add_argument(
-        "--average_read_length", 
+        "--average-read-length", 
         help="the average length of the reads\n[DEFAULT: " + str(config.average_read_length) + "]", 
         metavar="<" + str(config.average_read_length) + ">", 
         type=int,
@@ -145,18 +145,18 @@ def parse_arguments(args):
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaplhan>")
     parser.add_argument(
-        "--o_log", 
+        "--o-log", 
         help="log file\n" + 
         "[DEFAULT: temp/sample.log]", 
         metavar="<sample.log>")
     parser.add_argument(
-        "--log_level", 
+        "--log-level", 
         help="level of messages to display in log\n" + 
         "[DEFAULT: " + config.log_level + "]", 
         default=config.log_level,
         choices=config.log_level_choices)
     parser.add_argument(
-        "--remove_temp_output", 
+        "--remove-temp-output", 
         help="remove temp output files\n" + 
             "[DEFAULT: temp files are not removed]", 
         action="store_true")
@@ -171,14 +171,14 @@ def parse_arguments(args):
         type=int,
         default=config.threads) 
     parser.add_argument(
-        "--prescreen_threshold", 
+        "--prescreen-threshold", 
         help="minimum percentage of reads matching a species\n[DEFAULT: "
             + str(config.prescreen_threshold) + "]", 
         metavar="<" + str(config.prescreen_threshold) + ">", 
         type=float,
         default=config.prescreen_threshold) 
     parser.add_argument(
-        "--identity_threshold", 
+        "--identity-threshold", 
         help="identity threshold to use with the translated search\n[DEFAULT: " 
             + str(config.identity_threshold) + "]", 
         metavar="<" + str(config.identity_threshold) + ">", 
@@ -197,15 +197,15 @@ def parse_arguments(args):
         help="directory containing the diamond executable\n[DEFAULT: $PATH]", 
         metavar="<diamond>")
     parser.add_argument(
-        "--taxonomic_profile", 
+        "--taxonomic-profile", 
         help="a taxonomic profile (the output file created by metaphlan)\n[DEFAULT: file will be created]", 
         metavar="<taxonomic_profile.tsv>")
     parser.add_argument(
-        "--id_mapping", 
+        "--id-mapping", 
         help="id mapping file for alignments\n[DEFAULT: alignment reference used]", 
         metavar="<id_mapping.tsv>")
     parser.add_argument(
-        "--translated_alignment", 
+        "--translated-alignment", 
         help="software to use for translated alignment\n[DEFAULT: " + 
             config.translated_alignment_selected + "]", 
         default=config.translated_alignment_selected,
@@ -223,35 +223,35 @@ def parse_arguments(args):
         default=config.minpath_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
-        "--pick_frames",
+        "--pick-frames",
         help="turn on/off the pick_frames computation\n[DEFAULT: " + 
         config.pick_frames_toggle + "]",
         default=config.pick_frames_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
-        "--output_format",
+        "--output-format",
         help="the format of the output files\n[DEFAULT: " +
         config.output_format + "]",
         default=config.output_format,
         choices=config.output_format_choices)
     parser.add_argument(
-        "--output_basename",
+        "--output-basename",
         help="the basename for the output files\n[DEFAULT: " +
         "input file basename]",
         default=config.file_basename,
         metavar="<sample_name>")
     parser.add_argument(
-        "--remove_stratified_output", 
+        "--remove-stratified-output", 
         help="remove stratification from output\n" + 
             "[DEFAULT: output is stratified]", 
         action="store_true",
         default=config.remove_stratified_output)
     parser.add_argument(
-        "--input_format",
+        "--input-format",
         help="the format of the input file\n[DEFAULT: format identified by software]",
         choices=config.input_format_choices)
     parser.add_argument(
-        "--pathways_databases",
+        "--pathways-databases",
         help="the two mapping files to use for pathway computations\n[DEFAULT: " +
         config.pathways_database + " databases ]",
         metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
