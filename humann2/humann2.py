@@ -197,9 +197,9 @@ def parse_arguments(args):
         help="directory containing the diamond executable\n[DEFAULT: $PATH]", 
         metavar="<diamond>")
     parser.add_argument(
-        "--metaphlan_output", 
-        help="output file created by metaphlan\n[DEFAULT: file will be created]", 
-        metavar="<bugs_list.tsv>")
+        "--taxonomic_profile", 
+        help="a taxonomic profile (the output file created by metaphlan)\n[DEFAULT: file will be created]", 
+        metavar="<taxonomic_profile.tsv>")
     parser.add_argument(
         "--id_mapping", 
         help="id mapping file for alignments\n[DEFAULT: alignment reference used]", 
@@ -690,8 +690,8 @@ def main():
     if args.input_format in ["fasta","fastq"]:
         # Run prescreen to identify bugs
         bug_file = "Empty"
-        if args.metaphlan_output:
-            bug_file = os.path.abspath(args.metaphlan_output)
+        if args.taxonomic_profile:
+            bug_file = os.path.abspath(args.taxonomic_profile)
         else:
             if not config.bypass_prescreen:
                 bug_file = prescreen.alignment(args.input)

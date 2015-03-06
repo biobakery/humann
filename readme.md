@@ -272,7 +272,7 @@ usage: humann2 [-h] [-v] [-r] [--bypass_prescreen] [--bypass_nucleotide_index]
                [--remove_temp_output] [--bowtie2 <bowtie2>] [--threads <1>]
                [--prescreen_threshold <0.01>] [--identity_threshold <0.4>]
                [--usearch <usearch>] [--rapsearch <rapsearch>]
-               [--diamond <diamond>] [--metaphlan_output <bugs_list.tsv>]
+               [--diamond <diamond>] [--taxonomic_profile <taxonomic_profile.tsv>]
                [--id_mapping <id_mapping.tsv>]
                [--translated_alignment {usearch,rapsearch,diamond}]
                [--xipe {on,off}] [--minpath {on,off}] [--pick_frames {on,off}]
@@ -342,8 +342,8 @@ optional arguments:
                         [DEFAULT: $PATH]
   --diamond <diamond>   directory containing the diamond executable
                         [DEFAULT: $PATH]
-  --metaphlan_output <bugs_list.tsv>
-                        output file created by metaphlan
+  --taxonomic_profile <taxonomic_profile.tsv>
+                        a taxonomic profile (the output file created by metaphlan)
                         [DEFAULT: file will be created]
   --id_mapping <id_mapping.tsv>
                         id mapping file for alignments
