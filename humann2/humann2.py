@@ -671,8 +671,6 @@ def main():
 
     message="Load pathways database part 1: " + config.pathways_database_part1
     logger.info(message)
-    if config.verbose:
-        print(message)
     
     # Load in the pathways database
     pathways_database=store.PathwaysDatabase(config.pathways_database_part2, 
@@ -680,8 +678,6 @@ def main():
     
     message="Load pathways database part 2: " + config.pathways_database_part2
     logger.info(message)
-    if config.verbose:
-        print(message)
 
     # Start timer
     start_time=time.time()
