@@ -130,7 +130,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     if not config.bypass_prescreen:
         for species_file in os.listdir(chocophlan_dir):
             for species in species_found:
-                if re.search(species, species_file): 
+                if re.search(species.lower(), species_file.lower()): 
                     species_file_list.append(os.path.join(chocophlan_dir,species_file))
                     logger.debug("Adding file to database: " + species_file)   
     else:
