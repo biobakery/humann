@@ -79,6 +79,9 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
         Test the tsv output
         """
         
+        # update the max decimals to allow for rounding
+        config.output_max_decimals=7
+        
         # create a set of alignments
         alignments=store.Alignments()
         

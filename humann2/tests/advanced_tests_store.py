@@ -139,7 +139,7 @@ class TestAdvancedHumann2UtilitiesFunctions(unittest.TestCase):
         query2_sum=hit3_score
         gene_score=hit3_score/query2_sum/gene2_length + hit2_score/query1_sum/gene2_length
 
-        self.assertAlmostEqual(gene_scores_store.get_score("bug1","gene2"),gene_score,places=12)
+        self.assertAlmostEqual(gene_scores_store.get_score("bug1","gene2"),gene_score,places=7)
         
     def test_Alignments_id_mapping_all_gene_list(self):
         """
