@@ -34,14 +34,19 @@ directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (
 ## Installation ##
 
 ### Downloading HUMAnN2 ###
-HUMAnN2 can be downloaded in two ways:
+You can download the latest HUMAnN2 release or development version. Please note that we recommend installing the latest release of HUMAnN2 (Option 1) as it is more stable.
 
-* [Download](https://bitbucket.org/biobakery/humann2/get/tip.tar.gz) a compressed set of files.
-* Create a clone of the repository on your computer with the command: 
+Option 1: Latest Release
+
+* [Download](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz) the latest release of HUMAnN2 as a compressed set of files.
+
+Option 2: Development Version
+
+* Create a clone of the repository: 
 	
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
-Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest release of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository which will download the latest release.
+	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest development version of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository.
 
 For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
 
