@@ -34,11 +34,11 @@ directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (
 ## Installation ##
 
 ### Downloading HUMAnN2 ###
-You can download the latest HUMAnN2 release or development version. Please note that we recommend installing the latest release of HUMAnN2 (Option 1) as it is more stable.
+You can download the latest HUMAnN2 release or the development version.
 
-Option 1: Latest Release
+Option 1: Latest Release (Recommended)
 
-* [Download](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz) the latest release of HUMAnN2 as a compressed set of files.
+* [Download](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz) and unpack the latest release of HUMAnN2.
 
 Option 2: Development Version
 
@@ -48,7 +48,7 @@ Option 2: Development Version
 
 	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest development version of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository.
 
-For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was download (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
+For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 directory (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
 
 ### Installing HUMAnN2 ###
 
@@ -56,18 +56,7 @@ For the steps that follow, $HUMAnN2_PATH is the location that HUMAnN2 was downlo
 1. Install MinPath : ``$ python setup.py minpath ``
 1. Install HUMAnN2 : ``$ python setup.py install ``
 
-If you do not have administrator permissions, please use the following steps:
-
-1. Select a directory where you have write permissions to install HUMAnN2 ($DIR)
-1. Create the directory where the HUMAnN2 executables will be installed : ``$ mkdir -p $DIR/bin/ ``
-1. Add the bin directory to your path : ``$ export PATH=$PATH:$DIR/bin/ ``
-1. Create the directory where the HUMAnN2 libraries will be installed : ``$ mkdir -p $DIR/lib/ ``
-1. Add the lib directory to your pythonpath : ``$ export PYTHONPATH=$PYTHONPATH:$DIR/lib/ ``
-1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
-1. Install MinPath : ``$ python setup.py minpath ``
-1. Install HUMAnN2 : ``$ python setup.py install --install-scripts $DIR/bin/ --install-lib $DIR/lib/ ``
-
-NOTE: These changes to the paths will only be in effect while your shell is open. Closing your shell or opening a new shell will not include these changes to the paths. If you are running in a bash shell (you can check this by typing: $ ps -p $$ ), add the two export statements to your bashrc file located at ~/.bashrc . Then run: $ source ~/.bashrc so the updates are made to your current shell. Now every time you open a new shell these changes to the paths will always be included.
+Note: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the install command. This will install the python package into subdirectories of '~/.local'.
 
 ### Test the install ###
 
