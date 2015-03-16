@@ -243,17 +243,6 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-### Additional ways to run ####
-
-1. To run with additional output printed to stdout: add the ``--verbose`` flag
-1. To run using multiple cores: add the ``--threads $CORES`` option
-1. To remove the intermediate temp output files: add the ``--remove-temp-output`` flag
-1. To bypass the MetaPhlAn prescreen step: add the ``--bypass-prescreen`` flag
-1. To bypass the prescreen and the nucleotide alignment index step and start with the bowtie2 alignment step: add the ``--bypass-nucleotide-index`` flag
-	* If using this flag provide the bowtie2 index as the input to the chocophlan parameter instead of the chocoplan directory. For example, run with "--bypass-nucleotide-index --chocophlan chocophlan_dir/chocophlan_bowtie2_index"  if the first bowtie2 index file is located at chocophlan_dir/chocophlan_bowtie2_index.1.bt2 .
-1. To provide the location of the ChocoPhlAn database: add the ``--chocophlan $DIR `` option
-1. To provide the location of the UniRef database: add the ``--uniref $DIR`` option
-
 ### Complete option list ###
 ```
 usage: humann2 [-h] [-v] [-r] [--bypass-prescreen] [--bypass-nucleotide-index]
