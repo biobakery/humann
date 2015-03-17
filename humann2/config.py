@@ -327,6 +327,12 @@ bowtie2_large_index_threshold=4000000000
 bowtie2_index_ext_list=[".1.bt2",".2.bt2",".3.bt2",".4.bt2",
     ".rev.1.bt2",".rev.2.bt2"]
 bowtie2_large_index_ext=".1.bt2l"
+bowtie2_version={
+    "flag" : "--version",
+    "major" : 2,
+    "minor" : 2,
+    "line" : 0,
+    "column" : 2}
 
 bowtie2_build_opts=[]
 bowtie2_align_opts=["--very-sensitive"]
@@ -374,19 +380,37 @@ id_mapping_bug_index=3
 # usearch options
 usearch_database_extension=".udb"
 usearch_max_seqs=10000
-usearch_version="usearch v7.0.1001"
+usearch_version={
+    "flag" : "--version",
+    "major" : 7,
+    "minor" : 0,
+    "line" : 0,
+    "column" : 1}
 usearch_opts=["-maxhits",20]
 
 # rapsearch options
 rapsearch_database_extension=".info"
 rapsearch_opts=["-v",20]
 rapsearch_output_file_extension=".m8"
+rapsearch_version={
+    "flag" : "-v",
+    "major" : 2,
+    "minor" : 21,
+    "line" : 1,
+    "column" : 1}
 
 # diamond options
 diamond_database_extension=".dmnd"
 diamond_opts=["--max-target-seqs",20,"--sensitive"]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
+diamond_version={
+    "flag" : "-v",
+    "major" : 0,
+    "minor" : 7,
+    "second minor" : 2,
+    "line" : 0,
+    "column" : 1}
 
 # MinPath
 minpath_script="MinPath12hmp.py"

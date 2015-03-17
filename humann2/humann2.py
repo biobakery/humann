@@ -581,6 +581,9 @@ def check_requirements(args):
             if not utilities.find_exe_in_path("bowtie2"): 
                 sys.exit("CRITICAL ERROR: The bowtie2 executable can not be found. "  
                     "Please check the install.")
+                
+            # Check the bowtie2 version
+            utilities.check_software_version("bowtie2", config.bowtie2_version)
  
         if not config.bypass_translated_search:
             # Check that the uniref directory exists
@@ -621,14 +624,23 @@ def check_requirements(args):
                     config.translated_alignment_selected + " ). Please format these files so"
                     + " they are of the expected extension ( " + expected_database_extension +" ).")
 
-            # Check for correct usearch version
-            if config.translated_alignment_selected == "usearch":
-                utilities.check_software_version("usearch","-version",config.usearch_version)
-        
             # Check that the translated alignment executable can be found
             if not utilities.find_exe_in_path(config.translated_alignment_selected):
                 sys.exit("CRITICAL ERROR: The " +  config.translated_alignment_selected + 
                     " executable can not be found. Please check the install.")
+
+            # Check for correct usearch version
+            if config.translated_alignment_selected == "usearch":
+                utilities.check_software_version("usearch",config.usearch_version)
+                
+            # Check for correct rapsearch version
+            if config.translated_alignment_selected == "rapsearch":
+                utilities.check_software_version("rapsearch", config.rapsearch_version)
+                
+            # Check for the correct diamond version
+            if config.translated_alignment_selected == "diamond":
+                utilities.check_software_version("diamond", config.diamond_version)
+
               
 def timestamp_message(task, start_time):
     """

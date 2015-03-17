@@ -339,31 +339,68 @@ def return_module_path(module):
                 return path
     return ""
 
-def check_software_version(exe,version_flag,
-    version_required):
+def check_software_version(exe,version):
     """
     Determine if the software is of the correct version
     """
     
-    logger.debug("Check software, %s, for correct version, %s",exe,version_required)
+    version_required=str(version["major"])+"."+str(version["minor"])
+    if "second minor" in version:
+        version_required+="."+str(version["second minor"])
+        
+    logger.debug("Check software, %s, for required version, %s",exe,version_required)
 
     if not find_exe_in_path(exe):
         message="Can not find software " + exe
         logger.critical(message)
         sys.exit("CRITICAL ERROR: " + message)
-    else:
-        try:
-            p_out = subprocess.check_output([exe,version_flag])
-        except EnvironmentError:
-            message="Can not call software version for " + exe
-            logger.warning(message)
-            print("WARNING: " + message + "\n")
+
+    try:
+        process = subprocess.Popen([exe,version["flag"]],stderr=subprocess.STDOUT,
+            stdout=subprocess.PIPE)
+        process_out=process.communicate()[0]
+    except EnvironmentError:
+        message="Error trying to call software version"
+        logger.debug(message)
         
-    if not re.search(version_required, p_out):
-        message=("Please update " + exe + " from version " +
-            p_out.rstrip('\n') + " to version " + version_required)
+    try:
+        # find the version string and remove a "v" and ":" if present
+        version_line=process_out.split("\n")[version["line"]]
+        version_line_split=version_line.split(" ")
+        version_string=version_line_split[version["column"]]
+        current_version=version_string.replace("v","").replace(":","").split(".")
+        current_major_version=int(current_version[0])
+        current_minor_version=int(current_version[1])
+        if "second minor" in version:
+            current_second_minor_version=int(current_version[2])
+    except (NameError,KeyError,ValueError):
+        message="Can not call software version for " + exe
+        logger.critical(message)
+        sys.exit("CRITICAL ERROR: " + message + "\n")       
+        
+    prior_version=False
+    if version["major"] > current_major_version:
+        prior_version=True
+    elif (version["major"] == current_major_version and version["minor"] > current_minor_version):
+        prior_version=True
+    elif "second minor" in version:
+        if (version["major"] == current_major_version and version["minor"] == current_minor_version
+            and version["second minor"] > current_second_minor_version):
+            prior_version=True
+        
+    current_version=str(current_major_version)+"."+str(current_minor_version)
+    if "second minor" in version:
+        current_version+="."+str(current_second_minor_version)
+    
+    if prior_version: 
+        message=("Please update " + exe + " from version " + current_version               
+                 + " to version " + version_required)
         logger.critical(message) 
         sys.exit("CRITICAL ERROR: " + message)
+        
+    # log version of software
+    message="Using " + exe + " version " + current_version
+    logger.info(message)
         
 class ReportHook():
     def __init__(self):
