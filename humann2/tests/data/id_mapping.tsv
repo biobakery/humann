@@ -1,5 +1,5 @@
 # ID mapping file
 # reference	gene	length	bug
 ref1	gene1	1	
-ref2	gene2		
+ref2	gene2	0			
 ref3	gene3	10	bug3
