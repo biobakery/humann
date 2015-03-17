@@ -15,12 +15,12 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
 1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
-1. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/)
+1. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.2)
 1. [Python](http://www.python.org/) (version >= 2.7)
 1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
 1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
-1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (optional)
-1. [usearch](http://www.drive5.com/usearch/) (version = v7.0.1001) (optional)
+1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (optional)
+1. [usearch](http://www.drive5.com/usearch/) (version >= 7.0) (optional)
 
 If MetaPhlAn2, bowtie2, and diamond (or rapsearch2, usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their

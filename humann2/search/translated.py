@@ -173,9 +173,11 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
     opts=config.diamond_opts
 
     args+=["--query",unaligned_reads_file_fasta,"--evalue",config.evalue_threshold]
+    view_args=["view"]
 
     if config.threads > 1:
         args+=["--threads",config.threads]
+        view_args+=["--threads",config.threads]
 
     message="Running " + exe + " ........"
     logger.info(message)
@@ -195,15 +197,24 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
                     +"$","",input_database)
                 full_args=args+["--db",input_database_extension_removed]
     
-                # create temp output file
+                # create temp output files
+                temp_out_file_daa=utilities.unnamed_temp_file()
+                utilities.remove_file(temp_out_file_daa)
+                
                 temp_out_file=utilities.unnamed_temp_file()
                 utilities.remove_file(temp_out_file)
+                
     
                 temp_out_files.append(temp_out_file)
     
-                full_args+=["--out",temp_out_file,"--tmpdir",os.path.dirname(temp_out_file)]
+                full_args+=["--daa",temp_out_file_daa,"--tmpdir",os.path.dirname(temp_out_file)]
     
                 utilities.execute_command(exe,full_args,[input_database],[])
+                
+                # convert output file to blast-like format
+                temp_out_file_daa=temp_out_file_daa+".daa"
+                view_args+=["--daa",temp_out_file_daa,"--out",temp_out_file]
+                utilities.execute_command(exe,view_args,[temp_out_file_daa],[])
         
         # merge the temp output files
         utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
