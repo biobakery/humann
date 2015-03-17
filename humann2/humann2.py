@@ -71,7 +71,12 @@ def parse_arguments(args):
     """
     parser = argparse.ArgumentParser(
         description= "HUMAnN2 : HMP Unified Metabolic Analysis Network 2\n",
-        formatter_class=argparse.RawTextHelpFormatter)
+        formatter_class=argparse.RawTextHelpFormatter,
+        prog="humann2")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s v0.1")
     parser.add_argument(
         "-v","--verbose", 
         help="additional output is printed\n", 
