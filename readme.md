@@ -15,7 +15,7 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
 1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
-1. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.2)
+1. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
 1. [Python](http://www.python.org/) (version >= 2.7)
 1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
 1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
