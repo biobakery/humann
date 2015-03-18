@@ -76,7 +76,7 @@ def parse_arguments(args):
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s v0.1")
+        version="%(prog)s v0.1.1")
     parser.add_argument(
         "-v","--verbose", 
         help="additional output is printed\n", 
