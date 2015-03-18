@@ -675,7 +675,9 @@ class ReactionsDatabase:
             data=line.rstrip().split(config.reactions_database_delimiter)
             if len(data)>2:
                 reaction=data.pop(0)
-                ec_number=data.pop(0)
+                
+                if config.pathways_ec_column:
+                    ec_number=data.pop(0)
              
                 # store the data
                 self.__reactions_to_genes[reaction]=data

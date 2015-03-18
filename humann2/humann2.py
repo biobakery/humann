@@ -301,10 +301,12 @@ def update_configuration(args):
         config.pathways_database_part2=config.metacyc_reactions_to_pathways
         config.pathway_identifier="PWY"
         config.pathways_recursion=True
+        config.pathways_ec_column=True
     elif args.pathways == "unipathway":
         config.pathways_database_part1=config.unipathway_database_part1
         config.pathways_database_part2=config.unipathway_database_part2
         config.pathways_recursion=False
+        config.pathways_ec_column=True
  
     # Set the locations of the pathways databases
     # If provided by the user, this will take precedence over the pathways database selection
@@ -312,6 +314,7 @@ def update_configuration(args):
         config.pathways_database_part1=os.path.abspath(args.pathways_databases[0])
         config.pathways_database_part2=os.path.abspath(args.pathways_databases[1])
         config.pathways_recursion=False
+        config.pathways_ec_column=False
         
     # Set the locations of the other databases
     if args.chocophlan:

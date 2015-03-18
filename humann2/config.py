@@ -250,6 +250,7 @@ pathways_database=pathways_database_choices[0]
 # selected pathways
 pathways_database_part1=metacyc_gene_to_reactions
 pathways_database_part2=metacyc_reactions_to_pathways
+pathways_ec_column=True
 
 # pathways settings
 reactions_database_delimiter="\t"
