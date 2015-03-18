@@ -113,6 +113,10 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
             for gene in genes_list:
                 abundance+=gene_scores_for_bug.get(gene,0)  
             
+            # If abundance is not found for the genes, check if input is reactions
+            if abundance == 0:
+                abundance=gene_scores_for_bug.get(reaction,0)
+            
             # Only write out reactions where the abundance is greater than 0
             if abundance>0: 
                 reactions_file_lines.append(reaction+config.output_file_column_delimiter
