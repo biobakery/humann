@@ -40,7 +40,6 @@ class CTable ( ):
                 if self.anchor is None:
                     self.anchor = row[0]
                     self.colheads = row[1:]
-                    self.totals = [0 for k in self.colheads]
                 else:
                     self.rowheads.append( row[0] )
                     self.data.append( row[1:] )
@@ -94,21 +93,22 @@ def get_args ():
     """ Get args from Argparse """
     parser = argparse.ArgumentParser()
     parser.add_argument( 
-        "table", 
+        "-i", "--input", 
         help="Original HUMAnN2 output table (.tsv format)",
         )
     parser.add_argument( 
-        "--names", 
+        "-n", "--names", 
         help="Mapping of gene/pathway IDs to full names (.tsv or .tsv.gz)",
         )
     parser.add_argument( 
-        "--norm", 
+        "-r", "--norm", 
         choices=["off", "cpm", "relab"], 
         default="off", 
         help="Normalization scheme: [off], copies per million [cpm], relative abundance [relab]; default=[off]",
         )
     parser.add_argument( 
-        "--outfile", 
+        "-o", "--output", 
+        default=None,
         help="Path for modified output table; default=[STDOUT]",
         )
     args = parser.parse_args()
@@ -123,16 +123,23 @@ def try_zip_open( path ):
         print( "Problem loading", path, file=sys.stderr )
     return fh
 
-def load_renaming ( path ):
-    """ load a tsv file mapping one name to another (e.g. uniref50 id to english name """
+def load_renaming ( path, table ):
+    """ load a tsv file mapping one name to another (e.g. uniref50 id to english name) """
+    # get possible "old names" from table (avoids storing full mapping)
+    table_names = {}
+    for rowhead in table.rowheads:
+        table_names[rowhead.split( c_strat_delim )[0]] = 1
+    # load renaming dict
     renaming_dict = {}
     with try_zip_open( path ) as fh:
         for row in csv.reader( fh, dialect="excel-tab" ):
             old_name = row[0]
-            for new_name in row[1:]:
-                renaming_dict.setdefault( old_name, [] ).append( new_name )
+            if old_name in table_names:
+                for new_name in row[1:]:
+                    renaming_dict.setdefault( old_name, [] ).append( new_name.strip() )
     for old_name, new_names in renaming_dict.items():
         renaming_dict[old_name] = c_multiname_delim.join( new_names )
+    print( "Loaded renaming dict from", path, file=sys.stderr )
     return renaming_dict
 
 # ---------------------------------------------------------------
@@ -141,15 +148,15 @@ def load_renaming ( path ):
 
 def main ( ):
     args = get_args()
-    table = CTable( args.table )
+    table = CTable( args.input )
     # renaming
     if args.names is not None:
-        table.rename( load_renaming( args.names ) )
+        table.rename( load_renaming( args.names, table ) )
     # normalizing
     if args.norm != "off":
         table.normalize( cpm=True if args.norm == "cpm" else False )
     # output
-    fh = open( args.outfile, "w" ) if args.outfile is not None else sys.stdout
+    fh = open( args.output, "w" ) if args.output is not None else sys.stdout
     table.write( fh )
 
 if __name__ == "__main__":
