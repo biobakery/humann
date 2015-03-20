@@ -152,10 +152,12 @@ def create_custom_database(chocophlan_dir, bug_file):
         ext=os.path.splitext(species_file_list[0])[1]
 
         exe="cat"
+        args=species_file_list
         if ext == ".gz":
-            exe="zcat"
+            exe="gunzip"
+            args=["-c"]+species_file_list
  
-        utilities.execute_command(exe,species_file_list,species_file_list,[custom_database],custom_database)
+        utilities.execute_command(exe,args,species_file_list,[custom_database],custom_database)
 
         return custom_database
 
