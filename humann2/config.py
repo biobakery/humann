@@ -40,8 +40,11 @@ def log_settings():
     lines.append("DATABASE SETTINGS")
     lines.append("chocophlan database folder = " + chocophlan)
     lines.append("uniref database folder = " + uniref)
-    lines.append("pathways database file 1 = " + pathways_database_part1)
-    lines.append("pathways database file 2 = " + pathways_database_part2)
+    if pathways_database_part1:
+        lines.append("pathways database file 1 = " + pathways_database_part1)
+        lines.append("pathways database file 2 = " + pathways_database_part2)
+    else:
+        lines.append("pathways database file = " + pathways_database_part2)
     lines.append("")
     
     lines.append("RUN MODES")

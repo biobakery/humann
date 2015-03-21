@@ -106,23 +106,29 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
         
         reactions[bug]={}
         reactions_file_lines=[]
-        for reaction in reactions_database.reaction_list():
-            genes_list=reactions_database.find_genes(reaction)
-            abundance=0
-            # Add the scores for each gene to the total score for the reaction
-            for gene in genes_list:
-                abundance+=gene_scores_for_bug.get(gene,0)  
-            
-            # If abundance is not found for the genes, check if input is reactions
-            if abundance == 0:
-                abundance=gene_scores_for_bug.get(reaction,0)
-            
-            # Only write out reactions where the abundance is greater than 0
-            if abundance>0: 
-                reactions_file_lines.append(reaction+config.output_file_column_delimiter
-                    +str(abundance)+"\n")
-                # Store the abundance data to compile with the minpath pathways
-                reactions[bug][reaction]=abundance
+        if reactions_database:
+            for reaction in reactions_database.reaction_list():
+                genes_list=reactions_database.find_genes(reaction)
+                abundance=0
+                # Add the scores for each gene to the total score for the reaction
+                for gene in genes_list:
+                    abundance+=gene_scores_for_bug.get(gene,0)  
+                
+                # Only write out reactions where the abundance is greater than 0
+                if abundance>0: 
+                    reactions_file_lines.append(reaction+config.output_file_column_delimiter
+                        +str(abundance)+"\n")
+                    # Store the abundance data to compile with the minpath pathways
+                    reactions[bug][reaction]=abundance
+        else:
+            for gene in gene_scores_for_bug:
+                score=gene_scores_for_bug[gene]
+                
+                if score>0:
+                    reactions_file_lines.append(gene+config.output_file_column_delimiter
+                        +str(score)+"\n")
+                    # Store the abundance data to compile with the minpath pathways
+                    reactions[bug][gene]=score
     
         pathways={}
         # Run minpath if toggle on and also if there is more than one reaction   

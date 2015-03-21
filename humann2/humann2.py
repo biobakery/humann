@@ -256,11 +256,11 @@ def parse_arguments(args):
         help="the format of the input file\n[DEFAULT: format identified by software]",
         choices=config.input_format_choices)
     parser.add_argument(
-        "--pathways-databases",
-        help="the two mapping files to use for pathway computations\n[DEFAULT: " +
-        config.pathways_database + " databases ]",
-        metavar=("<pathways_database_part1.tsv>","<pathways_database_part2.tsv>"),
-        nargs=2)
+        "--pathways-database",
+        help="mapping file (or files, at most two in a comma-delimited list) to use for pathway computations\n[DEFAULT: " +
+        config.pathways_database + " database ]",
+        metavar=("<pathways_database.tsv>"),
+        nargs=1)
     parser.add_argument(
         "--pathways",
         help="the database to use for pathway computations\n[DEFAULT: " +
@@ -310,9 +310,16 @@ def update_configuration(args):
  
     # Set the locations of the pathways databases
     # If provided by the user, this will take precedence over the pathways database selection
-    if args.pathways_databases:
-        config.pathways_database_part1=os.path.abspath(args.pathways_databases[0])
-        config.pathways_database_part2=os.path.abspath(args.pathways_databases[1])
+    if args.pathways_database:
+        custom_pathways_files=args.pathways_database[0].split(",")
+        if len(custom_pathways_files)==2:
+            config.pathways_database_part1=os.path.abspath(custom_pathways_files[0])
+            config.pathways_database_part2=os.path.abspath(custom_pathways_files[1])
+        elif len(custom_pathways_files)==1:
+            config.pathways_database_part1=None
+            config.pathways_database_part2=os.path.abspath(custom_pathways_files[0])
+        else:
+            sys.exit("ERROR: Please provide one or two pathways files.")
         config.pathways_recursion=False
         config.pathways_ec_column=False
         
@@ -491,7 +498,8 @@ def check_requirements(args):
     """
 
     # Check the pathways database files exist and are readable
-    utilities.file_exists_readable(config.pathways_database_part1)
+    if config.pathways_database_part1:
+        utilities.file_exists_readable(config.pathways_database_part1)
     utilities.file_exists_readable(config.pathways_database_part2)
 
     # Determine the input file format if not provided
@@ -687,16 +695,21 @@ def main():
         alignments.process_id_mapping(args.id_mapping)
     
     # Load in the reactions database
-    reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
-
-    message="Load pathways database part 1: " + config.pathways_database_part1
-    logger.info(message)
+    reactions_database=None
+    if config.pathways_database_part1:
+        reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
+    
+        message="Load pathways database part 1: " + config.pathways_database_part1
+        logger.info(message)
     
     # Load in the pathways database
     pathways_database=store.PathwaysDatabase(config.pathways_database_part2, 
         config.pathways_recursion)
     
-    message="Load pathways database part 2: " + config.pathways_database_part2
+    if config.pathways_database_part1:
+        message="Load pathways database part 2: " + config.pathways_database_part2
+    else:
+        message="Load pathways database: " + config.pathways_database_part2
     logger.info(message)
 
     # Start timer

@@ -245,10 +245,10 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 
 ### Complete option list ###
 ```
-usage: humann2 [-h] [-v] [-r] [--bypass-prescreen] [--bypass-nucleotide-index]
-               [--bypass-translated-search] [--bypass-nucleotide-search] -i
-               <input.fastq> -o <output> [-c <chocophlan>]
-               [--chocophlan-gene-index <-1>] [-u <uniref>]
+usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
+               [--bypass-nucleotide-index] [--bypass-translated-search]
+               [--bypass-nucleotide-search] -i <input.fastq> -o <output>
+               [-c <chocophlan>] [--chocophlan-gene-index <-1>] [-u <uniref>]
                [--average-read-length <1>] [--evalue <1.0>]
                [--metaphlan <metaplhan>] [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
@@ -263,13 +263,14 @@ usage: humann2 [-h] [-v] [-r] [--bypass-prescreen] [--bypass-nucleotide-index]
                [--output-format {tsv,biom}] [--output-basename <sample_name>]
                [--remove-stratified-output]
                [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
-               [--pathways-databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>]
+               [--pathways-database <pathways_database.tsv>]
                [--pathways {metacyc,unipathway}]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
   -v, --verbose         additional output is printed
   -r, --resume          bypass commands if the output files exist
   --bypass-prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
@@ -354,9 +355,9 @@ optional arguments:
   --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
                         the format of the input file
                         [DEFAULT: format identified by software]
-  --pathways-databases <pathways_database_part1.tsv> <pathways_database_part2.tsv>
-                        the two mapping files to use for pathway computations
-                        [DEFAULT: metacyc databases ]
+  --pathways-database <pathways_database.tsv>
+                        mapping file (or files, at most two in a comma-delimited list) to use for pathway computations
+                        [DEFAULT: metacyc database ]
   --pathways {metacyc,unipathway}
                         the database to use for pathway computations
                         [DEFAULT: metacyc]
