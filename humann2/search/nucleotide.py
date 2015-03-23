@@ -154,28 +154,13 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     large_evalue_count=0
     while line:
         # ignore headers ^@ 
+        unaligned_read=False
         if not re.search("^@",line):
             info=line.split(config.sam_delimiter)
             query_ids[info[config.blast_query_index]]=1
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
-                file_handle_write_unaligned.write(">"+
-                    info[config.sam_read_name_index]+"\n")
-                file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
-                
-                # find the frames for the sequence and write to file
-                if write_picked_frames:
-                    picked_frames=pick_frames.pick_frames(info[config.sam_read_index])
-                    if not picked_frames:
-                        no_frames_found_count+=1
-                    for frame in picked_frames:
-                        file_handle_write_unaligned_frames.write(">"+
-                            info[config.sam_read_name_index]+"\n")
-                        file_handle_write_unaligned_frames.write(frame+"\n")
-                
-                # store the unaligned reads data
-                unaligned_reads_store.add(info[config.sam_read_name_index], 
-                    info[config.sam_read_index])
+                unaligned_read=True
             else:
                 # convert the e-value from global to local
                 try:
@@ -199,6 +184,26 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                     alignments.add_annotated(query,evalue,info[config.sam_reference_index])
                 else:
                     large_evalue_count+=1
+                    unaligned_read=True
+                    
+            if unaligned_read:
+                file_handle_write_unaligned.write(">"+
+                    info[config.sam_read_name_index]+"\n")
+                file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
+                
+                # find the frames for the sequence and write to file
+                if write_picked_frames:
+                    picked_frames=pick_frames.pick_frames(info[config.sam_read_index])
+                    if not picked_frames:
+                        no_frames_found_count+=1
+                    for frame in picked_frames:
+                        file_handle_write_unaligned_frames.write(">"+
+                            info[config.sam_read_name_index]+"\n")
+                        file_handle_write_unaligned_frames.write(frame+"\n")
+                
+                # store the unaligned reads data
+                unaligned_reads_store.add(info[config.sam_read_name_index], 
+                    info[config.sam_read_index])
                     
         line=file_handle_read.readline()
 
