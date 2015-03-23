@@ -11,13 +11,13 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 3.  [How to run](#run)
 4.  [Output files](#output)
 5.  [Workflows](#workflows)
- *   [Workflow by input file type](#workflow)
- *   [Workflow by bypass mode](#workflow_bypass)
- *   [Workflow of the resume option](#workflow_resume)
+    *   [Workflow by input file type](#workflow)
+    *   [Workflow by bypass mode](#workflow_bypass)
+    *   [Workflow of the resume option](#workflow_resume)
 6.  [Databases](#databases)
 7.  [Configuration](#configuration)
 8.  [Tools](#tools)
- *   [Tools for tables](#tools_tables)
+    *   [Tools for tables](#tools_tables)
 9.  [FAQs](#faqs)
 
 <a name="requirements"></a>
