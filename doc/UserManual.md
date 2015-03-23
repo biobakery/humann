@@ -82,17 +82,17 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
     * Please note the gene families file will not be created if the input file type is a gene table.
     *   Example:
         
-        ```# Gene Family	$SAMPLE
-        UniRef50_A6L0N6	67.0 
-        UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
-        UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
-        UniRef50_A6L0N6|s__Bacteroides_stercoris	4.0
-        UniRef50_A6L0N6|unclassified	1.0
-        UniRef50_G9S1V7	60.0
-        UniRef50_G9S1V7|s__Bacteroides_vulgatus	31.0
-        UniRef50_G9S1V7|s__Bacteroides_thetaiotaomicron	22.0
-        UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
-        ```
+```# Gene Family	$SAMPLE
+UniRef50_A6L0N6	67.0 
+UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
+UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
+UniRef50_A6L0N6|s__Bacteroides_stercoris	4.0
+UniRef50_A6L0N6|unclassified	1.0
+UniRef50_G9S1V7	60.0
+UniRef50_G9S1V7|s__Bacteroides_vulgatus	31.0
+UniRef50_G9S1V7|s__Bacteroides_thetaiotaomicron	22.0
+UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
+```
         
 2.  Pathway Coverage
     *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
