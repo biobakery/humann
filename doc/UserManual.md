@@ -11,6 +11,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 3.  [How to run](#run)
 4.  [Output files](#output)
 5.  [Workflows](#workflows)
+
 *   [Workflow by input file type](#workflow)
 *   [Workflow by bypass mode](#workflow_bypass)
 *   [Workflow of the resume option](#workflow_resume)
@@ -18,12 +19,12 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 6.  [Databases](#databases)
 7.  [Configuration](#configuration)
 8.  [Tools](#tools)
+
 *   [Tools for tables](#tools_tables)
 
 9.  [FAQs](#faqs)
 
 <a name="requirements"></a>
-
 ### Requirements
 
 1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
@@ -39,7 +40,6 @@ If always running with files of type #2, #3, and #4 (for information on file typ
 Please note there are additional requirements if you are using input files of type sam or biom. The [SAMtools](http://samtools.sourceforge.net/) software is required for bam files and the [biom-format](http://biom-format.org/) software is required for biom files.
 
 <a name="installation"></a>
-
 ### Installation
 
  1. Download and unpack the latest release of the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz)
@@ -63,7 +63,6 @@ NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option
 NOTE 3: Downloading and installing the ChocoPhlAn and UniRef databases is not required if always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#workflow)). It is also not required to run the demo which runs on demo versions of the ChocoPhlAn and UniRef databases included as part of the HUMAnN2 install.
 
 <a name="run"></a>
-
 ### How to run
 
 To run HUMAnN2:
@@ -76,7 +75,6 @@ $SAMPLE = a single file that is one of the following types:
 $OUTPUT_DIR = the output directory
 
 <a name="output"></a>
-
 ### Output files
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
@@ -236,11 +234,9 @@ NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEW
 ```
 
 <a name="workflows"></a>
-
 ### Workflows
 
 <a name="workflow"></a>
-
 ### Workflow by input file type
 
 There are four different types of files that can be provided as input to HUMAnN2\. By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
@@ -265,7 +261,6 @@ File Types:
 *   biom
 
 <a name="workflow_bypass"></a>
-
 ### Workflow by bypass mode
 
 There are multiple bypass options that will allow you to adjust the standard workflow.
@@ -290,7 +285,6 @@ Bypass options:
 *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
 
 <a name="workflow_resume"></a>
-
 ### Workflow of the resume option
 
 HUMAnN2 includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
@@ -304,7 +298,6 @@ When using the "--resume" option, the following steps will be bypassed if they h
 4.  Translated alignment step
 
 <a name="databases"></a>
-
 ### Databases
 
 HUMAnN2 uses two databases for alignment, ChocoPhlAn and UniRef. There are different formats of these databases. The demo formats of both are included in the HUMAnN2 install.
@@ -327,7 +320,6 @@ $ humann2_databases --download $DATABASE $BUILD $INSTALL_LOCATION
 This will automatically update the HUMAnN2 configuration. 
 
 <a name="configuration"></a>
-
 ### Configuration
 
 HUMAnN2 uses a configuration file to store user configuration settings. This configuration file is automatically updated when a database is installed.
@@ -400,11 +392,9 @@ log level = DEBUG
 ```
 
 <a name="tools"></a>
-
 ### Tools
 
 <a name="tools_tables"></a>
-
 ### Tools for tables
 
 HUMAnN2 includes tools to be used with gene or pathway table files.
@@ -432,7 +422,6 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 *   Note: Can be combined with renaming
 
 <a name="faqs"></a>
-
 ### FAQs
 
 HUMAnN2 frequently asked questions:
