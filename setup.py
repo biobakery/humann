@@ -150,9 +150,9 @@ setuptools.setup(
         'humann2' : [
             'humann2.cfg',
             'data/pathways/*',
+            'data/misc/*',
             'data/uniref_DEMO/*',
             'data/chocophlan_DEMO/*',
-            'tools/data/*',
             'tests/data/*',
             'quantify/MinPath/data/*',
             'quantify/MinPath/glpk-*/examples/glp*'
@@ -167,7 +167,6 @@ setuptools.setup(
             'humann2_rename_table = humann2.tools.rename_table:main',
             'humann2_renorm_table = humann2.tools.renorm_table:main',
             'humann2_regroup_table = humann2.tools.regroup_table:main',
-            'humann2_create_uniref_database = humann2.tools.create_uniref_database:main'
         ]},
     test_suite= 'humann2.tests.humann2_test.main',
     zip_safe = False
