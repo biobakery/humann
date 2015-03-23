@@ -6,6 +6,7 @@ HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
 
+**Table of Contents**
 
 [TOC]
 
@@ -74,7 +75,7 @@ $OUTPUT_DIR = the output directory
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
 
-1.  Gene Families*
+1.  Gene Families
     *   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
     *   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
     *   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
@@ -125,6 +126,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
          ```
 
 Intermediate temp files will also be created:
+
 1.  Bowtie2 alignment results
     *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
     *   This file has the full alignment output from bowtie2.
