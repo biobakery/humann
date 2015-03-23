@@ -1,11 +1,14 @@
-"""
-Utility functions
-"""
-
+from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import os
 import sys
 import re
 import subprocess
+import csv
+import gzip
+
+# ---------------------------------------------------------------
+# utilities used by the split and join tables scripts
+# ---------------------------------------------------------------
 
 def find_exe_in_path(exe):
     """
@@ -84,4 +87,75 @@ def process_gene_table_header(gene_table):
             GENE_TABLE_COMMENT_LINE)
         
     return file_handle, header, line
-    
+
+# ---------------------------------------------------------------
+# utilities used by the rename, renorm scripts
+# ---------------------------------------------------------------
+
+# constants
+c_strat_delim = "|"
+c_name_delim = ": "
+c_multiname_delim = ";"
+c_str_unknown = "NO_NAME"
+
+class Table ( ):
+
+    """ 
+    Very basic table class; would be more efficient using numpy 2D array
+    """
+
+    def __init__ ( self, path ):
+        self.anchor = None
+        self.colheads = []
+        self.rowheads = []
+        self.data = []
+        self.is_stratified = False
+        if path is None:
+            fh = sys.stdin
+            path = "STDIN"
+            print( "Loading table from STDIN", file=sys.stderr )
+        else:
+            fh = try_zip_open( path )
+        for row in csv.reader( fh, dialect='excel-tab' ):
+            if self.anchor is None:
+                self.anchor = row[0]
+                self.colheads = row[1:]
+            else:
+                self.rowheads.append( row[0] )
+                self.data.append( row[1:] )
+        for rowhead in self.rowheads:
+            if c_strat_delim in rowhead:
+                print( "Treating", path, "as stratified output, e.g.", 
+                       rowhead.split( c_strat_delim ), file=sys.stderr )
+                self.is_stratified = True
+                break
+
+    def write ( self, fh ):
+        writer = csv.writer( fh, dialect='excel-tab' )
+        writer.writerow( [self.anchor] + self.colheads )
+        for i in range( len( self.rowheads ) ):
+            writer.writerow( [self.rowheads[i]] + self.data[i] )
+
+def try_zip_open( path ):
+    """ 
+    open an uncompressed or gzipped file; fail gracefully 
+    """
+    fh = None
+    try:
+        fh = open( path ) if not re.search( r".gz$", path ) else gzip.GzipFile( path )
+    except:
+        print( "Problem loading", path, file=sys.stderr )
+    return fh
+
+def load_polymap ( path ):
+    """ 
+    load a tsv file mapping one name to another (e.g. uniref50 id to english name)
+    """
+    polymap = {}
+    with try_zip_open( path ) as fh:
+        for row in csv.reader( fh, dialect="excel-tab" ):
+            old_name = row[0]
+            for new_name in row[1:]:
+                polymap.setdefault( old_name, {} )[new_name] = 1
+    print( "Loaded polymap from", path, file=sys.stderr )
+    return polymap
