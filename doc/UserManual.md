@@ -215,6 +215,7 @@ Intermediate temp files will also be created:
     *   File name: `` $DIR/$SAMPLENAME.log ``
     *   This file is a log of the run.
     *   Example:
+    
 	 ```03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
 	 03/16/2015 01:09:52 PM - humann2.config - INFO: Run config settings:
     DATABASE SETTINGS
@@ -241,6 +242,7 @@ There are four different types of files that can be provided as input to HUMAnN2
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_by_file_type_reduced.png)
 
 File Types:
+
 *   File Type #1 (a quality-controlled metagenome or metatranscriptome)
     *   fastq (fastq.gz)
     *   fasta (fasta.gz)
@@ -261,6 +263,7 @@ There are multiple bypass options that will allow you to adjust the standard wor
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_bypass_modes.png)
 
 Bypass options:
+
 *   --bypass-translated-search 
     *   runs all of the alignment steps except the translated search
 *   --bypass-nucleotide-search 
@@ -410,6 +413,7 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 ### FAQs
 
 HUMAnN2 frequently asked questions:
+
 1.  Is there a way to print more information to stdout during the run?
     *   Yes, add the ``--verbose`` flag
 2.  How do I make use of multiple cores on the same machine?
