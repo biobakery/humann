@@ -75,14 +75,10 @@ $OUTPUT_DIR = the output directory
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
 
-1.  Gene Families
-    *   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
-    *   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
-    *   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
-    * Please note the gene families file will not be created if the input file type is a gene table.
-    *   Example:
-        
-``` # Gene Family	$SAMPLE
+#### Gene families file
+
+``` 
+# Gene Family	$SAMPLE
 UniRef50_A6L0N6	67.0 
 UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
@@ -93,39 +89,50 @@ UniRef50_G9S1V7|s__Bacteroides_vulgatus	31.0
 UniRef50_G9S1V7|s__Bacteroides_thetaiotaomicron	22.0
 UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 ```
+
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
+*   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
+*   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
+* Please note the gene families file will not be created if the input file type is a gene table.
         
-2.  Pathway Coverage
-    *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
-    *   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
-    *   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
-    *   Example:
-	 	 ```# Pathway	$SAMPLE
-         PWY0-1301	1.0
-         PWY0-1301|s__Bacteroides_caccae	1.0
-         PWY0-1301|s__Bacteroides_finegoldii	1.0
-         PWY0-1301|unclassified	1.0
-         PWY-7134	1.0
-         PWY-7134|s__Bacteroides_vulgatus	0.666666666667
-         PWY-7134|s__Bacteroides_thetaiotaomicron	0.666666666667
-         PWY-7134|unclassified	0.333333333333
-         PWY-7134|s__Parabacteroides_merdae	0.333333333333
-         ```
-3.  Pathway Abundance
-    *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
-    *   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
-    *   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
-    *   Example:
-	 	 ```# Pathway	$SAMPLE
-         PWY-1921	57.0136768635
-         PWY-1921|unclassified	32.2636768635
-         PWY-1921|s__Bacteroides_ovatus	4.5
-         PWY-1921|s__Alistipes_putredinis	3.0
-         PWY-1921|s__Bacteroides_caccae	2.25
-         PWY0-1301	54.9996450867
-         PWY0-1301|unclassified	16.9996450867
-         PWY0-1301|s__Parabacteroides_merdae	8.0
-         PWY0-1301|s__Bacteroides_caccae	6.0
-         ```
+#### Pathway coverage file
+
+``` 
+# Pathway	$SAMPLE
+PWY0-1301	1.0
+PWY0-1301|s__Bacteroides_caccae	1.0
+PWY0-1301|s__Bacteroides_finegoldii	1.0
+PWY0-1301|unclassified	1.0
+PWY-7134	1.0
+PWY-7134|s__Bacteroides_vulgatus	0.666666666667
+PWY-7134|s__Bacteroides_thetaiotaomicron	0.666666666667
+PWY-7134|unclassified	0.333333333333
+PWY-7134|s__Parabacteroides_merdae	0.333333333333
+```
+
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
+*   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
+*   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
+
+#### Pathway abundance file
+
+```
+# Pathway	$SAMPLE
+PWY-1921	57.0136768635
+PWY-1921|unclassified	32.2636768635
+PWY-1921|s__Bacteroides_ovatus	4.5
+PWY-1921|s__Alistipes_putredinis	3.0
+PWY-1921|s__Bacteroides_caccae	2.25
+PWY0-1301	54.9996450867
+PWY0-1301|unclassified	16.9996450867
+PWY0-1301|s__Parabacteroides_merdae	8.0
+PWY0-1301|s__Bacteroides_caccae	6.0
+```
+         
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
+*   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
+*   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
+
 
 Intermediate temp files will also be created:
 
