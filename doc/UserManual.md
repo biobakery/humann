@@ -82,7 +82,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
     * Please note the gene families file will not be created if the input file type is a gene table.
     *   Example:
     
-```# Gene Family	$SAMPLE
+``` # Gene Family	$SAMPLE
 UniRef50_A6L0N6	67.0
 UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
