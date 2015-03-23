@@ -1,26 +1,13 @@
+## HUMAnN2 User Manual 
+
 HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
 **If you use the HUMAnN2 software, please cite our manuscript: TBD**
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
 
-### Table of Contents
+[TOC]
 
-1.  [Requirements](#requirements)
-2.  [Installation](#installation)
-3.  [How to run](#run)
-4.  [Output files](#output)
-5.  [Workflows](#workflows)
-    *   [Workflow by input file type](#workflow)
-    *   [Workflow by bypass mode](#workflow_bypass)
-    *   [Workflow of the resume option](#workflow_resume)
-6.  [Databases](#databases)
-7.  [Configuration](#configuration)
-8.  [Tools](#tools)
-    *   [Tools for tables](#tools_tables)
-9.  [FAQs](#faqs)
-
-<a name="requirements"></a>
 ### Requirements
 
 1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
@@ -31,37 +18,46 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
 7.  Operating system (Linux or Mac)
 
-If always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#workflow)), the requirements are reduced. MetaPhlAn2, Bowtie2, Diamond, and the amount of disk space listed are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#workflow_bypass)), the requirements might also be reduced.
+If always running with files of type #2, #3, and #4 (for information on file types, see section *Workflow by input file type*), the requirements are reduced. MetaPhlAn2, Bowtie2, Diamond, and the amount of disk space listed are not required. Also if you always run with one or more bypass options (for information on bypass options, see section *Workflow by bypass mode*), the requirements might also be reduced.
 
 Please note there are additional requirements if you are using input files of type sam or biom. The [SAMtools](http://samtools.sourceforge.net/) software is required for bam files and the [biom-format](http://biom-format.org/) software is required for biom files.
 
-<a name="installation"></a>
 ### Installation
 
- 1. Download and unpack the latest release of the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz)
- 2. Install [MinPath](http://omics.informatics.indiana.edu/MinPath/) and the HUMAnN2 software (see notes 1 and 2)
-	```$ python setup.py minpath
+1. Download and unpack the latest release of the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz)
+2. Install [MinPath](http://omics.informatics.indiana.edu/MinPath/) and the HUMAnN2 software (see notes 1 and 2)
+ 
+    ```$ python setup.py minpath
 	   $ python setup.py install
 	```
- 3. Test the HUMAnN2 install (Optional)
- `` $ python setup.py test``
- 4. Try out a HUMAnN2 demo run (Optional)
-`` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
-5.Download the ChocoPhlAn database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 5.6 GB) (see note 3)
-``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
- 6. Download the UniRef database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 2.8 GB) (see note 3)
-``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
+3. Test the HUMAnN2 install (Optional)
+ 
+     `` $ python setup.py test``
+
+4. Try out a HUMAnN2 demo run (Optional)
+
+    `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
+
+5. Download the ChocoPhlAn database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 5.6 GB) (see note 3)
+
+    ``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
+6. Download the UniRef database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 2.8 GB) (see note 3)
+
+    ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
 
 NOTE 1: If you would like to update the glpk required by MinPath, add the option "--update-glpk" to the MinPath install command.
 
 NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'.
 
-NOTE 3: Downloading and installing the ChocoPhlAn and UniRef databases is not required if always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#workflow)). It is also not required to run the demo which runs on demo versions of the ChocoPhlAn and UniRef databases included as part of the HUMAnN2 install.
+NOTE 3: Downloading and installing the ChocoPhlAn and UniRef databases is not required if always running with files of type #2, #3, and #4 (for information on file types, see section *Workflow by input file type*). It is also not required to run the demo which runs on demo versions of the ChocoPhlAn and UniRef databases included as part of the HUMAnN2 install.
 
-<a name="run"></a>
 ### How to run
 
 To run HUMAnN2:
+```
+$ humann2 --input $SAMPLE --output $OUTPUT_DIR
+```
+
 
 $SAMPLE = a single file that is one of the following types:
 1.  filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format)
@@ -70,7 +66,6 @@ $SAMPLE = a single file that is one of the following types:
 
 $OUTPUT_DIR = the output directory
 
-<a name="output"></a>
 ### Output files
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
@@ -229,11 +224,11 @@ $TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 o
 NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEWNAME>".
 ```
 
-<a name="workflows"></a>
+
 ### Workflows
 
-<a name="workflow"></a>
-### Workflow by input file type
+
+#### Workflow by input file type
 
 There are four different types of files that can be provided as input to HUMAnN2\. By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
 
@@ -256,8 +251,8 @@ File Types:
 *   tsv
 *   biom
 
-<a name="workflow_bypass"></a>
-### Workflow by bypass mode
+
+#### Workflow by bypass mode
 
 There are multiple bypass options that will allow you to adjust the standard workflow.
 
@@ -280,8 +275,8 @@ Bypass options:
 
 *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
 
-<a name="workflow_resume"></a>
-### Workflow of the resume option
+
+#### Workflow of the resume option
 
 HUMAnN2 includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
 
@@ -293,7 +288,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 3.  Custom ChocoPhlAn database creation (merge and index)
 4.  Translated alignment step
 
-<a name="databases"></a>
+
 ### Databases
 
 HUMAnN2 uses two databases for alignment, ChocoPhlAn and UniRef. There are different formats of these databases. The demo formats of both are included in the HUMAnN2 install.
@@ -315,7 +310,7 @@ $ humann2_databases --download $DATABASE $BUILD $INSTALL_LOCATION
 
 This will automatically update the HUMAnN2 configuration. 
 
-<a name="configuration"></a>
+
 ### Configuration
 
 HUMAnN2 uses a configuration file to store user configuration settings. This configuration file is automatically updated when a database is installed.
@@ -387,11 +382,11 @@ remove stratified output = False
 log level = DEBUG
 ```
 
-<a name="tools"></a>
+
 ### Tools
 
-<a name="tools_tables"></a>
-### Tools for tables
+
+#### Tools for tables
 
 HUMAnN2 includes tools to be used with gene or pathway table files.
 
@@ -417,7 +412,7 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 *   $TABLE2 = normalized gene/pathway table
 *   Note: Can be combined with renaming
 
-<a name="faqs"></a>
+
 ### FAQs
 
 HUMAnN2 frequently asked questions:
