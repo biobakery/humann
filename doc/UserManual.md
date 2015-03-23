@@ -6,6 +6,7 @@ HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
 
+
 [TOC]
 
 ### Requirements
@@ -30,6 +31,7 @@ Please note there are additional requirements if you are using input files of ty
     ```$ python setup.py minpath
 	   $ python setup.py install
 	```
+    
 3. Test the HUMAnN2 install (Optional)
  
      `` $ python setup.py test``
@@ -41,6 +43,7 @@ Please note there are additional requirements if you are using input files of ty
 5. Download the ChocoPhlAn database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 5.6 GB) (see note 3)
 
     ``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
+    
 6. Download the UniRef database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 2.8 GB) (see note 3)
 
     ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
@@ -60,6 +63,7 @@ $ humann2 --input $SAMPLE --output $OUTPUT_DIR
 
 
 $SAMPLE = a single file that is one of the following types:
+
 1.  filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format)
 2.  alignment file (sam, bam or blastm8 format)
 3.  gene table file (tsv or biom format)
@@ -71,11 +75,11 @@ $OUTPUT_DIR = the output directory
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
 
 1.  Gene Families*
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
-*   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
-*   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
-* Please note the gene families file will not be created if the input file type is a gene table.
-*   Example:
+    *   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
+    *   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
+    *   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
+    * Please note the gene families file will not be created if the input file type is a gene table.
+    *   Example:
 	 ```# Gene Family	$SAMPLE
     UniRef50_A6L0N6	67.0
     UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
