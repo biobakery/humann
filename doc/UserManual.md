@@ -92,10 +92,10 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
     UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
      ```
 2.  Pathway Coverage
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
-*   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
-*   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
-*   Example:
+    *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
+    *   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
+    *   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
+    *   Example:
 	 	 ```# Pathway	$SAMPLE
          PWY0-1301	1.0
          PWY0-1301|s__Bacteroides_caccae	1.0
@@ -108,10 +108,10 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
          PWY-7134|s__Parabacteroides_merdae	0.333333333333
          ```
 3.  Pathway Abundance
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
-*   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
-*   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
-*   Example:
+    *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
+    *   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
+    *   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
+    *   Example:
 	 	 ```# Pathway	$SAMPLE
          PWY-1921	57.0136768635
          PWY-1921|unclassified	32.2636768635
@@ -126,98 +126,98 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
 
 Intermediate temp files will also be created:
 1.  Bowtie2 alignment results
-*   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
-*   This file has the full alignment output from bowtie2.
-*   Example (`` $SEQ = sequence and $QUAL = quality scores `` to fit example in page):
+    *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
+    *   This file has the full alignment output from bowtie2.
+    *   Example (`` $SEQ = sequence and $QUAL = quality scores `` to fit example in page):
 	 ``` @HD	VN:1.0	SO:unsorted
-	 @SQ	SN:g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703	LN:540
-r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
-r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
-r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
+	@SQ	SN:g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703	LN:540
+    r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
+    r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
+    r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
      ```
 2.  Bowtie2 reduced alignment results
-*   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.tsv ``
-*   This file contains the minimal amount of alignment results from Bowtie2.
-*   Example:
+    *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.tsv ``
+    *   This file contains the minimal amount of alignment results from Bowtie2.
+    *   Example:
 	 ``` r93	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_E2NEW2|UniRef50_E2NEW2	6.3095734448e-05
-r113	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_R6KNZ3|UniRef50_R6KNZ3	6.3095734448e-05	
-r704	g__Bacteroides.s__Bacteroides_uniformis|UniRef90_unknown|UniRef50_E6STE9		0.794328234724	
-r663	g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef90_R7KKH7|UniRef50_R7KKH7		6.3095734448e-05	
-r940	g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_unknown|UniRef50_unknown		6.3095734448e-0	 
+    r113	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_R6KNZ3|UniRef50_R6KNZ3	6.3095734448e-05	
+    r704	g__Bacteroides.s__Bacteroides_uniformis|UniRef90_unknown|UniRef50_E6STE9		0.794328234724	
+    r663	g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef90_R7KKH7|UniRef50_R7KKH7		6.3095734448e-05	
+    r940	g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_unknown|UniRef50_unknown		6.3095734448e-0	 
      ```
 3.  Bowtie2 index files
-*   File name: `` $DIR/$SAMPLENAME_bowtie2_index* ``
-*   These are a set of files containing the Bowtie2 index created from the custom ChocoPhlAn database.
+    *   File name: `` $DIR/$SAMPLENAME_bowtie2_index* ``
+    *   These are a set of files containing the Bowtie2 index created from the custom ChocoPhlAn database.
 4.  Unaligned reads after Bowtie2
-*   File name: `` $DIR/$SAMPLENAME_bowtie2_unaligned.fa ``
-*   This is a fasta file of unaligned reads after the Bowtie2 step.
-*   These are the reads that will be provided as input in the translated alignment step.
-*   Example (sequence reduced in length to fit example in page):
+    *   File name: `` $DIR/$SAMPLENAME_bowtie2_unaligned.fa ``
+    *   This is a fasta file of unaligned reads after the Bowtie2 step.
+    *   These are the reads that will be provided as input in the translated alignment step.
+    *   Example (sequence reduced in length to fit example in page):
 	 ```>r2805
 	 GCGGCTTTATCTTTTACGCCCTGGGCTGCGTCCGGCTATTTA
      ```
 5.  Custom ChocoPhlAn database
-*   File name: `` $DIR/$SAMPLENAME_custom_chocophlan_database.ffn ``
-*   This file is a custom ChocoPhlAn database of fasta sequences.
-*   Example:
+    *   File name: `` $DIR/$SAMPLENAME_custom_chocophlan_database.ffn ``
+    *   This file is a custom ChocoPhlAn database of fasta sequences.
+    *   Example:
 	 ```>gi|479150083|ref|NC_021013.1|:976220-976759|40518|g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703
-ATGTTCTATGTATTTCTTGCAGAAGGCTTTGAAGAAACAGAGGCGCTTGCCCCCGTTGATGTAATGCGCAGGGCAAAGCT
-TGATGTTAAAACAGTCGGTGTAACAGGCGAATGTGTTACAAGCTCACACGGTGTGCCTGTAAAAGCCGATATCACAATTG
-ACAATATTGACCTTGACGATGTTCAGGGTGTTGTACTCCCCGGTGGTATGCCCGGAACTCTCAATCTTGAGGCAAACAAA
-AAGGTTCTTGAGGCTGTTAAGTATAGCTGTGAAAACGGCAAAATCGTTGCCGCAATCTGTGCCGCTCCGTCAATTCTCGG
+    ATGTTCTATGTATTTCTTGCAGAAGGCTTTGAAGAAACAGAGGCGCTTGCCCCCGTTGATGTAATGCGCAGGGCAAAGCT
+    TGATGTTAAAACAGTCGGTGTAACAGGCGAATGTGTTACAAGCTCACACGGTGTGCCTGTAAAAGCCGATATCACAATTG
+    ACAATATTGACCTTGACGATGTTCAGGGTGTTGTACTCCCCGGTGGTATGCCCGGAACTCTCAATCTTGAGGCAAACAAA
+    AAGGTTCTTGAGGCTGTTAAGTATAGCTGTGAAAACGGCAAAATCGTTGCCGCAATCTGTGCCGCTCCGTCAATTCTCGG
      ```
 6.  MetaPhlAn2 Bowtie2 output
-*   File name: `` $DIR/$SAMPLENAME_metaphlan_bowtie2.txt ``
-*   This file is the Bowtie2 output from MetaPhlAn2.
-*   Example:
+    *   File name: `` $DIR/$SAMPLENAME_metaphlan_bowtie2.txt ``
+    *   This file is the Bowtie2 output from MetaPhlAn2.
+    *   Example:
 	 ```r113	gi|224485636|ref|NZ_EQ973490.1|:c728571-728107
-r559	gi|479185170|ref|NC_021030.1|:c1678719-1677127
-r663	gi|512436175|ref|NZ_KE159463.1|:c142391-139122
-r704	gi|423310881|ref|NZ_JH724270.1|:c220428-218656
-r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140 
+    r559	gi|479185170|ref|NC_021030.1|:c1678719-1677127
+    r663	gi|512436175|ref|NZ_KE159463.1|:c142391-139122
+    r704	gi|423310881|ref|NZ_JH724270.1|:c220428-218656
+    r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140 
      ```
 7.  MetaPhlAn2 bugs list
-*   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
-*   This file is the bugs list output from MetaPhlAn2.
-*   Example:
+    *   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
+    *   This file is the bugs list output from MetaPhlAn2.
+    *   Example:
 	 ```k__Bacteria	100.0
-k__Bacteria|p__Bacteroidetes	73.86802
-k__Bacteria|p__Firmicutes	26.13198
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	51.32768
+    k__Bacteria|p__Bacteroidetes	73.86802
+    k__Bacteria|p__Firmicutes	26.13198
+    k__Bacteria|p__Bacteroidetes|c__Bacteroidia	73.86802
+    k__Bacteria|p__Firmicutes|c__Clostridia	15.60912
+    k__Bacteria|p__Firmicutes|c__Negativicutes	10.52286
+    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	73.86802
+    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	15.60912
+    k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	10.52286
+    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	51.32768
      ```
 8.  Translated alignment results
-*   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv ``
-*   This file is the alignment results from the translated alignment step.
-*   This file is formatted as tab-delimited blast-like results.
-*   Example:
+    *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv ``
+    *   This file is the alignment results from the translated alignment step.
+    *   This file is formatted as tab-delimited blast-like results.
+    *   Example:
 	 ```r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
-r2805	UniRef50_E2ZHU1|963	37.50	48	30	0	147	4	152	199	7e-06	39.7
-r2805	UniRef50_K1UMQ9|612	35.42	48	31	0	147	4	35	82	2e-05	38.5
-r3036	UniRef50_K1TCN4|540	100.00	22	0	0	150	85	148	169	8e-10	52.8
-r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
+    r2805	UniRef50_E2ZHU1|963	37.50	48	30	0	147	4	152	199	7e-06	39.7
+    r2805	UniRef50_K1UMQ9|612	35.42	48	31	0	147	4	35	82	2e-05	38.5
+    r3036	UniRef50_K1TCN4|540	100.00	22	0	0	150	85	148	169	8e-10	52.8
+    r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
      ```
 9.  Translated alignment unaligned reads
-*   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
-*   This is a fasta file of the unaligned reads after the translated alignment step
-*   Example (sequence reduced in length to fit example in page):
+    *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
+    *   This is a fasta file of the unaligned reads after the translated alignment step
+    *   Example (sequence reduced in length to fit example in page):
 	 ```>r32055
 	 TTCAGGTGCCGTTCGATGACAGCCACACCGTCGAGGACTACGAGTTCC
      ```
 10.  Log
-*   File name: `` $DIR/$SAMPLENAME.log ``
-*   This file is a log of the run.
-*   Example:
+    *   File name: `` $DIR/$SAMPLENAME.log ``
+    *   This file is a log of the run.
+    *   Example:
 	 ```03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
 	 03/16/2015 01:09:52 PM - humann2.config - INFO: Run config settings:
-DATABASE SETTINGS
-chocophlan database folder = data/chocophlan_DEMO
-uniref database folder = data/uniref_DEM
+    DATABASE SETTINGS
+    chocophlan database folder = data/chocophlan_DEMO
+    uniref database folder = data/uniref_DEM
      ```
 
 ```
@@ -240,20 +240,16 @@ There are four different types of files that can be provided as input to HUMAnN2
 
 File Types:
 *   File Type #1 (a quality-controlled metagenome or metatranscriptome)
-*   fastq (fastq.gz)
-*   fasta (fasta.gz)
-
+    *   fastq (fastq.gz)
+    *   fasta (fasta.gz)
 *   File Type #2 (alignment results type #1)
-*   sam
-*   bam
-
+    *   sam
+    *   bam
 *   File Type #3 (alignment results type #2)
-*   blast-like tsv
-
+    *   blast-like tsv
 *   File Type #4 (gene table)
-
-*   tsv
-*   biom
+    *   tsv
+    *   biom
 
 
 #### Workflow by bypass mode
@@ -264,20 +260,15 @@ There are multiple bypass options that will allow you to adjust the standard wor
 
 Bypass options:
 *   --bypass-translated-search 
-*   runs all of the alignment steps except the translated search
-
+    *   runs all of the alignment steps except the translated search
 *   --bypass-nucleotide-search 
-*   bypasses all of the alignment steps before the translated search
-
+    *   bypasses all of the alignment steps before the translated search
 *   --bypass-prescreen 
-*   bypasses the taxomonic profiling step and uses the full ChocoPhlAn database
-
+    *   bypasses the taxomonic profiling step and uses the full ChocoPhlAn database
 *   --taxonomic-profile bugs_list.tsv 
-*   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
-
+    *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
 *   --bypass-nucleotide-index
-
-*   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
+    *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
 
 
 #### Workflow of the resume option
@@ -287,6 +278,7 @@ HUMAnN2 includes a "--resume" option which will allow you to bypass alignment st
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_resume_option_no_text.png)
 
 When using the "--resume" option, the following steps will be bypassed if they have already been completed:
+
 1.  Taxomonic profiling step
 2.  Nucleotide alignment step
 3.  Custom ChocoPhlAn database creation (merge and index)
@@ -395,51 +387,47 @@ log level = DEBUG
 HUMAnN2 includes tools to be used with gene or pathway table files.
 
 1.  Split a table
-*   $TABLE = gene/pathway table (tsv or biom format)
-*   $OUTPUT_DIR = the directory to write new gene/pathway tables (one per sample, in biom format if input is biom format)
-
-4.  Join tables
-*   $INPUT_DIR = a directory containing gene/pathway tables (tsv or biom format)
-*   $TABLE = the file to write the new single gene table (biom format if input is biom format)
-*   Optional: ``--file_name $STR`` will only join gene tables with $STR in file name
-
-8.  Rename table feature entries
-*   $TABLE = gene/pathway table (tsv format)
-*   $NAMES = mapping of feature IDs to english names (tsv format)
-*   $TABLE2 = gene/pathway table with new names attached
-*   Note: A mapping of UniRef50 IDs to english names is provided with HUMAnN2
-
-13.  Normalize sample columns
-
-*   $TABLE = gene/pathway table (tsv format)
-*   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)
-*   $TABLE2 = normalized gene/pathway table
-*   Note: Can be combined with renaming
+    *   $TABLE = gene/pathway table (tsv or biom format)
+    *   $OUTPUT_DIR = the directory to write new gene/pathway tables (one per sample, in biom format if input is biom format)
+2.  Join tables
+    *   $INPUT_DIR = a directory containing gene/pathway tables (tsv or biom format)
+    *   $TABLE = the file to write the new single gene table (biom format if input is biom format)
+    *   Optional: ``--file_name $STR`` will only join gene tables with $STR in file name
+3.  Rename table feature entries
+    *   $TABLE = gene/pathway table (tsv format)
+    *   $NAMES = mapping of feature IDs to english names (tsv format)
+    *   $TABLE2 = gene/pathway table with new names attached
+    *   Note: A mapping of UniRef50 IDs to english names is provided with HUMAnN2
+4.  Normalize sample columns
+    *   $TABLE = gene/pathway table (tsv format)
+    *   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)
+    *   $TABLE2 = normalized gene/pathway table
+    *   Note: Can be combined with renaming
 
 
 ### FAQs
 
 HUMAnN2 frequently asked questions:
 1.  Is there a way to print more information to stdout during the run?
-*   Yes, add the ``--verbose`` flag
+    *   Yes, add the ``--verbose`` flag
 2.  How do I make use of multiple cores on the same machine?
-*   Add the ``--threads $CORES`` option
+    *   Add the ``--threads $CORES`` option
 3.  How do I remove the intermediate temp output files?
-*   Add the ``--remove-temp-output`` flag
+    *   Add the ``--remove-temp-output`` flag
 4.  Can I provide an alternative location for the ChocoPhlAn database?
-*   Yes, use the ``--chocophlan $DIR`` option
+    *   Yes, use the ``--chocophlan $DIR`` option
 5.  Can I provide an alternative location for the UniRef database?
-*   Yes, use the ``--uniref $DIR`` option
+    *   Yes, use the ``--uniref $DIR`` option
 6.  I already have MetaPhlAn2 output. Can I start HUMAnN2 with the MetaPhlAn2 output?
-*   Yes, use the ``--taxonomic-profile bugs_list.tsv`` option
+    *   Yes, use the ``--taxonomic-profile bugs_list.tsv`` option
 7.  Is there a way to change $SAMPLENAME in the output file names?
-*   Yes, use the ``--output-basename $NAME`` option
+    *   Yes, use the ``--output-basename $NAME`` option
 8.  How do I remove the stratification by bug from the output files?
-*   Add the ``--remove-stratified-output`` flag
+    *   Add the ``--remove-stratified-output`` flag
 9.  How do I run with the unipathways databases?
-*   Add the ``--pathways unipathway`` option
+    *   Add the ``--pathways unipathway`` option
 10.  Is there a way to output files in biom format?
-*   Yes, use the ``--output-format biom`` option
+    *   Yes, use the ``--output-format biom`` option
 11.  Can I change the e-value threshold for alignments?
-*   Yes, use the ``--evalue <1.0>`` option
+    *   Yes, use the ``--evalue <1.0>`` option
 
