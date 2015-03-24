@@ -59,6 +59,8 @@ NOTE 3: Downloading and installing the ChocoPhlAn and UniRef databases is not re
 
 ### How to run
 
+#### Basic usage
+
 To run HUMAnN2:
 ```
 $ humann2 --input $SAMPLE --output $OUTPUT_DIR
@@ -104,7 +106,7 @@ $OUTPUT_DIR = the output directory
 
 NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NEWNAME>". 
 
-### Demo runs
+#### Demo runs
 
 The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
