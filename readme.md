@@ -1,26 +1,44 @@
-[TOC]
-
 # HUMAnN2: HMP Unified Metabolic Analysis Network 2 #
 
-## Description ##
 HUMAnN is a pipeline for efficiently and accurately determining the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). 
 
 HUMAnN2 is the next generation of HUMAnN. HUMAnN2 incorporates several new features including an expanded database of microbial genomes (>4x the size of the database included in HUMAnN), a simple user interface (single command driven flow), and bug-specific output files. 
 
 The HUMAnN2 pipeline is a single command driven flow requiring the user to only provide a filtered fastq file to produce gene and pathway summary files ready for analysis. The pipeline converts sequence reads into coverage and abundance tables summarizing the gene families and pathways in one or more microbial communities. 
 
+## Contents ##
+* [Requirements](#markdown-header-requirements)
+    * [Software](#markdown-header-software)
+    * [Other](#markdown-header-other)
+* [Installation](#markdown-header-installation)
+    * [Downloading HUMAnN2](#markdown-header-downloading-humann2)
+    * [Installing HUMAnN2](#markdown-header-installing-humann2)
+    * [Test the install](#markdown-header-test-the-install)
+    * [Try out a demo run](#markdown-header-try-out-a-demo-run)
+    * [Download the databases](#markdown-header-download-the-databases)
+        * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
+        * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
+* [How to run](#markdown-header-how-to-run)
+    * [Basic usage](#markdown-header-basic-usage)
+    * [Demo runs](#markdown-header-demo-runs)
+    * [Output files](#markdown-header-output-files)
+        * [Gene families](#markdown-header-gene-families)
+        * [Pathway coverage](#markdown-header-pathway-coverage)
+        * [Pathway abundance](#markdown-header-pathway-abundance)
+    * [Complete option list](#markdown-header-complete-option-list)
+
 ## Requirements ##
 
 ### Software ###
 
 1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
-1. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
-1. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
-1. [Python](http://www.python.org/) (version >= 2.7)
-1. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
-1. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
-1. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (optional)
-1. [usearch](http://www.drive5.com/usearch/) (version >= 7.0) (optional)
+2. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
+3. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
+4. [Python](http://www.python.org/) (version >= 2.7)
+5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
+6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
+7. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (optional)
+8. [usearch](http://www.drive5.com/usearch/) (version >= 7.0) (optional)
 
 If MetaPhlAn2, bowtie2, and diamond (or rapsearch2, usearch) are not installed in a location in your $PATH,
 then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
