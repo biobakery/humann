@@ -18,16 +18,13 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Software](#markdown-header-software)
     * [Other](#markdown-header-other)
 * [Installation](#markdown-header-installation)
-
     1. [Downloading HUMAnN2](#markdown-header-1-downloading-humann2)
     2. [Installing HUMAnN2](#markdown-header-2-installing-humann2)
     3. [Test the install](#markdown-header-3-test-the-install)
     4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
     5. [Download the databases](#markdown-header-5-download-the-databases)
-    
         * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
         * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
-
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
@@ -35,9 +32,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     1. [Gene families file](#markdown-header-1-gene-families-file)
     2. [Pathway coverage file](#markdown-header-2-pathway-coverage-file)
     3. [Pathway abundance file](#markdown-header-3-pathway-abundance-file)
-    
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
-    
         1. [Bowtie2 alignment results](#markdown-header-1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#markdown-header-2-bowtie2-reduced-alignment-results)
         3. [Bowtie2 index files](#markdown-header-3-bowtie2-index-files)
@@ -48,21 +43,16 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         8. [Translated alignment results](#markdown-header-8-translated-alignment-results)
         9. [Translated alignment unaligned reads](#markdown-header-9-translated-alignment-unaligned-reads)
         10. [Log](#markdown-header-10-log)
-        
 * [Databases](#markdown-header-databases)
 * [Configuration](#markdown-header-configuration)
 * [Tools](#markdown-header-tools)
     * [Tools for tables](#markdown-header-tools-for-tables)
-    
         1. [Split a table](#markdown-header-1-split-a-table)
         2. [Join tables](#markdown-header-2-join-tables)
         3. [Rename table feature entries](#markdown-header-3-rename-table-feature-entries)
         4. [Normalize sample columns](#markdown-header-4-normalize-sample-columns)
-    
 * [Tutorials](#markdown-header-tutorials)
-
     * [PICRUSt output](#markdown-header-picrust-output)
-
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
