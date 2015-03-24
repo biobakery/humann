@@ -7,6 +7,8 @@ HUMAnN2 is the next generation of HUMAnN. HUMAnN2 incorporates several new featu
 The HUMAnN2 pipeline is a single command driven flow requiring the user to only provide a filtered fastq file to produce gene and pathway summary files ready for analysis. The pipeline converts sequence reads into coverage and abundance tables summarizing the gene families and pathways in one or more microbial communities. 
 
 ## Contents ##
+
+* [Features](#markdown-header-features)
 * [Requirements](#markdown-header-requirements)
 * [Installation](#markdown-header-installation)
 * [How to run](#markdown-header-how-to-run)
@@ -16,6 +18,30 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
     * [Gene families](#markdown-header-gene-families)
     * [Pathway coverage](#markdown-header-pathway-coverage)
     * [Pathway abundance](#markdown-header-pathway-abundance)
+
+## Features ##
+
+
+1. Community functional profiles stratified by known and unclassified organisms
+
+    * [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2) and [ChocoPhlAn pangenome database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz) are used to facilitate fast, accurate, and organism-specific functional profiling
+    * Organisms included are Archaea, Bacteria, Eukaryotes, and Viruses
+
+2. Considerably expanded databases of genomes, genes, and pathways
+
+    * [UniRef](http://www.uniprot.org/help/uniref) database provides gene family definitions
+    * [MetaCyc](http://metacyc.org/) provides pathway definitions by gene family
+    * [MinPath](http://omics.informatics.indiana.edu/MinPath/) is run to identify the set of minimum pathways
+
+3. A simple user interface (single command driven flow)
+
+    * The user only needs to provide a quality-controlled metagenome or metatranscriptome
+
+4. Accelerated mapping of reads to reference databases (including run-time generated databases tailored to the input)
+
+    * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is run for accelerated nucleotide-level searches
+    * [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) is run for accelerated translated searches
+
 
 ## Requirements ##
 
@@ -202,4 +228,3 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 * This file includes the abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-
