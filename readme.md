@@ -1,4 +1,4 @@
-# HUMAnN2: HMP Unified Metabolic Analysis Network 2 #
+# HUMAnN2 #
 
 HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
