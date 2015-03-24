@@ -14,9 +14,9 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
 * [Output files](#markdown-header-output-files)
-    * [Gene families file](#markdown-header-gene-families-file)
-    * [Pathway coverage file](#markdown-header-pathway-coverage-file)
-    * [Pathway abundance file](#markdown-header-pathway-abundance-file)
+    1. [Gene families file](#markdown-header-gene-families-file)
+    2. [Pathway coverage file](#markdown-header-pathway-coverage-file)
+    3. [Pathway abundance file](#markdown-header-pathway-abundance-file)
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
         * [Bowtie2 alignment results](#markdown-header-bowtie2-alignment-results)
         * [Bowtie2 reduced alignment results](#markdown-header-bowtie2-reduced-alignment-results)
@@ -172,7 +172,7 @@ Since sam and blastm8 are mapping results, using these files as input to HUMAnN2
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
 
-### Gene families file ###
+### 1. Gene families file ###
 
 ``` 
 # Gene Family	$SAMPLENAME
@@ -192,7 +192,7 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 *   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
 *   Please note the gene families file will not be created if the input file type is a gene table.
         
-### Pathway coverage file ###
+### 2. Pathway coverage file ###
 
 ``` 
 # Pathway	$SAMPLENAME
@@ -211,7 +211,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 *   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
 *   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
 
-### Pathway abundance file ###
+### 3. Pathway abundance file ###
 
 ```
 # Pathway	$SAMPLENAME
