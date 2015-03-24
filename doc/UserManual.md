@@ -10,6 +10,16 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
 * [Requirements](#markdown-header-requirements)
 * [Installation](#markdown-header-installation)
+
+    1. [Downloading HUMAnN2](#markdown-header-1-downloading-humann2)
+    2. [Installing HUMAnN2](#markdown-header-2-installing-humann2)
+    3. [Test the install](#markdown-header-3-test-the-install)
+    4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
+    5. [Download the databases](#markdown-header-5-download-the-databases)
+    
+        * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
+        * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
+
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
@@ -59,36 +69,78 @@ Please note there are additional requirements if you are using input files of ty
 
 ## Installation ##
 
-1. Download and unpack the latest release of the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz)
-2. Install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
- 
-    `` $ python setup.py minpath ``
-    
-3. Install the HUMAnN2 software (see NOTE 2)
+### 1. Downloading HUMAnN2 ###
+You can download the latest HUMAnN2 release or the development version.
 
-    `` $ python setup.py install ``
-    
-4. Test the HUMAnN2 install (Optional)
- 
-     `` $ python setup.py test``
+Option 1: Latest Release (Recommended)
 
-5. Try out a HUMAnN2 demo run (Optional)
+* [Download](https://bitbucket.org/biobakery/humann2/get/0.1.2.tar.gz) and unpack the latest release of HUMAnN2.
 
-    `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
+Option 2: Development Version
 
-6. Download the ChocoPhlAn database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 5.6 GB) (see NOTE 3)
+* Create a clone of the repository: 
+	
+	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
-    ``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
-    
-7. Download the UniRef database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 2.8 GB) (see NOTE 3)
+	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest development version of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository.
 
-    ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
+For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 directory (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
+
+### 2. Installing HUMAnN2 ###
+
+1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH `` 
+2. Install MinPath : ``$ python setup.py minpath `` (see NOTE 1)
+3. Install HUMAnN2 : ``$ python setup.py install `` (see NOTE 2)
 
 NOTE 1: If you would like to update the glpk required by MinPath, add the option "--update-glpk" to the MinPath install command.
 
-NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'.
+NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the install command. This will install the python package into subdirectories of '~/.local'.
 
-NOTE 3: Downloading and installing the ChocoPhlAn and UniRef databases is not required if always running with files of type #2, #3, and #4 (for information on file types, see section *Workflow by input file type*). It is also not required to run the demo which runs on demo versions of the ChocoPhlAn and UniRef databases included as part of the HUMAnN2 install.
+
+### 3. Test the install ###
+
+Test out the install of HUMAnN2 by running the unit tests.
+
+``$ python setup.py test ``
+
+### 4. Try out a demo run ###
+
+With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
+
+``$ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
+
+Output from this demo run will be written to the folder $OUTPUT_DIR.
+
+Please continue with the install directions to download the full databases before running with your sequencing data.
+
+
+### 5. Download the databases ###
+
+Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
+
+#### Download the ChocoPhlAn database ####
+
+Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
+
+```
+$ humann2_databases --download chocophlan full $INSTALL_LOCATION
+```
+
+NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocoplan>" option to humann2.
+
+
+#### Download the UniRef50 database ####
+
+Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
+
+```
+$ humann2_databases --download uniref diamond $INSTALL_LOCATION
+```
+
+NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--uniref <uniref>" option to humann2.
+
+NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would like to use rapsearch2 for translated alignment, first download the rapsearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
+
 
 ## How to run ##
 
