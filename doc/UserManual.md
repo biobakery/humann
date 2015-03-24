@@ -242,7 +242,7 @@ Downloading the databases is a required step if your input is a filtered shotgun
 
 #### Download the ChocoPhlAn database ####
 
-Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
+Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database (approximate size = 5.6 GB).
 
 `` $ humann2_databases --download chocophlan full $INSTALL_LOCATION ``
 
@@ -251,7 +251,7 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 #### Download the UniRef50 database ####
 
-Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
+Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database (approximate size = 2.8 GB).
 
 `` $ humann2_databases --download uniref diamond $INSTALL_LOCATION ``
 
