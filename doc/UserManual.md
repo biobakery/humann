@@ -27,25 +27,27 @@ Please note there are additional requirements if you are using input files of ty
 ### Installation
 
 1. Download and unpack the latest release of the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz)
-2. Install [MinPath](http://omics.informatics.indiana.edu/MinPath/) and the HUMAnN2 software (see notes 1 and 2)
+2. Install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
  
-    ```$ python setup.py minpath
-	   $ python setup.py install
-	```
+    `` $ python setup.py minpath ``
     
-3. Test the HUMAnN2 install (Optional)
+3. Install the HUMAnN2 software (see NOTE 2)
+
+    `` $ python setup.py install ``
+    
+4. Test the HUMAnN2 install (Optional)
  
      `` $ python setup.py test``
 
-4. Try out a HUMAnN2 demo run (Optional)
+5. Try out a HUMAnN2 demo run (Optional)
 
     `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
 
-5. Download the ChocoPhlAn database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 5.6 GB) (see note 3)
+6. Download the ChocoPhlAn database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 5.6 GB) (see NOTE 3)
 
     ``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
     
-6. Download the UniRef database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 2.8 GB) (see note 3)
+7. Download the UniRef database with $INSTALL_LOCATION = the location you have selected to install the database (approx. size = 2.8 GB) (see NOTE 3)
 
     ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
 
