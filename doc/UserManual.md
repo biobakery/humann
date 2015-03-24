@@ -8,6 +8,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
 ## Contents ##
 
+* [Features](#markdown-header-features)
 * [Requirements](#markdown-header-requirements)
 
     * [Software](#markdown-header-software)
@@ -56,6 +57,31 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
+
+## Features ##
+
+
+1. Community functional profiles stratified by known and unclassified organisms
+
+    * [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2) and [ChocoPhlAn pangenome database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz) are used to facilitate fast, accurate, and organism-specific functional profiling
+    * Organisms included are Archaea, Bacteria, Eukaryotes, and Viruses
+
+2. Considerably expanded databases of genomes, genes, and pathways
+
+    * [UniRef](http://www.uniprot.org/help/uniref) database provides gene family definitions
+    * [MetaCyc](http://metacyc.org/) provides pathway definitions by gene family
+    * [MinPath](http://omics.informatics.indiana.edu/MinPath/) is run to identify the set of minimum pathways
+
+3. A simple user interface (single command driven flow)
+
+    * The user only needs to provide a quality-controlled metagenome or metatranscriptome
+
+4. Accelerated mapping of reads to reference databases (including run-time generated databases tailored to the input)
+
+    * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is run for accelerated nucleotide-level searches
+    * [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) is run for accelerated translated searches
+
+
 ## Requirements ##
 
 ### Software ###
@@ -72,7 +98,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 10. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
 
 If you always run with input files of type #2, #3, and #4 (for information on input file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
-MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode), 
+MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)), 
 the software required for the steps you bypass does not need to be installed.
 
 ### Other ###
