@@ -78,7 +78,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
 #### Gene families file
 
 ``` 
-\# Gene Family	$SAMPLE
+# Gene Family	$SAMPLE
 UniRef50_A6L0N6	67.0 
 UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
@@ -98,7 +98,7 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 #### Pathway coverage file
 
 ``` 
-\# Pathway	$SAMPLE
+# Pathway	$SAMPLE
 PWY0-1301	1.0
 PWY0-1301|s__Bacteroides_caccae	1.0
 PWY0-1301|s__Bacteroides_finegoldii	1.0
@@ -117,7 +117,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 #### Pathway abundance file
 
 ```
-\# Pathway	$SAMPLE
+# Pathway	$SAMPLE
 PWY-1921	57.0136768635
 PWY-1921|unclassified	32.2636768635
 PWY-1921|s__Bacteroides_ovatus	4.5
@@ -145,13 +145,11 @@ NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEW
 
 ##### Bowtie2 alignment results
 
-``` 
-@HD	VN:1.0	SO:unsorted
-@SQ	SN:g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703	LN:540
-r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
-r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
-r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
-```
+> @HD	VN:1.0	SO:unsorted
+> @SQ	SN:g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703	LN:540
+> r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
+> r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
+> r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
 
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
 *   This file has the full alignment output from bowtie2.
