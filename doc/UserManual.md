@@ -40,6 +40,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [Tools](#markdown-header-tools)
     * [Tools for tables](#markdown-header-tools-for-tables)
 * [FAQs](#markdown-header-faqs)
+* [Complete option list](#markdown-header-complete-option-list)
 
 ## Requirements ##
 
@@ -581,3 +582,123 @@ HUMAnN2 frequently asked questions:
 11.  Can I change the e-value threshold for alignments?
     *   Yes, use the ``--evalue <1.0>`` option
 
+## Complete option list ##
+
+```
+usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
+               [--bypass-nucleotide-index] [--bypass-translated-search]
+               [--bypass-nucleotide-search] -i <input.fastq> -o <output>
+               [-c <chocophlan>] [--chocophlan-gene-index <-1>] [-u <uniref>]
+               [--average-read-length <1>] [--evalue <1.0>]
+               [--metaphlan <metaplhan>] [--o-log <sample.log>]
+               [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+               [--remove-temp-output] [--bowtie2 <bowtie2>] [--threads <1>]
+               [--prescreen-threshold <0.01>] [--identity-threshold <0.4>]
+               [--usearch <usearch>] [--rapsearch <rapsearch>]
+               [--diamond <diamond>]
+               [--taxonomic-profile <taxonomic_profile.tsv>]
+               [--id-mapping <id_mapping.tsv>]
+               [--translated-alignment {usearch,rapsearch,diamond}]
+               [--xipe {on,off}] [--minpath {on,off}] [--pick-frames {on,off}]
+               [--output-format {tsv,biom}] [--output-basename <sample_name>]
+               [--remove-stratified-output]
+               [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
+               [--pathways-database <pathways_database.tsv>]
+               [--pathways {metacyc,unipathway}]
+
+HUMAnN2 : HMP Unified Metabolic Analysis Network 2
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -v, --verbose         additional output is printed
+  -r, --resume          bypass commands if the output files exist
+  --bypass-prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
+  --bypass-nucleotide-index
+                        bypass the nucleotide index step and run on the indexed ChocoPhlAn database
+  --bypass-translated-search
+                        bypass the translated search step
+  --bypass-nucleotide-search
+                        bypass the nucleotide search steps
+  -i <input.fastq>, --input <input.fastq>
+                        input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom} 
+                        [REQUIRED]
+  -o <output>, --output <output>
+                        directory to write output files
+                        [REQUIRED]
+  -c <chocophlan>, --chocophlan <chocophlan>
+                        directory containing the ChocoPhlAn database
+                        [DEFAULT: data/chocophlan_DEMO]
+  --chocophlan-gene-index <-1>
+                        the index of the gene in the sequence annotation
+                        [DEFAULT: -1]
+  -u <uniref>, --uniref <uniref>
+                        directory containing the UniRef database
+                        [DEFAULT: data/uniref_DEMO]
+  --average-read-length <1>
+                        the average length of the reads
+                        [DEFAULT: 1]
+  --evalue <1.0>        the evalue threshold
+                        [DEFAULT: 1.0]
+  --metaphlan <metaplhan>
+                        directory containing the MetaPhlAn software
+                        [DEFAULT: $PATH]
+  --o-log <sample.log>  log file
+                        [DEFAULT: temp/sample.log]
+  --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                        level of messages to display in log
+                        [DEFAULT: DEBUG]
+  --remove-temp-output  remove temp output files
+                        [DEFAULT: temp files are not removed]
+  --bowtie2 <bowtie2>   directory of the bowtie2 executable
+                        [DEFAULT: $PATH]
+  --threads <1>         number of threads/processes
+                        [DEFAULT: 1]
+  --prescreen-threshold <0.01>
+                        minimum percentage of reads matching a species
+                        [DEFAULT: 0.01]
+  --identity-threshold <0.4>
+                        identity threshold to use with the translated search
+                        [DEFAULT: 0.4]
+  --usearch <usearch>   directory containing the usearch executable
+                        [DEFAULT: $PATH]
+  --rapsearch <rapsearch>
+                        directory containing the rapsearch executable
+                        [DEFAULT: $PATH]
+  --diamond <diamond>   directory containing the diamond executable
+                        [DEFAULT: $PATH]
+  --taxonomic-profile <taxonomic_profile.tsv>
+                        a taxonomic profile (the output file created by metaphlan)
+                        [DEFAULT: file will be created]
+  --id-mapping <id_mapping.tsv>
+                        id mapping file for alignments
+                        [DEFAULT: alignment reference used]
+  --translated-alignment {usearch,rapsearch,diamond}
+                        software to use for translated alignment
+                        [DEFAULT: diamond]
+  --xipe {on,off}       turn on/off the xipe computation
+                        [DEFAULT: off]
+  --minpath {on,off}    turn on/off the minpath computation
+                        [DEFAULT: on]
+  --pick-frames {on,off}
+                        turn on/off the pick_frames computation
+                        [DEFAULT: off]
+  --output-format {tsv,biom}
+                        the format of the output files
+                        [DEFAULT: tsv]
+  --output-basename <sample_name>
+                        the basename for the output files
+                        [DEFAULT: input file basename]
+  --remove-stratified-output
+                        remove stratification from output
+                        [DEFAULT: output is stratified]
+  --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
+                        the format of the input file
+                        [DEFAULT: format identified by software]
+  --pathways-database <pathways_database.tsv>
+                        mapping file (or files, at most two in a comma-delimited list) to use for pathway computations
+                        [DEFAULT: metacyc database ]
+  --pathways {metacyc,unipathway}
+                        the database to use for pathway computations
+                        [DEFAULT: metacyc]
+```
