@@ -12,6 +12,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 ## Contents ##
 
 * [Features](#markdown-header-features)
+* [Workflow](#markdown-header-workflow)
 * [Requirements](#markdown-header-requirements)
 * [Installation](#markdown-header-installation)
 * [How to run](#markdown-header-how-to-run)
@@ -44,6 +45,11 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
     * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is run for accelerated nucleotide-level searches
     * [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) is run for accelerated translated searches
+
+
+## Workflow ##
+
+![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_diamond_500x500.jpg)
 
 
 ## Requirements ##
