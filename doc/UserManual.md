@@ -17,6 +17,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     1. [Gene families file](#markdown-header-gene-families-file)
     2. [Pathway coverage file](#markdown-header-pathway-coverage-file)
     3. [Pathway abundance file](#markdown-header-pathway-abundance-file)
+    
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
         * [Bowtie2 alignment results](#markdown-header-bowtie2-alignment-results)
         * [Bowtie2 reduced alignment results](#markdown-header-bowtie2-reduced-alignment-results)
