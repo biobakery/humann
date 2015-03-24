@@ -21,7 +21,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
     
         1. [Bowtie2 alignment results](#markdown-header-1-bowtie2-alignment-results)
-        2. [Bowtie2 reduced alignment results](#markdown-2-header-bowtie2-reduced-alignment-results)
+        2. [Bowtie2 reduced alignment results](#markdown-header-2-bowtie2-reduced-alignment-results)
         3. [Bowtie2 index files](#markdown-header-3-bowtie2-index-files)
         4. [Unaligned reads after Bowtie2](#markdown-header-4-unaligned-reads-after-bowtie2)
         5. [Custom ChocoPhlAn database](#markdown-header-5-custom-chocophlan-database)
