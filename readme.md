@@ -114,16 +114,16 @@ Type the command:
 $SAMPLE = a single file that is one of the following types:
 
 1. filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format)
-1. mapping results file (sam, bam or blastm8 format)
-1. gene table file (tsv or biom format)
+2. mapping results file (sam, bam or blastm8 format)
+3. gene table file (tsv or biom format)
 
 $OUTPUT_DIR = the output directory
 
 **Three output files will be created:**
 
 1. $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv*
-1. $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv
-1. $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv
+2. $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv
+3. $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv
 
 where $SAMPLENAME is the basename of $SAMPLE
 
@@ -133,23 +133,23 @@ where $SAMPLENAME is the basename of $SAMPLE
 
 1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
 	* the full alignment output from bowtie2 
-1. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
+2. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
 	* only the reduced aligned data from the bowtie2 output
-1. $DIR/$SAMPLENAME_bowtie2_index*
+3. $DIR/$SAMPLENAME_bowtie2_index*
 	* bowtie2 index files created from the custom chochophlan database
-1. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
+4. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
 	* a fasta file of unaligned reads after the bowtie2 step
-1. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
+5. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
 	* a custom chocophlan database of fasta sequences
-1. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
+6. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
 	* the bowtie2 output from metaphlan
-1. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
+7. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
 	* the bugs list output from metaphlan
-1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
+8. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
 	* the alignment results from the translated alignment step
-1. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
+9. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
 	* a fasta file of unaligned reads after the translated alignment step
-1. $DIR/$SAMPLENAME.log 
+10. $DIR/$SAMPLENAME.log 
 	* a log of the run
 	
 * $DIR=$OUTPUT_DIR/$SAMPLENAME_humann2_temp/
