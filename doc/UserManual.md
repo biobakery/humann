@@ -44,6 +44,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         8. [Translated alignment results](#markdown-header-8-translated-alignment-results)
         9. [Translated alignment unaligned reads](#markdown-header-9-translated-alignment-unaligned-reads)
         10. [Log](#markdown-header-10-log)
+        
 * [Databases](#markdown-header-databases)
 * [Configuration](#markdown-header-configuration)
 * [Tools](#markdown-header-tools)
