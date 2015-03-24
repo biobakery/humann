@@ -1,4 +1,4 @@
-# HUMAnN2 User Manual ## 
+# HUMAnN2 User Manual #
 
 HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
