@@ -73,6 +73,62 @@ $SAMPLE = a single file that is one of the following types:
 
 $OUTPUT_DIR = the output directory
 
+*The gene families file will not be created if the input file type is a gene table.
+
+**Intermediate temp files will also be created:**
+
+1. $DIR/$SAMPLENAME_bowtie2_aligned.sam
+	* the full alignment output from bowtie2 
+2. $DIR/$SAMPLENAME_bowtie2_aligned.tsv
+	* only the reduced aligned data from the bowtie2 output
+3. $DIR/$SAMPLENAME_bowtie2_index*
+	* bowtie2 index files created from the custom chochophlan database
+4. $DIR/$SAMPLENAME_bowtie2_unaligned.fa 
+	* a fasta file of unaligned reads after the bowtie2 step
+5. $DIR/$SAMPLENAME_custom_chocophlan_database.ffn 
+	* a custom chocophlan database of fasta sequences
+6. $DIR/$SAMPLENAME_metaphlan_bowtie2.txt 
+	* the bowtie2 output from metaphlan
+7. $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv 
+	* the bugs list output from metaphlan
+8. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv 
+	* the alignment results from the translated alignment step
+9. $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa 
+	* a fasta file of unaligned reads after the translated alignment step
+10. $DIR/$SAMPLENAME.log 
+	* a log of the run
+	
+* $DIR=$OUTPUT_DIR/$SAMPLENAME_humann2_temp/
+* $SAMPLENAME is the basename of the fastq/fasta input file
+* $TRANSLATEDALIGN is the translated alignment software selected (rapsearch2 or usearch)
+
+NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NEWNAME>". 
+
+### Demo runs
+
+The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
+
+
+To run the fasta demo type the command:
+
+`` humann2 --input examples/demo.fasta --output $OUTPUT_DIR``
+
+To run the fastq demo type the command:
+
+`` humann2 --input examples/demo.fastq --output $OUTPUT_DIR``
+
+To run the sam demo type the command:
+
+`` humann2 --input examples/demo.sam --output $OUTPUT_DIR``
+
+To run the blastm8 demo type the command:
+
+`` humann2 --input examples/demo.m8 --output $OUTPUT_DIR``
+
+$OUTPUT_DIR is the output directory
+
+Since sam and blastm8 are mapping results, using these files as input to HUMAnN2 will bypass both the nucleotide and translated mapping portions of the flow.
+
 ### Output files
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
