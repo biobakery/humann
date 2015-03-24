@@ -62,6 +62,10 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         3. [Rename table feature entries](#markdown-header-3-rename-table-feature-entries)
         4. [Normalize sample columns](#markdown-header-4-normalize-sample-columns)
     
+* [Tutorials](#markdown-header-tutorials)
+
+    * [PICRUSt output](#markdown-header-picurst-output)
+
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
@@ -675,6 +679,38 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 *   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)
 *   $TABLE2 = normalized gene/pathway table
 *   Note: Can be combined with renaming
+
+## Tutorials ##
+
+### PICRUSt output ###
+
+If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
+
+1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
+
+    * The databases will be refered to in steps that follow with the path "humann1/data/*".
+
+2. Split the picrust output file (picrust.biom) into a single file per sample (written to $OUTPUT_DIR)
+
+    * `` $ humann2_split_table --input picurst.biom --output $OUTPUT_DIR ``
+    * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom file with column -1 associated with K0s.
+
+3. Run HUMAnN2 on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
+
+    * for $SAMPLE.biom in $OUTPUT_DIR
+        * `` $ humann2 --input $SAMPLE.biom --output $OUTPUT_DIR2 --pathways-database humann1/data/keggc ``
+    * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
+    * The option ``--remove-stratified-output`` can be added if you do not want the data stratified by bug.
+    * The option ``--output-format biom`` can be added if you want the output to be in biom format.
+    
+4. Join the pathways data (coverage and abundance) files from the HUMAnN2 runs from all samples into two files
+
+    * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathcoverage.tsv --file_name pathcoverage ``
+    * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathabundance.tsv --file_name pathabundance ``
+    * The resulting files from these commands are named humann2_pathcoverage.tsv and humann2_pathabundance.tsv .
+    * If the files being joined in this step are biom format, the ouput file will also be in biom format.
+
+Please note the flag ``--verbose`` can be added to all commands.
 
 
 ## FAQs ##
