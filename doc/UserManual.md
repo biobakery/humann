@@ -92,7 +92,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
 ### Workflow by input file type ###
 
-There are four different types of files that can be provided as input to HUMAnN2\. By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
+There are four different types of files that can be provided as input to HUMAnN2 . By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
 
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_by_file_type_reduced.png)
 
