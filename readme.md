@@ -103,9 +103,7 @@ NOTE 1: If you do not have write permissions to '/usr/lib/', then add the option
 
 ### Basic usage ###
 
-Type the command:
-
-`` humann2 --input $SAMPLE --output $OUTPUT_DIR``
+`` $ humann2 --input $SAMPLE --output $OUTPUT_DIR``
 
 $SAMPLE = a single file that is one of the following types:
 
@@ -159,21 +157,21 @@ NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NE
 The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
 
-To run the fasta demo type the command:
+To run the fasta demo:
 
-`` humann2 --input examples/demo.fasta --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.fasta --output $OUTPUT_DIR``
 
-To run the fastq demo type the command:
+To run the fastq demo:
 
-`` humann2 --input examples/demo.fastq --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.fastq --output $OUTPUT_DIR``
 
-To run the sam demo type the command:
+To run the sam demo:
 
-`` humann2 --input examples/demo.sam --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.sam --output $OUTPUT_DIR``
 
-To run the blastm8 demo type the command:
+To run the blastm8 demo:
 
-`` humann2 --input examples/demo.m8 --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.m8 --output $OUTPUT_DIR``
 
 $OUTPUT_DIR is the output directory
 
