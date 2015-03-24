@@ -200,18 +200,23 @@ Option 2: Development Version
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
 	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. 
-    
-For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 directory (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
+
 
 ### 2. Installing HUMAnN2 ###
 
-1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH `` 
-2. Install MinPath : ``$ python setup.py minpath `` (see NOTE 1)
-3. Install HUMAnN2 : ``$ python setup.py install `` (see NOTE 2)
+1. Move to the HUMAnN2 directory
 
-NOTE 1: If you would like to update the glpk required by MinPath, add the option "--update-glpk" to the MinPath install command.
+    * ``$ cd $HUMAnN2_PATH `` 
 
-NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the install command. This will install the python package into subdirectories of '~/.local'.
+2. Install MinPath
+
+    * ``$ python setup.py minpath ``
+    * If you would like to update the glpk required by MinPath, add the option ``--update-glpk`` to the MinPath install command.
+    
+3. Install HUMAnN2
+
+    * ``$ python setup.py install ``
+    * If you do not have write permissions to '/usr/lib/', then add the option ``--user`` to the install command. This will install the python package into subdirectories of '~/.local'.
 
 
 ### 3. Test the install ###
@@ -239,9 +244,7 @@ Downloading the databases is a required step if your input is a filtered shotgun
 
 Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
 
-```
-$ humann2_databases --download chocophlan full $INSTALL_LOCATION
-```
+`` $ humann2_databases --download chocophlan full $INSTALL_LOCATION ``
 
 NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocoplan>" option to humann2.
 
@@ -250,9 +253,7 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
 
-```
-$ humann2_databases --download uniref diamond $INSTALL_LOCATION
-```
+`` $ humann2_databases --download uniref diamond $INSTALL_LOCATION ``
 
 NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--uniref <uniref>" option to humann2.
 
@@ -263,7 +264,6 @@ NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would lik
 
 ### Basic usage ###
 
-To run HUMAnN2:
 ```
 $ humann2 --input $SAMPLE --output $OUTPUT_DIR
 ```
@@ -321,21 +321,21 @@ NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NE
 The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
 
-To run the fasta demo type the command:
+To run the fasta demo:
 
-`` humann2 --input examples/demo.fasta --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.fasta --output $OUTPUT_DIR``
 
-To run the fastq demo type the command:
+To run the fastq demo:
 
-`` humann2 --input examples/demo.fastq --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.fastq --output $OUTPUT_DIR``
 
-To run the sam demo type the command:
+To run the sam demo:
 
-`` humann2 --input examples/demo.sam --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.sam --output $OUTPUT_DIR``
 
-To run the blastm8 demo type the command:
+To run the blastm8 demo:
 
-`` humann2 --input examples/demo.m8 --output $OUTPUT_DIR``
+`` $ humann2 --input examples/demo.m8 --output $OUTPUT_DIR``
 
 $OUTPUT_DIR is the output directory
 
