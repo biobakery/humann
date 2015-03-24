@@ -1,4 +1,4 @@
-## HUMAnN2 User Manual 
+# HUMAnN2 User Manual ## 
 
 HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
@@ -6,11 +6,39 @@ HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
 
-**Table of Contents**
+## Contents ##
 
-[TOC]
+* [Requirements](#markdown-header-requirements)
+* [Installation](#markdown-header-installation)
+* [How to run](#markdown-header-how-to-run)
+    * [Basic usage](#markdown-header-basic-usage)
+    * [Demo runs](#markdown-header-demo-runs)
+* [Output files](#markdown-header-output-files)
+    * [Gene families file](#markdown-header-gene-families-file)
+    * [Pathway coverage file](#markdown-header-pathway-coverage-file)
+    * [Pathway abundance file](#markdown-header-pathway-abundance-file)
+    * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
+        * [Bowtie2 alignment results](#markdown-header-bowtie2-alignment-results)
+        * [Bowtie2 reduced alignment results](#markdown-header-bowtie2-reduced-alignment-results)
+        * [Bowtie2 index files](#markdown-header-bowtie2-index-files)
+        * [Unaligned reads after Bowtie2](#markdown-header-unaligned-reads-after-bowtie2)
+        * [Custom ChocoPhlAn database](#markdown-header-custom-chocophlan-database)
+        * [MetaPhlAn2 Bowtie2 output](#markdown-header-metaphlan2-bowtie2-output)
+        * [MetaPhlAn2 bugs list](#markdown-header-metaphlan2-bugs-list)
+        * [Translated alignment results](#markdown-header-translated-alignment-results)
+        * [Translated alignment unaligned reads](#markdown-header-translated-alignment-unaligned-reads)
+        * [Log](#markdown-header-log)
+* [Workflows](#markdown-header-workflows)
+    * [Workflow by input file type](#markdown-header-workflow-by-input-file-type)
+    * [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)
+    * [Workflow of the resume option](#markdown-header-workflow-of-the-resume-option)
+* [Databases](#markdown-header-databases)
+* [Configuration](#markdown-header-configuration)
+* [Tools](#markdown-header-tools)
+    * [Tools for tables](#markdown-header-tools-for-tables)
+* [FAQs](#markdown-header-faqs)
 
-### Requirements
+## Requirements ##
 
 1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
 2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1)
@@ -20,11 +48,12 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
 7.  Operating system (Linux or Mac)
 
-If always running with files of type #2, #3, and #4 (for information on file types, see section *Workflow by input file type*), the requirements are reduced. MetaPhlAn2, Bowtie2, Diamond, and the amount of disk space listed are not required. Also if you always run with one or more bypass options (for information on bypass options, see section *Workflow by bypass mode*), the requirements might also be reduced.
+If always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)), the requirements are reduced. MetaPhlAn2, Bowtie2, Diamond, and the amount of disk space listed are not required. 
+Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode), the requirements might also be reduced.
 
 Please note there are additional requirements if you are using input files of type sam or biom. The [SAMtools](http://samtools.sourceforge.net/) software is required for bam files and the [biom-format](http://biom-format.org/) software is required for biom files.
 
-### Installation
+## Installation ##
 
 1. Download and unpack the latest release of the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.tar.gz)
 2. Install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
@@ -57,9 +86,9 @@ NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option
 
 NOTE 3: Downloading and installing the ChocoPhlAn and UniRef databases is not required if always running with files of type #2, #3, and #4 (for information on file types, see section *Workflow by input file type*). It is also not required to run the demo which runs on demo versions of the ChocoPhlAn and UniRef databases included as part of the HUMAnN2 install.
 
-### How to run
+## How to run ##
 
-#### Basic usage
+### Basic usage ###
 
 To run HUMAnN2:
 ```
@@ -74,6 +103,14 @@ $SAMPLE = a single file that is one of the following types:
 3.  gene table file (tsv or biom format)
 
 $OUTPUT_DIR = the output directory
+
+**Three output files will be created:**
+
+1. $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv*
+2. $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv
+3. $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv
+
+where $SAMPLENAME is the basename of $SAMPLE
 
 *The gene families file will not be created if the input file type is a gene table.
 
@@ -106,7 +143,7 @@ $OUTPUT_DIR = the output directory
 
 NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NEWNAME>". 
 
-#### Demo runs
+### Demo runs ###
 
 The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
@@ -131,11 +168,11 @@ $OUTPUT_DIR is the output directory
 
 Since sam and blastm8 are mapping results, using these files as input to HUMAnN2 will bypass both the nucleotide and translated mapping portions of the flow.
 
-### Output files
+## Output files ##
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
 
-#### Gene families file
+### Gene families file ###
 
 ``` 
 # Gene Family	$SAMPLENAME
@@ -155,7 +192,7 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 *   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
 *   Please note the gene families file will not be created if the input file type is a gene table.
         
-#### Pathway coverage file
+### Pathway coverage file ###
 
 ``` 
 # Pathway	$SAMPLENAME
@@ -174,7 +211,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 *   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
 *   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
 
-#### Pathway abundance file
+### Pathway abundance file ###
 
 ```
 # Pathway	$SAMPLENAME
@@ -193,7 +230,7 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 *   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
 *   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
 
-#### Intermediate temp output files
+### Intermediate temp output files ###
 
 Ten intermediate temp output files will be created where:
 
@@ -205,7 +242,7 @@ $TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 o
 
 NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEWNAME>
 
-##### Bowtie2 alignment results
+#### Bowtie2 alignment results ####
 
 ```
 @HD	VN:1.0	SO:unsorted
@@ -219,7 +256,7 @@ r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SX
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
 *   This file has the full alignment output from bowtie2.
 
-##### Bowtie2 reduced alignment results
+#### Bowtie2 reduced alignment results ####
 
 ``` 
 r93	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_E2NEW2|UniRef50_E2NEW2	6.3095734448e-05
@@ -232,14 +269,14 @@ r940	g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_unknown|UniRef50_unknown		6
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.tsv ``
 *   This file contains the minimal amount of alignment results from Bowtie2.
 
-##### Bowtie2 index files
+#### Bowtie2 index files ####
 
 
 *   Example not included as files are binary.
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_index* ``
 *   These are a set of files containing the Bowtie2 index created from the custom ChocoPhlAn database.
 
-##### Unaligned reads after Bowtie2
+#### Unaligned reads after Bowtie2 ####
 
 ```
 >r4370
@@ -252,7 +289,7 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 *   This is a fasta file of unaligned reads after the Bowtie2 step.
 *   These are the reads that will be provided as input in the translated alignment step.
 
-##### Custom ChocoPhlAn database
+#### Custom ChocoPhlAn database ####
 
 ```
 >gi|479150083|ref|NC_021013.1|:976220-976759|40518|g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703
@@ -265,7 +302,7 @@ AAGGTTCTTGAGGCTGTTAAGTATAGCTGTGAAAACGGCAAAATCGTTGCCGCAATCTGTGCCGCTCCGTCAATTCTCGG
 *   File name: `` $DIR/$SAMPLENAME_custom_chocophlan_database.ffn ``
 *   This file is a custom ChocoPhlAn database of fasta sequences.
 
-##### MetaPhlAn2 Bowtie2 output
+#### MetaPhlAn2 Bowtie2 output ####
 
 ```
 r113	gi|224485636|ref|NZ_EQ973490.1|:c728571-728107
@@ -278,7 +315,7 @@ r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140
 *   File name: `` $DIR/$SAMPLENAME_metaphlan_bowtie2.txt ``
 *   This file is the Bowtie2 output from MetaPhlAn2.
 
-##### MetaPhlAn2 bugs list
+#### MetaPhlAn2 bugs list ####
 
 ```
 k__Bacteria	100.0
@@ -296,7 +333,7 @@ k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	5
 *   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
 *   This file is the bugs list output from MetaPhlAn2.
 
-##### Translated alignment results
+#### Translated alignment results ####
 
 ```
 r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
@@ -310,7 +347,7 @@ r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
 *   This file is the alignment results from the translated alignment step.
 *   This file is formatted as tab-delimited blast-like results.
 
-##### Translated alignment unaligned reads
+#### Translated alignment unaligned reads ####
 
 ```
 >r4370
@@ -322,7 +359,7 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
 *   This is a fasta file of the unaligned reads after the translated alignment step
 
-##### Log
+#### Log ####
 
 ```
 03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
@@ -336,10 +373,10 @@ uniref database folder = data/uniref_DEM
 *   This file is a log of the run.
 
 
-### Workflows
+## Workflows ##
 
 
-#### Workflow by input file type
+### Workflow by input file type ###
 
 There are four different types of files that can be provided as input to HUMAnN2\. By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
 
@@ -360,7 +397,7 @@ File Types:
     *   biom
 
 
-#### Workflow by bypass mode
+### Workflow by bypass mode ###
 
 There are multiple bypass options that will allow you to adjust the standard workflow.
 
@@ -380,7 +417,7 @@ Bypass options:
     *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
 
 
-#### Workflow of the resume option
+### Workflow of the resume option ###
 
 HUMAnN2 includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
 
@@ -394,7 +431,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 4.  Translated alignment step
 
 
-### Databases
+## Databases ##
 
 HUMAnN2 uses two databases for alignment, ChocoPhlAn and UniRef. There are different formats of these databases. The demo formats of both are included in the HUMAnN2 install.
 
@@ -416,7 +453,7 @@ $ humann2_databases --download $DATABASE $BUILD $INSTALL_LOCATION
 This will automatically update the HUMAnN2 configuration. 
 
 
-### Configuration
+## Configuration ##
 
 HUMAnN2 uses a configuration file to store user configuration settings. This configuration file is automatically updated when a database is installed.
 
@@ -488,10 +525,10 @@ log level = DEBUG
 ```
 
 
-### Tools
+## Tools ##
 
 
-#### Tools for tables
+### Tools for tables ###
 
 HUMAnN2 includes tools to be used with gene or pathway table files.
 
@@ -514,7 +551,7 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
     *   Note: Can be combined with renaming
 
 
-### FAQs
+## FAQs ##
 
 HUMAnN2 frequently asked questions:
 
