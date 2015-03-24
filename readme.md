@@ -11,13 +11,16 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
     * [Software](#markdown-header-software)
     * [Other](#markdown-header-other)
 * [Installation](#markdown-header-installation)
-    * [Downloading HUMAnN2](#markdown-header-downloading-humann2)
-    * [Installing HUMAnN2](#markdown-header-installing-humann2)
-    * [Test the install](#markdown-header-test-the-install)
-    * [Try out a demo run](#markdown-header-try-out-a-demo-run)
-    * [Download the databases](#markdown-header-download-the-databases)
+
+    1. [Downloading HUMAnN2](#markdown-header-1-downloading-humann2)
+    2. [Installing HUMAnN2](#markdown-header-2-installing-humann2)
+    3. [Test the install](#markdown-header-3-test-the-install)
+    4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
+    5. [Download the databases](#markdown-header-5-download-the-databases)
+
         * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
         * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
+
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
@@ -51,7 +54,7 @@ directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (
 
 ## Installation ##
 
-### Downloading HUMAnN2 ###
+### 1. Downloading HUMAnN2 ###
 You can download the latest HUMAnN2 release or the development version.
 
 Option 1: Latest Release (Recommended)
@@ -68,7 +71,7 @@ Option 2: Development Version
 
 For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 directory (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
 
-### Installing HUMAnN2 ###
+### 2. Installing HUMAnN2 ###
 
 1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
 1. Install MinPath : ``$ python setup.py minpath ``
@@ -76,13 +79,13 @@ For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 director
 
 Note: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the install command. This will install the python package into subdirectories of '~/.local'.
 
-### Test the install ###
+### 3. Test the install ###
 
 Test out the install of HUMAnN2 by running the unit tests.
 
 ``$ python setup.py test ``
 
-### Try out a demo run ###
+### 4. Try out a demo run ###
 
 With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
 
@@ -93,7 +96,7 @@ Output from this demo run will be written to the folder $OUTPUT_DIR.
 Please continue with the install directions to download the full databases before running with your sequencing data.
 
 
-### Download the databases ###
+### 5. Download the databases ###
 
 Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
 
