@@ -78,7 +78,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
 #### Gene families file
 
 ``` 
-# Gene Family	$SAMPLE
+# Gene Family	$SAMPLENAME
 UniRef50_A6L0N6	67.0 
 UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
@@ -93,12 +93,12 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
 *   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
 *   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
-* Please note the gene families file will not be created if the input file type is a gene table.
+*   Please note the gene families file will not be created if the input file type is a gene table.
         
 #### Pathway coverage file
 
 ``` 
-# Pathway	$SAMPLE
+# Pathway	$SAMPLENAME
 PWY0-1301	1.0
 PWY0-1301|s__Bacteroides_caccae	1.0
 PWY0-1301|s__Bacteroides_finegoldii	1.0
@@ -117,7 +117,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 #### Pathway abundance file
 
 ```
-# Pathway	$SAMPLE
+# Pathway	$SAMPLENAME
 PWY-1921	57.0136768635
 PWY-1921|unclassified	32.2636768635
 PWY-1921|s__Bacteroides_ovatus	4.5
@@ -137,9 +137,11 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 
 Ten intermediate temp output files will be created where:
 
+```
 $DIR = $OUTPUT_DIR/$SAMPLENAME_humann2_temp/
-$SAMPLENAME = basename of the fastq/fasta input file
+$SAMPLENAME = basename of the fastq/fasta input file named $SAMPLE
 $TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 or usearch)
+```
 
 NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEWNAME>
 
@@ -153,9 +155,9 @@ r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_
 r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
 ```
 
+*   In example above `` $SEQ = sequence and $QUAL = quality scores `` to fit in page.
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
 *   This file has the full alignment output from bowtie2.
-*   In example above `` $SEQ = sequence and $QUAL = quality scores `` to fit in page.
 
 ##### Bowtie2 reduced alignment results
 
@@ -259,7 +261,6 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
     
 *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
 *   This is a fasta file of the unaligned reads after the translated alignment step
-
 
 ##### Log
 
