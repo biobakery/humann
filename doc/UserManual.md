@@ -19,16 +19,18 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     3. [Pathway abundance file](#markdown-header-3-pathway-abundance-file)
     
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
-        * [Bowtie2 alignment results](#markdown-header-bowtie2-alignment-results)
-        * [Bowtie2 reduced alignment results](#markdown-header-bowtie2-reduced-alignment-results)
-        * [Bowtie2 index files](#markdown-header-bowtie2-index-files)
-        * [Unaligned reads after Bowtie2](#markdown-header-unaligned-reads-after-bowtie2)
-        * [Custom ChocoPhlAn database](#markdown-header-custom-chocophlan-database)
-        * [MetaPhlAn2 Bowtie2 output](#markdown-header-metaphlan2-bowtie2-output)
-        * [MetaPhlAn2 bugs list](#markdown-header-metaphlan2-bugs-list)
-        * [Translated alignment results](#markdown-header-translated-alignment-results)
-        * [Translated alignment unaligned reads](#markdown-header-translated-alignment-unaligned-reads)
-        * [Log](#markdown-header-log)
+    
+        1. [Bowtie2 alignment results](#markdown-header-1-bowtie2-alignment-results)
+        2. [Bowtie2 reduced alignment results](#markdown-2-header-bowtie2-reduced-alignment-results)
+        3. [Bowtie2 index files](#markdown-header-3-bowtie2-index-files)
+        4. [Unaligned reads after Bowtie2](#markdown-header-4-unaligned-reads-after-bowtie2)
+        5. [Custom ChocoPhlAn database](#markdown-header-5-custom-chocophlan-database)
+        6. [MetaPhlAn2 Bowtie2 output](#markdown-header-6-metaphlan2-bowtie2-output)
+        7. [MetaPhlAn2 bugs list](#markdown-header-7-metaphlan2-bugs-list)
+        8. [Translated alignment results](#markdown-header-8-translated-alignment-results)
+        9. [Translated alignment unaligned reads](#markdown-header-9-translated-alignment-unaligned-reads)
+        10. [Log](#markdown-header-10-log)
+        
 * [Workflows](#markdown-header-workflows)
     * [Workflow by input file type](#markdown-header-workflow-by-input-file-type)
     * [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)
@@ -243,7 +245,7 @@ $TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 o
 
 NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEWNAME>
 
-#### Bowtie2 alignment results ####
+#### 1. Bowtie2 alignment results ####
 
 ```
 @HD	VN:1.0	SO:unsorted
@@ -257,7 +259,7 @@ r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SX
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
 *   This file has the full alignment output from bowtie2.
 
-#### Bowtie2 reduced alignment results ####
+#### 2. Bowtie2 reduced alignment results ####
 
 ``` 
 r93	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_E2NEW2|UniRef50_E2NEW2	6.3095734448e-05
@@ -270,14 +272,14 @@ r940	g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_unknown|UniRef50_unknown		6
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.tsv ``
 *   This file contains the minimal amount of alignment results from Bowtie2.
 
-#### Bowtie2 index files ####
+#### 3. Bowtie2 index files ####
 
 
 *   Example not included as files are binary.
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_index* ``
 *   These are a set of files containing the Bowtie2 index created from the custom ChocoPhlAn database.
 
-#### Unaligned reads after Bowtie2 ####
+#### 4. Unaligned reads after Bowtie2 ####
 
 ```
 >r4370
@@ -290,7 +292,7 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 *   This is a fasta file of unaligned reads after the Bowtie2 step.
 *   These are the reads that will be provided as input in the translated alignment step.
 
-#### Custom ChocoPhlAn database ####
+#### 5. Custom ChocoPhlAn database ####
 
 ```
 >gi|479150083|ref|NC_021013.1|:976220-976759|40518|g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703
@@ -303,7 +305,7 @@ AAGGTTCTTGAGGCTGTTAAGTATAGCTGTGAAAACGGCAAAATCGTTGCCGCAATCTGTGCCGCTCCGTCAATTCTCGG
 *   File name: `` $DIR/$SAMPLENAME_custom_chocophlan_database.ffn ``
 *   This file is a custom ChocoPhlAn database of fasta sequences.
 
-#### MetaPhlAn2 Bowtie2 output ####
+#### 6. MetaPhlAn2 Bowtie2 output ####
 
 ```
 r113	gi|224485636|ref|NZ_EQ973490.1|:c728571-728107
@@ -316,7 +318,7 @@ r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140
 *   File name: `` $DIR/$SAMPLENAME_metaphlan_bowtie2.txt ``
 *   This file is the Bowtie2 output from MetaPhlAn2.
 
-#### MetaPhlAn2 bugs list ####
+#### 7. MetaPhlAn2 bugs list ####
 
 ```
 k__Bacteria	100.0
@@ -334,7 +336,7 @@ k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	5
 *   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
 *   This file is the bugs list output from MetaPhlAn2.
 
-#### Translated alignment results ####
+#### 8. Translated alignment results ####
 
 ```
 r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
@@ -348,7 +350,7 @@ r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
 *   This file is the alignment results from the translated alignment step.
 *   This file is formatted as tab-delimited blast-like results.
 
-#### Translated alignment unaligned reads ####
+#### 9. Translated alignment unaligned reads ####
 
 ```
 >r4370
@@ -360,7 +362,7 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
 *   This is a fasta file of the unaligned reads after the translated alignment step
 
-#### Log ####
+#### 10. Log ####
 
 ```
 03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
