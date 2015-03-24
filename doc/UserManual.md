@@ -54,6 +54,12 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [Configuration](#markdown-header-configuration)
 * [Tools](#markdown-header-tools)
     * [Tools for tables](#markdown-header-tools-for-tables)
+    
+        1. [Split a table](#markdown-header-1-split-a-table)
+        2. [Join tables](#markdown-header-2-join-tables)
+        3. [Rename table feature entries](#markdown-header-3-rename-table-feature-entries)
+        4. [Normalize sample columns](#markdown-header-4-normalize-sample-columns)
+    
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
@@ -631,38 +637,38 @@ log level = DEBUG
 
 HUMAnN2 includes tools to be used with gene or pathway table files.
 
-1.  Split a table
+#### 1.  Split a table ####
 
 `` $ humann2_split_table --input $TABLE --output $OUTPUT_DIR ``
 
-    *   $TABLE = gene/pathway table (tsv or biom format)
-    *   $OUTPUT_DIR = the directory to write new gene/pathway tables (one per sample, in biom format if input is biom format)
+*   $TABLE = gene/pathway table (tsv or biom format)
+*   $OUTPUT_DIR = the directory to write new gene/pathway tables (one per sample, in biom format if input is biom format)
 
-2.  Join tables
+#### 2.  Join tables ####
 
 `` $ humann2_join_tables --input $INPUT_DIR --output $TABLE ``
 
-    *   $INPUT_DIR = a directory containing gene/pathway tables (tsv or biom format)
-    *   $TABLE = the file to write the new single gene table (biom format if input is biom format)
-    *   Optional: ``--file_name $STR`` will only join gene tables with $STR in file name
+*   $INPUT_DIR = a directory containing gene/pathway tables (tsv or biom format)
+*   $TABLE = the file to write the new single gene table (biom format if input is biom format)
+*   Optional: ``--file_name $STR`` will only join gene tables with $STR in file name
 
-3.  Rename table feature entries
+#### 3.  Rename table feature entries ####
 
 `` $ humann2_rename_renorm_table --input $TABLE --names $NAMES --output $TABLE2 ``
 
-    *   $TABLE = gene/pathway table (tsv format)
-    *   $NAMES = mapping of feature IDs to english names (tsv format)
-    *   $TABLE2 = gene/pathway table with new names attached
-    *   Note: A mapping of UniRef50 IDs to english names is provided with HUMAnN2
+*   $TABLE = gene/pathway table (tsv format)
+*   $NAMES = mapping of feature IDs to english names (tsv format)
+*   $TABLE2 = gene/pathway table with new names attached
+*   Note: A mapping of UniRef50 IDs to english names is provided with HUMAnN2
 
-4.  Normalize sample columns
+#### 4.  Normalize sample columns ####
 
 `` $ humann2_rename_renorm_table --input $TABLE --norm $CHOICE --output $TABLE2 ``
 
-    *   $TABLE = gene/pathway table (tsv format)
-    *   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)
-    *   $TABLE2 = normalized gene/pathway table
-    *   Note: Can be combined with renaming
+*   $TABLE = gene/pathway table (tsv format)
+*   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)
+*   $TABLE2 = normalized gene/pathway table
+*   Note: Can be combined with renaming
 
 
 ## FAQs ##
