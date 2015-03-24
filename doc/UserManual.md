@@ -131,8 +131,8 @@ Option 2: Development Version
 	
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
-	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest development version of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository.
-
+	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. 
+    
 For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 directory (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
 
 ### 2. Installing HUMAnN2 ###
