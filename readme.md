@@ -8,19 +8,7 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 ## Contents ##
 * [Requirements](#markdown-header-requirements)
-    * [Software](#markdown-header-software)
-    * [Other](#markdown-header-other)
 * [Installation](#markdown-header-installation)
-
-    1. [Downloading HUMAnN2](#markdown-header-1-downloading-humann2)
-    2. [Installing HUMAnN2](#markdown-header-2-installing-humann2)
-    3. [Test the install](#markdown-header-3-test-the-install)
-    4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
-    5. [Download the databases](#markdown-header-5-download-the-databases)
-
-        * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
-        * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
-
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
@@ -32,96 +20,48 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 
 ## Requirements ##
 
-### Software ###
-
-1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
-2. [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
-3. [diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
-4. [Python](http://www.python.org/) (version >= 2.7)
-5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
-6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
-7. [rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (optional)
-8. [usearch](http://www.drive5.com/usearch/) (version >= 7.0) (optional)
-
-If MetaPhlAn2, bowtie2, and diamond (or rapsearch2, usearch) are not installed in a location in your $PATH,
-then add them to your $PATH or use the HUMAnN2 parameters to indicate the locations of their
-directories (--metaphlan $METAPHLAN/, --bowtie2 $BOWTIE2/, --diamond $DIAMOND/ (or --rapsearch $RAPSEARCH, --usearch $USEARCH/)). By default diamond is run for the translated alignment but this can be changed to rapsearch2 or usearch by setting "--translated-alignment {rapsearch|usearch}".
-
-### Other ###
-1. Memory (>= 10 Gb)
-1. Disk space (>= 10 Gb)
-1. Operating system (Linux or Mac)
+1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
+2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1)
+3.  [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
+4.  [Python](http://www.python.org/) (version >= 2.7)
+5.  Memory (>= 10 GB)
+6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
+7.  Operating system (Linux or Mac)
 
 ## Installation ##
 
-### 1. Downloading HUMAnN2 ###
-You can download the latest HUMAnN2 release or the development version.
+1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.2.tar.gz)
+2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
+ 
+    `` $ python setup.py minpath ``
+    
 
-Option 1: Latest Release (Recommended)
+3. Install the HUMAnN2 software (see NOTE 1)
 
-* [Download](https://bitbucket.org/biobakery/humann2/get/0.1.2.tar.gz) and unpack the latest release of HUMAnN2.
+    `` $ python setup.py install ``
 
-Option 2: Development Version
-
-* Create a clone of the repository: 
-	
-	``hg clone https://bitbucket.org/biobakery/humann2 ``
-
-	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the repository has been cloned upgrading to the latest development version of HUMAnN2 is simple. Just type ``hg pull -u`` from within the repository.
-
-For the steps that follow, $HUMAnN2_PATH is the location of the HUMAnN2 directory (ie $HUMAnN2_PATH=/home/user/humann2/ with this readme file found in this folder).
-
-### 2. Installing HUMAnN2 ###
-
-1. Move to the HUMAnN2 directory : ``$ cd $HUMAnN2_PATH ``
-1. Install MinPath : ``$ python setup.py minpath ``
-1. Install HUMAnN2 : ``$ python setup.py install ``
-
-Note: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the install command. This will install the python package into subdirectories of '~/.local'.
-
-### 3. Test the install ###
-
-Test out the install of HUMAnN2 by running the unit tests.
-
-``$ python setup.py test ``
-
-### 4. Try out a demo run ###
-
-With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
-
-``$ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
-
-Output from this demo run will be written to the folder $OUTPUT_DIR.
-
-Please continue with the install directions to download the full databases before running with your sequencing data.
+    
+4. Test the HUMAnN2 install (Optional)
+ 
+     `` $ python setup.py test``
 
 
-### 5. Download the databases ###
+5. Try out a HUMAnN2 demo run (Optional)
 
-Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
-
-#### Download the ChocoPhlAn database ####
-
-Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to install the database.
-
-```
-$ humann2_databases --download chocophlan full $INSTALL_LOCATION
-```
-
-NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocoplan>" option to humann2.
+    `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
 
 
-#### Download the UniRef50 database ####
+6. Download the ChocoPhlAn database to $INSTALL_LOCATION (approx. size = 5.6 GB)
 
-Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database.
+    ``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
+    
 
-```
-$ humann2_databases --download uniref diamond $INSTALL_LOCATION
-```
+7. Download the UniRef database to $INSTALL_LOCATION (approx. size = 2.8 GB)
 
-NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--uniref <uniref>" option to humann2.
+    ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
 
-NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would like to use rapsearch2 for translated alignment, first download the rapsearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
+
+NOTE 1: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'.
 
 
 ## How to Run ##
