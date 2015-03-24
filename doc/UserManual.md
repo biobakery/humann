@@ -64,7 +64,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     
 * [Tutorials](#markdown-header-tutorials)
 
-    * [PICRUSt output](#markdown-header-picurst-output)
+    * [PICRUSt output](#markdown-header-picrust-output)
 
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
