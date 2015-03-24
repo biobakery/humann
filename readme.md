@@ -21,11 +21,11 @@ The HUMAnN2 pipeline is a single command driven flow requiring the user to only 
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
-    * [Output files](#markdown-header-output-files)
-        * [Gene families](#markdown-header-gene-families)
-        * [Pathway coverage](#markdown-header-pathway-coverage)
-        * [Pathway abundance](#markdown-header-pathway-abundance)
-    * [Complete option list](#markdown-header-complete-option-list)
+* [Output files](#markdown-header-output-files)
+    * [Gene families](#markdown-header-gene-families)
+    * [Pathway coverage](#markdown-header-pathway-coverage)
+    * [Pathway abundance](#markdown-header-pathway-abundance)
+* [Complete option list](#markdown-header-complete-option-list)
 
 ## Requirements ##
 
@@ -201,11 +201,11 @@ $OUTPUT_DIR is the output directory
 
 Since sam and blastm8 are mapping results, using these files as input to HUMAnN2 will bypass both the nucleotide and translated mapping portions of the flow.
 
-### Output files ###
+## Output files ##
 
 HUMAnN2 produces three output files which by default are tab-delimited text. There is an option to print out files in biom format. 
 
-#### Gene Families ####
+### Gene Families ###
 
 ```
 # Gene Family	$SAMPLENAME
@@ -223,7 +223,7 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 * This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
 * HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
 
-#### Pathway Coverage ####
+### Pathway Coverage ###
 
 ```
 # Pathway	$SAMPLENAME
@@ -242,7 +242,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-#### Pathway Abundance ####
+### Pathway Abundance ###
 
 ```
 # Pathway	$SAMPLENAME
@@ -261,7 +261,7 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-### Complete option list ###
+## Complete option list ##
 ```
 usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--bypass-nucleotide-index] [--bypass-translated-search]
