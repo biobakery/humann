@@ -78,7 +78,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
 #### Gene families file
 
 ``` 
-# Gene Family	$SAMPLE
+\# Gene Family	$SAMPLE
 UniRef50_A6L0N6	67.0 
 UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
@@ -98,7 +98,7 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 #### Pathway coverage file
 
 ``` 
-# Pathway	$SAMPLE
+\# Pathway	$SAMPLE
 PWY0-1301	1.0
 PWY0-1301|s__Bacteroides_caccae	1.0
 PWY0-1301|s__Bacteroides_finegoldii	1.0
@@ -117,7 +117,7 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 #### Pathway abundance file
 
 ```
-# Pathway	$SAMPLE
+\# Pathway	$SAMPLE
 PWY-1921	57.0136768635
 PWY-1921|unclassified	32.2636768635
 PWY-1921|s__Bacteroides_ovatus	4.5
@@ -133,112 +133,146 @@ PWY0-1301|s__Bacteroides_caccae	6.0
 *   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
 *   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
 
+#### Intermediate temp output files
 
-Intermediate temp files will also be created:
+Ten intermediate temp output files will be created where:
 
-1.  Bowtie2 alignment results
-    *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
-    *   This file has the full alignment output from bowtie2.
-    *   Example (`` $SEQ = sequence and $QUAL = quality scores `` to fit example in page):
-	 ``` @HD	VN:1.0	SO:unsorted
-	@SQ	SN:g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703	LN:540
-    r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
-    r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
-    r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
-     ```
-2.  Bowtie2 reduced alignment results
-    *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.tsv ``
-    *   This file contains the minimal amount of alignment results from Bowtie2.
-    *   Example:
-	 ``` r93	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_E2NEW2|UniRef50_E2NEW2	6.3095734448e-05
-    r113	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_R6KNZ3|UniRef50_R6KNZ3	6.3095734448e-05	
-    r704	g__Bacteroides.s__Bacteroides_uniformis|UniRef90_unknown|UniRef50_E6STE9		0.794328234724	
-    r663	g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef90_R7KKH7|UniRef50_R7KKH7		6.3095734448e-05	
-    r940	g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_unknown|UniRef50_unknown		6.3095734448e-0	 
-     ```
-3.  Bowtie2 index files
-    *   File name: `` $DIR/$SAMPLENAME_bowtie2_index* ``
-    *   These are a set of files containing the Bowtie2 index created from the custom ChocoPhlAn database.
-4.  Unaligned reads after Bowtie2
-    *   File name: `` $DIR/$SAMPLENAME_bowtie2_unaligned.fa ``
-    *   This is a fasta file of unaligned reads after the Bowtie2 step.
-    *   These are the reads that will be provided as input in the translated alignment step.
-    *   Example (sequence reduced in length to fit example in page):
-	 ```>r2805
-	 GCGGCTTTATCTTTTACGCCCTGGGCTGCGTCCGGCTATTTA
-     ```
-5.  Custom ChocoPhlAn database
-    *   File name: `` $DIR/$SAMPLENAME_custom_chocophlan_database.ffn ``
-    *   This file is a custom ChocoPhlAn database of fasta sequences.
-    *   Example:
-	 ```>gi|479150083|ref|NC_021013.1|:976220-976759|40518|g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703
-    ATGTTCTATGTATTTCTTGCAGAAGGCTTTGAAGAAACAGAGGCGCTTGCCCCCGTTGATGTAATGCGCAGGGCAAAGCT
-    TGATGTTAAAACAGTCGGTGTAACAGGCGAATGTGTTACAAGCTCACACGGTGTGCCTGTAAAAGCCGATATCACAATTG
-    ACAATATTGACCTTGACGATGTTCAGGGTGTTGTACTCCCCGGTGGTATGCCCGGAACTCTCAATCTTGAGGCAAACAAA
-    AAGGTTCTTGAGGCTGTTAAGTATAGCTGTGAAAACGGCAAAATCGTTGCCGCAATCTGTGCCGCTCCGTCAATTCTCGG
-     ```
-6.  MetaPhlAn2 Bowtie2 output
-    *   File name: `` $DIR/$SAMPLENAME_metaphlan_bowtie2.txt ``
-    *   This file is the Bowtie2 output from MetaPhlAn2.
-    *   Example:
-	 ```r113	gi|224485636|ref|NZ_EQ973490.1|:c728571-728107
-    r559	gi|479185170|ref|NC_021030.1|:c1678719-1677127
-    r663	gi|512436175|ref|NZ_KE159463.1|:c142391-139122
-    r704	gi|423310881|ref|NZ_JH724270.1|:c220428-218656
-    r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140 
-     ```
-7.  MetaPhlAn2 bugs list
-    *   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
-    *   This file is the bugs list output from MetaPhlAn2.
-    *   Example:
-	 ```k__Bacteria	100.0
-    k__Bacteria|p__Bacteroidetes	73.86802
-    k__Bacteria|p__Firmicutes	26.13198
-    k__Bacteria|p__Bacteroidetes|c__Bacteroidia	73.86802
-    k__Bacteria|p__Firmicutes|c__Clostridia	15.60912
-    k__Bacteria|p__Firmicutes|c__Negativicutes	10.52286
-    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	73.86802
-    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	15.60912
-    k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	10.52286
-    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	51.32768
-     ```
-8.  Translated alignment results
-    *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv ``
-    *   This file is the alignment results from the translated alignment step.
-    *   This file is formatted as tab-delimited blast-like results.
-    *   Example:
-	 ```r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
-    r2805	UniRef50_E2ZHU1|963	37.50	48	30	0	147	4	152	199	7e-06	39.7
-    r2805	UniRef50_K1UMQ9|612	35.42	48	31	0	147	4	35	82	2e-05	38.5
-    r3036	UniRef50_K1TCN4|540	100.00	22	0	0	150	85	148	169	8e-10	52.8
-    r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
-     ```
-9.  Translated alignment unaligned reads
-    *   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
-    *   This is a fasta file of the unaligned reads after the translated alignment step
-    *   Example (sequence reduced in length to fit example in page):
-	 ```>r32055
-	 TTCAGGTGCCGTTCGATGACAGCCACACCGTCGAGGACTACGAGTTCC
-     ```
-10.  Log
-    *   File name: `` $DIR/$SAMPLENAME.log ``
-    *   This file is a log of the run.
-    *   Example:
-    
-	 ```03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
-	 03/16/2015 01:09:52 PM - humann2.config - INFO: Run config settings:
-    DATABASE SETTINGS
-    chocophlan database folder = data/chocophlan_DEMO
-    uniref database folder = data/uniref_DEM
-     ```
-
-```
 $DIR = $OUTPUT_DIR/$SAMPLENAME_humann2_temp/
 $SAMPLENAME = basename of the fastq/fasta input file
 $TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 or usearch)
 
-NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEWNAME>".
+NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEWNAME>
+
+##### Bowtie2 alignment results
+
+``` 
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703	LN:540
+r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
+r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
+r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
 ```
+
+*   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
+*   This file has the full alignment output from bowtie2.
+*   In example above `` $SEQ = sequence and $QUAL = quality scores `` to fit in page.
+
+##### Bowtie2 reduced alignment results
+
+``` 
+r93	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_E2NEW2|UniRef50_E2NEW2	6.3095734448e-05
+r113	g__Bacteroides.s__Bacteroides_cellulosilyticus|UniRef90_R6KNZ3|UniRef50_R6KNZ3	6.3095734448e-05	
+r704	g__Bacteroides.s__Bacteroides_uniformis|UniRef90_unknown|UniRef50_E6STE9		0.794328234724	
+r663	g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef90_R7KKH7|UniRef50_R7KKH7		6.3095734448e-05	
+r940	g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_unknown|UniRef50_unknown		6.3095734448e-0	 
+```
+
+*   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.tsv ``
+*   This file contains the minimal amount of alignment results from Bowtie2.
+
+##### Bowtie2 index files
+
+
+*   Example not included as files are binary.
+*   File name: `` $DIR/$SAMPLENAME_bowtie2_index* ``
+*   These are a set of files containing the Bowtie2 index created from the custom ChocoPhlAn database.
+
+##### Unaligned reads after Bowtie2
+
+```
+\>r4370
+GGCGGACGATCTTGTCGCCCAGCCTGTAGCCTTTCTGGTACACCGTGATGACGGTGCCGCTCTCCTGCCCGTCCGTGGCGGGGATCTGCTGG
+\>r4398
+TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACGGGCAACGTAGGA
+```
+
+*   File name: `` $DIR/$SAMPLENAME_bowtie2_unaligned.fa ``
+*   This is a fasta file of unaligned reads after the Bowtie2 step.
+*   These are the reads that will be provided as input in the translated alignment step.
+
+##### Custom ChocoPhlAn database
+
+```
+\>gi|479150083|ref|NC_021013.1|:976220-976759|40518|g__Ruminococcus.s__Ruminococcus_bromii|UniRef90_D4L6K4|UniRef50_R6U703
+ATGTTCTATGTATTTCTTGCAGAAGGCTTTGAAGAAACAGAGGCGCTTGCCCCCGTTGATGTAATGCGCAGGGCAAAGCT
+TGATGTTAAAACAGTCGGTGTAACAGGCGAATGTGTTACAAGCTCACACGGTGTGCCTGTAAAAGCCGATATCACAATTG
+ACAATATTGACCTTGACGATGTTCAGGGTGTTGTACTCCCCGGTGGTATGCCCGGAACTCTCAATCTTGAGGCAAACAAA
+AAGGTTCTTGAGGCTGTTAAGTATAGCTGTGAAAACGGCAAAATCGTTGCCGCAATCTGTGCCGCTCCGTCAATTCTCGG
+```
+
+*   File name: `` $DIR/$SAMPLENAME_custom_chocophlan_database.ffn ``
+*   This file is a custom ChocoPhlAn database of fasta sequences.
+
+##### MetaPhlAn2 Bowtie2 output
+
+```
+r113	gi|224485636|ref|NZ_EQ973490.1|:c728571-728107
+r559	gi|479185170|ref|NC_021030.1|:c1678719-1677127
+r663	gi|512436175|ref|NZ_KE159463.1|:c142391-139122
+r704	gi|423310881|ref|NZ_JH724270.1|:c220428-218656
+r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140 
+```
+
+*   File name: `` $DIR/$SAMPLENAME_metaphlan_bowtie2.txt ``
+*   This file is the Bowtie2 output from MetaPhlAn2.
+
+##### MetaPhlAn2 bugs list
+
+```
+k__Bacteria	100.0
+k__Bacteria|p__Bacteroidetes	73.86802
+k__Bacteria|p__Firmicutes	26.13198
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia	73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia	15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes	10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	51.32768
+```
+
+*   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
+*   This file is the bugs list output from MetaPhlAn2.
+
+##### Translated alignment results
+
+```
+r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
+r2805	UniRef50_E2ZHU1|963	37.50	48	30	0	147	4	152	199	7e-06	39.7
+r2805	UniRef50_K1UMQ9|612	35.42	48	31	0	147	4	35	82	2e-05	38.5
+r3036	UniRef50_K1TCN4|540	100.00	22	0	0	150	85	148	169	8e-10	52.8
+r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
+```
+
+*   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv ``
+*   This file is the alignment results from the translated alignment step.
+*   This file is formatted as tab-delimited blast-like results.
+
+##### Translated alignment unaligned reads
+
+```
+\>r4370
+GGCGGACGATCTTGTCGCCCAGCCTGTAGCCTTTCTGGTACACCGTGATGACGGTGCCGCTCTCCTGCCCGTCCGTGGCGGGGATCTGCTGG
+\>r4398
+TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACGGGCAACGTAGGA
+```
+    
+*   File name: `` $DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa ``
+*   This is a fasta file of the unaligned reads after the translated alignment step
+
+
+##### Log
+
+```
+03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
+03/16/2015 01:09:52 PM - humann2.config - INFO: Run config settings:
+DATABASE SETTINGS
+chocophlan database folder = data/chocophlan_DEMO
+uniref database folder = data/uniref_DEM
+```
+
+*   File name: `` $DIR/$SAMPLENAME.log ``
+*   This file is a log of the run.
 
 
 ### Workflows
