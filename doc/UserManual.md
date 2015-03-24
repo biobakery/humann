@@ -9,6 +9,10 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 ## Contents ##
 
 * [Requirements](#markdown-header-requirements)
+
+    * [Software](#markdown-header-software)
+    * [Other](#markdown-header-other)
+
 * [Installation](#markdown-header-installation)
 
     1. [Downloading HUMAnN2](#markdown-header-1-downloading-humann2)
@@ -54,18 +58,31 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
 ## Requirements ##
 
-1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
-2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1)
-3.  [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/)
-4.  [Python](http://www.python.org/) (version >= 2.7)
-5.  Memory (>= 10 GB)
-6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
-7.  Operating system (Linux or Mac)
+### Software ###
 
-If always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)), the requirements are reduced. MetaPhlAn2, Bowtie2, Diamond, and the amount of disk space listed are not required. 
-Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode), the requirements might also be reduced.
+1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
+2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
+3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
+4. [Python](http://www.python.org/) (version >= 2.7)
+5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
+6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
+7. [Rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (only required if using rapsearch2 for translated search)
+8. [Usearch](http://www.drive5.com/usearch/) (version >= 7.0) (only required if using usearch for translated search)
+9. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
+10. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
 
-Please note there are additional requirements if you are using input files of type sam or biom. The [SAMtools](http://samtools.sourceforge.net/) software is required for bam files and the [biom-format](http://biom-format.org/) software is required for biom files.
+If you always run with input files of type #2, #3, and #4 (for information on input file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
+MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode), 
+the software required for the steps you bypass does not need to be installed.
+
+### Other ###
+
+1. Memory (>= 10 Gb)
+2. Disk space (>= 10 Gb [to accommodate comprehensive sequence databases])
+3. Operating system (Linux or Mac)
+
+If always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
+less disk space is required. 
 
 ## Installation ##
 
