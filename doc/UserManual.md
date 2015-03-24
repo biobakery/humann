@@ -151,6 +151,7 @@ NOTE: $SAMPLENAME can be set by the user with the option --output-basename <$NEW
 r99491	0	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_R6B629|UniRef50_R5RCC8	1015	42	151M	*	0	0	$SEQ	$QUAL
 r99526	0	g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_unknown|UniRef50_D9RX34	155	42	151M	*	0	0	$SEQ	$QUAL
 r99581	16	g__Bacteroides.s__Bacteroides_stercoris|UniRef90_unknown|UniRef50_R6SXR7	2503	42	151M	*	0	0	$SEQ	$QUAL
+```
 
 *   File name: `` $DIR/$SAMPLENAME_bowtie2_aligned.sam `` 
 *   This file has the full alignment output from bowtie2.
