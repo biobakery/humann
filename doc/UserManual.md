@@ -9,6 +9,12 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 ## Contents ##
 
 * [Features](#markdown-header-features)
+* [Workflows](#markdown-header-workflow)
+    * [Main workflow](#markdown-header-main-workflow)
+    * [Workflow by input file type](#markdown-header-workflow-by-input-file-type)
+    * [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)
+    * [Workflow of the resume option](#markdown-header-workflow-of-the-resume-option)
+    
 * [Requirements](#markdown-header-requirements)
 
     * [Software](#markdown-header-software)
@@ -46,10 +52,6 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         9. [Translated alignment unaligned reads](#markdown-header-9-translated-alignment-unaligned-reads)
         10. [Log](#markdown-header-10-log)
         
-* [Workflows](#markdown-header-workflows)
-    * [Workflow by input file type](#markdown-header-workflow-by-input-file-type)
-    * [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)
-    * [Workflow of the resume option](#markdown-header-workflow-of-the-resume-option)
 * [Databases](#markdown-header-databases)
 * [Configuration](#markdown-header-configuration)
 * [Tools](#markdown-header-tools)
@@ -86,6 +88,68 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
     * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is run for accelerated nucleotide-level searches
     * [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) is run for accelerated translated searches
+
+
+## Workflows ##
+
+### Main workflow ###
+
+![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_diamond_500x500.jpg)
+
+
+### Workflow by input file type ###
+
+There are four different types of files that can be provided as input to HUMAnN2\. By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
+
+![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_by_file_type_reduced.png)
+
+File Types:
+
+*   File Type #1 (a quality-controlled metagenome or metatranscriptome)
+    *   fastq (fastq.gz)
+    *   fasta (fasta.gz)
+*   File Type #2 (alignment results type #1)
+    *   sam
+    *   bam
+*   File Type #3 (alignment results type #2)
+    *   blast-like tsv
+*   File Type #4 (gene table)
+    *   tsv
+    *   biom
+
+
+### Workflow by bypass mode ###
+
+There are multiple bypass options that will allow you to adjust the standard workflow.
+
+![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_bypass_modes.png)
+
+Bypass options:
+
+*   --bypass-translated-search 
+    *   runs all of the alignment steps except the translated search
+*   --bypass-nucleotide-search 
+    *   bypasses all of the alignment steps before the translated search
+*   --bypass-prescreen 
+    *   bypasses the taxomonic profiling step and uses the full ChocoPhlAn database
+*   --taxonomic-profile bugs_list.tsv 
+    *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
+*   --bypass-nucleotide-index
+    *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
+
+
+### Workflow of the resume option ###
+
+HUMAnN2 includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
+
+![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_resume_option_no_text.png)
+
+When using the "--resume" option, the following steps will be bypassed if they have already been completed:
+
+1.  Taxomonic profiling step
+2.  Nucleotide alignment step
+3.  Custom ChocoPhlAn database creation (merge and index)
+4.  Translated alignment step
 
 
 ## Requirements ##
@@ -476,64 +540,6 @@ uniref database folder = data/uniref_DEM
 
 *   File name: `` $DIR/$SAMPLENAME.log ``
 *   This file is a log of the run.
-
-
-## Workflows ##
-
-
-### Workflow by input file type ###
-
-There are four different types of files that can be provided as input to HUMAnN2\. By default HUMAnN2 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN2 will start the workflow. Files of type #2, #3, and #4 will begin the workflow after the alignment steps.
-
-![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_by_file_type_reduced.png)
-
-File Types:
-
-*   File Type #1 (a quality-controlled metagenome or metatranscriptome)
-    *   fastq (fastq.gz)
-    *   fasta (fasta.gz)
-*   File Type #2 (alignment results type #1)
-    *   sam
-    *   bam
-*   File Type #3 (alignment results type #2)
-    *   blast-like tsv
-*   File Type #4 (gene table)
-    *   tsv
-    *   biom
-
-
-### Workflow by bypass mode ###
-
-There are multiple bypass options that will allow you to adjust the standard workflow.
-
-![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_bypass_modes.png)
-
-Bypass options:
-
-*   --bypass-translated-search 
-    *   runs all of the alignment steps except the translated search
-*   --bypass-nucleotide-search 
-    *   bypasses all of the alignment steps before the translated search
-*   --bypass-prescreen 
-    *   bypasses the taxomonic profiling step and uses the full ChocoPhlAn database
-*   --taxonomic-profile bugs_list.tsv 
-    *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
-*   --bypass-nucleotide-index
-    *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
-
-
-### Workflow of the resume option ###
-
-HUMAnN2 includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
-
-![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_resume_option_no_text.png)
-
-When using the "--resume" option, the following steps will be bypassed if they have already been completed:
-
-1.  Taxomonic profiling step
-2.  Nucleotide alignment step
-3.  Custom ChocoPhlAn database creation (merge and index)
-4.  Translated alignment step
 
 
 ## Databases ##
