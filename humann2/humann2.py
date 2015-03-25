@@ -35,7 +35,7 @@ THE SOFTWARE.
 
 import sys
     
-# Try to load one of the humann2 src modules to check the installation
+# Try to load one of the humann2 modules to check the installation
 try:
     from . import check
 except ImportError:
@@ -65,6 +65,8 @@ from .quantify import modules
 # name global logging instance
 logger=logging.getLogger(__name__)
 
+VERSION="0.1.2"
+
 def parse_arguments(args):
     """ 
     Parse the arguments from the user
@@ -76,7 +78,7 @@ def parse_arguments(args):
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s v0.1.2")
+        version="%(prog)s v"+VERSION)
     parser.add_argument(
         "-v","--verbose", 
         help="additional output is printed\n", 
@@ -474,11 +476,6 @@ def update_configuration(args):
         
     # create the unnamed temp directory
     config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
-    
-    message="Writing temp files to directory: " + config.temp_dir
-    logger.info(message)
-    if config.verbose: 
-        print("\n"+message+"\n")
 
     # set the name of the log file 
     log_file=os.path.join(config.temp_dir,config.file_basename+".log")
@@ -491,6 +488,18 @@ def update_configuration(args):
     logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
     
+    # write the version of the software to the log
+    logger.info("Running humann2 v"+VERSION)
+    
+    # write the location of the output files to the log
+    logger.info("Output files will be written to: " + output_dir)
+    
+    # write the location of the temp file directory to the log
+    message="Writing temp files to directory: " + config.temp_dir
+    logger.info(message)
+    if config.verbose: 
+        print("\n"+message+"\n")    
+
      
 def check_requirements(args):
     """

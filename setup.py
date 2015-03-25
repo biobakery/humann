@@ -20,6 +20,8 @@ import tarfile
 import subprocess
 import shutil
 
+VERSION = "0.1.2"
+
 def install_tar(url,download_file,folder):
     """
     Download the url to the file and decompress into the folder
@@ -124,7 +126,7 @@ class InstallMinpath(distutils.cmd.Command):
     
 setuptools.setup(
     name="humann2",
-    version="0.1",
+    version=VERSION,
     license="MIT",
     description="HUMAnN2 is a pipeline for efficiently and accurately determining " + \
         "the coverage and abundance of microbial pathways in a community " + \
