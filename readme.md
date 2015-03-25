@@ -65,7 +65,7 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 
 ## Installation ##
 
-1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.2.tar.gz)
+1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/get/0.1.3.tar.gz)
 2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
  
     `` $ python setup.py minpath ``
