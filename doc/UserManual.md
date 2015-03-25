@@ -53,6 +53,8 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         2. [Join tables](#markdown-header-2-join-tables)
         3. [Rename table feature entries](#markdown-header-3-rename-table-feature-entries)
         4. [Normalize sample columns](#markdown-header-4-normalize-sample-columns)
+        5. [Regroup table features](#markdown-header-5-regroup-table-features)
+        
 * [Tutorials](#markdown-header-tutorials)
     * [PICRUSt output](#markdown-header-picrust-output)
 * [FAQs](#markdown-header-faqs)
@@ -651,23 +653,31 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 *   $TABLE = the file to write the new single gene table (biom format if input is biom format)
 *   Optional: ``--file_name $STR`` will only join gene tables with $STR in file name
 
-#### 3.  Rename table feature entries ####
+#### 3.  Rename table features ####
 
-`` $ humann2_rename_renorm_table --input $TABLE --names $NAMES --output $TABLE2 ``
+`` $ humann2_rename_table --input $TABLE --names $NAMES --output $TABLE2 ``
 
 *   $TABLE = gene/pathway table (tsv format)
 *   $NAMES = mapping of feature IDs to english names (tsv format)
 *   $TABLE2 = gene/pathway table with new names attached
 *   Note: A mapping of UniRef50 IDs to english names is provided with HUMAnN2
 
-#### 4.  Normalize sample columns ####
+#### 4.  Renormalize table ####
 
-`` $ humann2_rename_renorm_table --input $TABLE --norm $CHOICE --output $TABLE2 ``
+`` $ humann2_renorm_table --input $TABLE --norm $CHOICE --output $TABLE2 ``
 
 *   $TABLE = gene/pathway table (tsv format)
 *   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)
 *   $TABLE2 = normalized gene/pathway table
-*   Note: Can be combined with renaming
+
+#### 5.  Regroup table features ####
+
+`` $ humann2_regroup_table --input $TABLE --groups $GROUPS --output $TABLE2 ``
+
+*   $TABLE = gene/pathway table (tsv format)
+*   $GROUPS = mapping of features to superfeatures (.tsv or .tsv.gz format)
+*   $TABLE2 = regrouped gene/pathway table
+
 
 ## Tutorials ##
 
