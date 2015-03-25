@@ -51,8 +51,8 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Tools for tables](#markdown-header-tools-for-tables)
         1. [Split a table](#markdown-header-1-split-a-table)
         2. [Join tables](#markdown-header-2-join-tables)
-        3. [Rename table feature entries](#markdown-header-3-rename-table-feature-entries)
-        4. [Normalize sample columns](#markdown-header-4-normalize-sample-columns)
+        3. [Rename table features](#markdown-header-3-rename-table-features)
+        4. [Renormalize table](#markdown-header-4-renormalize-table)
         5. [Regroup table features](#markdown-header-5-regroup-table-features)
         
 * [Tutorials](#markdown-header-tutorials)
