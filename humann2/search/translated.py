@@ -73,7 +73,7 @@ def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
                     full_args=["-ublast",input_file]+args+["-db",input_database]
     
                     # create temp output file
-                    temp_out_file=utilities.unnamed_temp_file()
+                    temp_out_file=utilities.unnamed_temp_file("usearch_m8_")
                     temp_out_files.append(temp_out_file)
     
                     full_args+=["-blast6out",temp_out_file]
@@ -135,7 +135,7 @@ def rapsearch_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
             full_args=args+["-d",input_database]
 
             # create temp output file
-            temp_out_file=utilities.unnamed_temp_file()
+            temp_out_file=utilities.unnamed_temp_file("rapsearch_m8_")
             utilities.remove_file(temp_out_file)
 
             temp_out_files.append(temp_out_file+config.rapsearch_output_file_extension)
@@ -198,10 +198,10 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
                 full_args=args+["--db",input_database_extension_removed]
     
                 # create temp output files
-                temp_out_file_daa=utilities.unnamed_temp_file()
+                temp_out_file_daa=utilities.unnamed_temp_file("diamond_daa_")
                 utilities.remove_file(temp_out_file_daa)
                 
-                temp_out_file=utilities.unnamed_temp_file()
+                temp_out_file=utilities.unnamed_temp_file("diamond_m8_")
                 utilities.remove_file(temp_out_file)
                 
     

@@ -232,12 +232,16 @@ def double_sort(pathways_dictionary):
         sorted_keys+=sorted(store)
     return sorted_keys
 
-def unnamed_temp_file():
+def unnamed_temp_file(prefix=None):
     """
     Return the full path to an unnamed temp file
     stored in the unnamed temp folder
     """
-    file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir)
+    
+    if not prefix:
+        prefix="tmp"
+        
+    file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir,prefix=prefix)
     os.close(file_out)
     
     return(new_file)

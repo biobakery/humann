@@ -65,8 +65,8 @@ def index(custom_database):
     args+=opts
     
     # create temp file for stdout and stderr
-    tmpfile=utilities.unnamed_temp_file()
-    tmpfile2=utilities.unnamed_temp_file()
+    tmpfile=utilities.unnamed_temp_file("bowtie2_stdout_")
+    tmpfile2=utilities.unnamed_temp_file("bowtie2_stderr_")
     
     utilities.execute_command(exe,args,[custom_database],outfiles,
         stdout_file=tmpfile, stderr_file=tmpfile2)
