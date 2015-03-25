@@ -19,6 +19,16 @@ import sys
 import unittest
 import importlib
 
+# Try to load one of the humann2 modules to check the installation
+try:
+    from humann2 import check
+except ImportError:
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+        " Please check your install.") 
+
+# Check the python version
+check.python_version()
+
 def main():
     directory_of_tests=os.path.dirname(os.path.realpath(__file__))
     
