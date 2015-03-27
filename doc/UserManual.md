@@ -182,7 +182,7 @@ You can download the latest HUMAnN2 release or the development version.
 
 Option 1: Latest Release (Recommended)
 
-* [Download](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.1.3.tar.gz) and unpack the latest release of HUMAnN2.
+* [Download](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.1.4.tar.gz) and unpack the latest release of HUMAnN2.
 
 Option 2: Development Version
 
@@ -203,6 +203,7 @@ Option 2: Development Version
 
     * ``$ python setup.py minpath ``
     * If you would like to update the glpk required by MinPath, add the option ``--update-glpk`` to the MinPath install command.
+    * The glpk update is required if you are running on Mac OS and it will require gcc and make.
     
 3. Install HUMAnN2
 

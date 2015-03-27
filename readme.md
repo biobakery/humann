@@ -65,13 +65,13 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 
 ## Installation ##
 
-1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.1.3.tar.gz)
-2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
+1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.1.4.tar.gz)
+2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
  
     `` $ python setup.py minpath ``
     
 
-3. Install the HUMAnN2 software (see NOTE 1)
+3. Install the HUMAnN2 software (see NOTE 2)
 
     `` $ python setup.py install ``
 
@@ -96,7 +96,9 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
     ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
 
 
-NOTE 1: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'.
+NOTE 1: If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
+
+NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'.
 
 
 ## How to Run ##
