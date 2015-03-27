@@ -3,7 +3,7 @@ import os
 
 verbose=False
 
-data_folder=os.path.join(os.path.dirname(os.path.realpath(__file__)),"data")
+data_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
 
 small_fasta_file=os.path.join(data_folder,"file.fasta")
 small_fasta_file_total_sequences=3

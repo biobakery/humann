@@ -30,7 +30,7 @@ except ImportError:
 check.python_version()
 
 def main():
-    directory_of_tests=os.path.dirname(os.path.realpath(__file__))
+    directory_of_tests=os.path.dirname(os.path.abspath(__file__))
     
     basic_suite = unittest.TestLoader().discover(directory_of_tests,pattern='basic_tests_*.py')
     advanced_suite = unittest.TestLoader().discover(directory_of_tests, pattern='advanced_tests_*.py')

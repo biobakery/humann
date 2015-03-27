@@ -19,7 +19,7 @@ import math
 
 # LJM Add location to minpath directory
 import subprocess
-minpath=os.path.join(os.path.dirname(os.path.realpath(__file__)),"MinPath")
+minpath=os.path.join(os.path.dirname(os.path.abspath(__file__)),"MinPath")
 
 # LJM Add search for latest glpk install
 glpk_versions=[]

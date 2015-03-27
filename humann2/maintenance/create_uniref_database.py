@@ -287,7 +287,7 @@ def main():
             " database: " + database_software)
     
     # Find the output directory
-    output_dir=os.path.dirname(os.path.realpath(args.output))
+    output_dir=os.path.dirname(os.path.abspath(args.output))
     
     # Create temp folder
     temp_dir=tempfile.mkdtemp( 

@@ -84,7 +84,7 @@ def log_settings():
 # User config file
 user_edit_config_file="humann2.cfg"
 
-full_path_user_edit_config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+full_path_user_edit_config_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),
     user_edit_config_file)
 
 def update_user_edit_config_file_single_item(section,name,value):
@@ -239,7 +239,7 @@ output_max_decimals=get_item(config_items, "output_format", "output_max_decimals
 remove_stratified_output=get_item(config_items, "output_format", "remove_stratified_output", "bool")
 
 # pathways files
-humann2_install_directory=os.path.dirname(os.path.realpath(__file__))
+humann2_install_directory=os.path.dirname(os.path.abspath(__file__))
 metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_reactions.uniref"))
 metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_pathways"))
     

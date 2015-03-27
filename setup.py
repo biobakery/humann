@@ -88,7 +88,7 @@ def install_minpath(replace_install=None,update_glpk=None):
     # Download the minpath software v1.2
     # Check to see if already downloaded
     
-    fullpath_scripts=os.path.join(os.path.dirname(os.path.realpath(__file__)),"humann2","quantify")
+    fullpath_scripts=os.path.join(os.path.dirname(os.path.abspath(__file__)),"humann2","quantify")
 
     minpath_file="minpath1.2.tar.gz"
     minpath_url="http://omics.informatics.indiana.edu/mg/get.php?" + \

@@ -49,7 +49,7 @@ def minpath_command(reactions_file,metacyc_datafile):
     tmpfile3=utilities.unnamed_temp_file()     
     tmpfile4=utilities.unnamed_temp_file()  
 
-    minpath_script=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+    minpath_script=os.path.join(os.path.dirname(os.path.abspath(__file__)),
         config.minpath_script)
     args=[minpath_script,"-any",reactions_file]
     args+=["-map",metacyc_datafile,"-report",tmpfile3]
@@ -64,7 +64,7 @@ def xipe_command(infile):
     Return the xipe command and the name of the output files
     """
     
-    xipe_exe=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+    xipe_exe=os.path.join(os.path.dirname(os.path.abspath(__file__)),
     config.xipe_script)
             
     args=[xipe_exe,"--file1",infile,"--file2",config.xipe_percent]
