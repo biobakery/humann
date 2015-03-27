@@ -157,7 +157,8 @@ setuptools.setup(
             'data/chocophlan_DEMO/*',
             'tests/data/*',
             'quantify/MinPath/data/*',
-            'quantify/MinPath/glpk-*/examples/glp*'
+            'quantify/MinPath/glpk-*/examples/glp*',
+            'quantify/MinPath/glpk-*/examples/.libs/*'
         ]},
     entry_points={
         'console_scripts': [
