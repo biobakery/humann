@@ -52,8 +52,7 @@ def main ( ):
     table = util.Table( args.input )
     polymap = util.load_polymap( args.names )
     rename( table, polymap )
-    fh = open( args.output, "w" ) if args.output is not None else sys.stdout
-    table.write( fh )
+    table.write( args.output )
 
 if __name__ == "__main__":
     main()

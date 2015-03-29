@@ -99,8 +99,7 @@ def main ( ):
                 groups2.setdefault( feature, {} )[superfeature] = 1
         groups = groups2
     regroup( table, groups, args.function )
-    fh = open( args.output, "w" ) if args.output is not None else sys.stdout
-    table.write( fh )
+    table.write( args.output )
 
 if __name__ == "__main__":
     main()

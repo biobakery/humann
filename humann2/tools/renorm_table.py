@@ -49,8 +49,7 @@ def main ( ):
     args = get_args()
     table = util.Table( args.input )
     normalize( table, cpm=True if args.norm == "cpm" else False )
-    fh = open( args.output, "w" ) if args.output is not None else sys.stdout
-    table.write( fh )
+    table.write( args.output )
 
 if __name__ == "__main__":
     main()

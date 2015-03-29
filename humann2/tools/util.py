@@ -130,21 +130,22 @@ class Table ( ):
                 self.is_stratified = True
                 break
 
-    def write ( self, fh ):
+    def write ( self, path=None ):
+        fh = try_zip_open( path, "w" ) if path is not None else sys.stdout
         writer = csv.writer( fh, dialect='excel-tab' )
         writer.writerow( [self.anchor] + self.colheads )
         for i in range( len( self.rowheads ) ):
             writer.writerow( [self.rowheads[i]] + self.data[i] )
 
-def try_zip_open( path ):
+def try_zip_open( path, *args ):
     """ 
     open an uncompressed or gzipped file; fail gracefully 
     """
     fh = None
     try:
-        fh = open( path ) if not re.search( r".gz$", path ) else gzip.GzipFile( path )
+        fh = open( path, *args ) if not re.search( r".gz$", path ) else gzip.GzipFile( path, *args )
     except:
-        print( "Problem loading", path, file=sys.stderr )
+        print( "Problem opening", path, file=sys.stderr )
     return fh
 
 def load_polymap ( path ):
