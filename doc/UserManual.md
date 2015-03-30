@@ -684,6 +684,10 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 
 ### PICRUSt output ###
 
+You can run HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output from predict_metagenomes.py or metagenome_contributions.py as input. Output from 
+metagenome_contributions.py can include taxonomy information which will be used by HUMAnN2. The steps that follow are the same for output files from either
+PICRUSt script.
+
 If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
