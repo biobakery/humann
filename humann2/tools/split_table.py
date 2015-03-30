@@ -26,6 +26,12 @@ GENE_TABLE_COMMENT_LINE="^#"
 BIOM_FILE_EXTENSION=".biom"
 TSV_FILE_EXTENSION=".tsv"
 TAXONOMY_DELIMITER="; "
+PICRUST_METAGENOME_HEADER="Kingdom\tPhylum\tClass\tOrder\tFamily\tGenus\tSpecies"
+PICRUST_METAGENOME_SAMPLE_COLUMN=1
+PICRUST_METAGENOME_GENE_COLUMN=0
+PICRUST_METAGENOME_ABUNDANCE_COLUMN=2
+PICURST_METAGENOME_GENUS_COLUMN=13
+PICURST_METAGENOME_SPECIES_COLUMN=14
         
 def split_gene_table(gene_table,output_dir,taxonomy_index=None):
     """
@@ -41,9 +47,112 @@ def split_gene_table(gene_table,output_dir,taxonomy_index=None):
     if not os.access(output_dir, os.W_OK):
         sys.exit("The output directory provided is not writeable. Please update the permissions.")
     
-    file_handle,header,line=util.process_gene_table_header(gene_table)
+    # try to open the file
+    try:
+        file_handle=open(gene_table,"r")
+        line=file_handle.readline()
+    except EnvironmentError:
+        sys.exit("Unable to read file: " + gene_table)
+            
+    # find the headers
+    header_flag=False
+    header=line
+    while re.match(GENE_TABLE_COMMENT_LINE, line):
+        header_flag=True
+        header = line
+        line = file_handle.readline()
         
-    samples=header.rstrip().split(GENE_TABLE_DELIMITER)
+    # if no headers are present, then use the first line as the header
+    if not header_flag:
+        line = file_handle.readline()
+        
+    # check for picrust metagenome file format
+    if re.search(PICRUST_METAGENOME_HEADER,header):
+        new_file_names=split_table_sample_rows(file_handle, line, output_dir)
+    else:
+        new_file_names=split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index)
+        
+    return new_file_names
+
+
+def split_table_sample_rows(file_handle, line, output_dir):
+    """
+    Split a table where the samples are indicated in each row
+    """
+    
+    # create files for each sample
+    new_file_names=[]
+    
+    gene_table_data_by_sample_bug={}
+    while line:
+        # read in each line of data
+        data=line.rstrip().split(GENE_TABLE_DELIMITER)        
+        gene=data[PICRUST_METAGENOME_GENE_COLUMN]
+        abundance=data[PICRUST_METAGENOME_ABUNDANCE_COLUMN]
+        
+        try:
+            abundance=float(abundance)
+        except ValueError:
+            abundance=0
+        
+        sample=data[PICRUST_METAGENOME_SAMPLE_COLUMN]
+        try:
+            bug="g__"+data[PICURST_METAGENOME_GENUS_COLUMN]+".s__"+data[PICURST_METAGENOME_SPECIES_COLUMN]
+        except IndexError:
+            bug=""
+        
+        # sum the abundance data by sample and bug
+        if not sample in gene_table_data_by_sample_bug:
+            gene_table_data_by_sample_bug[sample]={}
+            
+        if not gene in gene_table_data_by_sample_bug[sample]:
+            gene_table_data_by_sample_bug[sample][gene]={}
+            
+        gene_table_data_by_sample_bug[sample][gene][bug]=gene_table_data_by_sample_bug[sample][gene].get(bug,0)+abundance
+        line = file_handle.readline()
+        
+    file_handle.close()
+        
+    # write the genes to the files
+    for sample in gene_table_data_by_sample_bug:
+        simple_sample_name=re.sub("[^a-zA-Z0-9_|-|.]|@|\\?|\\]|\\[|\\^","_",sample)
+        try:
+            new_file_name=os.path.join(output_dir,simple_sample_name+TSV_FILE_EXTENSION)
+            new_file_names.append(new_file_name)
+            new_file_handle=open(new_file_name,"w")
+            
+            # write the header
+            new_file_handle.write(GENE_TABLE_DELIMITER.join(["#OTU ID",sample])+"\n")
+            
+            # write all of the abundance data
+            for gene in gene_table_data_by_sample_bug[sample]:
+                total=0
+                new_lines=[]
+                for bug in gene_table_data_by_sample_bug[sample][gene]:
+                    total+=gene_table_data_by_sample_bug[sample][gene][bug]
+                    if bug:
+                        new_lines.append(GENE_TABLE_DELIMITER.join([gene+"|"+bug,
+                            str(gene_table_data_by_sample_bug[sample][gene][bug])])+"\n")
+                    
+                new_file_handle.write(GENE_TABLE_DELIMITER.join([gene,str(total)])+"\n")
+                if new_lines:
+                    new_file_handle.write("".join(new_lines))
+                    
+            new_file_handle.close()
+            
+        except EnvironmentError:
+            sys.exit("Unable to create split gene table files") 
+    
+    return new_file_names   
+    
+    
+
+def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index):
+    """
+    Split a table where the abundances of genes are organized by sample in columns
+    """
+    
+    samples=header.rstrip().split(GENE_TABLE_DELIMITER)    
     
     # create files for each sample
     new_file_handles=[]
