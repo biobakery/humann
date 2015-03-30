@@ -109,7 +109,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                     # use the genus and species
                     species=organism_info.split("|")[-1]
                     genus=organism_info.split("|")[-2]
-                    message=("Found " + genus + "|" + species + " : " +
+                    message=("Found " + genus + "." + species + " : " +
                         "{:.2f}".format(read_percent) + "% of mapped reads")
                     logger.info(message)
                     print(message)
