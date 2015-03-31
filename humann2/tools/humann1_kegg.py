@@ -132,7 +132,7 @@ CommonArea['dOrgIdOrgName'] = dict()
 try:
 	CommonArea  =  ReadSequentialTranslationFile(CommonArea)   #First,  try to read the sequential file in our directory
 except:
-	print "Reading the Table OrgId--> Name in ../data/pathways/KeggOrgId2OrgNameTable.txt Failed"
+	print "Reading the Table OrgId--> Name in ../data/pathways/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website"
 	CommonArea  =  ReadHtmlKegTable(CommonArea)   #But if that fails - try directly from Kegg
  
 
@@ -176,9 +176,10 @@ for iLine in CommonArea['igenels_file']:
 		OrgName = CommonArea['dOrgIdOrgName'][iBug] 
 	except: 
 		OrgName = iBug	
-	OutputLine = iBug + ":" + iGene + "\t" + KOEntry + \
-	"\t" + str(iGeneLengthNucleotide) + "\t" + OrgName + "\n"
-	OutputFile.write(OutputLine)
+		
+	if  KOEntry != "NoKONum":
+		OutputLine = iBug + ":" + iGene + "\t" + KOEntry + "\t" + str(iGeneLengthNucleotide) + "\t" + OrgName + "\n"
+		OutputFile.write(OutputLine)
 	
 		
 OutputFile.close()
