@@ -719,7 +719,7 @@ Please note the flag ``--verbose`` can be added to all commands.
 
 ### Legacy databases ###
 
-The original version of HUMAnN used Kegg databases. You can run with the legacy Kegg databases following these steps:
+The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases. You can run with the legacy Kegg databases following these steps:
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
 
@@ -729,7 +729,7 @@ The original version of HUMAnN used Kegg databases. You can run with the legacy 
 
     * `` $ humann2_humann1_kegg --ikoc humann1/data/koc --igenels humann1/data/genels --o legacy_kegg_idmapping.tsv ``
     
-3. Run HUMAnN2 on your kegg alignment file, $SAMPLE, with results written to $OUTPUT_DIR (for a demo input use the humann1 demo at humann1/input/mock_even_lc.tsv)
+3. Run HUMAnN2 on your kegg alignment file, $SAMPLE, with results written to $OUTPUT_DIR
 
     * `` $ humann2 --input $SAMPLE --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc ``
     * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
