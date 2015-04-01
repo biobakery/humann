@@ -57,6 +57,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         
 * [Tutorials](#markdown-header-tutorials)
     * [PICRUSt output](#markdown-header-picrust-output)
+    * [Legacy databases](#markdown-header-legacy-databases)
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
@@ -715,6 +716,24 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
     * If the files being joined in this step are biom format, the ouput file will also be in biom format.
 
 Please note the flag ``--verbose`` can be added to all commands.
+
+### Legacy databases ###
+
+The original version of HUMAnN used Kegg databases. You can run with the legacy Kegg databases following these steps:
+
+1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
+
+    * The databases will be refered to in steps that follow with the path "humann1/data/*".
+    
+2. Create an idmapping file formatted for HUMAnN2 using the legacy kegg databases and adding full names for the Kegg organisms
+
+    * `` $ humann2_humann1_kegg --ikoc humann1/data/koc --igenels humann1/data/genels --o legacy_kegg_idmapping.tsv ``
+    
+3. Run HUMAnN2 on your kegg alignment file, $SAMPLE, with results written to $OUTPUT_DIR (for a demo input use the humann1 demo at humann1/input/mock_even_lc.tsv)
+
+    * `` $ humann2 --input $SAMPLE --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc ``
+    * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
+    * For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv``.
 
 
 ## FAQs ##
