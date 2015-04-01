@@ -26,12 +26,11 @@ import argparse
 #  C. kegg file with bug names: http://www.genome.jp/kegg/catalog/org_list.html             *
 #                                                                                           *
 #  The program is invoked as follows:                                                       *
-#  python humann1_kegg.py --igenels ./data/genels   --ikoc  ./data/koc --ikeggtrans  "http://www.genome.jp/kegg/catalog/org_list.html"  
-#              --ikeggOrgId2OrgName    ../data/pathways/KeggOrgId2OrgNameTable.txt   --o output_extract
+#  python humann1_kegg.py --igenels ./data/genels   --ikoc  ./data/koc   --o output_extract *
 #                                                                                            *
 #
 #  The program tries to read the Kegg translation table OrgId -->OrgName that is located in  *
-#  ../data/pathways/KeggOrgId2OrgNameTable.txt                                               *
+#  ../data/misc/KeggOrgId2OrgNameTable.txt                                                   *
 #  And if that fails,  it tries to get that info from Kegg itself ( "http://www.genome.jp/kegg/catalog/org_list.html" )
 #                                                                                            *
 # Written by George Weingart  March 31, 2015   george.weingart@gmail.com                     *
@@ -50,7 +49,7 @@ def read_params(x):
 	parser.add_argument('--igenels', action="store", dest='igenels',nargs='?')
 	parser.add_argument('--ikeggtrans', action="store", dest='ikeggtrans',nargs='?', default="http://www.genome.jp/kegg/catalog/org_list.html")
 	parser.add_argument('--ikoc', action="store", dest='ikoc',nargs='?')
-	parser.add_argument('--ikeggOrgId2OrgName', action="store", dest='ikeggOrgId2OrgName',nargs='?')
+	parser.add_argument('--ikeggOrgId2OrgName', action="store", dest='ikeggOrgId2OrgName',nargs='?',default="../data/misc/KeggOrgId2OrgNameTable.txt")
 	parser.add_argument('--o', action="store", dest='o',nargs='?')
 	CommonArea['parser'] = parser
 	return  CommonArea
