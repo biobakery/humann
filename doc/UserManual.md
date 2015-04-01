@@ -693,7 +693,7 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
 
-    * The databases will be refered to in steps that follow with the path "humann1/data/*".
+    * The databases will be referred to in steps that follow with the path "humann1/data/*".
 
 2. Split the picrust output file (picrust.biom) into a single file per sample (written to $OUTPUT_DIR)
 
@@ -723,7 +723,7 @@ The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
 
-    * The databases will be refered to in steps that follow with the path "humann1/data/*".
+    * The databases will be referred to in steps that follow with the path "humann1/data/*".
     
 2. Create an idmapping file formatted for HUMAnN2 using the legacy kegg databases and adding full names for the Kegg organisms
 
