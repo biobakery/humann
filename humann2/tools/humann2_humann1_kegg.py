@@ -49,7 +49,7 @@ def read_params(x):
 	parser.add_argument('--igenels', action="store", dest='igenels',nargs='?')
 	parser.add_argument('--ikeggtrans', action="store", dest='ikeggtrans',nargs='?', default="http://www.genome.jp/kegg/catalog/org_list.html")
 	parser.add_argument('--ikoc', action="store", dest='ikoc',nargs='?')
-	parser.add_argument('--ikeggOrgId2OrgName', action="store", dest='ikeggOrgId2OrgName',nargs='?',default="../data/misc/KeggOrgId2OrgNameTable.txt")
+	parser.add_argument('--ikeggOrgId2OrgName', action="store", dest='ikeggOrgId2OrgName',nargs='?')
 	parser.add_argument('--o', action="store", dest='o',nargs='?')
 	CommonArea['parser'] = parser
 	return  CommonArea
@@ -95,7 +95,13 @@ def  ReadHtmlKegTable(CommonArea):
 #*  Try to read the Sequential File                                     *
 #************************************************************************
 def  ReadSequentialTranslationFile(CommonArea):
-		CommonArea['ikeggOrgId2OrgName_file'] = open(CommonArea['ikeggOrgId2OrgName'])
+		if  CommonArea['ikeggOrgId2OrgName'] is not None:
+			CommonArea['ikeggOrgId2OrgName_file'] = open(CommonArea['ikeggOrgId2OrgName'])
+		else:
+			FileLocation = os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir, "data/misc/KeggOrgId2OrgNameTable.txt")
+			CommonArea['ikeggOrgId2OrgName_file'] = open(FileLocation)  
+			
+			
 		for iKeggOrgLine in CommonArea['ikeggOrgId2OrgName_file']: 
 			OrgId = iKeggOrgLine.split("\t")[0]
 			OrgName = iKeggOrgLine.split("\t")[1].rstrip('\n')
