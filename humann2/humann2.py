@@ -777,8 +777,8 @@ def main():
             print("\n"+message)
     
             # Report reads unaligned
-            message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads_stored(
-                args.input, unaligned_reads_store) + "%"
+            message="Unaligned reads after nucleotide alignment: " + utilities.estimate_unaligned_reads_stored(
+                args.input, unaligned_reads_store) + " %"
             logger.info(message)
             print("\n"+message+"\n")  
         else:
@@ -816,8 +816,8 @@ def main():
                 print("\n"+message)
         
                 # Report reads unaligned
-                message="Estimate of unaligned reads: " + utilities.estimate_unaligned_reads_stored(
-                    args.input, unaligned_reads_store) + "%"
+                message="Unaligned reads after translated alignment: " + utilities.estimate_unaligned_reads_stored(
+                    args.input, unaligned_reads_store) + " %"
                 logger.info(message)
                 print("\n"+message+"\n")  
             else:

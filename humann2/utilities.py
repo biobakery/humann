@@ -777,9 +777,9 @@ def estimate_unaligned_reads(input_fastq, unaligned_fastq):
     file_exists_readable(input_fastq)
     file_exists_readable(unaligned_fastq)
 
-    percent=int(count_reads(unaligned_fastq)/float(count_reads(input_fastq)) * 100)
+    percent=count_reads(unaligned_fastq)/float(count_reads(input_fastq)) * 100
 
-    return str(percent)
+    return format_float_to_string(percent)
 
 def estimate_unaligned_reads_stored(input_fastq, unaligned_store):
     """
@@ -792,9 +792,9 @@ def estimate_unaligned_reads_stored(input_fastq, unaligned_store):
         file_exists_readable(input_fastq)
         unaligned_store.set_initial_read_count(count_reads(input_fastq))
 
-    percent=int(unaligned_store.count_reads()/float(unaligned_store.get_initial_read_count()) * 100)
+    percent=unaligned_store.count_reads()/float(unaligned_store.get_initial_read_count()) * 100
 
-    return str(percent)
+    return format_float_to_string(percent)
 
 def remove_directory(dir):
     """
