@@ -212,8 +212,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         for hit in all_hits:
             query, bug, reference, evalue, length = hit
             if reference == "UniRef50":
-                self.assertEqual(length,2000)
+                self.assertEqual(length,2000/1000.0)
             else:
-                self.assertEqual(length,1000)
+                self.assertEqual(length,1000/1000.0)
 
 

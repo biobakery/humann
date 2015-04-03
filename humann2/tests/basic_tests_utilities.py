@@ -72,10 +72,10 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         percent_unaligned=utilities.estimate_unaligned_reads(
             cfg.small_fastq_file, cfg.small_fastq_file)
 
-        percent_expected=int(cfg.small_fastq_file_total_sequences / 
-            float(cfg.small_fastq_file_total_sequences)*100)
+        percent_expected=(cfg.small_fastq_file_total_sequences / 
+            float(cfg.small_fastq_file_total_sequences)*100.0)
 
-        self.assertEqual(percent_unaligned, str(percent_expected))   
+        self.assertAlmostEqual(float(percent_unaligned), percent_expected)   
         
     def test_estimate_unaligned_reads_fasta_and_fastq_files(self):
         """
@@ -86,10 +86,10 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         percent_unaligned=utilities.estimate_unaligned_reads(
             cfg.small_fasta_file, cfg.small_fastq_file)
 
-        percent_expected=int(cfg.small_fastq_file_total_sequences / 
-            float(cfg.small_fasta_file_total_sequences)*100)
+        percent_expected=(cfg.small_fastq_file_total_sequences / 
+            float(cfg.small_fasta_file_total_sequences)*100.0)
 
-        self.assertEqual(percent_unaligned, str(percent_expected))   
+        self.assertAlmostEqual(float(percent_unaligned), percent_expected)   
 
     def test_break_up_fasta_file(self):
         """

@@ -181,7 +181,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                    
                 # only store alignments with evalues less than threshold
                 if evalue<config.evalue_threshold:
-                    alignments.add_annotated(query,evalue,info[config.sam_reference_index])
+                    alignments.add_annotated(query,evalue,info[config.sam_reference_index],
+                        normalize_by_read_length=True)
                 else:
                     large_evalue_count+=1
                     unaligned_read=True

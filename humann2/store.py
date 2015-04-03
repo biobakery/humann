@@ -83,13 +83,18 @@ def store_id_mapping(file):
     
     return id_mapping 
 
-def normalized_gene_length(gene_length):
+def normalized_gene_length(gene_length, normalize_by_read_length=None):
     """
-    Compute the normalized gene length using the average read length
+    Compute the normalized gene length with the average read length if set
     Report in reads per kilobase
     """
 
-    return (abs(gene_length - config.average_read_length)+1)/1000.0
+    if normalize_by_read_length:
+        adjusted_gene_length=(abs(gene_length - config.average_read_length)+1)/1000.0
+    else:
+        adjusted_gene_length=gene_length/1000.0 
+
+    return adjusted_gene_length
 
 class Alignments:
     """
@@ -181,7 +186,7 @@ class Alignments:
             
         return [gene,length,bug]
 
-    def add_annotated(self, query, evalue, annotated_reference):
+    def add_annotated(self, query, evalue, annotated_reference, normalize_by_read_length=None):
         """
         Add an alignment with an annotated reference
         """
@@ -189,9 +194,9 @@ class Alignments:
         # Obtain the reference id length and bug
         [referenceid,length,bug]=self.process_reference_annotation(annotated_reference)
         
-        self.add(referenceid, length, query, evalue, bug)
+        self.add(referenceid, length, query, evalue, bug, normalize_by_read_length)
 
-    def add(self, reference, reference_length, query, evalue, bug): 
+    def add(self, reference, reference_length, query, evalue, bug, normalize_by_read_length=None): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
@@ -216,7 +221,8 @@ class Alignments:
         self.__total_scores_by_query[query]=self.__total_scores_by_query.get(query,0)+score
         
         # Store the scores by bug and gene
-        normalized_score=1/normalized_gene_length(reference_length)
+        normalized_reference_length=normalized_gene_length(reference_length, normalize_by_read_length)
+        normalized_score=1/normalized_reference_length
         if bug in self.__scores_by_bug_gene:
             self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_score
         else:
@@ -224,7 +230,7 @@ class Alignments:
             
         # Point to the hit by query
         # Add to dictionary if multiple hits per query
-        hit=[bug,reference,score,reference_length]
+        hit=[bug,reference,score,normalized_reference_length]
         if query in self.__hits_by_query:
             self.__hits_by_query[query].append(hit)
             self.__multiple_hits_queries[query]=1
@@ -308,9 +314,9 @@ class Alignments:
             query_normalize=self.__total_scores_by_query[query]
             for [bug,reference,score,length] in self.__hits_by_query[query]:
                 # Update the scores by bug and gene
-                # Subtract the original score added of 1/abs(length-average_read_length)+1
+                # Subtract the original score added
                 # Add the new normalized score
-                original_score=1/normalized_gene_length(length)
+                original_score=1/length
                 updated_score=score/query_normalize*original_score
                 self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
         

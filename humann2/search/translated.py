@@ -353,7 +353,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 # only store alignments with evalues less than threshold
                 if evalue<config.evalue_threshold:
                     alignments.add_annotated(queryid, evalue, 
-                        alignment_info[config.blast_reference_index])
+                        alignment_info[config.blast_reference_index], normalize_by_read_length=False)
                 else:
                     large_evalue_count+=1
             

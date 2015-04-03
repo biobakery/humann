@@ -200,7 +200,7 @@ class TestAdvancedHumann2UtilitiesFunctions(unittest.TestCase):
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
-        self.assertEqual(sorted(stored_lengths),sorted([1,10,1000]))
+        self.assertEqual(sorted(stored_lengths),sorted([1/1000.0,10/1000.0,1000/1000.0]))
         
     def test_Alignments_id_mapping_half_hits(self):
         """
@@ -223,8 +223,8 @@ class TestAdvancedHumann2UtilitiesFunctions(unittest.TestCase):
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
-        self.assertEqual(sorted(stored_lengths),sorted([1,100,
-            200,1000]))
+        self.assertEqual(sorted(stored_lengths),sorted([1/1000.0,100/1000.0,
+            200/1000.0,1000/1000.0]))
         
     def test_GeneScores_add_from_file_id_mapping_bug_list(self):
         """
