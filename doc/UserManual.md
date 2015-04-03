@@ -32,7 +32,6 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     1. [Gene families file](#markdown-header-1-gene-families-file)
     2. [Pathway coverage file](#markdown-header-2-pathway-coverage-file)
     3. [Pathway abundance file](#markdown-header-3-pathway-abundance-file)
-    
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#markdown-header-1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#markdown-header-2-bowtie2-reduced-alignment-results)
@@ -43,8 +42,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         7. [MetaPhlAn2 bugs list](#markdown-header-7-metaphlan2-bugs-list)
         8. [Translated alignment results](#markdown-header-8-translated-alignment-results)
         9. [Translated alignment unaligned reads](#markdown-header-9-translated-alignment-unaligned-reads)
-        10. [Log](#markdown-header-10-log)
-        
+        10. [Log](#markdown-header-10-log)    
 * [Databases](#markdown-header-databases)
 * [Configuration](#markdown-header-configuration)
 * [Tools](#markdown-header-tools)
@@ -54,10 +52,13 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         3. [Rename table features](#markdown-header-3-rename-table-features)
         4. [Renormalize table](#markdown-header-4-renormalize-table)
         5. [Regroup table features](#markdown-header-5-regroup-table-features)
-        
+        6. [Combine metagenomic and metatranscriptomic sequencing data](#markdown-header-6-combine-metagenomic-and-metatranscriptomic-sequencing-data)        
+        7. [Strain-level functional profiling](#markdown-header-7-strain-level-functional-profiling)
 * [Tutorials](#markdown-header-tutorials)
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
+    * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
+    * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
@@ -188,7 +189,7 @@ Option 1: Latest Release (Recommended)
 Option 2: Development Version
 
 * Create a clone of the repository: 
-	
+    
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
 	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. 
@@ -680,6 +681,21 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 *   $GROUPS = mapping of features to superfeatures (.tsv or .tsv.gz format)
 *   $TABLE2 = regrouped gene/pathway table
 
+#### 6.  Combine metagenomic and metatranscriptomic sequencing data ####
+
+`` $ humann2_rna_dna_norm --input_dna $TABLE_DNA --input_rna --groups $TABLE_DNA --output_basename $OUTPUT_BASENAME ``
+
+*   $TABLE_DNA = gene families output for sample DNA (tsv format)
+*   $TABLE_RNA = gene families output for sample RNA (tsv format)
+*   $OUTPUT_BASENAME = Basename for the three output files (smoothed DNA, smoothed RNA, normalized RNA)
+*   See the [tutorial](#markdown-header-analyzing-metatranscriptomes) below for assistance.
+
+#### 7.  Strain-level functional profiling ####
+
+`` $ humann2_strain_profiler --input $TABLE ``
+
+*   $TABLE = merged gene families output for two or more samples (tsv format)
+*   See the [tutorial](#markdown-header-strain-level-functional-profiling) below for assistance.
 
 ## Tutorials ##
 
@@ -735,6 +751,21 @@ The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases
     * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
     * For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv``.
 
+### Analyzing Metatranscriptomes ###
+
+The recommended HUMAnN2 metatranscriptome (RNA) analysis protocol differs depending on whether or not you have metagenomic (DNA) reads available from the same biological sample.
+
+**Analyzing a metatranscriptome with a paired metagenome.** In this case, we recommend analyzing the metagenome first. Then, rather than constructing a taxonomic profile directly from the metatranscriptome, use the taxonomic profile of the corresponding metagenome as an additional input to HUMAnN2 via the ``--taxonomic-profile`` flag. This will guarantee that RNA reads are mapped to any species' pangenomes detected in the metagenome. RNA reads are otherwise provided as input to HUMAnN2 just as DNA reads are. HUMAnN2 RNA-level outputs (e.g. transcript family abundance) can then be normalized by corresponding DNA-level outputs to quantify microbial expression independent of gene copy number. **CAVEAT:** For low-abundance species, random sampling may lead to detection of transcripts for undetected genes. In these cases, we recommend smoothing DNA-level features to avoid divide-by-zero errors during normalization. The HUMAnN2 tool script ``humann2_rna_dna_norm`` will Witten-Bell smooth paired RNA and DNA output files and then return the smoothed DNA, smoothed RNA, and normalized RNA. This script assumes: (i) that units in the table behave like counts (this is true for ``*_genefamilies.tsv`` files, which are measured in RPK) and (ii) that sample columns are in the same order.
+
+**Analyzing an isolated metatranscriptome (without a paired metagenome).** In this case, analyze RNA read data just as you would DNA data (provided as a fasta/fastq file). **CAVEAT 1:** Note that species are quantified in HUMAnN2 based on recruitment of reads to species-specific marker genes. While each genome copy is assumed to donate ~1 copy of each marker to metagenome (DNA) data, the same assumption cannot be made for RNA data (markers may be more or less transcribed within a species compared to the species average). As long as a non-trivial fraction of a species' markers are expressed, HUMAnN2 will still detect that species in the transcript pool. However, species relative abundance estimates from the taxonomic profile must be interpretted carefully: these values reflect species' relative contributions to the pool of species-specific transcripts, and not the overall transcript pool. **CAVEAT 2:** Transcript abundance inferred from a lone metatranscriptome is confounded with underlying gene copy number. For example, transcript X may be more abundant in sample A relative to sample B because (i) the same number of underlying X genes are more highly expressed in sample A relative to sample B or (ii) there are more copies of gene X in sample A relative to sample B (all of which are equally expressed). This is a general challenge in analyzing isolated metatranscriptomes (not specific to HUMAnN2).
+
+### Strain-level Functional Profiling ###
+
+The HUMAnN2 script ``humann2_strain_profiler`` can help explore strain-level variation in your data. This approach assumes you have run HUMAnN2 on a series of samples and then merged the resulting ``*_genefamilies.tsv`` tables with ``humann2_merge_tables``. Cases will arise in which the same species was detected in two or more samples, but gene families within that species were not consistently present across samples. For example, four samples may contain the species *Dialister invisus*, but only two samples contain the gene family ``UniRef50_Q5WII6`` within *Dialister invisus*. This is a form of strain-level variation in the *Dialister invisus* species: one which we can connect directly to function based on annotations of the ``UniRef50_Q5WII6`` gene family.
+
+``humann2_strain_profiler`` first looks for (species, sample) pairs where (i) a large number of gene families within the species were identified (default: 500) and (ii) the mean abundance of detected genes was high (default: mean > 10 RPK). For species that meet these criteria, we can infer that absent gene families are likely to be truly absent, as opposed to undersampled. Simulations suggest that the cutoff of 10 RPK results in a false negative rate below 0.001 (i.e. for every 1000 genes identified as absent, at most one would be present but missed due to undersampling). For a given species, if at least two samples pass these criteria, the species and passing samples are sliced from the merged table and saved as a strain profile.
+
+Strain profiles can be additionally restricted to a subset of species (e.g. those from a particular genus) or to gene families with a high level of variability in the population (e.g. present in fewer than 80% of samples but more than 20% of samples). Additional thresholds (e.g. the minimum non-zero mean) can be configured with command line parameters.
 
 ## FAQs ##
 
