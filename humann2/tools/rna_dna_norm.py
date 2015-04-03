@@ -43,28 +43,41 @@ def remove_totals( table ):
 
 def wbsmooth( table, all_features ):
     # compute per-sample epsilon
-    epsilons = [0 for i in table.data[0]]
+    nonzero = [0 for i in table.data[0]]
+    colsums = [0 for i in table.data[0]]
     for i, row in enumerate( table.data ):
         # float table here
-        table.data[i] = [float( k ) for k in row]
+        table.data[i] = map( float, row )
         for j, value in enumerate( table.data[i] ):
-            epsilons[j] += 1 if value > 0 else 0
-    # smoothing factor
-    divide = lambda x, y: ( x / float( y ) ) if y > 0 else 0
-    n = len( all_features )
-    epsilons = [divide( k, n - k ) for k in epsilons]
+            nonzero[j] += 1 if value > 0 else 0
+            colsums[j] += value
+    # compute epsilons/norms
+    epsilons, norms = [], []
+    for j in range( len( nonzero ) ):
+        # total events for column j
+        N = colsums[j]
+        # total first events
+        T = nonzero[j]
+        # implied unobserved events
+        Z = len( all_features ) - T
+        norms.append( N / float( N + T ) )
+        epsilons.append( ( norms[-1] * T / float( Z ) ) if Z > 0 else 0 )
     # compute quick index for table
     rowmap = {rowhead:i for i, rowhead in enumerate( table.rowheads )}
     # rebuild table data
     rowheads2, data2 = [], []
     for feature in all_features:
         rowheads2.append( feature )
+        # feature is in the table; still adjust zero values
         if feature in rowmap:
             i = rowmap[feature]
             for j, value in enumerate( table.data[i] ):
                 if value == 0:
                     table.data[i][j] = epsilons[j]
+                else:
+                    table.data[i][j] = value * norms[j]
             data2.append( table.data[i] )
+        # feature is absent from the table; use epsilon for everyone
         else:
             data2.append( epsilons )
     table.rowheads, table.data = rowheads2, data2      
@@ -91,11 +104,10 @@ def hsum( table ):
 
 def main ( ):
     # warning
-    print( """
-    This script is EXPERIMENTAL.
-    Assumes you are working on raw HUMAnN2 outputs (RPK units).
-    Assumes RNA and DNA tables have same column ordering.
-    """, file=sys.stderr )
+    print( "\nThis script assumes:\n",
+           "(1) That DNA and RNA columns have the same order.\n",
+           "(2) That units are count-like (including default RPKs).\n",
+           file=sys.stderr )
     args = get_args()
     dna = util.Table( args.input_dna )
     rna = util.Table( args.input_rna )
