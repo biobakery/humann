@@ -29,25 +29,31 @@ def get_args ():
         "-m", "--critical_mean", 
         type=float,
         default=10.0,
-        help="Default mean non-zero gene abundance for inclusion",
+        help="Default mean non-zero gene abundance for inclusion; default=10.0",
         )
     parser.add_argument( 
         "-n", "--critical_count", 
         type=int,
-        default=100,
-        help="Default non-zero number of genes for inclusion",
+        default=500,
+        help="Default non-zero number of genes for inclusion; default=500",
         )
     parser.add_argument( 
-        "-f", "--critical_frequency",
+        "-p", "--pinterval",
         type=float,
-        default=0.0,
-        help="Threshold prevalence (or absence) for defining an interesting gene",
+        default=[c_epsilon, 1.0],
+        nargs=2,
+        help="Only genes with prevalence in this interval are allowed; default=[1e-10, 1]",
         )
     parser.add_argument( 
         "-s", "--critical_samples",
         type=int,
         default=2,
-        help="Threshold number of samples with strain for printing",
+        help="Threshold number of samples having strain; default=2",
+        )
+    parser.add_argument( 
+        "-l", "--limit",
+        default=None,
+        help="Limit output to species matching a particular pattern, e.g. 'Streptococcus'; default=OFF",
         )
     args = parser.parse_args()
     return args
@@ -57,20 +63,21 @@ class Partition ( ):
         self.name = name
         self.rows = {}
         self.cols = {}
-    def add_row( self, i ):
-        self.rows[i] = 1
-    def add_col( self, j ):
-        self.cols[j] = 1
-    def del_row( self, i ):
-        del self.rows[i]    
-    def del_col( self, j ):
-        del self.cols[j]
+    def add_rows( self, *args ):
+        [self.rows.update( [[i, 1]] ) for i in args]
+    def add_cols( self, *args ):
+        [self.cols.update( [[j, 1]] ) for j in args]
+    def del_rows( self, *args ):
+        [self.rows.pop( i ) for i in args]    
+    def del_cols( self, *args ):
+        [self.cols.pop( j ) for j in args]
     def get_rows( self ):
         return sorted( self.rows )
     def get_cols( self ):
         return sorted( self.cols )
 
-def partition_table( table, m, n, p ):
+def partition_table( table, m, n, pinterval ):
+    # first build the partitions
     partitions = {}
     for i, rowhead in enumerate( table.rowheads ):
         table.data[i] = map( float, table.data[i] )
@@ -81,28 +88,28 @@ def partition_table( table, m, n, p ):
                 species = species.split( c_tax_delim )[1]
                 if species not in partitions:
                     partitions[species] = Partition( species )
-                partitions[species].add_row( i )
-    # limit partitions to subjects with mean non-zero above threshold
+                partitions[species].add_rows( i )
+    # limit partitions to subjects with mean non-zero gene abund above threshold
     for name, partition in partitions.items():
-        partition.cols = {k:1 for k in range( len( table.colheads ) )}
+        partition.add_cols( *range( len( table.colheads ) ) )
         for j in partition.get_cols():
             values = [table.data[i][j] for i in partition.get_rows()]
             nonzero = [k for k in values if k > 0]
-            if len( nonzero ) < n or sum( nonzero ) / len( nonzero ) < m:
-                partition.del_col( j )
-    # limit partitions to interesting features
+            if len( nonzero ) < n or sum( nonzero ) / float( len( nonzero ) ) < m:
+                partition.del_cols( j )
+    # limit partitions to interesting features (if user changed f cutoff)
     for name, partition in partitions.items():
         for i in partition.get_rows():
             values = [table.data[i][j] for j in partition.get_cols()]
             nonzero = [k for k in values if k > 0]
             prevalence = len( nonzero ) / ( c_epsilon + float( len( values ) ) )
             # print( name, i, values, nonzero, prevalence, partition.name )
-            if prevalence < p or prevalence > 1 - p:
-                partition.del_row( i )
+            if not pinterval[0] <= prevalence <= pinterval[1]:
+                partition.del_rows( i )
     return partitions
 
 def write_partition ( table, partition, outfile ):
-    matrix = [["STRAINS"] + [table.colheads[j] for j in partition.get_cols()]]
+    matrix = [["HEADERS"] + [table.colheads[j] for j in partition.get_cols()]]
     for i in partition.get_rows():
         row = [table.rowheads[i]]
         row += [table.data[i][j] for j in partition.get_cols()]
@@ -119,12 +126,13 @@ def main ( ):
         table,
         args.critical_mean,
         args.critical_count,
-        args.critical_frequency,
+        args.pinterval,
         )
     for name, partition in partitions.items():
         if len( partition.get_cols() ) >= args.critical_samples and \
-                len( partition.get_rows() ) >= 1:
+                len( partition.get_rows() ) >= 1 and \
+                ( args.limit is None or args.limit in name ):
             write_partition( table, partition, name+c_strain_profile_extension )
-
+            
 if __name__ == "__main__":
     main()
