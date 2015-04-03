@@ -33,6 +33,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     2. [Pathway coverage file](#markdown-header-2-pathway-coverage-file)
     3. [Pathway abundance file](#markdown-header-3-pathway-abundance-file)
     * [Intermediate temp output files](#markdown-header-intermediate-temp-output-files)
+    
         1. [Bowtie2 alignment results](#markdown-header-1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#markdown-header-2-bowtie2-reduced-alignment-results)
         3. [Bowtie2 index files](#markdown-header-3-bowtie2-index-files)
