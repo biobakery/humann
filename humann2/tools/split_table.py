@@ -38,15 +38,6 @@ def split_gene_table(gene_table,output_dir,taxonomy_index=None):
     Split the gene table into a table per sample
     """
     
-    if not os.path.isfile(gene_table):
-        sys.exit("The gene table provided is not a file. Please enter a new file.")
-    
-    if not os.access(gene_table, os.R_OK):
-        sys.exit("The gene table provided is not readable. Please update the permissions.")
-        
-    if not os.access(output_dir, os.W_OK):
-        sys.exit("The output directory provided is not writeable. Please update the permissions.")
-    
     # try to open the file
     try:
         file_handle=open(gene_table,"r")
@@ -260,6 +251,16 @@ def main():
     args.input=os.path.abspath(args.input)
     
     output_dir=os.path.abspath(args.output)
+    
+    if not os.path.isfile(args.input):
+        sys.exit("The gene table provided is not a file. Please enter a new file.")
+    
+    if not os.access(args.input, os.R_OK):
+        sys.exit("The gene table provided is not readable. Please update the permissions.")
+        
+    if not os.access(output_dir, os.W_OK):
+        sys.exit("The output directory provided is not writeable. Please update the permissions.")
+    
     if not os.path.isdir(output_dir):
         if args.verbose:
             print("Creating output directory: " + output_dir)
