@@ -13,7 +13,7 @@ import util
 # constants
 c_new_dna_extension = "-smoothed_dna.tsv"
 c_new_rna_extension = "-smoothed_rna.tsv"
-c_norm_rna_extension = "-normalized_rna.tsv"
+c_norm_rna_extension = "-relative_expression.tsv"
 
 def get_args ():
     """ Get args from Argparse """
@@ -28,6 +28,7 @@ def get_args ():
         )
     parser.add_argument( 
         "-o", "--output_basename", 
+        default = "results",
         help="Path/basename for the three output tables",
         )
     args = parser.parse_args()
@@ -42,7 +43,6 @@ def remove_totals( table ):
     table.rowheads, table.data = rowheads2, data2
 
 def wbsmooth( table, all_features ):
-    # compute per-sample epsilon
     nonzero = [0 for i in table.data[0]]
     colsums = [0 for i in table.data[0]]
     for i, row in enumerate( table.data ):
@@ -51,6 +51,8 @@ def wbsmooth( table, all_features ):
         for j, value in enumerate( table.data[i] ):
             nonzero[j] += 1 if value > 0 else 0
             colsums[j] += value
+    # save colsums in table object
+    table.colsums = colsums
     # compute epsilons/norms
     epsilons, norms = [], []
     for j in range( len( nonzero ) ):
@@ -125,9 +127,10 @@ def main ( ):
     # write out dna/rna
     dna.write( args.output_basename+c_new_dna_extension )
     rna.write( args.output_basename+c_new_rna_extension )
-    # normalize rna, then write
+    # normalize rna by dna (account for seq depth [scale]), then write
+    scale = [d / r for r, d in zip( rna.colsums, dna.colsums )]
     for i in range( len( dna.data ) ):
-        rna.data[i] = [r / d for r, d in zip( rna.data[i], dna.data[i] )]
+        rna.data[i] = [s * r / d for s, r, d in zip( scale, rna.data[i], dna.data[i] )]
     rna.write( args.output_basename+c_norm_rna_extension )
 
 if __name__ == "__main__":
