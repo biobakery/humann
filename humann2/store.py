@@ -1018,6 +1018,10 @@ class Reads:
                 if id:
                     yield (id,sequence)
                 id=line.rstrip().replace(">","")
+                # only store the first id if multiple separated by spaces
+                if " " in id:
+                    ids=id.split(" ")
+                    id=ids[0]
                 sequence=""
             else:
                 sequence+=line.rstrip()
