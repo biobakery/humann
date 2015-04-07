@@ -153,7 +153,7 @@ for ikocLine in CommonArea['ikoc_file']:
     for kocEntry in kocEntries:
 		Bug = kocEntry.split("#")[0]
 		Gene = kocEntry.split("#")[1].rstrip('\n')
-		BugGene = Bug.lower() + ":" + Gene
+		BugGene = Bug + ":" + Gene
 		dBugGeneToKO[BugGene] = KO
 		
 		
@@ -171,6 +171,7 @@ for iLine in CommonArea['igenels_file']:
 		iBugName = iBug
 	
 	BugGene = iBug + ":" + iGene
+	BugGene  = BugGene.upper()
 	try:
 		KOEntry = dBugGeneToKO[BugGene]
 	except:
