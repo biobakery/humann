@@ -696,7 +696,7 @@ def main():
 
     # Initialize alignments and gene scores
     alignments=store.Alignments(minimize_memory_use=True)
-    unaligned_reads_store=store.Reads()
+    unaligned_reads_store=store.Reads(minimize_memory_use=True)
     gene_scores=store.GeneScores()
     
     # If id mapping is provided then process
@@ -785,7 +785,7 @@ def main():
             logger.debug("Custom database is empty")
             reduced_aligned_reads_file = "Empty"
             unaligned_reads_file_fasta=args.input
-            unaligned_reads_store=store.Reads(unaligned_reads_file_fasta)
+            unaligned_reads_store=store.Reads(unaligned_reads_file_fasta, minimize_memory_use=True)
     
         # Do not run if set to bypass translated search in config file
         if not config.bypass_translated_search:

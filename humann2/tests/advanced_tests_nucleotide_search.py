@@ -93,6 +93,29 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         # check the unaligned reads count
         self.assertEqual(unaligned_reads_store.count_reads(),cfg.sam_file_unaligned_reads_total_unaligned)
         
+    def test_nucleotide_search_unaligned_reads_read_count_unaligned_minimize_memory_use(self):
+        """
+        Test the unaligned reads and the store alignments
+        Test with a bowtie2/sam output file
+        Test for unaligned read counts
+        Test with minimize memory use
+        """
+        
+        # create a set of alignments
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads(minimize_memory_use=True)
+        
+        # read in the aligned and unaligned reads
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+            cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # remove temp files
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+        
+        # check the unaligned reads count
+        self.assertEqual(unaligned_reads_store.count_reads(),cfg.sam_file_unaligned_reads_total_unaligned)
+        
     def test_nucleotide_search_unaligned_reads_annotations_reference(self):
         """
         Test the unaligned reads and the store alignments

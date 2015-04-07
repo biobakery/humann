@@ -298,7 +298,6 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     file_handle=open(alignment_file_tsv,"r")
     line=file_handle.readline()
 
-    aligned_ids=[]
     log_evalue=False
     large_evalue_count=0
     while line:
@@ -329,10 +328,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             if process_alignment:
                     
                 queryid=alignment_info[config.blast_query_index]
-                evalue=alignment_info[config.blast_evalue_index]
-                
-                # remove the id of the alignment from the unaligned reads store
-                unaligned_reads_store.remove_id(queryid)    
+                evalue=alignment_info[config.blast_evalue_index]   
                 
                 # try converting evalue to float to check if it is a number
                 try:
@@ -354,10 +350,12 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 if evalue<config.evalue_threshold:
                     alignments.add_annotated(queryid, evalue, 
                         alignment_info[config.blast_reference_index], normalize_by_read_length=False)
+                    
+                    # remove the id of the alignment from the unaligned reads store
+                    unaligned_reads_store.remove_id(queryid) 
                 else:
                     large_evalue_count+=1
             
-                aligned_ids+=[queryid]
         line=file_handle.readline()
 
     logger.debug("Total translated alignments not included based on large e-value: " + 
@@ -366,7 +364,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
 
     # create unaligned file using list of remaining unaligned stored data
     file_handle_write=open(unaligned_file_fasta,"w")
-    file_handle_write.write(unaligned_reads_store.get_fasta())
+    for fasta_line in unaligned_reads_store.get_fasta():
+        file_handle_write.write(fasta_line+"\n")
     file_handle_write.close()
 
     return unaligned_file_fasta

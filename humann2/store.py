@@ -986,93 +986,131 @@ class Reads:
         sequence
         """
         
-        self.__reads[id]=sequence
+        if self.__minimize_memory_use:
+            self.__ids.add(id)
+        else:
+            self.__reads[id]=sequence
+            
+    def process_file(self, file):
+        """
+        Process the file and yield ids and sequences
+        """
+        
+        # Check the file exists and is readable
+        utilities.file_exists_readable(file)
+            
+        # Check that the file of reads is fasta
+        # If it is fastq, then convert the file to fasta
+        temp_file=""
+        if utilities.fasta_or_fastq(file) == "fastq":
+            input_fasta=utilities.fastq_to_fasta(file)
+            temp_file=input_fasta
+        else:
+            input_fasta=file
+                       
+        file_handle=open(input_fasta,"r")
+            
+        sequence=""
+        id=""
+        for line in file_handle:
+            if re.search("^>", line):
+                # store the prior sequence
+                if id:
+                    yield (id,sequence)
+                id=line.rstrip().replace(">","")
+                sequence=""
+            else:
+                sequence+=line.rstrip()
+            
+        # add the last sequence
+        yield (id, sequence)
+                
+        file_handle.close()
+            
+        # Remove the temp fasta file if exists
+        if temp_file:
+            utilities.remove_file(temp_file)
     
-    def __init__(self, file=None):
+    def __init__(self, file=None, minimize_memory_use=None):
         """
         Create initial data structures and load if file name provided
         """
         self.__reads={}
+        self.__ids=set()
         self.__initial_read_count=0
+        self.__file=file
+        
+        if minimize_memory_use:
+            self.__minimize_memory_use=True
+        else:
+            self.__minimize_memory_use=False
               
-        if file:
-            
-            # Check the file exists and is readable
-            utilities.file_exists_readable(file)
-            
-            # Check that the file of reads is fasta
-            # If it is fastq, then convert the file to fasta
-            temp_file=""
-            if utilities.fasta_or_fastq(file) == "fastq":
-                input_fasta=utilities.fastq_to_fasta(file)
-                temp_file=input_fasta
-            else:
-                input_fasta=file
-                       
-            file_handle=open(input_fasta,"r")
-            
-            sequence=""
-            id=""
-            for line in file_handle:
-                if re.search("^>", line):
-                    # store the prior sequence
-                    if id:
-                        self.add(id, sequence)
-                        self.__initial_read_count+=1
-                    id=line.rstrip().replace(">","")
-                    sequence=""
-                else:
-                    sequence+=line.rstrip()
-            
-            # add the last sequence
-            self.add(id, sequence)
-            self.__initial_read_count+=1
+        if self.__file:
+            for (id,sequence) in self.process_file(file):
+                self.add(id, sequence)
+                self.__initial_read_count+=1
                 
-            file_handle.close()
-            
-            # Remove the temp fasta file if exists
-            if temp_file:
-                utilities.remove_file(temp_file)
+    def set_file(self, file):
+        """
+        Set the file to read sequences from
+        """
+        
+        self.__file=file
 
     def remove_id(self, id):
         """
         Remove the id and sequence from the read structure
         """
-        
         if id in self.__reads:
             del self.__reads[id]
+        elif id in self.__ids:
+            self.__ids.discard(id)
                 
-    def get_fasta(self):
+    def get_fasta(self, file=None):
         """ 
-        Return a string of the fasta file sequences stored
+        Return a string of the fasta file sequences stored or read from a file
         """
         
-        fasta=[]
-        for id, sequence in self.__reads.items():
-            fasta.append(">"+id+"\n"+sequence)
-        
-        return "\n".join(fasta)
+        if not file:
+            file=self.__file
+            
+        # use the stored reads if present
+        if self.__reads:
+            for id, sequence in self.__reads.items():
+                yield ">"+id+"\n"+sequence
+        else:
+            if file:
+                for id, sequence in self.process_file(file):
+                    if id in self.__ids:
+                            yield ">"+id+"\n"+sequence
     
     def id_list(self):
         """
         Return a list of all of the fasta ids
         """
         
-        return self.__reads.keys()
+        if self.__reads:
+            return self.__reads.keys()
+        else:
+            return list(self.__ids)
     
     def count_reads(self):
         """
         Return the total number of reads stored
         """
-            
-        return len(self.__reads.keys())
+        
+        if self.__reads:
+            return len(self.__reads.keys())
+        else:
+            return len(self.__ids)
     
     def clear(self):
         """
-        Clear all of the stored reads
+        Clear all of the stored reads and ids
         """
         
-        self.__reads={}
+        self.__reads.clear()
+        self.__ids.clear()
         
     def set_initial_read_count(self,total):
         """

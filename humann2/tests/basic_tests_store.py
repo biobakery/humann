@@ -21,6 +21,35 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         logging.getLogger('humann2.store').addHandler(logging.NullHandler())
         
         config.unnamed_temp_dir=tempfile.gettempdir()
+        
+    def test_Read_add_count_reads_duplicate(self):
+        """
+        Read class: Test the adding of a set of reads
+        Test the count is correct with duplicate ids
+        """
+        
+        reads_store=store.Reads()
+        
+        reads_store.add("id1","ATCG")
+        reads_store.add("id2","ATTG")
+        reads_store.add("id1","ATCG")
+        
+        self.assertEqual(reads_store.count_reads(), 2)
+        
+    def test_Read_add_count_reads_duplicate_minimize_memory_use(self):
+        """
+        Read class: Test the adding of a set of reads
+        Test the count is correct with duplicate ids
+        Test with minimize memory use
+        """
+
+        reads_store=store.Reads(minimize_memory_use=True)
+        
+        reads_store.add("id1","ATCG")
+        reads_store.add("id2","ATTG")
+        reads_store.add("id1","ATCG")
+        
+        self.assertEqual(reads_store.count_reads(), 2)
 
     def test_Read_print_fasta_id_count(self):
         """
@@ -32,7 +61,31 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         # Check that the total number of expected reads are loaded
         self.assertEqual(len(reads_store.id_list()), cfg.small_fasta_file_total_sequences)
+        
+    def test_Read_print_fasta_count_reads(self):
+        """
+        Read class: Test the loading of a full fasta file
+        Test the total number of expected reads counted
+        """
+        
+        reads_store=store.Reads(cfg.small_fasta_file)
+        
+        # Check that the total number of expected reads are counted
+        self.assertEqual(reads_store.count_reads(), cfg.small_fasta_file_total_sequences)
             
+    def test_Read_print_fasta_count_reads_minimize_memory_use(self):
+        """
+        Read class: Test the loading of a full fasta file
+        Test the total number of expected reads counted
+        Test with minimize memory use
+        """
+        
+        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        
+        # Check that the total number of expected reads are counted
+        self.assertEqual(reads_store.count_reads(), cfg.small_fasta_file_total_sequences)            
+
+
     def test_Read_print_fasta_id_list(self):
         """
         Read class: Test the loading of a full fasta file
@@ -42,7 +95,58 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         reads_store=store.Reads(cfg.small_fasta_file)
         
         # Check the reads are printed correctly
-        printed_stored_fasta=reads_store.get_fasta()
+        stored_fasta=[]
+        for line in reads_store.get_fasta():
+            stored_fasta.append(line)
+            
+        printed_stored_fasta="\n".join(stored_fasta)
+        
+        compare_fasta={}
+        # organize the fasta from the read class and the 
+        # file of correct fasta output
+        file_handle=open(cfg.small_fasta_file_single_line_sequences)
+        for input in [printed_stored_fasta.split("\n"), file_handle]:
+            id=""
+            seq=""
+            for line in input:
+                if re.search(">",line):
+                    # store prior id
+                    if id and seq:
+                        compare_fasta[id]=compare_fasta.get(id,[])+[seq]
+                    id=line.strip()
+                    seq=""
+                else:
+                    seq=line.strip()
+                    
+            # store the last sequence found
+            if id and seq:
+                compare_fasta[id]=compare_fasta.get(id,[])+[seq]
+        
+        file_handle.close()
+        
+        # check there are still the same number of ids
+        self.assertEqual(len(compare_fasta.keys()),cfg.small_fasta_file_total_sequences)
+        
+        # check the sequences match
+        for id, sequences in compare_fasta.items():
+            self.assertTrue(len(sequences)==2)
+            self.assertEqual(sequences[0], sequences[1])
+            
+    def test_Read_print_fasta_id_list_minimize_memory_use(self):
+        """
+        Read class: Test the loading of a full fasta file
+        Test the expected ids are loaded
+        Test with minimize memory use
+        """
+        
+        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        
+        # Check the reads are printed correctly
+        stored_fasta=[]
+        for line in reads_store.get_fasta():
+            stored_fasta.append(line)
+            
+        printed_stored_fasta="\n".join(stored_fasta)
         
         compare_fasta={}
         # organize the fasta from the read class and the 
@@ -84,7 +188,55 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         reads_store=store.Reads(cfg.small_fasta_file)
         
         # Check the reads are printed correctly
-        printed_stored_fasta=reads_store.get_fasta()
+        stored_fasta=[]
+        for line in reads_store.get_fasta():
+            stored_fasta.append(line)
+            
+        printed_stored_fasta="\n".join(stored_fasta)
+        
+        compare_fasta={}
+        # organize the fasta from the read class and the 
+        # file of correct fasta output
+        file_handle=open(cfg.small_fasta_file_single_line_sequences)
+        for input in [printed_stored_fasta.split("\n"), file_handle]:
+            id=""
+            seq=""
+            for line in input:
+                if re.search(">",line):
+                    # store prior id
+                    if id and seq:
+                        compare_fasta[id]=compare_fasta.get(id,[])+[seq]
+                    id=line.strip()
+                    seq=""
+                else:
+                    seq=line.strip()
+                    
+            # store the last sequence found
+            if id and seq:
+                compare_fasta[id]=compare_fasta.get(id,[])+[seq]
+        
+        file_handle.close()
+        
+        # check the sequences match
+        for id, sequences in compare_fasta.items():
+            self.assertTrue(len(sequences)==2)
+            self.assertEqual(sequences[0], sequences[1])
+            
+    def test_Read_print_fasta_sequence_list_minimize_memory_use(self):
+        """
+        Read class: Test the loading of a full fasta file
+        Test the sequences are loaded
+        Test with minimize memory use
+        """
+        
+        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        
+        # Check the reads are printed correctly
+        stored_fasta=[]
+        for line in reads_store.get_fasta():
+            stored_fasta.append(line)
+            
+        printed_stored_fasta="\n".join(stored_fasta)
         
         compare_fasta={}
         # organize the fasta from the read class and the 
@@ -121,11 +273,31 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         reads_store=store.Reads(cfg.small_fasta_file)
         
-        # delete all of the reads and check structure is empty
-        for id in reads_store.id_list():
+        # delete all but one of the reads and check structure is empty
+        id_list=reads_store.id_list()
+        keep_id=id_list.pop()
+        
+        for id in id_list:
             reads_store.remove_id(id)
             
-        self.assertEqual(len(reads_store.id_list()), 0)
+        self.assertEqual(reads_store.id_list(), [keep_id])
+        
+    def test_Read_delete_id_minimize_memory_use(self):
+        """
+        Read class: Test the deleting of ids
+        Test with minimial memory use
+        """
+        
+        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        
+        # delete all but one of the reads and check structure is empty
+        id_list=reads_store.id_list()
+        keep_id=id_list.pop()
+        
+        for id in id_list:
+            reads_store.remove_id(id)
+            
+        self.assertEqual(reads_store.id_list(), [keep_id])
         
     def test_PathwaysDatabase_read_pathways_count(self):
         """
