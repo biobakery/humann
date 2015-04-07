@@ -3,6 +3,7 @@ import importlib
 import re
 import tempfile
 import os
+import logging
 
 import cfg
 import utils
@@ -14,6 +15,12 @@ class TestHumann2StoreFunctions(unittest.TestCase):
     """
     Test the functions found in humann2.store
     """
+    
+    def setUp(self):
+        # set up nullhandler for logger
+        logging.getLogger('humann2.store').addHandler(logging.NullHandler())
+        
+        config.unnamed_temp_dir=tempfile.gettempdir()
 
     def test_Read_print_fasta_id_count(self):
         """
@@ -511,6 +518,57 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
         self.assertEqual(sorted(stored_lengths),sorted([1/1000.0,91/1000.0,901/1000.0,901/1000.0]))   
+              
+    def test_Alignments_add_gene_lengths_with_temp_alignment_file(self):
+        """
+        Alignments class: Test add function
+        Test the gene lengths
+        Test using the temp alignment file instead of storing data in memory
+        """             
+        
+        alignments_store=store.Alignments(minimize_memory_use=True)
+        
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1")
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2")
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3")
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1")
+        
+        # test the lengths are correct
+        stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
+        
+        # delete the temp alignment file
+        alignments_store.delete_temp_alignments_file()
+        
+        self.assertEqual(sorted(stored_lengths),sorted([10/1000.0,100/1000.0,1000/1000.0,1000/1000.0])) 
+        
+    def test_Alignments_add_gene_lengths_with_read_length_normalization(self):
+        """
+        Alignments class: Test add function
+        Test the gene lengths with read length normalization
+        """             
+        
+        alignments_store=store.Alignments(minimize_memory_use=True)
+        
+        current_average_read_length=config.average_read_length
+        
+        # set the average read length
+        config.average_read_length=100
+        
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",normalize_by_read_length=True)
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",normalize_by_read_length=True)
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",normalize_by_read_length=True)
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",normalize_by_read_length=True)
+        
+        # reset the average read length to the default
+        config.average_read_length=current_average_read_length
+        
+        # test the lengths are correct
+        stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
+        
+        # delete the temp alignment file
+        alignments_store.delete_temp_alignments_file()
+        
+        self.assertEqual(sorted(stored_lengths),sorted([1/1000.0,91/1000.0,901/1000.0,901/1000.0]))    
         
     def test_Alignments_process_chocophlan_length(self):
         """

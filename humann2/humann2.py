@@ -695,7 +695,7 @@ def main():
     config.log_settings()
 
     # Initialize alignments and gene scores
-    alignments=store.Alignments()
+    alignments=store.Alignments(minimize_memory_use=True)
     unaligned_reads_store=store.Reads()
     gene_scores=store.GeneScores()
     

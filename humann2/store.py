@@ -101,7 +101,7 @@ class Alignments:
     Holds all of the alignments for all bugs
     """
     
-    def __init__(self):
+    def __init__(self,minimize_memory_use=None):
         self.__total_scores_by_query={}
         self.__multiple_hits_queries={}
         self.__hits_by_query={}
@@ -109,6 +109,81 @@ class Alignments:
         self.__gene_counts={}
         self.__bug_counts={}
         self.__id_mapping={}   
+        
+        self.__temp_alignments_file=None
+        self.__temp_alignments_file_handle=None
+        self.__delimiter="\t"
+        
+        if minimize_memory_use:
+            self.__minimize_memory_use=True
+        else:
+            self.__minimize_memory_use=False
+        
+    def write_temp_alignments_file(self,query,bug,reference,score,normalized_reference_length):
+        """
+        Write an alignment to the temp alignments file, first create if needed
+        """
+        
+        if not self.__temp_alignments_file:
+            self.create_temp_alignments_file()
+        
+        line=self.__delimiter.join([query,bug,reference,str(score),str(normalized_reference_length)])
+        
+        try:
+            self.__temp_alignments_file_handle.write(line+"\n")
+        except EnvironmentError:
+            logger.warning("Unable to write to temp alignments file")
+            
+    def read_temp_alignments_file(self, queries):
+        """
+        Read in those alignments which are included in queries
+        """
+        
+        # close and reopen the temp alignments file
+        try:
+            self.__temp_alignments_file_handle.close()
+            self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "r")
+        except EnvironmentError:
+            sys.exit("CRITICAL ERROR: Unable to close and reopen temp alignment file")
+            
+        line=self.__temp_alignments_file_handle.readline()
+        while line:
+            # lines should be of the format query \t bug \t reference \t score \t length
+            (query,bug,reference,score,length)=line.rstrip().split(self.__delimiter)
+            if query in queries:
+                yield (query,bug,reference,float(score),float(length))
+                
+            line=self.__temp_alignments_file_handle.readline()
+        
+    def create_temp_alignments_file(self):
+        """
+        Create and open a temp alignments file
+        """
+        
+        self.__temp_alignments_file=utilities.unnamed_temp_file("temp_alignments")
+        
+        try:
+            self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "w")
+        except EnvironmentError:
+            sys.exit("CRITICAL ERROR: Unable to open temp alignments file")
+        
+    def delete_temp_alignments_file(self):
+        """
+        Delete the temp alignments file
+        """
+        
+        try:
+            self.__temp_alignments_file_handle.close()
+        except EnvironmentError:
+            pass
+        
+        try:
+            os.unlink(self.__temp_alignments_file)
+        except EnvironmentError:
+            logger.warning("Unable to delete the temp alignments file")
+        
+        self.__temp_alignments_file=None
+        self.__temp_alignments_file_handle=None
         
     def process_id_mapping(self,file):
         """
@@ -217,8 +292,17 @@ class Alignments:
         self.__bug_counts[bug]=self.__bug_counts.get(bug,0)+1
         self.__gene_counts[reference]=self.__gene_counts.get(reference,0)+1
             
-        # Add to the scores by query
-        self.__total_scores_by_query[query]=self.__total_scores_by_query.get(query,0)+score
+        # Add to the scores by query and store if query has multiple scores
+        if query in self.__total_scores_by_query:
+            current_query_total=self.__total_scores_by_query[query]
+            if query in self.__multiple_hits_queries:
+                self.__multiple_hits_queries[query]=self.__multiple_hits_queries[query]+[score]
+            else:
+                self.__multiple_hits_queries[query]=[current_query_total,score]
+                
+            self.__total_scores_by_query[query]=current_query_total+score
+        else:
+            self.__total_scores_by_query[query]=score
         
         # Store the scores by bug and gene
         normalized_reference_length=normalized_gene_length(reference_length, normalize_by_read_length)
@@ -228,14 +312,16 @@ class Alignments:
         else:
             self.__scores_by_bug_gene[bug]={reference:normalized_score}
             
-        # Point to the hit by query
-        # Add to dictionary if multiple hits per query
-        hit=[bug,reference,score,normalized_reference_length]
-        if query in self.__hits_by_query:
-            self.__hits_by_query[query].append(hit)
-            self.__multiple_hits_queries[query]=1
+        # write the information for the hit to the temp alignments file
+        # or store in memory depending on the memory use setting
+        if self.__minimize_memory_use:
+            self.write_temp_alignments_file(query, bug, reference, score, normalized_reference_length)
         else:
-            self.__hits_by_query[query]=[hit]
+            hit=(bug,reference,score,normalized_reference_length)
+            if query in self.__hits_by_query:
+                self.__hits_by_query[query].append(hit)
+            else:
+                self.__hits_by_query[query]=[hit]
             
     def count_bugs(self):
         """ 
@@ -280,9 +366,15 @@ class Alignments:
         
         # Add the query to the hits
         list=[]
-        for query in self.__hits_by_query:
-            for [bug,reference,score,length] in self.__hits_by_query[query]:
-                list.append([query]+[bug,reference,score,length])
+        # if the hits are stored in memory use the dictionary
+        if self.__hits_by_query:
+            for query in self.__hits_by_query:
+                for (bug,reference,score,length) in self.__hits_by_query[query]:
+                    list.append([query]+[bug,reference,score,length])
+        else:
+            # else read through the temp file for the hits
+            for (query,bug,reference,score,length) in self.read_temp_alignments_file(self.__total_scores_by_query):
+                list.append([query,bug,reference,score,length])
                 
         return list
     
@@ -293,12 +385,36 @@ class Alignments:
         
         # Add the query to the hits
         list=[]
-        for query in self.__hits_by_query:
-            for [bug,reference,score,length] in self.__hits_by_query[query]:
+        # if the hits are stored in memory use the dictionary
+        if self.__hits_by_query:
+            for query in self.__hits_by_query:
+                for (bug,reference,score,length) in self.__hits_by_query[query]:
+                    if reference==gene:
+                        list.append([query]+[bug,reference,score,length])
+        else:
+            # else read through the temp file for the hits
+            for (query,bug,reference,score,length) in self.read_temp_alignments_file(self.__total_scores_by_query):
                 if reference==gene:
-                    list.append([query]+[bug,reference,score,length])
+                    list.append([query,bug,reference,score,length])
                 
         return list
+    
+    def add_query_normalization_to_alignment_score(self,query,bug,reference,score,length):
+        """
+        Update the gene score added for the single alignment provided
+        This update adds the query normalization
+        """
+        
+        # Normalize by query hits for all queries with multiple hits
+        # Hits where it is the only match per query will have scores of 1
+        # as this is the result of normalizing (ie score/score)
+        
+        query_normalize=self.__total_scores_by_query[query]
+        
+        original_score=1/length
+        updated_score=score/query_normalize*original_score
+        self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
+        
     
     def convert_alignments_to_gene_scores(self,gene_scores_store):
         """
@@ -307,18 +423,16 @@ class Alignments:
         """
         
         # Normalize by query hits for all queries with multiple hits
-        # Hits where it is the only match per query will have scores of 1
-        # as this is the result of normalizing (ie score/score)
-        # So in this case the value of the hit is hit[-1]*1 
-        for query in self.__multiple_hits_queries:
-            query_normalize=self.__total_scores_by_query[query]
-            for [bug,reference,score,length] in self.__hits_by_query[query]:
-                # Update the scores by bug and gene
-                # Subtract the original score added
-                # Add the new normalized score
-                original_score=1/length
-                updated_score=score/query_normalize*original_score
-                self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
+        
+        # process through the temp alignments file if the data is not stored in memory
+        if not self.__hits_by_query:
+            for (query,bug,reference,score,length) in self.read_temp_alignments_file(self.__multiple_hits_queries):
+                self.add_query_normalization_to_alignment_score(query,bug,reference,score,length)
+        # use the hits stored in memory
+        else:
+            for query in self.__multiple_hits_queries:
+                for (bug,reference,score,length) in self.__hits_by_query[query]:
+                    self.add_query_normalization_to_alignment_score(query, bug, reference, score, length)
         
         # compute the scores for the genes
         all_gene_scores={}
@@ -347,12 +461,12 @@ class Alignments:
         Clear all of the stored data
         """
         
-        self.__total_scores_by_query={}
-        self.__multiple_hits_queries={}
-        self.__hits_by_query={}
-        self.__scores_by_bug_gene={}
-        self.__gene_counts={}
-        self.__bug_counts={}
+        self.__total_scores_by_query.clear()
+        self.__multiple_hits_queries.clear()
+        self.__hits_by_query.clear()
+        self.__scores_by_bug_gene.clear()
+        self.__gene_counts.clear()
+        self.__bug_counts.clear()
 
         
 class GeneScores:
