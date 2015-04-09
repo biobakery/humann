@@ -59,7 +59,7 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1)
 3.  [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
 4.  [Python](http://www.python.org/) (version >= 2.7)
-5.  Memory (>= 10 GB)
+5.  Memory (>= 16 GB)
 6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
 7.  Operating system (Linux or Mac)
 
