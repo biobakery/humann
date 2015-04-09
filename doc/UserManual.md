@@ -170,7 +170,7 @@ the software required for the steps you bypass does not need to be installed.
 
 ### Other ###
 
-1. Memory (>= 10 Gb)
+1. Memory (>= 16 Gb)
 2. Disk space (>= 10 Gb [to accommodate comprehensive sequence databases])
 3. Operating system (Linux or Mac)
 
