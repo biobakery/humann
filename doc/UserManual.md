@@ -817,6 +817,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
                [--pathways-database <pathways_database.tsv>]
                [--pathways {metacyc,unipathway}]
+               [--memory-use {minimum,maximum}]
 
 HUMAnN2 : HMP Unified Metabolic Analysis Network 2
 
@@ -913,5 +914,8 @@ optional arguments:
   --pathways {metacyc,unipathway}
                         the database to use for pathway computations
                         [DEFAULT: metacyc]
+  --memory-use {minimum,maximum}
+                        the amount of memory to use
+                        [DEFAULT: minimum]
 ```
 

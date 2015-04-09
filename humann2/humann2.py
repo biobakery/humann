@@ -269,6 +269,12 @@ def parse_arguments(args):
         config.pathways_database + "]",
         default=config.pathways_database,
         choices=config.pathways_database_choices)
+    parser.add_argument(
+        "--memory-use",
+        help="the amount of memory to use\n[DEFAULT: " +
+        config.memory_use + "]",
+        default=config.memory_use,
+        choices=config.memory_use_options)
 
     return parser.parse_args()
 	
@@ -366,6 +372,9 @@ def update_configuration(args):
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.identity_threshold=args.identity_threshold
+    
+    # Update memory use
+    config.memory_use=args.memory_use
     
     # Update threads
     config.threads=args.threads
@@ -695,8 +704,12 @@ def main():
     config.log_settings()
 
     # Initialize alignments and gene scores
-    alignments=store.Alignments(minimize_memory_use=True)
-    unaligned_reads_store=store.Reads(minimize_memory_use=True)
+    minimize_memory_use=True
+    if config.memory_use == "maximum":
+        minimize_memory_use=False
+        
+    alignments=store.Alignments(minimize_memory_use=minimize_memory_use)
+    unaligned_reads_store=store.Reads(minimize_memory_use=minimize_memory_use)
     gene_scores=store.GeneScores()
     
     # If id mapping is provided then process
@@ -785,7 +798,7 @@ def main():
             logger.debug("Custom database is empty")
             reduced_aligned_reads_file = "Empty"
             unaligned_reads_file_fasta=args.input
-            unaligned_reads_store=store.Reads(unaligned_reads_file_fasta, minimize_memory_use=True)
+            unaligned_reads_store=store.Reads(unaligned_reads_file_fasta, minimize_memory_use=minimize_memory_use)
     
         # Do not run if set to bypass translated search in config file
         if not config.bypass_translated_search:

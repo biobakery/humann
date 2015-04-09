@@ -262,6 +262,10 @@ pathways_database_delimiter="\t"
 pathway_identifier="PWY"
 pathways_recursion=True
 
+# memory use
+memory_use_options=["minimum","maximum"]
+memory_use=memory_use_options[0]
+
 # log options
 log_level_choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"]
 log_level=log_level_choices[0]

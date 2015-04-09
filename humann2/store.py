@@ -116,8 +116,10 @@ class Alignments:
         
         if minimize_memory_use:
             self.__minimize_memory_use=True
+            logger.debug("Initialize Alignments class instance to minimize memory use")
         else:
             self.__minimize_memory_use=False
+            logger.debug("Initialize Alignments class instance to maximize memory use")
         
     def write_temp_alignments_file(self,query,bug,reference,score,normalized_reference_length):
         """
@@ -1046,8 +1048,10 @@ class Reads:
         
         if minimize_memory_use:
             self.__minimize_memory_use=True
+            logger.debug("Initialize Reads class instance to minimize memory use")
         else:
             self.__minimize_memory_use=False
+            logger.debug("Initialize Reads class instance to maximize memory use")
               
         if self.__file:
             for (id,sequence) in self.process_file(file):
