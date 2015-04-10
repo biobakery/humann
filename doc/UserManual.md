@@ -9,7 +9,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 ## Contents ##
 
 * [Features](#markdown-header-features)
-* [Workflows](#markdown-header-workflow)
+* [Workflows](#markdown-header-workflows)
     * [Main workflow](#markdown-header-main-workflow)
     * [Workflow by input file type](#markdown-header-workflow-by-input-file-type)
     * [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)
