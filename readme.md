@@ -188,14 +188,14 @@ HUMAnN2 produces three output files which by default are tab-delimited text. The
 ```
 # Gene Family	$SAMPLENAME
 UniRef50_A6L0N6	67.0
-UniRef50_A6L0N6|s__Bacteroides_fragilis	8.0
-UniRef50_A6L0N6|s__Bacteroides_finegoldii	5.0
-UniRef50_A6L0N6|s__Bacteroides_stercoris	4.0
+UniRef50_A6L0N6|g__Bacteroides.s__Bacteroides_fragilis	8.0
+UniRef50_A6L0N6|g__Bacteroides.s__Bacteroides_finegoldii	5.0
+UniRef50_A6L0N6|g__Bacteroides.s__Bacteroides_stercoris	4.0
 UniRef50_A6L0N6|unclassified	1.0
 UniRef50_G9S1V7	60.0
-UniRef50_G9S1V7|s__Bacteroides_vulgatus	31.0
-UniRef50_G9S1V7|s__Bacteroides_thetaiotaomicron	22.0
-UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
+UniRef50_G9S1V7|g__Bacteroides.s__Bacteroides_vulgatus	31.0
+UniRef50_G9S1V7|g__Bacteroides.s__Bacteroides_thetaiotaomicron	22.0
+UniRef50_G9S1V7|g__Bacteroides.s__Bacteroides_stercoris	7.0
 ```
 
 * This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
@@ -206,14 +206,14 @@ UniRef50_G9S1V7|s__Bacteroides_stercoris	7.0
 ```
 # Pathway	$SAMPLENAME
 PWY0-1301	1.0
-PWY0-1301|s__Bacteroides_caccae	1.0
-PWY0-1301|s__Bacteroides_finegoldii	1.0
+PWY0-1301|g__Bacteroides.s__Bacteroides_caccae	1.0
+PWY0-1301|g__Bacteroides.s__Bacteroides_finegoldii	1.0
 PWY0-1301|unclassified	1.0
 PWY-7134	1.0
-PWY-7134|s__Bacteroides_vulgatus	0.666666666667
-PWY-7134|s__Bacteroides_thetaiotaomicron	0.666666666667
-PWY-7134|unclassified	0.333333333333
-PWY-7134|s__Parabacteroides_merdae	0.333333333333
+PWY-7134|g__Bacteroides.s__Bacteroides_vulgatus	0.7
+PWY-7134|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7
+PWY-7134|unclassified	0.3
+PWY-7134|g__Parabacteroides.s__Parabacteroides_merdae	0.3
 ```
 
 * This file includes the presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes. 
@@ -224,15 +224,15 @@ PWY-7134|s__Parabacteroides_merdae	0.333333333333
 
 ```
 # Pathway	$SAMPLENAME
-PWY-1921	57.0136768635
-PWY-1921|unclassified	32.2636768635
-PWY-1921|s__Bacteroides_ovatus	4.5
-PWY-1921|s__Alistipes_putredinis	3.0
-PWY-1921|s__Bacteroides_caccae	2.25
-PWY0-1301	54.9996450867
-PWY0-1301|unclassified	16.9996450867
-PWY0-1301|s__Parabacteroides_merdae	8.0
-PWY0-1301|s__Bacteroides_caccae	6.0
+PWY-1921	57.5
+PWY-1921|unclassified	32.5
+PWY-1921|g__Bacteroides.s__Bacteroides_ovatus	4.5
+PWY-1921|g__Alistipes.s__Alistipes_putredinis	3.0
+PWY-1921|g__Bacteroides.s__Bacteroides_caccae	2.5
+PWY0-1301	54.7
+PWY0-1301|unclassified	16.7
+PWY0-1301|g__Parabacteroides.s__Parabacteroides_merdae	8.0
+PWY0-1301|g__Bacteroides.s__Bacteroides_caccae	6.0
 ```
 
 * This file includes the abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
