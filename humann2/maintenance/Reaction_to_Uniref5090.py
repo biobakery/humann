@@ -102,9 +102,9 @@ def ReadSwissprot(i):
 	for iLine in InputFile: 
 			LineCntr = LineCntr +1
 			if iLine.startswith("AC   "):
-				lTemp = iLine.rstrip().split().pop().split(";")
-				lACs = [var for var in lTemp if var]
-  
+				lTemp = iLine.rstrip().split("AC   ").pop().split(";")
+				lACs = [var.replace(" ","") for var in lTemp if var]
+
 			if iLine.startswith("DE   ") and "EC=" in iLine:
 				bFlagEC = True
 				iLine1 = iLine.replace(";"," ")
@@ -125,7 +125,7 @@ def ReadSwissprot(i):
 							
 				   bFlagEC = False
 				   lECs = list()
-				   lACs = list() 
+				   lACs = list()
 	print "Read " + str(LineCntr) + " Input Lines from uniprot_sprot.dat"
 	print "The table ECs --> UniprotKb ACs contains "  + str(ECsToACsCntr) + " ECs"
 	InputFile.close()
