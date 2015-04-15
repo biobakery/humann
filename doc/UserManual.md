@@ -240,7 +240,7 @@ Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to 
 
 `` $ humann2_databases --download chocophlan full $INSTALL_LOCATION ``
 
-NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocoplan>" option to humann2.
+NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocophlan>" option to humann2.
 
 
 #### Download the UniRef50 database ####
@@ -713,7 +713,7 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
 
 2. Split the picrust output file (picrust.biom) into a single file per sample (written to $OUTPUT_DIR)
 
-    * `` $ humann2_split_table --input picurst.biom --output $OUTPUT_DIR ``
+    * `` $ humann2_split_table --input picrust.biom --output $OUTPUT_DIR ``
     * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom file with column -1 associated with K0s.
 
 3. Run HUMAnN2 on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
