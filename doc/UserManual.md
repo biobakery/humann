@@ -802,7 +802,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--bypass-nucleotide-search] -i <input.fastq> -o <output>
                [-c <chocophlan>] [--chocophlan-gene-index <-1>] [-u <uniref>]
                [--average-read-length <1>] [--evalue <1.0>]
-               [--metaphlan <metaplhan>] [--o-log <sample.log>]
+               [--metaphlan <metaphlan>] [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                [--remove-temp-output] [--bowtie2 <bowtie2>] [--threads <1>]
                [--prescreen-threshold <0.01>] [--identity-threshold <0.4>]
@@ -853,7 +853,7 @@ optional arguments:
                         [DEFAULT: 1]
   --evalue <1.0>        the evalue threshold
                         [DEFAULT: 1.0]
-  --metaphlan <metaplhan>
+  --metaphlan <metaphlan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
   --o-log <sample.log>  log file

@@ -150,7 +150,7 @@ def parse_arguments(args):
     parser.add_argument(
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
-        metavar="<metaplhan>")
+        metavar="<metaphlan>")
     parser.add_argument(
         "--o-log", 
         help="log file\n" + 
