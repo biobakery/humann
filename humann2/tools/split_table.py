@@ -161,8 +161,6 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
         simple_sample_name=re.sub("[^a-zA-Z0-9_|-|.]|@|\\?|\\]|\\[|\\^","_",sample)
         try:
             new_file_name=os.path.join(output_dir,simple_sample_name+TSV_FILE_EXTENSION)
-            if verbose:
-                print "Creating file: " + new_file_name
             new_file_names.append(new_file_name)
             new_file_handle=open(new_file_name,"w")
             new_file_handles.append(new_file_handle)
@@ -204,6 +202,8 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
         
     # write the genes to the files
     for i,new_file_handle in enumerate(new_file_handles):
+        if verbose:
+            print "Creating file: " + new_file_names[i]
         for gene in gene_table_data_by_column.get(i,{}):
             data_point=str(gene_table_data_by_column[i].get(gene,0))
             new_file_handle.write(GENE_TABLE_DELIMITER.join([gene,data_point])+"\n")
