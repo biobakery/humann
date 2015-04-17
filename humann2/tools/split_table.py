@@ -33,7 +33,7 @@ PICRUST_METAGENOME_ABUNDANCE_COLUMN=2
 PICURST_METAGENOME_GENUS_COLUMN=13
 PICURST_METAGENOME_SPECIES_COLUMN=14
         
-def split_gene_table(gene_table,output_dir,taxonomy_index=None):
+def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None):
     """
     Split the gene table into a table per sample
     """
@@ -59,14 +59,14 @@ def split_gene_table(gene_table,output_dir,taxonomy_index=None):
         
     # check for picrust metagenome file format
     if re.search(PICRUST_METAGENOME_HEADER,header):
-        new_file_names=split_table_sample_rows(file_handle, line, output_dir)
+        new_file_names=split_table_sample_rows(file_handle, line, output_dir, verbose)
     else:
-        new_file_names=split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index)
+        new_file_names=split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index, verbose)
         
     return new_file_names
 
 
-def split_table_sample_rows(file_handle, line, output_dir):
+def split_table_sample_rows(file_handle, line, output_dir, verbose):
     """
     Split a table where the samples are indicated in each row
     """
@@ -109,6 +109,8 @@ def split_table_sample_rows(file_handle, line, output_dir):
         simple_sample_name=re.sub("[^a-zA-Z0-9_|-|.]|@|\\?|\\]|\\[|\\^","_",sample)
         try:
             new_file_name=os.path.join(output_dir,simple_sample_name+TSV_FILE_EXTENSION)
+            if verbose:
+                print "Creating file: " + new_file_name
             new_file_names.append(new_file_name)
             new_file_handle=open(new_file_name,"w")
             
@@ -138,7 +140,7 @@ def split_table_sample_rows(file_handle, line, output_dir):
     
     
 
-def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index):
+def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index, verbose):
     """
     Split a table where the abundances of genes are organized by sample in columns
     """
@@ -159,6 +161,8 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
         simple_sample_name=re.sub("[^a-zA-Z0-9_|-|.]|@|\\?|\\]|\\[|\\^","_",sample)
         try:
             new_file_name=os.path.join(output_dir,simple_sample_name+TSV_FILE_EXTENSION)
+            if verbose:
+                print "Creating file: " + new_file_name
             new_file_names.append(new_file_name)
             new_file_handle=open(new_file_name,"w")
             new_file_handles.append(new_file_handle)
@@ -258,9 +262,6 @@ def main():
     if not os.access(args.input, os.R_OK):
         sys.exit("The gene table provided is not readable. Please update the permissions.")
         
-    if not os.access(output_dir, os.W_OK):
-        sys.exit("The output directory provided is not writeable. Please update the permissions.")
-    
     if not os.path.isdir(output_dir):
         if args.verbose:
             print("Creating output directory: " + output_dir)
@@ -268,6 +269,9 @@ def main():
             os.mkdir(output_dir)
         except EnvironmentError:
             sys.exit("Unable to create output directory.")
+            
+    if not os.access(output_dir, os.W_OK):
+        sys.exit("The output directory provided is not writeable. Please update the permissions.")
     
     # Create a temp folder for the biom conversions
     if biom_flag:
@@ -291,7 +295,7 @@ def main():
     if biom_flag:
         new_file_names=split_gene_table(new_file,temp_dir,taxonomy_index=args.taxonomy_index)
     else:
-        new_file_names=split_gene_table(args.input,output_dir)
+        new_file_names=split_gene_table(args.input,output_dir,verbose=args.verbose)
         
     if args.verbose:
         print("Gene table has been split into " + str(len(new_file_names)) + " total files")
@@ -302,9 +306,7 @@ def main():
             new_file=os.path.join(output_dir,os.path.basename(file))
             new_file=re.sub(TSV_FILE_EXTENSION+"$",BIOM_FILE_EXTENSION,new_file)
             util.tsv_to_biom(file,new_file)
-            print("Created file: " + new_file)
-        else:
-            print("Created file: " + file)
+            print("Creating file: " + new_file)
             
     # deleting temp folder with all files
     if biom_flag:
