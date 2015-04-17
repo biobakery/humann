@@ -152,7 +152,7 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
     if taxonomy_index != None:
         header_taxonomy=samples.pop()
     
-    gene_table_data_by_column={}
+    gene_table_data={}
     while line:
         # write the data to each of the new files
         data=line.rstrip().split(GENE_TABLE_DELIMITER)        
@@ -167,17 +167,20 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
             except IndexError:
                 sys.exit("The taxonomy index provided is not valid: " + str(taxonomy_index))
                 
-        for i, data_point in enumerate(data):
-            try:
-                float_data_point=float(data_point)
-            except ValueError:
-                float_data_point=0
-            
-            if i in gene_table_data_by_column:
-                # add the data point to the other data for the gene
-                gene_table_data_by_column[i][gene]=gene_table_data_by_column[i].get(gene,0)+float_data_point
-            else:
-                gene_table_data_by_column[i]={gene : float_data_point}
+                
+        if gene in gene_table_data:
+            # add the two gene lines
+            original_gene_data=gene_table_data[gene]
+            for i, data_point in enumerate(data):
+                try:
+                    float_data_point=float(data_point)
+                except ValueError:
+                    float_data_point=0
+                original_gene_data[i]=str(float(original_gene_data[i])+float_data_point)
+            gene_table_data[gene]=original_gene_data
+        else:
+            gene_table_data[gene]=data
+
         line = file_handle.readline()
         
     file_handle.close()
@@ -200,9 +203,8 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
             # write the header
             new_file_handle.write(GENE_TABLE_DELIMITER.join([subheader,sample])+"\n")
             
-            for gene in gene_table_data_by_column.get(i,{}):
-                data_point=str(gene_table_data_by_column[i].get(gene,0))
-                new_file_handle.write(GENE_TABLE_DELIMITER.join([gene,data_point])+"\n")
+            for gene in gene_table_data:
+                new_file_handle.write(GENE_TABLE_DELIMITER.join([gene,gene_table_data[gene][i]])+"\n")
         
             new_file_handle.close()  
             
