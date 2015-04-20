@@ -39,7 +39,7 @@ import tarfile
 import subprocess
 import shutil
 
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 def install_tar(url,download_file,folder):
     """
