@@ -98,7 +98,7 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 
 NOTE 1: If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
 
-NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'.
+NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 
 
 ## How to Run ##
