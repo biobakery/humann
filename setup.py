@@ -190,8 +190,8 @@ setuptools.setup(
             'humann2_renorm_table = humann2.tools.renorm_table:main',
             'humann2_regroup_table = humann2.tools.regroup_table:main',
             'humann2_humann1_kegg = humann2.tools.humann1_kegg:main',
-            'humann2_rna_dna_norm = humann2.tools.rna_dna_norm',
-            'humann2_strain_profiler = humann2.tools.strain_profiler',
+            'humann2_rna_dna_norm = humann2.tools.rna_dna_norm:main',
+            'humann2_strain_profiler = humann2.tools.strain_profiler:main',
         ]},
     test_suite= 'humann2.tests.humann2_test.main',
     zip_safe = False
