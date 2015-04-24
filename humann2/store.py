@@ -31,6 +31,7 @@ import re
 import logging
 import copy
 import math
+import sys
 
 from . import config
 from . import utilities
@@ -142,13 +143,15 @@ class Alignments:
         """
         
         # close and reopen the temp alignments file
+        line=""
         try:
             self.__temp_alignments_file_handle.close()
             self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "r")
-        except EnvironmentError:
-            sys.exit("CRITICAL ERROR: Unable to close and reopen temp alignment file")
+        
+            line=self.__temp_alignments_file_handle.readline()
+        except (EnvironmentError, AttributeError):
+            pass
             
-        line=self.__temp_alignments_file_handle.readline()
         while line:
             # lines should be of the format query \t bug \t reference \t score \t length
             (query,bug,reference,score,length)=line.rstrip().split(self.__delimiter)
@@ -156,6 +159,11 @@ class Alignments:
                 yield (query,bug,reference,float(score),float(length))
                 
             line=self.__temp_alignments_file_handle.readline()
+            
+        try:
+            self.__temp_alignments_file_handle.close()
+        except (EnvironmentError, AttributeError):
+            pass
         
     def create_temp_alignments_file(self):
         """
