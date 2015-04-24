@@ -762,7 +762,7 @@ def main():
                 nucleotide_index_file = nucleotide.index(custom_database)
                 start_time=timestamp_message("database index",start_time)
             else:
-                nucleotide_index_file = config.chocophlan
+                nucleotide_index_file = nucleotide.find_index(config.chocophlan)
                 
             nucleotide_alignment_file = nucleotide.alignment(args.input, 
                 nucleotide_index_file)

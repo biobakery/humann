@@ -28,6 +28,7 @@ import re
 import math
 import logging
 import traceback
+import sys
 
 from .. import utilities
 from .. import config
@@ -36,6 +37,46 @@ from ..search import pick_frames
 
 # name global logging instance
 logger=logging.getLogger(__name__)
+
+def find_index(directory):
+    """
+    Search through the directory for the name of the bowtie2 index files
+    Or if a file name is provided check it is a bowtie2 index
+    """
+    
+    index=""
+    bowtie2_extensions=config.bowtie2_index_ext_list
+    bowtie2_extensions.append(config.bowtie2_large_index_ext)
+    
+    if not os.path.isdir(directory):
+        # check if this is the bowtie2 index file
+        if os.path.isfile(directory):
+            # check for the bowtie2 extension
+            for ext in bowtie2_extensions:
+                if re.search(ext+"$",directory):
+                    index=directory.replace(ext,"")
+                    break
+        else:
+            # check if this is the basename of the bowtie2 index files
+            small_index=directory+config.bowtie2_index_ext_list[0]
+            large_index=directory+config.bowtie2_large_index_ext
+            if os.path.isfile(small_index) or os.path.isfile(large_index):
+                index=directory
+    else:
+        # Search through the files to find one with the bowtie2 extension
+        for file in os.listdir(directory):
+            for ext in bowtie2_extensions:
+                if re.search(ext+"$",file):
+                    index=os.path.join(directory,file.replace(ext,""))
+                    break
+            if index:
+                break
+    
+    if not index:
+        sys.exit("CRITICAL ERROR: Unable to find bowtie2 index files in directory: " + directory)
+    
+    return index
+            
 
 def index(custom_database):
     """
