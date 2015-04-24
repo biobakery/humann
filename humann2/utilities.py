@@ -318,13 +318,12 @@ def return_exe_path(exe):
     Return the location of the exe in $PATH
     """
     paths = os.environ["PATH"].split(os.pathsep)
-    full_path=""
     for path in paths:
         fullexe = os.path.join(path,exe)
         if os.path.exists(fullexe):
             if os.access(fullexe,os.X_OK):
-                full_path=path
-    return full_path
+                return path
+    return ""
 
 def return_module_path(module):
     """
