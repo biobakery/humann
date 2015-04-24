@@ -164,6 +164,9 @@ When using the "--resume" option, the following steps will be bypassed if they h
 9. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
 10. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
 
+Please install the required software in a location in your $PATH or provide the location with an optional argument to HUMAnN2. 
+For example, the location of the Bowtie2 install ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
+
 If you always run with input files of type #2, #3, and #4 (for information on input file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
 MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)), 
 the software required for the steps you bypass does not need to be installed.
