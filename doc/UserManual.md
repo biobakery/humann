@@ -119,7 +119,7 @@ File Types:
 
 There are multiple bypass options that will allow you to adjust the standard workflow.
 
-![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_bypass_modes.png)
+![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_flow_bypass_modes_updated.png)
 
 Bypass options:
 
@@ -132,7 +132,7 @@ Bypass options:
 *   --taxonomic-profile bugs_list.tsv 
     *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
 *   --bypass-nucleotide-index
-    *   starts the workflow with the nucleotide alignment step using the indexed database provided with "--chocophlan $DIR/bowtie2_index"
+    *   starts the workflow with the nucleotide alignment step using the indexed database from "--chocophlan $DIR"
 
 
 ### Workflow of the resume option ###
