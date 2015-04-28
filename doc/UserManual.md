@@ -54,9 +54,11 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         5. [Regroup table features](#markdown-header-5-regroup-table-features)
         6. [Combine metagenomic and metatranscriptomic sequencing data](#markdown-header-6-combine-metagenomic-and-metatranscriptomic-sequencing-data)        
         7. [Strain-level functional profiling](#markdown-header-7-strain-level-functional-profiling)
+        8. [Join taxonomic profiles](#markdown-header-8-join-taxonomic-profiles)
 * [Tutorials](#markdown-header-tutorials)
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
+    * [Custom ChocoPhlAn database for sample set](#markdown-header-custom-chocophlan-database-for-sample-set)
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
 * [FAQs](#markdown-header-faqs)
@@ -642,7 +644,7 @@ log level = DEBUG
 
 ### Tools for tables ###
 
-HUMAnN2 includes tools to be used with gene or pathway table files.
+HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile table files.
 
 #### 1.  Split a table ####
 
@@ -700,6 +702,14 @@ HUMAnN2 includes tools to be used with gene or pathway table files.
 *   $TABLE = merged gene families output for two or more samples (tsv format)
 *   See the [tutorial](#markdown-header-strain-level-functional-profiling) below for assistance.
 
+#### 8.  Join taxonomic profiles ####
+
+`` $ humann2_join_taxonomic_profiles --input $INPUT_DIR --output $TABLE ``
+
+*   $INPUT_DIR = a directory containing the taxonomic profiles (tsv format, taxonomy and percent)
+*   $TABLE = the file to write the new joined taxonomic profile 
+*   Optional: ``--file_name $STR`` will only join taxonomic profiles with $STR in file name
+
 ## Tutorials ##
 
 ### PICRUSt output ###
@@ -723,7 +733,6 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
 
     * for $SAMPLE.biom in $OUTPUT_DIR
         * `` $ humann2 --input $SAMPLE.biom --output $OUTPUT_DIR2 --pathways-database humann1/data/keggc ``
-    * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
     * The option ``--remove-stratified-output`` can be added if you do not want the data stratified by bug.
     * The option ``--output-format biom`` can be added if you want the output to be in biom format.
     
@@ -753,6 +762,30 @@ The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases
     * `` $ humann2 --input $SAMPLE --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc ``
     * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
     * For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv``.
+
+### Custom ChocoPhlAn database for sample set ###
+
+A custom ChocoPhlAn database can be created using the taxonomic profiles for all of the samples in your set. To create this database, 
+and use it for all HUMAnN2 runs of your samples, please use the steps that follow.
+
+1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
+2. Join all of the taxonomic profiles, located in directory $DIR, into a single profile (joined_taxonomic_profile.tsv)
+
+    * `` $ humann2_join_taxonomic_profiles --input $DIR --output joined_taxonomic_profile.tsv ``
+    
+3. Run HUMAnN2 on one of your samples ($SAMPLE.fastq) providing the joined taxonomic profile to create the custom indexed ChocoPhlAn database
+
+    * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --taxonomic-profile joined_taxonomic_profile.tsv ``
+    * The folder $OUTPUT_DIR/$SAMPLE_humann2_temp/ will contain the custom indexed ChocoPhlAn database files
+    
+4. Copy the custom indexed ChocoPhlAn database files (named *bowtie_index*) to another folder named $CHOCOPHLAN (optional)
+    
+5. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($CHOCOPHLAN)
+
+    * for $SAMPLE.fastq in samples
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --chocophlan $CHOCOPHLAN --bypass-nucleotide-index ``
+    * The output for all samples will be placed in $OUTPUT_DIR
+
 
 ### Analyzing Metatranscriptomes ###
 
