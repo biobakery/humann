@@ -289,7 +289,7 @@ class Alignments:
         
         if reference_length==0:
             reference_length=1000
-            logger.debug("Reference length of 0 found for gene: " + reference)
+            logger.debug("Default gene length used for alignment to gene: " + reference)
         
         # store the score instead of the evalue
         try:
