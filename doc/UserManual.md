@@ -773,17 +773,15 @@ and use it for all HUMAnN2 runs of your samples, please use the steps that follo
 
     * `` $ humann2_join_taxonomic_profiles --input $DIR --output joined_taxonomic_profile.tsv ``
     
-3. Run HUMAnN2 on one of your samples ($SAMPLE.fastq) providing the joined taxonomic profile to create the custom indexed ChocoPhlAn database
+3. Run HUMAnN2 on one of your samples ($SAMPLE_1.fastq) providing the joined taxonomic profile to create the custom indexed ChocoPhlAn database
 
-    * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --taxonomic-profile joined_taxonomic_profile.tsv ``
-    * The folder $OUTPUT_DIR/$SAMPLE_humann2_temp/ will contain the custom indexed ChocoPhlAn database files
+    * `` $ humann2 --input $SAMPLE_1.fastq --output $OUTPUT_DIR --taxonomic-profile joined_taxonomic_profile.tsv ``
+    * The folder $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ will contain the custom indexed ChocoPhlAn database files
     
-4. Copy the custom indexed ChocoPhlAn database files (named *bowtie_index*) to another folder named $CHOCOPHLAN (optional)
-    
-5. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($CHOCOPHLAN)
+4. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann2_temp/)
 
     * for $SAMPLE.fastq in samples
-        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --chocophlan $CHOCOPHLAN --bypass-nucleotide-index ``
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --chocophlan $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ --bypass-nucleotide-index ``
     * The output for all samples will be placed in $OUTPUT_DIR
 
 
