@@ -54,11 +54,11 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         5. [Regroup table features](#markdown-header-5-regroup-table-features)
         6. [Combine metagenomic and metatranscriptomic sequencing data](#markdown-header-6-combine-metagenomic-and-metatranscriptomic-sequencing-data)        
         7. [Strain-level functional profiling](#markdown-header-7-strain-level-functional-profiling)
-        8. [Join taxonomic profiles](#markdown-header-8-join-taxonomic-profiles)
+        8. [Reduce table](#markdown-header-8-reduce-table)
 * [Tutorials](#markdown-header-tutorials)
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
-    * [Custom ChocoPhlAn database for sample set](#markdown-header-custom-chocophlan-database-for-sample-set)
+    * [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile)
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
 * [FAQs](#markdown-header-faqs)
@@ -702,13 +702,14 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 *   $TABLE = merged gene families output for two or more samples (tsv format)
 *   See the [tutorial](#markdown-header-strain-level-functional-profiling) below for assistance.
 
-#### 8.  Join taxonomic profiles ####
+#### 8.  Reduce table ####
 
-`` $ humann2_join_taxonomic_profiles --input $INPUT_DIR --output $TABLE ``
+`` $ humann2_reduce_table --input $INPUT.tsv --output $OUTPUT.tsv ``
 
-*   $INPUT_DIR = a directory containing the taxonomic profiles (tsv format, taxonomy and percent)
-*   $TABLE = the file to write the new joined taxonomic profile 
-*   Optional: ``--file_name $STR`` will only join taxonomic profiles with $STR in file name
+*   $INPUT.tsv = a file containing the table (tsv format)
+*   $OUTPUT.tsv = the file to write the new reduced table (tsv format) 
+*   Optional: ``--function {min|max|mean}`` the function to apply (default is max)
+*   Optional: ``--sort-by {level|name|value}`` to indicate how the output should be sorted (default is original order)
 
 ## Tutorials ##
 
@@ -763,26 +764,38 @@ The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases
     * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
     * For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv``.
 
-### Custom ChocoPhlAn database for sample set ###
+### Joint taxonomic profile ###
 
-A custom ChocoPhlAn database can be created using the taxonomic profiles for all of the samples in your set. To create this database, 
-and use it for all HUMAnN2 runs of your samples, please use the steps that follow.
+A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN2 runs, 
+please use the steps that follow.
 
 1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
-2. Join all of the taxonomic profiles, located in directory $DIR, into a single profile (joined_taxonomic_profile.tsv)
+2. Join all of the taxonomic profiles, located in directory $DIR, into a table of taxonomic profiles for all samples (joined_taxonomic_profile.tsv)
 
-    * `` $ humann2_join_taxonomic_profiles --input $DIR --output joined_taxonomic_profile.tsv ``
+    * `` $ humann2_join_tables --input $DIR --output joined_taxonomic_profile.tsv ``
+
+3. Reduce this file into a taxonomic profile that represents the maximum abundances from all of the samples in your set
+
+    * `` $ humann2_reduce_table --input joined_taxonomic_profile.tsv --output max_taxonomic_profile.tsv --function max --sort-by level ``
+
+4. Run HUMAnN2 on all of the samples in your set, providing the max taxonomic profile
+
+    * for $SAMPLE.fastq in samples
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
+
+An alterative to step #4, which will save computing time, is to first run a single sample with the taxonomic profile. The HUMAnN2 temp output
+folder for this sample will contain the bowtie2 indexed custom ChocoPhlAn database that can be provided when running your remaining samples. 
+This will save compute time as this database will only be created once. Please see the steps below for the alternative to step #4.
     
-3. Run HUMAnN2 on one of your samples ($SAMPLE_1.fastq) providing the joined taxonomic profile to create the custom indexed ChocoPhlAn database
+1. Run HUMAnN2 on one of your samples ($SAMPLE_1.fastq) providing the max taxonomic profile to create the custom indexed ChocoPhlAn database
 
-    * `` $ humann2 --input $SAMPLE_1.fastq --output $OUTPUT_DIR --taxonomic-profile joined_taxonomic_profile.tsv ``
+    * `` $ humann2 --input $SAMPLE_1.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
     * The folder $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ will contain the custom indexed ChocoPhlAn database files
     
-4. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann2_temp/)
+2. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann2_temp/)
 
     * for $SAMPLE.fastq in samples
         * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --chocophlan $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ --bypass-nucleotide-index ``
-    * The output for all samples will be placed in $OUTPUT_DIR
 
 
 ### Analyzing Metatranscriptomes ###
