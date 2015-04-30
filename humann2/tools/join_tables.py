@@ -61,9 +61,17 @@ def join_gene_tables(gene_tables,output,verbose):
             if gene:
                 current_data=gene_table_data.get(gene,"")
                 fill = index - current_data.count(GENE_TABLE_DELIMITER)
-                if fill:
-                    current_data=current_data + GENE_TABLE_DELIMITER.join(["0"]*fill) + GENE_TABLE_DELIMITER
-                gene_table_data[gene] = current_data + data_point + GENE_TABLE_DELIMITER
+                if fill > 0:
+                    # fill in zeros for samples without data then add data point
+                    gene_table_data[gene]=current_data + GENE_TABLE_DELIMITER.join(["0"]*fill) + GENE_TABLE_DELIMITER + data_point + GENE_TABLE_DELIMITER
+                elif fill < 0:
+                    # add data point to other data point from the same sample
+                    current_data_points=current_data.split(GENE_TABLE_DELIMITER)
+                    current_data_points[-2]=str(float(current_data_points[-2])+float(data_point))
+                    gene_table_data[gene] = GENE_TABLE_DELIMITER.join(current_data_points)
+                else:
+                    # add data point to end of list
+                    gene_table_data[gene] = current_data + data_point + GENE_TABLE_DELIMITER
 
             line=file_handle.readline()
             
