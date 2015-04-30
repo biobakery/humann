@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-Join a set of gene/pathway tables into a single table
+Join a set of gene, pathway, or taxonomy tables into a single table
 
-This module will join gene tables output by HUMAnN2. 
+This module will join gene and pathway tables output by HUMAnN2. 
 
 Dependencies: Biom (only required if running with .biom files)
 
@@ -97,7 +97,7 @@ def parse_arguments(args):
     """
     
     parser = argparse.ArgumentParser(
-        description= "Join gene tables from output of HUMAnN2\n",
+        description= "Join gene, pathway, or taxonomy tables\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         "-v","--verbose", 
@@ -106,15 +106,15 @@ def parse_arguments(args):
         default=False)
     parser.add_argument(
         "-i","--input",
-        help="the directory of gene tables\n",
+        help="the directory of tables\n",
         required=True)
     parser.add_argument(
         "-o","--output",
-        help="the gene table to write\n",
+        help="the table to write\n",
         required=True)
     parser.add_argument(
         "--file_name",
-        help="only join gene tables with this string included in the file name")
+        help="only join tables with this string included in the file name")
 
     return parser.parse_args()
 
