@@ -57,7 +57,7 @@ def tsv_to_biom(tsv_file, biom_file):
         command=" ".join(cmd)
         sys.exit("Unable to convert tsv file to biom"+"\n"+command)
         
-def process_gene_table_header(gene_table):
+def process_gene_table_header(gene_table, allow_for_missing_header=None):
     """
     Process through the header portion of the gene table file
     """
@@ -81,10 +81,13 @@ def process_gene_table_header(gene_table):
         header = line
         line = file_handle.readline()
             
-    if not header_flag:
+    if not header_flag and not allow_for_missing_header:
         sys.exit("File does not have a required header: " + gene_table +
             " . Please add a header which includes the indicator: " +
             GENE_TABLE_COMMENT_LINE)
+        
+    if not header_flag and allow_for_missing_header:
+        header = ""
         
     return file_handle, header, line
 

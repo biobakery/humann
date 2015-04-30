@@ -22,52 +22,59 @@ import re
 import util
 
 GENE_TABLE_DELIMITER="\t"
-GENE_TABLE_COMMENT_LINE="^#"
 BIOM_FILE_EXTENSION=".biom"
 TSV_FILE_EXTENSION=".tsv"
         
-def join_gene_tables(gene_tables,output):
+def join_gene_tables(gene_tables,output,verbose):
     """
     Join the gene tables to a single gene table
     """
     
     gene_table_data={}
     start_column_id=""
-    genes={}
-    for gene_table in gene_tables:
+    samples=[]
+    for index,gene_table in enumerate(gene_tables):
         
-        file_handle,header,line=util.process_gene_table_header(gene_table)
-    
-        sample_names=header.rstrip().split(GENE_TABLE_DELIMITER)
-        start_column_id=sample_names.pop(0)
+        if verbose:
+            print("Reading file: " + gene_table)
         
-        sample_data={}
+        file_handle,header,line=util.process_gene_table_header(gene_table, allow_for_missing_header=True)
+        
+        if header:
+            header_info=header.rstrip().split(GENE_TABLE_DELIMITER)
+            if not start_column_id:
+                start_column_id=header_info[0]
+            sample_name=header_info[1]
+        else:
+            # if there is no header in the file then use the file name as the sample name
+            sample_name=os.path.splitext(os.path.basename(gene_table))[0]
+        
+        samples.append(sample_name)
         while line:
             data=line.rstrip().split(GENE_TABLE_DELIMITER)
-            gene=data.pop(0)
-            genes[gene]=1
-            for i, data_point in enumerate(data):
-                if sample_names[i] in sample_data:
-                    sample_data[sample_names[i]][gene]=data_point
-                else:
-                    sample_data[sample_names[i]]={gene: data_point}
+            try:
+                gene=data[0]
+                data_point=data[1]
+            except IndexError:
+                gene=""
+
+            if gene:
+                current_data=gene_table_data.get(gene,"")
+                fill = index - current_data.count(GENE_TABLE_DELIMITER)
+                if fill:
+                    current_data=current_data + GENE_TABLE_DELIMITER.join(["0"]*fill) + GENE_TABLE_DELIMITER
+                gene_table_data[gene] = current_data + data_point + GENE_TABLE_DELIMITER
+
             line=file_handle.readline()
             
         file_handle.close()
-    
-        # check this sample id is unique
-        for sample in sample_data:
-            if sample in gene_table_data:
-                sys.exit("Duplicate sample name: " + sample + ". Please remove " +
-                    "duplicate sample names.")
-            else:
-                gene_table_data[sample]=sample_data[sample]
-                
                 
     # write the joined gene table
-    sorted_sample_list=sorted(list(gene_table_data))
-    sample_header=[start_column_id]+sorted_sample_list
-    sorted_gene_list=sorted(list(genes))
+    if not start_column_id:
+        start_column_id="# "
+    sample_header=[start_column_id]+samples
+    total_gene_tables=len(samples)
+    sorted_gene_list=sorted(list(gene_table_data))
     try:
         file_handle=open(output,"w")
         file_handle.write(GENE_TABLE_DELIMITER.join(sample_header)+"\n")
@@ -75,10 +82,12 @@ def join_gene_tables(gene_tables,output):
         sys.exit("Unable to write file: " + file)  
         
     for gene in sorted_gene_list:
-        write_data=[gene]
-        for sample in sorted_sample_list:
-            write_data.append(gene_table_data[sample].get(gene,"0"))
-        file_handle.write(GENE_TABLE_DELIMITER.join(write_data)+"\n")
+        # extend gene data for any gene that is not included in all samples
+        current_data=gene_table_data[gene]
+        fill = total_gene_tables - current_data.count(GENE_TABLE_DELIMITER)
+        if fill:
+            current_data=current_data + GENE_TABLE_DELIMITER.join(["0"]*fill) + GENE_TABLE_DELIMITER
+        file_handle.write(gene+GENE_TABLE_DELIMITER+current_data.rstrip(GENE_TABLE_DELIMITER)+"\n")
     
     file_handle.close()
 
@@ -179,10 +188,10 @@ def main():
         # create a new temp file
         file_out, new_file=tempfile.mkstemp(dir=temp_dir)
         os.close(file_out)
-        join_gene_tables(gene_tables,new_file)
+        join_gene_tables(gene_tables,new_file,args.verbose)
         util.tsv_to_biom(new_file, args.output)
     else:
-        join_gene_tables(gene_tables,args.output)
+        join_gene_tables(gene_tables,args.output,args.verbose)
             
     # deleting temp folder with all files
     if biom_flag:
