@@ -71,7 +71,7 @@ def join_gene_tables(gene_tables,output,verbose):
                 
     # write the joined gene table
     if not start_column_id:
-        start_column_id="# "
+        start_column_id="# header "
     sample_header=[start_column_id]+samples
     total_gene_tables=len(samples)
     sorted_gene_list=sorted(list(gene_table_data))
