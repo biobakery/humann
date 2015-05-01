@@ -51,8 +51,8 @@ from .. import utilities
 current_downloads={
     "chocophlan" : 
         {
-            "full" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/full_chocophlan.tar.gz",
-            "DEMO" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/DEMO_chocophlan.tar.gz"
+            "full" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/full_chocophlan.v0.1.1.tar.gz",
+            "DEMO" : "http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/DEMO_chocophlan.v0.1.1.tar.gz"
         },
     "uniref" : 
         {

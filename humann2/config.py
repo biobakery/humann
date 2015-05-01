@@ -317,12 +317,13 @@ metaphlan_mpa_index="db_v20/mpa_v20_m200"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
-chocophlan_bug_index=-3
-chocophlan_gene_indexes=[-1]
-chocophlan_location_index=-5
+chocophlan_bug_index=6
+chocophlan_gene_indexes=[8]
+chocophlan_location_index=4
 chocophlan_location_delimiter="-"
 chocophlan_location_extra_characters="[:|c]"
 chocophlan_multiple_location_delimiter=","
+chocophlan_length_index=9
 
 # uniref formatting
 uniref_delimiter="|"

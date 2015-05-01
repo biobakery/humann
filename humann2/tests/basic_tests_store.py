@@ -764,6 +764,86 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         length=alignments_store.process_chocophlan_length("c:100-1,1-100","gene")
         
         self.assertEqual(length, 200) 
+        
+    def test_Alignments_process_reference_annotation_gene_length(self):
+        """
+        Test the process reference annotation function with a gene and length
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("gene|3000")
+        
+        expected_output=["gene",3000,"unclassified"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_gene_length_reversed(self):
+        """
+        Test the process reference annotation function with a gene and length reversed
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("3000|gene")
+        
+        expected_output=["gene",3000,"unclassified"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_numerical_gene_length(self):
+        """
+        Test the process reference annotation function with gene (as number) and length
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("59787|5000")
+        
+        expected_output=["59787",5000,"unclassified"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_original_chocophlan_annotations(self):
+        """
+        Test the process reference annotation function with the original chocophlan annotations
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation(
+            "gi|554771211|gb|ACIN03000006.1|:c1189-5|46125|g__Abiotrophia.s__Abiotrophia_defectiva|UniRef90_W1Q3F0|UniRef50_P59787")
+        
+        expected_output=["UniRef50_P59787",(1189-5+1),"g__Abiotrophia.s__Abiotrophia_defectiva"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_new_chocophlan_annotations(self):
+        """
+        Test the process reference annotation function with the new chocophlan annotations
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation(
+            "gi|554771211|gb|ACIN03000006.1|:c1189-5|46125|g__Abiotrophia.s__Abiotrophia_defectiva|UniRef90_W1Q3F0|UniRef50_P59787|5000")
+        
+        expected_output=["UniRef50_P59787",5000,"g__Abiotrophia.s__Abiotrophia_defectiva"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_unknown_annotations(self):
+        """
+        Test the process reference annotation function with unknown annotations
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|UniRef50_P59787|5000")
+        
+        expected_output=["UniRef90_W1Q3F0|UniRef50_P59787|5000",0,"unclassified"]
+        
+        self.assertEqual(expected_output,output) 
 
     def test_GeneScores_add(self):
         """
