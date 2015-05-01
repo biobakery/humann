@@ -25,7 +25,7 @@ GENE_TABLE_DELIMITER="\t"
 BIOM_FILE_EXTENSION=".biom"
 TSV_FILE_EXTENSION=".tsv"
         
-def join_gene_tables(gene_tables,output,verbose):
+def join_gene_tables(gene_tables,output,verbose=None):
     """
     Join the gene tables to a single gene table
     """
@@ -196,10 +196,10 @@ def main():
         # create a new temp file
         file_out, new_file=tempfile.mkstemp(dir=temp_dir)
         os.close(file_out)
-        join_gene_tables(gene_tables,new_file,args.verbose)
+        join_gene_tables(gene_tables,new_file)
         util.tsv_to_biom(new_file, args.output)
     else:
-        join_gene_tables(gene_tables,args.output,args.verbose)
+        join_gene_tables(gene_tables,args.output,verbose=args.verbose)
             
     # deleting temp folder with all files
     if biom_flag:
