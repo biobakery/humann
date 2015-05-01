@@ -67,7 +67,7 @@ Please install the required software in a location in your $PATH or provide the 
 
 ## Installation ##
 
-1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.1.8.tar.gz)
+1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.1.9.tar.gz)
 2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
  
     `` $ python setup.py minpath ``
