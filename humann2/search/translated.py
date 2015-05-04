@@ -175,9 +175,8 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
     args+=["--query",unaligned_reads_file_fasta,"--evalue",config.evalue_threshold]
     view_args=["view"]
 
-    if config.threads > 1:
-        args+=["--threads",config.threads]
-        view_args+=["--threads",config.threads]
+    args+=["--threads",config.threads]
+    view_args+=["--threads",config.threads]
 
     message="Running " + exe + " ........"
     logger.info(message)
