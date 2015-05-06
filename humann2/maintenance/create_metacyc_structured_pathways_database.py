@@ -40,6 +40,9 @@ METACYC_KEYREACTION_ID="KEY-REACTIONS"
 METACYC_PREDECESSORS="PREDECESSORS"
 DELIMITER="\t"
 
+OPTIONAL_REACTION_TAG="-"
+OR_DEMILITER=" , "
+
 def node_is_in_list(node,list_of_nodes):
     """
     Check if the node is present in the list of nodes
@@ -104,6 +107,13 @@ class PathwayStructure():
     def get_structure(self):
         """ Get the structure for the pathway based on the levels of the nodes """
         
+        # update the names of the nodes if key reactions are included
+        if self.key_reactions:
+            # find each of those nodes which are NOT key reactions and update their names
+            for node in self.nodes:
+                if not node.get_name() in self.key_reactions:
+                    node.set_name(OPTIONAL_REACTION_TAG+node.get_name())
+        
         # set the levels for the nodes
         # all nodes that are specified by metacyc to not have predecessors are level 1
         for node in self.start_nodes:
@@ -158,6 +168,9 @@ class Node():
             
     def get_name(self):
         return self.name
+    
+    def set_name(self, name):
+        self.name=name
     
     def add_leaf(self,node):
         self.leaves.append(node)
@@ -218,7 +231,7 @@ class Node():
             structure+=" "+leaf_structures[0]
         elif len(leaf_structures) > 1:
             # OR expansion
-            structure+=" ( "+" , ".join(leaf_structures)+" ) "
+            structure+=" ( "+OR_DEMILITER.join(leaf_structures)+" ) "
                 
         return structure, prior_nodes
         
