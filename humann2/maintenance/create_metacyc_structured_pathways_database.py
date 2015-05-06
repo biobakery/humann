@@ -135,11 +135,11 @@ class PathwayStructure():
         for node in self.nodes:
             if not node_is_in_list(node, prior_nodes):
                 structure+=" "+node.get_name()
-
-        # if there are no nodes, then use the reaction information
-        if not structure:
-            if self.reactions:
-                structure=" ".join(self.reactions)
+                
+        # Check all reactions are included in structure
+        for reaction in self.reactions:
+            if not reaction in structure:
+                structure+=" "+reaction
     
         return structure
 
