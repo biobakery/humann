@@ -42,6 +42,7 @@ DELIMITER="\t"
 
 OPTIONAL_REACTION_TAG="-"
 OR_DEMILITER=" , "
+AND_DEMILITER=" + "
 
 def node_is_in_list(node,list_of_nodes):
     """
@@ -103,8 +104,38 @@ class PathwayStructure():
         
     def set_reactions(self, reactions):
         self.reactions=reactions
+    
+    def structure_to_string(self, item):
+        """ Convert the structure of nested lists into a string """
         
-    def get_structure(self):
+        # test if item is a string
+        if isinstance(item,basestring):
+            return item
+        # test if item is a list
+        else:
+            if item:
+                if item[0] in [OR_DEMILITER,AND_DEMILITER]:
+                    # then join the items with the delimiter
+                    delimiter=item.pop(0)
+                    string=" ( "
+                    end_string=" ) "
+                else:
+                    delimiter=" "
+                    string=" "
+                    end_string=" "
+            
+                items_to_join=[]
+                for i in item:
+                    if isinstance(i, list):
+                        items_to_join.append(self.structure_to_string(i))
+                    else:
+                        items_to_join.append(i) 
+                
+                return string+delimiter.join(items_to_join)+end_string
+            else:
+                return ""
+        
+    def create_structure(self):
         """ Get the structure for the pathway based on the levels of the nodes """
         
         # update the names of the nodes if key reactions are included
@@ -131,27 +162,78 @@ class PathwayStructure():
             nodes_by_levels[level]=nodes_by_levels.get(level,[])+[node]
             
         # write out the nodes in order by level
-        structure=""
+        structure=[]
         prior_nodes=[]
         for level in sorted(nodes_by_levels):
             # start with the node with the most leaves
             for node in nodes_by_levels[level]:
                 # only process if this node has not already been processed before
                 if not node_is_in_list(node, prior_nodes):
-                    structure_for_node, prior_nodes=node.get_structure(prior_nodes=prior_nodes)
-                    structure+=" "+structure_for_node
+                    structure_for_node, new_prior_nodes=node.create_structure(self.reactions,prior_nodes=prior_nodes)
+                    prior_nodes+=new_prior_nodes
+                    structure+=structure_for_node
                     
         # add in nodes not accounted for already
         for node in self.nodes:
             if not node_is_in_list(node, prior_nodes):
-                structure+=" "+node.get_name()
+                structure+=node.get_name()
                 
+        string_structure=self.structure_to_string(structure)
+               
         # Check all reactions are included in structure
         for reaction in self.reactions:
-            if not reaction in structure:
-                structure+=" "+reaction
+            if not reaction in string_structure:
+                if self.key_reactions:
+                    if not reaction in self.key_reactions:
+                        string_structure+=OPTIONAL_REACTION_TAG+reaction
+                else:
+                    string_structure+=reaction
+        
+        # Check there are not any duplicate reactions
+        check_string_structure=string_structure
+        # Remove one of each of the reactions from the list
+        removed_reactions=[]
+        for node in self.nodes:
+            # remove the optional reaction identifier if present
+            name=node.get_name()
+            check_string_structure=check_string_structure.replace(name,"",1)
+            removed_reactions.append(name)
+        for reaction in self.reactions:
+            if self.key_reactions:
+                if not reaction in self.key_reactions:
+                    reaction=OPTIONAL_REACTION_TAG+reaction
+            if not reaction in removed_reactions:
+                check_string_structure=check_string_structure.replace(reaction,"",1)
+                removed_reactions.append(reaction)
+        
+        # remove the join characters, parenthesis, and spaces
+        check_string_structure_no_whitespace=check_string_structure.translate(None,
+            "()"+OR_DEMILITER+AND_DEMILITER+OPTIONAL_REACTION_TAG).strip()
+        
+        # remove any duplicate reactions
+        if not check_string_structure_no_whitespace == "":
+            
+            # search for the duplicated reactions
+            for reaction in removed_reactions:
+                occurances=check_string_structure.count(reaction)+1
+                # remove the duplicated reactions starting with the last instances
+                while occurances>1:
+                    string_structure="".join(string_structure.rsplit(reaction,1))
+                    # remove any extra AND/OR
+                    string_structure=string_structure.replace(",    ,",",")
+                    string_structure=string_structure.replace("+    +","+")
+                    occurances-=1
+                            
+            # remove any unneeded AND/OR
+            # check for at the end of parenthesis to remove extra joins
+            string_structure=re.sub("\s*\,\s*\)"," )",string_structure)
+            string_structure=re.sub("\s*\+\s*\)"," )",string_structure)
+            string_structure=re.sub("\(\s*\)","",string_structure)
+            
+        # remove any extra whitespace
+        string_structure=" ".join(string_structure.split())
     
-        return structure
+        return string_structure
 
 class Node():
     def __init__(self, name, level = None, predecessor = None, leaves = None):
@@ -184,6 +266,9 @@ class Node():
     def count_predecessors(self):
         return len(self.predecessors)
     
+    def count_leaves(self):
+        return len(self.leaves)
+    
     def set_level(self,level,prior_nodes=None):
         """ Set the level of the node and the levels of the leaves and predecessors """
         if self.level is None:
@@ -205,8 +290,8 @@ class Node():
         
     def get_level(self):
         return self.level
-        
-    def get_structure(self,prior_nodes=None):
+                
+    def create_structure(self,reactions,prior_nodes=None):
         """
         Get the structure for the node and leaves
         """
@@ -220,18 +305,46 @@ class Node():
             if not node_is_in_list(node, prior_nodes):
                 non_recursive_leaves.append(node)
                 
-        structure=self.name
+        # look ahead to see if this should be a contraction
+        # see if any leaves have multiple precedessors
+        multi_predecessor_leaves=[]
+        for leaf in non_recursive_leaves:
+            if leaf.count_predecessors() > 1:
+                multi_predecessor_leaves+=leaf.predecessors
+                
+        if multi_predecessor_leaves:
+            # check if this a contraction or expansion
+            products=set()
+            for node in multi_predecessor_leaves:
+                left,right=reactions.get(node.get_name(),[set(),set()])
+                products.update(right)
+                    
+            new_list=[OR_DEMILITER]
+            if len(products) > 1:
+                new_list=[AND_DEMILITER]
+                
+            new_list+=[self.name]
+            for node in multi_predecessor_leaves:
+                if not node_is_in_list(node, prior_nodes):
+                    new_list.append(node.get_name())
+                    # add the predecessors to the prior nodes
+                    prior_nodes+=[node]
+                
+            structure=[new_list]    
+        else:
+            structure=[self.name]
         leaf_structures=[]
         # find the structures for the leaves
         for node in non_recursive_leaves:
-            leaf_structure, prior_nodes=node.get_structure(prior_nodes)
+            leaf_structure, new_prior_nodes=node.create_structure(reactions,prior_nodes)
+            prior_nodes+=new_prior_nodes
             leaf_structures.append(leaf_structure)
             
-        if len(leaf_structures) == 1:
-            structure+=" "+leaf_structures[0]
-        elif len(leaf_structures) > 1:
+        if len(non_recursive_leaves) == 1:
+            structure+=leaf_structures[0]
+        elif len(non_recursive_leaves) > 1:
             # OR expansion
-            structure+=" ( "+OR_DEMILITER.join(leaf_structures)+" ) "
+            structure+=[[OR_DEMILITER]+leaf_structures]
                 
         return structure, prior_nodes
         
@@ -246,7 +359,7 @@ def write_structured_pathways(metacyc_pathways, output_file):
         sys.exit("Unable to write to file: "+output_file)
      
     for pathway in metacyc_pathways:
-        structure=metacyc_pathways[pathway].get_structure()
+        structure=metacyc_pathways[pathway].create_structure()
         if not structure:
             sys.exit("MISSING structure for pathway: "+pathway)
         file_handle.write(pathway + DELIMITER + structure + "\n")
