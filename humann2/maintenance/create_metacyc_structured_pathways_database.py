@@ -117,12 +117,12 @@ class PathwayStructure():
                 if item[0] in [OR_DEMILITER,AND_DEMILITER]:
                     # then join the items with the delimiter
                     delimiter=item.pop(0)
-                    string=" ( "
-                    end_string=" ) "
+                    string_start=" ( "
+                    string_end=" ) "
                 else:
                     delimiter=" "
-                    string=" "
-                    end_string=" "
+                    string_start=" "
+                    string_end=" "
             
                 items_to_join=[]
                 for i in item:
@@ -130,8 +130,16 @@ class PathwayStructure():
                         items_to_join.append(self.structure_to_string(i))
                     else:
                         items_to_join.append(i) 
-                
-                return string+delimiter.join(items_to_join)+end_string
+                        
+                # remove any items that are empty
+                items_to_join=filter(lambda x:x,items_to_join)
+                if items_to_join:
+                    if len(items_to_join) == 1:
+                        string_start=" "
+                        string_end=" "
+                    return string_start+delimiter.join(items_to_join)+string_end
+                else:
+                    return ""
             else:
                 return ""
         
@@ -191,11 +199,7 @@ class PathwayStructure():
         # Check all reactions are included in structure
         for reaction in self.reactions:
             if not reaction in string_structure:
-                if self.key_reactions:
-                    if not reaction in self.key_reactions:
-                        string_structure+=OPTIONAL_REACTION_TAG+reaction
-                else:
-                    string_structure+=reaction
+                string_structure+=" "+reaction
         
         # Check there are not any duplicate reactions
         check_string_structure=string_structure
@@ -216,7 +220,6 @@ class PathwayStructure():
         
         # remove any duplicate reactions
         if not check_string_structure_no_whitespace == "":
-
             # search for the duplicated reactions
             for reaction in removed_reactions:
                 occurances=check_string_structure.count(reaction)+1
@@ -299,10 +302,17 @@ class Node():
         """
         Get the structure for the node and leaves
         """
+        
         if not prior_nodes:
             prior_nodes=[]
         
-        prior_nodes+=[self]
+        # search to see if self has already been visited in prior nodes
+        self_visited_prior=False
+        if node_is_in_list(self, prior_nodes):
+            self_visited_prior=True
+        else:
+            prior_nodes+=[self]
+            
         # remove recursive nodes from leaves if present
         non_recursive_leaves=[]
         for node in self.leaves:
@@ -327,7 +337,10 @@ class Node():
             if len(products) > 1:
                 new_list=[AND_DEMILITER]
                 
-            new_list+=[self.name]
+            # add the name of this node if it was not visited prior
+            if not self_visited_prior:
+                new_list+=[self.name]
+            
             for node in multi_predecessor_leaves:
                 if not node_is_in_list(node, prior_nodes):
                     new_list.append(node.get_name())
@@ -336,7 +349,11 @@ class Node():
                 
             structure=[new_list]    
         else:
-            structure=[self.name]
+            # add the name of this node if it was not visited prior
+            if not self_visited_prior:
+                structure=[self.name]
+            else:
+                structure=[]
         leaf_structures=[]
         # find the structures for the leaves
         for node in non_recursive_leaves:
@@ -348,7 +365,7 @@ class Node():
         elif len(non_recursive_leaves) > 1:
             # OR expansion
             structure+=[[OR_DEMILITER]+leaf_structures]
-                
+
         return structure, prior_nodes
         
 def write_structured_pathways(metacyc_pathways, output_file):
