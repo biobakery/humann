@@ -59,6 +59,8 @@ class PathwayStructure():
         self.reactions=[]
         self.start_nodes=[]
         self.key_reactions=set()
+        self.string_structure=""
+        self.subpathways=set()
         
     def add_node(self, data):
         if len(data) == 2:
@@ -104,6 +106,9 @@ class PathwayStructure():
         
     def set_reactions(self, reactions):
         self.reactions=reactions
+        
+    def get_structure(self):
+        return self.string_structure
     
     def structure_to_string(self, item):
         """ Convert the structure of nested lists into a string """
@@ -194,15 +199,49 @@ class PathwayStructure():
             if not node_is_in_list(node, prior_nodes):
                 structure+=node.get_name()
                 
-        string_structure=self.structure_to_string(structure)
-               
-        # Check all reactions are included in structure
+        self.string_structure=self.structure_to_string(structure)
+    
+    def resolve_subpathways(self,metacyc_pathway_structures):
+        """ Resolve the subpathways in the metacyc structures """
+        
+        # Get a list of all of the subpathways for this pathway
+        # Check both the reactions list and the nodes list
+        # Pathways can be included in the predecessors in nodes but not in the
+        # reactions layout sections
+        self.subpathways=set()
+        names_to_check=list(self.reactions)+[node.get_name() for node in self.nodes]
+        for name in names_to_check:
+            if ( re.match(OPTIONAL_REACTION_TAG+"*"+METACYC_PATHWAY_ID, name) 
+                or re.search(METACYC_PATHWAY_ID+"$", name) ):
+                self.subpathways.add(name)
+                
+        # Get the string structure for the subpathway
+        # Then replace the subpathway name with the string structure for the subpathway
+        for subpathway in self.subpathways:
+            subpathway_id=subpathway
+            # remove the optional reaction identifier if present
+            if re.match(OPTIONAL_REACTION_TAG,subpathway_id):
+                subpathway_id=subpathway_id.replace(OPTIONAL_REACTION_TAG,"",1)
+            subpathway_string_structure=metacyc_pathway_structures[subpathway_id].get_structure()
+            # check if this subpathway has its own subpathways
+            if ( re.search("\s*"+OPTIONAL_REACTION_TAG+"*"+METACYC_PATHWAY_ID, subpathway_string_structure) 
+                or re.search(METACYC_PATHWAY_ID+"\s*", subpathway_string_structure) ):
+                # resolve subpathways of subpathway
+                metacyc_pathway_structures[subpathway_id].resolve_subpathways(metacyc_pathway_structures)
+                subpathway_string_structure=metacyc_pathway_structures[subpathway_id].get_structure()
+            self.string_structure=self.string_structure.replace(subpathway,subpathway_string_structure)
+        
+        # Check all reactions are included in structure (excluding subpathways)
         for reaction in self.reactions:
-            if not reaction in string_structure:
-                string_structure+=" "+reaction
+            if not reaction in self.subpathways:
+                if not reaction in self.string_structure:
+                    self.string_structure+=" "+reaction
+                
+    def resolve_duplicate_reactions(self):
+        """ Check for duplicate reactions in the pathway and resolve """
         
         # Check there are not any duplicate reactions
-        check_string_structure=string_structure
+        check_string_structure=self.string_structure
         # Remove one of each of the reactions from the list
         removed_reactions=[]
         for node in self.nodes:
@@ -219,6 +258,7 @@ class PathwayStructure():
             "()"+OR_DEMILITER+AND_DEMILITER+OPTIONAL_REACTION_TAG).strip()
         
         # remove any duplicate reactions
+        string_structure=self.string_structure
         if not check_string_structure_no_whitespace == "":
             # search for the duplicated reactions
             for reaction in removed_reactions:
@@ -231,16 +271,15 @@ class PathwayStructure():
                     string_structure=string_structure.replace("+    +","+")
                     occurances-=1
                             
-            # remove any unneeded AND/OR
+            # remove any unneeded AND/OR or optional reaction indicators
             # check for at the end of parenthesis to remove extra joins
             string_structure=re.sub("\s*\,\s*\)"," )",string_structure)
             string_structure=re.sub("\s*\+\s*\)"," )",string_structure)
             string_structure=re.sub("\(\s*\)","",string_structure)
+            string_structure=re.sub(" "+OPTIONAL_REACTION_TAG+" ","",string_structure)
             
         # remove any extra whitespace
-        string_structure=" ".join(string_structure.split())
-    
-        return string_structure
+        self.string_structure=" ".join(string_structure.split())
 
 class Node():
     def __init__(self, name, level = None, predecessor = None, leaves = None):
@@ -389,9 +428,10 @@ def write_structured_pathways(metacyc_pathways, output_file):
         file_handle=open(output_file,"w")
     except EnvironmentError:
         sys.exit("Unable to write to file: "+output_file)
-     
+        
+    # print the structures
     for pathway in metacyc_pathways:
-        structure=metacyc_pathways[pathway].create_structure()
+        structure=metacyc_pathways[pathway].get_structure()
         if not structure:
             sys.exit("MISSING structure for pathway: "+pathway)
         file_handle.write(pathway + DELIMITER + structure + "\n")
@@ -512,6 +552,24 @@ def main():
     if args.verbose:
         print("Processing metacyc pathways data")
     metacyc_pathways=read_metacyc_pathways_structure(input_file)
+    
+    # create the initial structures for all of the pathways
+    if args.verbose:
+        print("Creating structures for pathways")
+    for pathway in metacyc_pathways:
+        metacyc_pathways[pathway].create_structure()
+        
+    # resolve any subpathways in the structures
+    if args.verbose:
+        print("Resolving subpathways in structures")
+    for pathway in metacyc_pathways:
+        metacyc_pathways[pathway].resolve_subpathways(metacyc_pathways)
+        
+    # resolve duplicate reactions in the structures
+    if args.verbose:
+        print("Resolving duplicate reactions in pathways")
+    for pathway in metacyc_pathways:
+        metacyc_pathways[pathway].resolve_duplicate_reactions()
     
     write_structured_pathways(metacyc_pathways, output_file)
     
