@@ -144,6 +144,15 @@ class PathwayStructure():
             for node in self.nodes:
                 if not node.get_name() in self.key_reactions:
                     node.set_name(OPTIONAL_REACTION_TAG+node.get_name())
+            #  also update the names of the reactions
+            new_reactions={}
+            for reaction in self.reactions:
+                if not reaction in self.key_reactions:
+                    # add the optional reaction identifier
+                    new_reactions[OPTIONAL_REACTION_TAG+reaction]=self.reactions[reaction]
+                else:
+                    new_reactions[reaction]=self.reactions[reaction]
+            self.reactions=new_reactions
         
         # set the levels for the nodes
         # all nodes that are specified by metacyc to not have predecessors are level 1
@@ -169,8 +178,7 @@ class PathwayStructure():
             for node in nodes_by_levels[level]:
                 # only process if this node has not already been processed before
                 if not node_is_in_list(node, prior_nodes):
-                    structure_for_node, new_prior_nodes=node.create_structure(self.reactions,prior_nodes=prior_nodes)
-                    prior_nodes+=new_prior_nodes
+                    structure_for_node, prior_nodes=node.create_structure(self.reactions,prior_nodes=prior_nodes)
                     structure+=structure_for_node
                     
         # add in nodes not accounted for already
@@ -194,14 +202,10 @@ class PathwayStructure():
         # Remove one of each of the reactions from the list
         removed_reactions=[]
         for node in self.nodes:
-            # remove the optional reaction identifier if present
             name=node.get_name()
             check_string_structure=check_string_structure.replace(name,"",1)
             removed_reactions.append(name)
         for reaction in self.reactions:
-            if self.key_reactions:
-                if not reaction in self.key_reactions:
-                    reaction=OPTIONAL_REACTION_TAG+reaction
             if not reaction in removed_reactions:
                 check_string_structure=check_string_structure.replace(reaction,"",1)
                 removed_reactions.append(reaction)
@@ -212,7 +216,7 @@ class PathwayStructure():
         
         # remove any duplicate reactions
         if not check_string_structure_no_whitespace == "":
-            
+
             # search for the duplicated reactions
             for reaction in removed_reactions:
                 occurances=check_string_structure.count(reaction)+1
@@ -336,8 +340,7 @@ class Node():
         leaf_structures=[]
         # find the structures for the leaves
         for node in non_recursive_leaves:
-            leaf_structure, new_prior_nodes=node.create_structure(reactions,prior_nodes)
-            prior_nodes+=new_prior_nodes
+            leaf_structure, prior_nodes=node.create_structure(reactions,prior_nodes)
             leaf_structures.append(leaf_structure)
             
         if len(non_recursive_leaves) == 1:
