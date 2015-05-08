@@ -322,9 +322,13 @@ class Node():
         # look ahead to see if this should be a contraction
         # see if any leaves have multiple precedessors
         multi_predecessor_leaves=[]
+        leaves_reactants=set()
         for leaf in non_recursive_leaves:
             if leaf.count_predecessors() > 1:
                 multi_predecessor_leaves+=leaf.predecessors
+                # store the reactants from the leaves
+                left,right=reactions.get(leaf.get_name(),[set(),set()])
+                leaves_reactants.update(left)
                 
         if multi_predecessor_leaves:
             # check if this a contraction or expansion
@@ -335,7 +339,15 @@ class Node():
                     
             new_list=[OR_DEMILITER]
             if len(products) > 1:
-                new_list=[AND_DEMILITER]
+                # if the leaves only have a single reactant then this is an OR
+                if len(leaves_reactants) == 1:
+                    # check that this is not a space delimited list of reactants
+                    if next(iter(leaves_reactants)).count(" ") > 0:
+                        new_list=[AND_DEMILITER]
+                    else:
+                        new_list=[OR_DEMILITER]
+                else:
+                    new_list=[AND_DEMILITER]
                 
             # add the name of this node if it was not visited prior
             if not self_visited_prior:
@@ -441,11 +453,11 @@ def read_metacyc_pathways_structure(metacyc_pathways_file):
                 for item in data:
                     # check for the type of identifier
                     if re.search(METACYC_LEFT_PRIMARY,item):
-                        left.add(re.sub(METACYC_LEFT_PRIMARY,"",item))
+                        left.add(item.replace(METACYC_LEFT_PRIMARY,"").strip())
                     elif re.search(METACYC_RIGHT_PRIMARY,item):
-                        right.add(re.sub(METACYC_RIGHT_PRIMARY,"",item))                      
+                        right.add(item.replace(METACYC_RIGHT_PRIMARY,"").strip())                      
                     elif re.search(METACYC_DIRECTION,item):
-                        direction=re.sub(METACYC_DIRECTION,"",item)
+                        direction=item.replace(METACYC_DIRECTION,"").strip()
                 if re.search(METACYC_LEFT2RIGHT,direction):
                     reactions[reaction]=[left,right]
                 elif re.search(METACYC_RIGHT2LEFT,direction):
