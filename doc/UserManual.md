@@ -59,6 +59,11 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
     * [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile)
+    * [Custom taxonomic profile](#markdown-header-custom-taxonomic-profile)
+    * [Custom nucleotide reference database](#markdown-header-custom-nucleotide-reference-database)
+    * [Custom protein reference database](#markdown-header-custom-protein-reference-database)
+    * [Custom reference database annotations](#markdown-header-custom-reference-database-annotations)
+    * [Custom pathways database](#markdown-header-custom-pathways-database)
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
 * [FAQs](#markdown-header-faqs)
@@ -797,6 +802,79 @@ This will save compute time as this database will only be created once. Please s
     * for $SAMPLE.fastq in samples
         * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --chocophlan $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ --bypass-nucleotide-index ``
 
+### Custom taxonomic profile ###
+
+A custom taxonomic profile can be created to specify the taxa included in your samples. This file is used by HUMAnN2 to create the custom ChocoPhlAn database for your samples.
+
+The custom taxonomic profile must be in a tab-demilited format and contain two columns (taxon and percent abundance). An example follows:
+```
+g__Bacteroides|s__Bacteroides_thetaiotaomicron	12.16326
+g__Bacteroides|s__Bacteroides_cellulosilyticus	12.02768
+g__Bacteroides|s__Bacteroides_caccae	11.43394
+g__Dialister|s__Dialister_invisus	10.52286
+g__Bacteroides|s__Bacteroides_stercoris	10.42227
+```
+
+HUMAnN2 uses the taxonomic profile to select pangenomes for the custom ChocoPhlAn database from the full ChocoPhlAn database. For example, the first line in the example above will add the centriods from Bacteroides thetaiotaomicron to the custom ChocoPhlAn database. Please note the taxa in the custom taxonomic profile must match the naming convention used by the full ChocoPhlAn database (ignoring case). 
+
+To run HUMAnN2 with the custom taxonomic profile ($FILE), use the option "--taxonomic-profile $FILE". This will bypass running MetaPhlAn2, which creates a taxonomic profile, and instead will use the custom taxonomic profile provided. From the custom taxonomic profile, only those taxa that have a percent abundance greater than the default prescreen threshold will be considered. To change the default setting for the prescreen threshold to $THRESHOLD, use the option "--prescreen-threshold $THRESHOLD".
+
+### Custom nucleotide reference database ###
+
+A custom nucleotide reference database can be provided to HUMAnN2. 
+
+This custom database must be formatted as a bowtie2 index. 
+
+Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The
+pathways databases included with HUMAnN2 are for UniRef genes. If you would like to create custom pathways databases for a different gene set, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+
+To run HUMAnN2 with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--chocophlan $DIR". If you would like to bypass the translated alignment portion of HUMAnN2, add the option "--bypass-translated-search". 
+
+### Custom protein reference database ###
+
+A custom protein reference database can be provided to HUMAnN2. 
+
+This custom database must be formatted to be used by the translated alignment software selected (the default is Diamond). 
+
+Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The
+pathways databases included with HUMAnN2 are for UniRef genes. If you would like to create custom pathways databases for a different gene set, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+
+To run HUMAnN2 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--uniref $DIR". Please note, HUMAnN2 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN2, add the option "--bypass-nucleotide-search".  
+
+### Custom reference database annotations ###
+
+The annotations for sequences in a custom (nucleotide or protein) reference database can be as follows (delimited by "|"):
+1. gene
+2. gene|gene_length
+3. gene|gene_length|taxonomy
+4. identifier
+
+For options #1 and #2, HUMAnN2 defaults will be used. The default gene length is 1,000 bases and the default taxonomy is "unclassified".
+
+Option #4 should be used along with a custom reference database annotation file. The custom reference database annotation file maps the identifers to annotations. This file must be in a tab-delimited format and contain at least two columns (identifer and gene). At most four columns of information can be 
+included to describe each reference sequence. These columns should be organized as identifier, gene, gene length, and taxonomy. An example follows:
+```
+256402719	UniRef50_C9LQU5	147	g__Dialister.s__Dialister_invisus
+479150083	UniRef50_R6U703	540	g__Ruminococcus.s__Ruminococcus_bromii
+423220654	UniRef50_I8UUJ6	1218	g__Bacteroides.s__Bacteroides_caccae
+```
+
+The first line of the example will use the gene UniRef50_C9LQU5, gene length 147, and taxon g__Dialister.s__Dialister_invisus for any sequences in your
+reference databases with the identifier 256402719.
+
+To run HUMAnN2 with the custom reference database annotations ($FILE), use the option "--id-mapping $FILE". 
+
+### Custom pathways database ###
+
+The pathways databases included with HUMAnN2 (from MetaCyc and UniProt) have been created to be used with alignments to UniRef genes. A custom pathways
+database can be provided to HUMAnN2, specifically made for your set of genes.
+
+One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN2 with the option "--pathways-database $FILE". If two files are
+provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of genes to reactions while the second file maps reactions to pathways. 
+
+The first file, which is optional, should be organized to include at least three columns per line. The first column is the item to be mapped to (ie reactions from the example) while the second column (which can be blank) includes additional information about the item to be mapped to (ie EC number from the example). The remaining columns in the row are the genes which can be mapped to the item included in the first column.
+
+The pathways file is a tab-delimited file with the first column the name of the pathway. The second column includes the items contained in the pathway. These items are genes if only one pathways file is provided. If two files are provided, as in the example, these items would be reactions.
 
 ### Analyzing Metatranscriptomes ###
 
