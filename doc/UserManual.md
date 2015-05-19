@@ -860,7 +860,7 @@ included to describe each reference sequence. These columns should be organized 
 423220654	UniRef50_I8UUJ6	1218	g__Bacteroides.s__Bacteroides_caccae
 ```
 
-The first line of the example will use the gene UniRef50_C9LQU5, gene length 147, and taxon "g__Dialister.s__Dialister_invisus" for any sequences in your
+The first line of the example will use the gene UniRef50_C9LQU5, gene length 147, and taxon ``g__Dialister.s__Dialister_invisus`` for any sequences in your
 reference databases with the identifier 256402719.
 
 To run HUMAnN2 with the custom reference database annotations ($FILE), use the option "--id-mapping $FILE". 
