@@ -852,8 +852,8 @@ The annotations for sequences in a custom (nucleotide or protein) reference data
 
 For options #1 and #2, HUMAnN2 defaults will be used. The default gene length is 1,000 bases and the default taxonomy is "unclassified".
 
-Option #4 should be used along with a custom reference database annotation file. The custom reference database annotation file maps the identifiers to annotations. This file must be in a tab-delimited format and contain at least two columns (identifier and gene_family). At most four columns of information can be 
-included to describe each reference sequence. These columns should be organized as identifier, gene_family, gene length, and taxonomy. An example follows:
+Option #4 should be used along with a custom reference database annotation file. The custom reference database annotation file maps the identifiers to annotations. This file must be in a tab-delimited format and contain at least two columns (identifier and gene family). At most four columns of information can be 
+included to describe each reference sequence. These columns should be organized as identifier, gene family, gene length, and taxonomy. An example follows:
 ```
 256402719	UniRef50_C9LQU5	147	g__Dialister.s__Dialister_invisus
 479150083	UniRef50_R6U703	540	g__Ruminococcus.s__Ruminococcus_bromii
