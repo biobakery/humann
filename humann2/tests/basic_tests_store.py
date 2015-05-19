@@ -778,6 +778,19 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         self.assertEqual(expected_output,output) 
         
+    def test_Alignments_process_reference_annotation_gene_length_with_bug(self):
+        """
+        Test the process reference annotation function with a gene and length and bug
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("gene|3000|bug")
+        
+        expected_output=["gene",3000,"bug"]
+        
+        self.assertEqual(expected_output,output) 
+        
     def test_Alignments_process_reference_annotation_gene_length_reversed(self):
         """
         Test the process reference annotation function with a gene and length reversed
@@ -832,9 +845,22 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         self.assertEqual(expected_output,output) 
         
-    def test_Alignments_process_reference_annotation_unknown_annotations(self):
+    def test_Alignments_process_reference_annotation_unknown_annotations_three_items_bug_int(self):
         """
-        Test the process reference annotation function with unknown annotations
+        Test the process reference annotation function with unknown annotations (three items) with int as bug
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|5000|5000")
+        
+        expected_output=["UniRef90_W1Q3F0|5000|5000",0,"unclassified"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_unknown_annotations_three_items_length_string(self):
+        """
+        Test the process reference annotation function with unknown annotations (three items) with string for length
         """
         
         alignments_store=store.Alignments()
@@ -842,6 +868,19 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|UniRef50_P59787|5000")
         
         expected_output=["UniRef90_W1Q3F0|UniRef50_P59787|5000",0,"unclassified"]
+        
+        self.assertEqual(expected_output,output) 
+        
+    def test_Alignments_process_reference_annotation_unknown_annotations_four_items(self):
+        """
+        Test the process reference annotation function with unknown annotations (four items)
+        """
+        
+        alignments_store=store.Alignments()
+        
+        output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|UniRef50_P59787|5000|bug")
+        
+        expected_output=["UniRef90_W1Q3F0|UniRef50_P59787|5000|bug",0,"unclassified"]
         
         self.assertEqual(expected_output,output) 
 

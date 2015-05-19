@@ -257,7 +257,13 @@ class Alignments:
             except IndexError:
                 # try to find gene length if present
                 bug="unclassified"
-                if len(reference_info)==2:
+                # check for gene|gene_length|taxonomy
+                if (len(reference_info)==3 and re.search("^[0-9]+$",reference_info[1])
+                    and not re.search("^[0-9]+$",reference_info[2])):
+                    bug=reference_info[2]
+                    length=int(reference_info[1])
+                    gene=reference_info[0]
+                elif len(reference_info)==2:
                     if re.search("^[0-9]+$",reference_info[1]):
                         length=int(reference_info[1])
                         gene=reference_info[0]
