@@ -844,6 +844,7 @@ To run HUMAnN2 with your custom protein reference database (located in $DIR), pr
 ### Custom reference database annotations ###
 
 The annotations for sequences in a custom (nucleotide or protein) reference database can be as follows (delimited by "|"):
+
 1. gene
 2. gene|gene_length
 3. gene|gene_length|taxonomy
