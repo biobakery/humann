@@ -825,8 +825,7 @@ A custom nucleotide reference database can be provided to HUMAnN2.
 
 This custom database must be formatted as a bowtie2 index. 
 
-Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The
-pathways databases included with HUMAnN2 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN2 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
 
 To run HUMAnN2 with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--chocophlan $DIR". If you would like to bypass the translated alignment portion of HUMAnN2, add the option "--bypass-translated-search". 
 
@@ -836,8 +835,7 @@ A custom protein reference database can be provided to HUMAnN2.
 
 This custom database must be formatted to be used by the translated alignment software selected (the default is Diamond). 
 
-Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The
-pathways databases included with HUMAnN2 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN2 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
 
 To run HUMAnN2 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--uniref $DIR". Please note, HUMAnN2 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN2, add the option "--bypass-nucleotide-search".  
 
@@ -852,8 +850,7 @@ The annotations for sequences in a custom (nucleotide or protein) reference data
 
 For options #1 and #2, HUMAnN2 defaults will be used. The default gene length is 1,000 bases and the default taxonomy is "unclassified".
 
-Option #4 should be used along with a custom reference database annotation file. The custom reference database annotation file maps the identifiers to annotations. This file must be in a tab-delimited format and contain at least two columns (identifier and gene family). At most four columns of information can be 
-included to describe each reference sequence. These columns should be organized as identifier, gene family, gene length, and taxonomy. An example follows:
+Option #4 should be used along with a custom reference database annotation file. The custom reference database annotation file maps the identifiers to annotations. This file must be in a tab-delimited format and contain at least two columns (identifier and gene family). At most four columns of information can be included to describe each reference sequence. These columns should be organized as identifier, gene family, gene length, and taxonomy. An example follows:
 ```
 256402719	UniRef50_C9LQU5	147	g__Dialister.s__Dialister_invisus
 479150083	UniRef50_R6U703	540	g__Ruminococcus.s__Ruminococcus_bromii
@@ -870,8 +867,7 @@ To run HUMAnN2 with the custom reference database annotations ($FILE), use the o
 The pathways databases included with HUMAnN2 (from MetaCyc and UniProt) have been created to be used with alignments to UniRef gene families. A custom pathways
 database can be provided to HUMAnN2, specifically made to work with your custom reference database(s).
 
-One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN2 with the option "--pathways-database $FILE". If two files are
-provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of gene families to reactions while the second file maps reactions to pathways. 
+One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN2 with the option "--pathways-database $FILE". If two files are provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of gene families to reactions while the second file maps reactions to pathways. 
 
 The first file, which is optional, should be organized to include at least three columns per line. The first column is the item to be mapped to (ie reactions from the example) while the second column (which can be blank) includes additional information about the item to be mapped to (ie EC number from the example). The remaining columns in the row are the gene families which can be mapped to the item included in the first column.
 
