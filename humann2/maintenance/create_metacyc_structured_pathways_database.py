@@ -113,7 +113,7 @@ class PathwayStructure():
     def get_string_structure(self):
         return self.structure_to_string().replace("  "," ")
     
-    def structure_to_string(self, item=None):
+    def structure_to_string(self, item=None, subset=None):
         """ Convert the structure of nested lists into a string """
         
         # Check if the item is unset
@@ -131,6 +131,10 @@ class PathwayStructure():
                     delimiter=item.pop(0)
                     string_start=" ( "
                     string_end=" ) "
+                elif subset:
+                    delimiter=" "
+                    string_start=" ( "
+                    string_end=" ) "
                 else:
                     delimiter=" "
                     string_start=" "
@@ -139,7 +143,9 @@ class PathwayStructure():
                 items_to_join=[]
                 for i in item:
                     if isinstance(i, list):
-                        items_to_join.append(self.structure_to_string(i))
+                        if delimiter in [OR_DEMILITER,AND_DEMILITER]:
+                            subset=True
+                        items_to_join.append(self.structure_to_string(i,subset))
                     else:
                         items_to_join.append(i) 
                         
@@ -192,13 +198,13 @@ class PathwayStructure():
             
         # write out the nodes in order by level
         structure=[]
-        prior_nodes=[]
+        prior_nodes={}
         for level in sorted(nodes_by_levels):
             # start with the node with the most leaves
             for node in nodes_by_levels[level]:
                 # only process if this node has not already been processed before
-                if not node_is_in_list(node, prior_nodes):
-                    structure_for_node, prior_nodes=node.create_structure(self.reactions,prior_nodes=prior_nodes)
+                if not node_is_in_list(node, prior_nodes.keys()):
+                    structure_for_node, prior_nodes=node.create_structure(self.reactions,prior_nodes)
                     structure+=structure_for_node
                     
         # add in nodes not accounted for already
@@ -383,25 +389,21 @@ class Node():
     def get_level(self):
         return self.level
                 
-    def create_structure(self,reactions,prior_nodes=None):
+    def create_structure(self,reactions,prior_nodes):
         """
         Get the structure for the node and leaves
         """
         
-        if not prior_nodes:
-            prior_nodes=[]
-        
         # search to see if self has already been visited in prior nodes
-        self_visited_prior=False
-        if node_is_in_list(self, prior_nodes):
-            self_visited_prior=True
-        else:
-            prior_nodes+=[self]
+        structure=[]
+        if not node_is_in_list(self, prior_nodes.keys()):
+            structure=[self.name]
+            prior_nodes[self]=structure
             
         # remove recursive nodes from leaves if present
         non_recursive_leaves=[]
         for node in self.leaves:
-            if not node_is_in_list(node, prior_nodes):
+            if not node_is_in_list(node, prior_nodes.keys()):
                 non_recursive_leaves.append(node)
                 
         # look ahead to see if this should be a contraction
@@ -433,33 +435,29 @@ class Node():
                         new_list=[OR_DEMILITER]
                 else:
                     new_list=[AND_DEMILITER]
-                
-            # add the name of this node if it was not visited prior
-            if not self_visited_prior:
-                new_list+=[self.name]
+
+            if structure:
+                new_list+=[structure]
             
             for node in multi_predecessor_leaves:
-                if not node_is_in_list(node, prior_nodes):
+                if not node_is_in_list(node, prior_nodes.keys()):
                     new_list.append(node.get_name())
                     # add the predecessors to the prior nodes
-                    prior_nodes+=[node]
+                    prior_nodes[node]=new_list
                 
             structure=[new_list]    
-        else:
-            # add the name of this node if it was not visited prior
-            if not self_visited_prior:
-                structure=[self.name]
-            else:
-                structure=[]
-        leaf_structures=[]
-        # find the structures for the leaves
-        for node in non_recursive_leaves:
-            leaf_structure, prior_nodes=node.create_structure(reactions,prior_nodes)
-            leaf_structures.append(leaf_structure)
             
+        # find the structure for the leaves
         if len(non_recursive_leaves) == 1:
-            structure+=leaf_structures[0]
+            leaf_structure, prior_nodes=non_recursive_leaves[0].create_structure(reactions,prior_nodes)
+            # add the structure to the location in the leaf structure
+            prior_nodes[non_recursive_leaves[0]].insert(0,structure)
+            structure=leaf_structure
         elif len(non_recursive_leaves) > 1:
+            leaf_structures=[]
+            for node in non_recursive_leaves:
+                leaf_structure, prior_nodes=node.create_structure(reactions,prior_nodes)
+                leaf_structures.append(leaf_structure)
             # OR expansion
             structure+=[[OR_DEMILITER]+leaf_structures]
 
