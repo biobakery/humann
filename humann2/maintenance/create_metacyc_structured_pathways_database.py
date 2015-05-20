@@ -59,7 +59,7 @@ class PathwayStructure():
         self.reactions=[]
         self.start_nodes=[]
         self.key_reactions=set()
-        self.string_structure=""
+        self.structure=[]
         self.subpathways=set()
         
     def add_node(self, data):
@@ -108,10 +108,17 @@ class PathwayStructure():
         self.reactions=reactions
         
     def get_structure(self):
-        return self.string_structure
+        return self.structure
     
-    def structure_to_string(self, item):
+    def get_string_structure(self):
+        return self.structure_to_string().replace("  "," ")
+    
+    def structure_to_string(self, item=None):
         """ Convert the structure of nested lists into a string """
+        
+        # Check if the item is unset
+        if item is None:
+            item=self.structure
         
         # test if item is a string
         if isinstance(item,basestring):
@@ -199,7 +206,58 @@ class PathwayStructure():
             if not node_is_in_list(node, prior_nodes):
                 structure+=node.get_name()
                 
-        self.string_structure=self.structure_to_string(structure)
+        self.structure=structure
+        
+    def replace_subpathway(self, subpathway, subpathway_structure, structure=None):
+        """ Replace the subpathway id with the subpathway structure """
+        
+        if structure is None:
+            structure=self.structure
+        
+        # For each instance of the subpathway in the structure, replace with the subpathway structure
+        for i in xrange(len(structure)):
+            if isinstance(structure[i],list):
+                self.replace_subpathway(subpathway, subpathway_structure, structure[i])
+            elif isinstance(structure[i],basestring):
+                if structure[i] == subpathway:
+                    structure[i]=subpathway_structure
+                    
+    def find_reaction(self, reaction, structure=None):
+        """ Check if the reaction is included in the structure """
+        
+        if structure is None:
+            structure=self.structure
+        
+        # Check through each of the lists and sub-lists to see if the reaction is included
+        for i in xrange(len(structure)):
+            if isinstance(structure[i],list):
+                if self.find_reaction(reaction, structure[i]):
+                    return True
+            elif isinstance(structure[i],basestring):
+                if structure[i] == reaction:
+                    return True
+                
+        return False
+    
+    def count_reactions(self, reaction_count=None, structure=None):
+        """ Count the number of times each reaction is included in the structure """
+        
+        if structure is None:
+            structure=self.structure
+            
+        if reaction_count is None:
+            reaction_count={}
+        
+        # Check through each of the lists and sub-lists to count the reactions
+        for i in xrange(len(structure)):
+            if isinstance(structure[i],list):
+                reaction_count=self.count_reactions(reaction_count, structure[i])
+            elif isinstance(structure[i],basestring):
+                # do not count AND/OR
+                if not structure[i] in [AND_DEMILITER,OR_DEMILITER]:
+                    reaction_count[structure[i]]=reaction_count.get(structure[i],0)+1
+                
+        return reaction_count
     
     def resolve_subpathways(self,metacyc_pathway_structures):
         """ Resolve the subpathways in the metacyc structures """
@@ -215,71 +273,59 @@ class PathwayStructure():
                 or re.search(METACYC_PATHWAY_ID+"$", name) ):
                 self.subpathways.add(name)
                 
-        # Get the string structure for the subpathway
-        # Then replace the subpathway name with the string structure for the subpathway
+        # Get the structure for the subpathway
+        # Then replace the subpathway name with the structure for the subpathway
         for subpathway in self.subpathways:
             subpathway_id=subpathway
             # remove the optional reaction identifier if present
             if re.match(OPTIONAL_REACTION_TAG,subpathway_id):
                 subpathway_id=subpathway_id.replace(OPTIONAL_REACTION_TAG,"",1)
-            subpathway_string_structure=metacyc_pathway_structures[subpathway_id].get_structure()
-            # check if this subpathway has its own subpathways
-            if ( re.search("\s*"+OPTIONAL_REACTION_TAG+"*"+METACYC_PATHWAY_ID, subpathway_string_structure) 
-                or re.search(METACYC_PATHWAY_ID+"\s*", subpathway_string_structure) ):
-                # resolve subpathways of subpathway
-                metacyc_pathway_structures[subpathway_id].resolve_subpathways(metacyc_pathway_structures)
-                subpathway_string_structure=metacyc_pathway_structures[subpathway_id].get_structure()
-            self.string_structure=self.string_structure.replace(subpathway,subpathway_string_structure)
+            if subpathway_id in metacyc_pathway_structures:
+                subpathway_structure=metacyc_pathway_structures[subpathway_id].get_structure()
+            else:
+                print("WARNING: Missing subpathway from database: " + subpathway_id)
+                subpathway_structure=[""]
+            # replace the pathway id with the structure for the pathway
+            self.replace_subpathway(subpathway,subpathway_structure)
         
         # Check all reactions are included in structure (excluding subpathways)
         for reaction in self.reactions:
             if not reaction in self.subpathways:
-                if not reaction in self.string_structure:
-                    self.string_structure+=" "+reaction
+                if not self.find_reaction(reaction):
+                    self.structure+=[reaction]
+                        
+    def remove_duplicate_reaction(self, reaction, count, structure):
+        """ Remove the duplicate reactions (keeping the last instance in the structure) """
+        
+        sublists=[]
+        for i in xrange(len(structure)):
+            if isinstance(structure[i],list):
+                sublists.append(i)
+            elif isinstance(structure[i],basestring):
+                if structure[i] == reaction:
+                    if count > 1:
+                        structure[i]=""
+                        count-=1
+                        
+        # process through any sublists in the main structure list
+        for i in sublists:
+            structure[i],count=self.remove_duplicate_reaction(reaction, count, structure[i])
+                        
+        return structure, count
                 
     def resolve_duplicate_reactions(self):
         """ Check for duplicate reactions in the pathway and resolve """
         
-        # Check there are not any duplicate reactions
-        check_string_structure=self.string_structure
-        # Remove one of each of the reactions from the list
-        removed_reactions=[]
-        for node in self.nodes:
-            name=node.get_name()
-            check_string_structure=check_string_structure.replace(name,"",1)
-            removed_reactions.append(name)
-        for reaction in self.reactions:
-            if not reaction in removed_reactions:
-                check_string_structure=check_string_structure.replace(reaction,"",1)
-                removed_reactions.append(reaction)
+        # Check there are not any duplicate reactions by counting the reactions
+        reaction_count=self.count_reactions()
         
-        # remove the join characters, parenthesis, and spaces
-        check_string_structure_no_whitespace=check_string_structure.translate(None,
-            "()"+OR_DEMILITER+AND_DEMILITER+OPTIONAL_REACTION_TAG).strip()
-        
-        # remove any duplicate reactions
-        string_structure=self.string_structure
-        if not check_string_structure_no_whitespace == "":
-            # search for the duplicated reactions
-            for reaction in removed_reactions:
-                occurances=check_string_structure.count(reaction)+1
-                # remove the duplicated reactions starting with the last instances
-                while occurances>1:
-                    string_structure="".join(string_structure.rsplit(reaction,1))
-                    # remove any extra AND/OR
-                    string_structure=string_structure.replace(",    ,",",")
-                    string_structure=string_structure.replace("+    +","+")
-                    occurances-=1
-                            
-            # remove any unneeded AND/OR or optional reaction indicators
-            # check for at the end of parenthesis to remove extra joins
-            string_structure=re.sub("\s*\,\s*\)"," )",string_structure)
-            string_structure=re.sub("\s*\+\s*\)"," )",string_structure)
-            string_structure=re.sub("\(\s*\)","",string_structure)
-            string_structure=re.sub(" "+OPTIONAL_REACTION_TAG+" ","",string_structure)
-            
-        # remove any extra whitespace
-        self.string_structure=" ".join(string_structure.split())
+        # remove the duplicate reactions
+        for reaction, count in reaction_count.items():
+            # pass a copy of the structure so the subpathways that are included
+            # do not have duplicate reactions removed from them that are only
+            # considered duplicates if they are part of a super-pathway
+            self.structure,new_count=self.remove_duplicate_reaction(reaction,count,copy.deepcopy(self.structure))
+
 
 class Node():
     def __init__(self, name, level = None, predecessor = None, leaves = None):
@@ -431,7 +477,7 @@ def write_structured_pathways(metacyc_pathways, output_file):
         
     # print the structures
     for pathway in metacyc_pathways:
-        structure=metacyc_pathways[pathway].get_structure()
+        structure=metacyc_pathways[pathway].get_string_structure()
         if not structure:
             sys.exit("MISSING structure for pathway: "+pathway)
         file_handle.write(pathway + DELIMITER + structure + "\n")
