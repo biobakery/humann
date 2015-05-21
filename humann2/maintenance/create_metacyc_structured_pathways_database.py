@@ -126,26 +126,28 @@ class PathwayStructure():
         # test if item is a list
         else:
             if item:
+                delimiter=" "
+                string_start=" "
+                string_end=" "
+                next_subset=False
                 if item[0] in [OR_DEMILITER,AND_DEMILITER]:
-                    # then join the items with the delimiter
+                    # if present, then join the items with the delimiter
                     delimiter=item.pop(0)
-                    string_start=" ( "
-                    string_end=" ) "
+                    if len(item) > 1:
+                        string_start=" ( "
+                        string_end=" ) "
+                        next_subset=True
+                    else:
+                        # do not use the delimiter if there is only one item
+                        delimiter=" "
                 elif subset:
-                    delimiter=" "
                     string_start=" ( "
                     string_end=" ) "
-                else:
-                    delimiter=" "
-                    string_start=" "
-                    string_end=" "
             
                 items_to_join=[]
                 for i in item:
                     if isinstance(i, list):
-                        if delimiter in [OR_DEMILITER,AND_DEMILITER]:
-                            subset=True
-                        items_to_join.append(self.structure_to_string(i,subset))
+                        items_to_join.append(self.structure_to_string(i,next_subset))
                     else:
                         items_to_join.append(i) 
                         
@@ -155,6 +157,7 @@ class PathwayStructure():
                     if len(items_to_join) == 1:
                         string_start=" "
                         string_end=" "
+                        delimiter=" "
                     return string_start+delimiter.join(items_to_join)+string_end
                 else:
                     return ""
@@ -198,14 +201,30 @@ class PathwayStructure():
             
         # write out the nodes in order by level
         structure=[]
+        insert=False
         prior_nodes={}
         for level in sorted(nodes_by_levels):
             # start with the node with the most leaves
             for node in nodes_by_levels[level]:
                 # only process if this node has not already been processed before
                 if not node_is_in_list(node, prior_nodes.keys()):
-                    structure_for_node, prior_nodes=node.create_structure(self.reactions,prior_nodes)
-                    structure+=structure_for_node
+                    if insert:
+                        structure_to_insert, prior_nodes, insert_node=node.create_structure(self.reactions,prior_nodes,insert)
+                        # add this structure to the main structure
+                        if not insert_node is None:
+                            # find out where in the list to insert
+                            insert_location=prior_nodes[insert_node].index(insert_node.get_name())
+                            # insert this structure in the node location as a new list
+                            structure_to_insert.append(insert_node.get_name())
+                            prior_nodes[insert_node][insert_location]=structure_to_insert
+                            prior_nodes[insert_node]=structure_to_insert
+                        else:
+                            structure+=structure_to_insert
+                    else:
+                        # the first time this is run create the structure
+                        # on other runs, insert into the structure
+                        structure, prior_nodes, insert_point=node.create_structure(self.reactions,prior_nodes,insert)
+                        insert=True
                     
         # add in nodes not accounted for already
         for node in self.nodes:
@@ -389,7 +408,7 @@ class Node():
     def get_level(self):
         return self.level
                 
-    def create_structure(self,reactions,prior_nodes):
+    def create_structure(self,reactions,prior_nodes,insert):
         """
         Get the structure for the node and leaves
         """
@@ -415,8 +434,8 @@ class Node():
                 multi_predecessor_leaves+=leaf.predecessors
                 # store the reactants from the leaves
                 left,right=reactions.get(leaf.get_name(),[set(),set()])
-                leaves_reactants.update(left)
-                
+                leaves_reactants.update(left)                
+
         if multi_predecessor_leaves:
             # check if this a contraction or expansion
             products=set()
@@ -448,20 +467,26 @@ class Node():
             structure=[new_list]    
             
         # find the structure for the leaves
+        insert_node=None
         if len(non_recursive_leaves) == 1:
-            leaf_structure, prior_nodes=non_recursive_leaves[0].create_structure(reactions,prior_nodes)
+            leaf_structure, prior_nodes, insert_node=non_recursive_leaves[0].create_structure(reactions,prior_nodes,insert)
             # add the structure to the location in the leaf structure
             prior_nodes[non_recursive_leaves[0]].insert(0,structure)
             structure=leaf_structure
         elif len(non_recursive_leaves) > 1:
             leaf_structures=[]
             for node in non_recursive_leaves:
-                leaf_structure, prior_nodes=node.create_structure(reactions,prior_nodes)
+                leaf_structure, prior_nodes, insert_node=node.create_structure(reactions,prior_nodes,insert)
                 leaf_structures.append(leaf_structure)
             # OR expansion
             structure+=[[OR_DEMILITER]+leaf_structures]
+            
+        # check if this is an insert and if there are not any other leaves remaining
+        if insert:
+            if len(non_recursive_leaves) == 0 and self.count_leaves() > 0:
+                insert_node=self.leaves[0]
 
-        return structure, prior_nodes
+        return structure, prior_nodes, insert_node
         
 def write_structured_pathways(metacyc_pathways, output_file):
     """
