@@ -17,14 +17,15 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [Requirements](#markdown-header-requirements)
     * [Software](#markdown-header-software)
     * [Other](#markdown-header-other)
-* [Installation](#markdown-header-installation)
-    1. [Downloading HUMAnN2](#markdown-header-1-downloading-humann2)
-    2. [Installing HUMAnN2](#markdown-header-2-installing-humann2)
+* [Initial Installation](#markdown-header-initial-installation)
+    1. [Download HUMAnN2](#markdown-header-1-download-humann2)
+    2. [Install HUMAnN2](#markdown-header-2-install-humann2)
     3. [Test the install](#markdown-header-3-test-the-install)
     4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
     5. [Download the databases](#markdown-header-5-download-the-databases)
         * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
         * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
+* [Installation Update](#markdown-header-installation-update)
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
@@ -187,9 +188,9 @@ the software required for the steps you bypass does not need to be installed.
 If always running with files of type #2, #3, and #4 (for information on file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
 less disk space is required. 
 
-## Installation ##
+## Initial Installation ##
 
-### 1. Downloading HUMAnN2 ###
+### 1. Download HUMAnN2 ###
 You can download the latest HUMAnN2 release or the development version.
 
 Option 1: Latest Release (Recommended)
@@ -205,7 +206,7 @@ Option 2: Development Version
 	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. 
 
 
-### 2. Installing HUMAnN2 ###
+### 2. Install HUMAnN2 ###
 
 1. Move to the HUMAnN2 directory
 
@@ -263,6 +264,26 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would like to use rapsearch2 for translated alignment, first download the rapsearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
 
+## Installation Update ##
+
+If you have already installed HUMAnN2, using the [Initial Installation](#markdown-header-initial-installation) steps, and would like to upgrade your installed version to the latest version, please follow these steps.
+
+1. [Download HUMAnN2](#markdown-header-1-download-humann2)
+2. [Install HUMAnN2](#markdown-header-2-install-humann2)
+
+Since you have already downloaded the databases in the initial installation, you do not need to download the databases again unless there are new versions available.
+However, you will want to update your latest HUMAnN2 install to point to the databases you have downloaded as by default the new install configuration will point to the demo databases.
+
+To update your HUMAnN2 configuration file to include the locations of your downloaded databases, please use the following steps.
+
+1. Update the location of the ChocoPhlAn database ($INSTALL_LOCATION)
+`` humann2_config --update database_folders chocophlan $INSTALL_LOCATION ``
+2. Update the location of the UniRef database ($INSTALL_LOCATION)
+`` humann2_config --update database_folders uniref $INSTALL_LOCATION ``
+
+Please note, after a new installation, all of the settings in the configuration file, like the database folders, will be reset to the defaults. If you have any additional settings that differ from the defaults, please update them at this time.
+
+For more information on the HUMAnN2 configuration file, please see the [Configuration](#markdown-header-configuration) section.
 
 ## How to run ##
 
