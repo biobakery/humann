@@ -203,7 +203,7 @@ Option 2: Development Version
     
 	``hg clone https://bitbucket.org/biobakery/humann2 ``
 
-	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. 
+	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the clone is created you can always update to the latest version of the repository with `` $ hg pull --update ``.
 
 
 ### 2. Install HUMAnN2 ###
@@ -277,9 +277,12 @@ However, you will want to update your latest HUMAnN2 install to point to the dat
 To update your HUMAnN2 configuration file to include the locations of your downloaded databases, please use the following steps.
 
 1. Update the location of the ChocoPhlAn database ($INSTALL_LOCATION)
-`` humann2_config --update database_folders chocophlan $INSTALL_LOCATION ``
+
+    `` humann2_config --update database_folders chocophlan $INSTALL_LOCATION ``
+
 2. Update the location of the UniRef database ($INSTALL_LOCATION)
-`` humann2_config --update database_folders uniref $INSTALL_LOCATION ``
+
+    `` humann2_config --update database_folders uniref $INSTALL_LOCATION ``
 
 Please note, after a new installation, all of the settings in the configuration file, like the database folders, will be reset to the defaults. If you have any additional settings that differ from the defaults, please update them at this time.
 
