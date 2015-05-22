@@ -258,6 +258,10 @@ pathways_ec_column=True
 # pathways settings
 reactions_database_delimiter="\t"
 pathways_database_delimiter="\t"
+pathways_database_stucture_delimiter=" "
+pathway_AND="+"
+pathway_OR=","
+pathway_reaction_optional="-"
 
 pathway_identifier="PWY"
 pathways_recursion=True

@@ -908,36 +908,99 @@ class PathwaysDatabase:
                 reactions_for_pathway+=[item]
                 
         return reactions_for_pathway
+    
+    def _find_reaction_list_and_key_reactions(self,items):
+        """
+        Find the reactions in the pathways items and also the key reactions
+        """
+        
+        reaction_list=[]
+        key_reactions=[]
+        for item in items:
+            # ignore items that are not reactions as they are part of pathway structure
+            if not item in ["(",")","",config.pathway_AND,config.pathway_OR]:
+                # if the reaction has the optional indicator then remove it from the name
+                if re.search("^"+config.pathway_reaction_optional,item):
+                    item=item[1:]
+                else:
+                    # record that this is a key reaction
+                    key_reactions.append(item)
 
-    def __init__(self, database, recursion):
+                reaction_list.append(item)
+                    
+        return reaction_list, key_reactions
+        
+    def _find_structure(self,items):
         """
-        Load in the pathways data from the database
+        Find the structure of the pathway from the string
         """
-        self.__pathways_to_reactions={}
-        self.__reactions_to_pathways={}
         
-        # Check the database file exists and is readable
-        utilities.file_exists_readable(database)
+        structure=[config.pathway_AND]
+        levels={ 0: structure}
+        current_level=0
+            
+        # Process through the list of strings
+        for item in items:
+            if item:
+                # if the reaction has an optional indicator, then remove the optional indicator
+                if re.search("^"+config.pathway_reaction_optional,item):
+                        item=item[1:]
+                        
+                # Check if this is the start of a list
+                if item == "(":
+                    new_list=[config.pathway_AND]
+                    levels[current_level+1]=new_list
+                    # add the new list to the structure
+                    levels[current_level].append(new_list)
+                    # update the current level
+                    current_level+=1
+                # Check if this is the end of a list
+                elif item == ")":
+                    # Update the current level to close the list
+                    current_level-=1
+                # Check if this is a delimiter
+                elif item in [config.pathway_AND,config.pathway_OR]:
+                    # Update the delimiter at the beginning of the list
+                    levels[current_level][0]=item
+                else:
+                    levels[current_level].append(item)
+
+        return structure
         
-        file_handle=open(database,"r")
-         
-        line=file_handle.readline()
-         
-        # database is expected to contain a single line per pathway
-        # this line begins with the pathway name and is followed 
-        # by all reactions and/or pathways associated with the pathway
-         
-        reactions={}
-        while line:
-            data=line.strip().split(config.pathways_database_delimiter)
-            if len(data)>1:
-                # replace any white spaces with underscores
-                pathway=data.pop(0).replace(" ","_")
-                reactions[pathway]=data
-                
-            line=file_handle.readline()
+    
+    def _set_pathways_structure(self,reactions):
+        """
+        Determine the pathways structure from the input string
+        """
         
-        file_handle.close()
+        for pathway in reactions:
+            # Check if the item is a list of items
+            if isinstance(reactions[pathway], list):
+                reactions[pathway]=config.pathways_database_stucture_delimiter.join(reactions[pathway])
+            
+            # Split the reactions information by the structured pathways delimiter
+            reactions[pathway]=reactions[pathway].split(config.pathways_database_stucture_delimiter)
+            
+            # Find and store the structure for the pathway
+            structure=self._find_structure(reactions[pathway])
+            self.__pathways_structure[pathway]=structure
+            
+            # Find the list of reactions and the key reactions
+            reaction_list, key_reactions = self._find_reaction_list_and_key_reactions(reactions[pathway])
+
+            # Store the list of key reactions for the pathway
+            self.__key_reactions[pathway]=key_reactions
+            
+            # Update the reactions dictionary to contain the list of reactions instead of the structure string
+            reactions[pathway]=reaction_list
+        
+        return reactions
+    
+    def _process_pathways(self, reactions,recursion=None):
+        """
+        Process the reactions for each of the pathways to identify recursion
+        Also create the dictionary of reactions to pathways
+        """
         
         # process recursive pathways
         for pathway in reactions:
@@ -948,16 +1011,82 @@ class PathwaysDatabase:
                 if self._is_pathway(item) and recursion:
                     # find the reactions for the pathway
                     reaction=self._return_reactions(item, reactions)
-                
+                        
                 self.__pathways_to_reactions[pathway]=self.__pathways_to_reactions.get(
                     pathway,[]) + reaction
-                    
+                        
         # store all pathways associated with a reaction
         for pathway in self.__pathways_to_reactions:
             for reaction in self.__pathways_to_reactions[pathway]:
                 self.__reactions_to_pathways[reaction]=self.__reactions_to_pathways.get(
                     reaction,[]) + [pathway]
+
+    def __init__(self, database=None, recursion=None):
+        """
+        Load in the pathways data from the database
+        """
+        self.__pathways_to_reactions={}
+        self.__reactions_to_pathways={}
+        self.__pathways_structure={}
+        self.__key_reactions={}
+        
+        if not database is None:
+            # Check the database file exists and is readable
+            utilities.file_exists_readable(database)
+            
+            file_handle=open(database,"r")
+             
+            line=file_handle.readline()
+             
+            # database is expected to contain a single line per pathway
+            # this line begins with the pathway name and is followed 
+            # by all reactions and/or pathways associated with the pathway
+             
+            reactions={}
+            structured_pathway=False
+            while line:
+                data=line.strip().split(config.pathways_database_delimiter)
+                if len(data)>1:
+                    # replace any white spaces with underscores
+                    pathway=data.pop(0).replace(" ","_")
+                    reactions[pathway]=data
     
+                    # check to see if the pathway has structure
+                    if "(" in data[0]:
+                        structured_pathway=True
+                    
+                line=file_handle.readline()
+            
+            file_handle.close()
+            
+            # if this is a structured pathways set, then store the structure
+            if structured_pathway:
+                reactions=self._set_pathways_structure(reactions)
+            
+            self._process_pathways(reactions,recursion)
+                    
+    def add_pathway_structure(self, pathway, structure):
+        """
+        Add the string structure for a pathway
+        """
+        
+        reactions=self._set_pathways_structure({pathway: structure})
+        self._process_pathways(reactions)
+        
+    def get_structure_for_pathway(self,pathway):
+        """ 
+        Return the structure for a pathway
+        """
+        
+        return copy.deepcopy(self.__pathways_structure.get(pathway, [])) 
+        
+    def get_key_reactions_for_pathway(self,pathway):
+        """
+        Return the key reactions for a pathway
+        """
+        
+        return copy.copy(self.__key_reactions.get(pathway, []))
+        
     def find_reactions(self,pathway):
         """
         Return the list of reactions associated with the pathway

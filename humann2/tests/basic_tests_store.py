@@ -474,6 +474,108 @@ class TestHumann2StoreFunctions(unittest.TestCase):
             self.assertEqual(sorted(pathways_database_flat_store_write.find_reactions(pathway)),
                 sorted(pathways_database_flat_store.find_reactions(pathway)))
             
+    def test_PathwaysDatabase_add_pathway_structure_test_structure_expansion(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with one starting point and an expansion
+        Test the structure is being stored correctly
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="A ( ( B C ) , ( D E ) )"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_structure=["+","A",[",",["+","B","C"],["+","D","E"]]]
+        
+        self.assertEqual(expected_structure,pathways_database_store.get_structure_for_pathway("pathway1"))
+        
+    def test_PathwaysDatabase_add_pathway_structure_test_structure_contraction(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with two starting points that contract
+        Test the structure is being stored correctly
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="( (  L A B ) , ( Z C D ) )  E F"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_structure=["+",[",",["+","L","A","B"],["+","Z","C","D"]],"E","F"]
+        
+        self.assertEqual(expected_structure,pathways_database_store.get_structure_for_pathway("pathway1"))
+        
+    def test_PathwaysDatabase_add_pathway_structure_test_reaction_list_expansion(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with one starting point and an expansion
+        Test the reaction list is correct
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="A ( ( B -C ) , ( -D E ) )"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_reaction_list=["A","B","C","D","E"]
+        
+        self.assertEqual(expected_reaction_list,pathways_database_store.find_reactions("pathway1"))
+        
+    def test_PathwaysDatabase_add_pathway_structure_test_reaction_list_contraction(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with two starting points that contract
+        Test the reaction list is correct
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="( (  L A -B ) , ( Z -C D ) )  -E F"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_reaction_list=["L","A","B","Z","C","D","E","F"]
+        
+        self.assertEqual(expected_reaction_list,pathways_database_store.find_reactions("pathway1"))
+        
+    def test_PathwaysDatabase_add_pathway_structure_test_key_reactions_expansion(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with one starting point and an expansion
+        Test the key reactions are correct
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="A ( ( B -C ) , ( -D E ) )"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_key_reactions=["A","B","E"]
+        
+        self.assertEqual(expected_key_reactions,pathways_database_store.get_key_reactions_for_pathway("pathway1"))
+        
+    def test_PathwaysDatabase_add_pathway_structure_test_key_reactions_contraction(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with two starting points that contract
+        Test the key reactions are correct
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="( (  L A -B ) , ( Z -C D ) )  -E F"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_key_reactions=["L","A","Z","D","F"]
+        
+        self.assertEqual(expected_key_reactions,pathways_database_store.get_key_reactions_for_pathway("pathway1"))
+            
     def test_ReactionsDatabase_read_reactions_count(self):
         """
         Reactions Database class: Test the storing of reactions
