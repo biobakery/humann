@@ -344,6 +344,19 @@ class PathwayStructure():
         # Check there are not any duplicate reactions by counting the reactions
         reaction_count=self.count_reactions()
         
+        # Check for duplicate reactions that are optional and key reactions in pathway
+        duplicate_optional_reactions=set()
+        for reaction,count in reaction_count.items():
+            if OPTIONAL_REACTION_TAG+reaction in reaction_count:
+                duplicate_optional_reactions.add(OPTIONAL_REACTION_TAG+reaction)
+                    
+        # First remove the duplicate reactions that are optional that also have key reactions
+        for reaction in duplicate_optional_reactions:
+            # Remove all of these optional reactions which are duplicates to a key reaction
+            self.structure,new_count=self.remove_duplicate_reaction(reaction,reaction_count[reaction]+1,copy.deepcopy(self.structure))
+            # Remove this reaction from the set of counts
+            del reaction_count[reaction]
+        
         # remove the duplicate reactions
         for reaction, count in reaction_count.items():
             # pass a copy of the structure so the subpathways that are included
