@@ -352,8 +352,12 @@ class PathwayStructure():
                     
         # First remove the duplicate reactions that are optional that also have key reactions
         for reaction in duplicate_optional_reactions:
+            # Create a temp copy of the structure as a deep copy of each object to 
+            # avoid recursive objects which reference themselves in the copy
+            # This can happen with duplicate pathways included in the super-pathway
+            copy_structure=[copy.deepcopy(a) for a in self.structure]
             # Remove all of these optional reactions which are duplicates to a key reaction
-            self.structure,new_count=self.remove_duplicate_reaction(reaction,reaction_count[reaction]+1,copy.deepcopy(self.structure))
+            self.structure,new_count=self.remove_duplicate_reaction(reaction,reaction_count[reaction]+1,copy_structure)
             # Remove this reaction from the set of counts
             del reaction_count[reaction]
         
@@ -362,7 +366,13 @@ class PathwayStructure():
             # pass a copy of the structure so the subpathways that are included
             # do not have duplicate reactions removed from them that are only
             # considered duplicates if they are part of a super-pathway
-            self.structure,new_count=self.remove_duplicate_reaction(reaction,count,copy.deepcopy(self.structure))
+            if count > 1:
+                # Create a temp copy of the structure as a deep copy of each object to 
+                # avoid recursive objects which reference themselves in the copy
+                # This can happen with duplicate pathways included in the super-pathway
+                copy_structure=[copy.deepcopy(a) for a in self.structure]
+                
+                self.structure,new_count=self.remove_duplicate_reaction(reaction,count,copy_structure)
 
 
 class Node():
