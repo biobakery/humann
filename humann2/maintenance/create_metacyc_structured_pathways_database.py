@@ -349,31 +349,51 @@ class PathwayStructure():
         for reaction,count in reaction_count.items():
             if OPTIONAL_REACTION_TAG+reaction in reaction_count:
                 duplicate_optional_reactions.add(OPTIONAL_REACTION_TAG+reaction)
+                
+        # Update the structure to a deep copy of each object to
+        # avoid recursive objects which reference themselves in the copy
+        # This can happen with duplicate pathways included in the super-pathway
+
+        # Also a copy of the structure is created so the subpathways that are included
+        # do not have duplicate reactions removed from them that are only
+        # considered duplicates if they are part of a super-pathway
+        self.structure=deepcopy(self.structure)
                     
         # First remove the duplicate reactions that are optional that also have key reactions
         for reaction in duplicate_optional_reactions:
-            # Create a temp copy of the structure as a deep copy of each object to 
-            # avoid recursive objects which reference themselves in the copy
-            # This can happen with duplicate pathways included in the super-pathway
-            copy_structure=[copy.deepcopy(a) for a in self.structure]
             # Remove all of these optional reactions which are duplicates to a key reaction
-            self.structure,new_count=self.remove_duplicate_reaction(reaction,reaction_count[reaction]+1,copy_structure)
+            self.structure,new_count=self.remove_duplicate_reaction(reaction,reaction_count[reaction]+1,self.structure)
             # Remove this reaction from the set of counts
             del reaction_count[reaction]
         
         # remove the duplicate reactions
         for reaction, count in reaction_count.items():
-            # pass a copy of the structure so the subpathways that are included
-            # do not have duplicate reactions removed from them that are only
-            # considered duplicates if they are part of a super-pathway
             if count > 1:
-                # Create a temp copy of the structure as a deep copy of each object to 
-                # avoid recursive objects which reference themselves in the copy
-                # This can happen with duplicate pathways included in the super-pathway
-                copy_structure=[copy.deepcopy(a) for a in self.structure]
-                
-                self.structure,new_count=self.remove_duplicate_reaction(reaction,count,copy_structure)
+                self.structure,new_count=self.remove_duplicate_reaction(reaction,count,self.structure)
 
+
+def deepcopy(structure):
+    """ 
+    Create a deepcopy of the structure. Each object referenced is created and included.
+    This differs from copy.deepcopy in that there will not be duplicate references included in the copy returned.
+    This is important for this structure as it could have duplicate references from duplicate subpathways.
+    The duplicate references need to be resolved before the duplicate reactions are removed.
+    This will prevent reaction removals from being propagated throughout duplicated references.
+    """
+        
+    # Check if this is a list or string
+    if isinstance(structure, basestring):
+        return structure
+    else:
+        new_structure=[]
+        for i in xrange(len(structure)):
+            if isinstance(structure[i],list):
+                new_structure.append(deepcopy(structure[i]))
+            elif isinstance(structure[i],basestring):
+                new_structure.append(structure[i])
+                
+    return new_structure
+    
 
 class Node():
     def __init__(self, name, level = None, predecessor = None, leaves = None):
