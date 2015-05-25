@@ -305,8 +305,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the number of pathways
         """
         
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)
         
         # check for the same number of pathways
         pathway_list=pathways_database_store.pathway_list()
@@ -320,8 +320,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the pathways ids
         """
         
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)
         
         # check for the same number of pathways
         pathway_list=pathways_database_store.pathway_list()
@@ -337,8 +337,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the reactions list
         """
         
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)
         
         # check for the same number of pathways
         pathway_list=pathways_database_store.pathway_list()
@@ -355,8 +355,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the number of reactions 
         """
         
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)
         
         # check for the same number of pathways
         pathway_list=pathways_database_store.pathway_list()
@@ -378,8 +378,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the reactions ids 
         """
         
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)
         
         # check for the same number of pathways
         pathway_list=pathways_database_store.pathway_list()
@@ -397,8 +397,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the total number of pathways
         """
  
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)       
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)       
         
         # write the flat file created from a recursive file to a temp file
         file_out, new_file=tempfile.mkstemp()
@@ -406,7 +406,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         os.close(file_out)
         
         # load in the flat file and compare with the correct flat file
-        pathways_database_flat_store_write=store.PathwaysDatabase(new_file, True)
+        pathways_database_flat_store_write=store.PathwaysDatabase(new_file)
         
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -423,8 +423,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test for the pathways list
         """
  
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)       
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)       
         
         # write the flat file created from a recursive file to a temp file
         file_out, new_file=tempfile.mkstemp()
@@ -432,7 +432,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         os.close(file_out)
         
         # load in the flat file and compare with the correct flat file
-        pathways_database_flat_store_write=store.PathwaysDatabase(new_file, True)
+        pathways_database_flat_store_write=store.PathwaysDatabase(new_file)
         
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -451,8 +451,8 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         Test the reactions list
         """
  
-        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file, True)
-        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file, True)       
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)       
         
         # write the flat file created from a recursive file to a temp file
         file_out, new_file=tempfile.mkstemp()
@@ -460,7 +460,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         os.close(file_out)
         
         # load in the flat file and compare with the correct flat file
-        pathways_database_flat_store_write=store.PathwaysDatabase(new_file, True)
+        pathways_database_flat_store_write=store.PathwaysDatabase(new_file)
         
         # remove the temp file
         utils.remove_temp_file(new_file)
