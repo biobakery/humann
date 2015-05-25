@@ -307,13 +307,10 @@ def update_configuration(args):
     if args.pathways == "metacyc":
         config.pathways_database_part1=config.metacyc_gene_to_reactions
         config.pathways_database_part2=config.metacyc_reactions_to_pathways
-        config.pathway_identifier="PWY"
-        config.pathways_recursion=True
         config.pathways_ec_column=True
     elif args.pathways == "unipathway":
         config.pathways_database_part1=config.unipathway_database_part1
         config.pathways_database_part2=config.unipathway_database_part2
-        config.pathways_recursion=False
         config.pathways_ec_column=True
  
     # Set the locations of the pathways databases
@@ -328,7 +325,6 @@ def update_configuration(args):
             config.pathways_database_part2=os.path.abspath(custom_pathways_files[0])
         else:
             sys.exit("ERROR: Please provide one or two pathways files.")
-        config.pathways_recursion=False
         config.pathways_ec_column=False
         
     # Set the locations of the other databases
@@ -725,8 +721,7 @@ def main():
         logger.info(message)
     
     # Load in the pathways database
-    pathways_database=store.PathwaysDatabase(config.pathways_database_part2, 
-        config.pathways_recursion)
+    pathways_database=store.PathwaysDatabase(config.pathways_database_part2)
     
     if config.pathways_database_part1:
         message="Load pathways database part 2: " + config.pathways_database_part2

@@ -263,9 +263,6 @@ pathway_AND="+"
 pathway_OR=","
 pathway_reaction_optional="-"
 
-pathway_identifier="PWY"
-pathways_recursion=True
-
 # memory use
 memory_use_options=["minimum","maximum"]
 memory_use=memory_use_options[0]

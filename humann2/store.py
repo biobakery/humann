@@ -906,35 +906,6 @@ class PathwaysDatabase:
     Holds all of the reactions/pathways data from the file provided
     """
     
-    def _is_pathway(self, item):
-        """
-        Determine if the item is a pathway or reaction
-        """
-        
-        pathway=False
-        # identifier can be at the beginning or end of the string
-        if re.search("^"+config.pathway_identifier, 
-            item) or re.search(config.pathway_identifier+"$", item):
-            pathway=True
-        
-        return pathway    
-    
-    def _return_reactions(self, pathway, reactions):
-        """
-        Search recursively to find the reactions associated with the given pathway
-        """
-        
-        reactions_for_pathway=[]
-        for item in reactions.get(pathway,[]):
-            # go through items to look for pathways to resolve
-            if self._is_pathway(item):
-                # find the reactions for the pathway
-                reactions_for_pathway+=self._return_reactions(item, reactions)
-            else:
-                reactions_for_pathway+=[item]
-                
-        return reactions_for_pathway
-    
     def _find_reaction_list_and_key_reactions(self,items):
         """
         Find the reactions in the pathways items and also the key reactions
@@ -1022,32 +993,19 @@ class PathwaysDatabase:
         
         return reactions
     
-    def _process_pathways(self, reactions,recursion=None):
+    def _store_pathways(self, reactions):
         """
-        Process the reactions for each of the pathways to identify recursion
-        Also create the dictionary of reactions to pathways
+        Create the dictionaries of reactions to pathways and pathways to reactions
         """
         
-        # process recursive pathways
         for pathway in reactions:
-            for item in reactions[pathway]:
-                # go through items to look for pathways to resolve
-                reaction=[item]
-                # identifier can be at the start or the end of the item name
-                if self._is_pathway(item) and recursion:
-                    # find the reactions for the pathway
-                    reaction=self._return_reactions(item, reactions)
-                        
+            for reaction in reactions[pathway]:
                 self.__pathways_to_reactions[pathway]=self.__pathways_to_reactions.get(
-                    pathway,[]) + reaction
-                        
-        # store all pathways associated with a reaction
-        for pathway in self.__pathways_to_reactions:
-            for reaction in self.__pathways_to_reactions[pathway]:
+                    pathway,[]) + [reaction]
                 self.__reactions_to_pathways[reaction]=self.__reactions_to_pathways.get(
                     reaction,[]) + [pathway]
 
-    def __init__(self, database=None, recursion=None):
+    def __init__(self, database=None):
         """
         Load in the pathways data from the database
         """
@@ -1089,7 +1047,7 @@ class PathwaysDatabase:
             if structured_pathway:
                 reactions=self._set_pathways_structure(reactions)
             
-            self._process_pathways(reactions,recursion)
+            self._store_pathways(reactions)
             
     def is_structured(self):
         """
@@ -1107,7 +1065,7 @@ class PathwaysDatabase:
         """
         
         reactions=self._set_pathways_structure({pathway: structure})
-        self._process_pathways(reactions)
+        self._store_pathways(reactions)
         
     def get_structure_for_pathway(self,pathway):
         """ 
@@ -1160,7 +1118,6 @@ class PathwaysDatabase:
         for pathway in self.__pathways_to_reactions:
             data.append(pathway+config.pathways_database_delimiter+
                 config.pathways_database_delimiter.join(self.__pathways_to_reactions[pathway]))
-            
         return "\n".join(data)
     
 class Reads:
