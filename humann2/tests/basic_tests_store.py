@@ -487,7 +487,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         pathways_database_store.add_pathway_structure("pathway1",structure_string)
         
-        expected_structure=["+","A",[",",["+","B","C"],["+","D","E"]]]
+        expected_structure=[" ","A",[",",[" ","B","C"],[" ","D","E"]]]
         
         self.assertEqual(expected_structure,pathways_database_store.get_structure_for_pathway("pathway1"))
         
@@ -504,7 +504,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         pathways_database_store.add_pathway_structure("pathway1",structure_string)
         
-        expected_structure=["+",[",",["+","L","A","B"],["+","Z","C","D"]],"E","F"]
+        expected_structure=[" ",[",",[" ","L","A","B"],[" ","Z","C","D"]],"E","F"]
         
         self.assertEqual(expected_structure,pathways_database_store.get_structure_for_pathway("pathway1"))
         

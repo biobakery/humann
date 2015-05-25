@@ -31,6 +31,8 @@ import sys
 import subprocess
 import logging
 
+from . import chi2cdf
+
 from .. import utilities
 from .. import config
 from .. import store
@@ -215,17 +217,26 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
         for pathway in pathways_and_reactions_store.pathway_list(bug):
                 
             reaction_scores=pathways_and_reactions_store.reaction_scores(bug,pathway)
-            # Count the reactions with scores greater than the median
-            count_greater_than_median=0
-            for reaction, score in reaction_scores.items():
-                if score > median_score_value:
-                   count_greater_than_median+=1
             
-            # Compute coverage
-            coverage=0
-            total_reactions_for_pathway=len(pathways_database.find_reactions(pathway))
-            if total_reactions_for_pathway:
-                coverage=count_greater_than_median/float(total_reactions_for_pathway)
+            # Check if the pathways database is structured
+            if pathways_database.is_structured():
+                structure=pathways_database.get_structure_for_pathway(pathway)
+                key_reactions=pathways_database.get_key_reactions_for_pathway(pathway)
+                # Compute the structured pathway coverage
+                coverage=compute_structured_pathway_abundance_or_coverage(structure,
+                    key_reactions,reaction_scores,True,median_score_value)
+            else:
+                # Count the reactions with scores greater than the median
+                count_greater_than_median=0
+                for reaction, score in reaction_scores.items():
+                    if score > median_score_value:
+                       count_greater_than_median+=1
+                
+                # Compute coverage
+                coverage=0
+                total_reactions_for_pathway=len(pathways_database.find_reactions(pathway))
+                if total_reactions_for_pathway:
+                    coverage=count_greater_than_median/float(total_reactions_for_pathway)
             
             pathways_coverage_store.add(bug,pathway,coverage)
             xipe_input.append(config.xipe_delimiter.join([pathway,str(coverage)]))
@@ -287,6 +298,64 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
 
     return pathways_coverage_store
 
+def harmonic_mean(values):
+    """
+    Return the harmonic mean for the values
+    """
+    
+    # If there are no values or if one of the values is zero, then the harmonic mean is zero
+    mean=0
+    if values and min(values) > 0:
+        reciprocal_sum=sum((1.0/v) for v in values)
+        mean=len(values)/reciprocal_sum
+    
+    return mean
+
+def compute_structured_pathway_abundance_or_coverage(structure, key_reactions, reaction_scores, 
+    coverage_computation, median_value):
+    """
+    Compute the abundance or coverage for a structured pathway
+    """
+    
+    # Process through the structure to compute the abundance
+    required_reaction_abundances=[]
+    optional_reaction_abundances=[]
+    join=structure.pop(0)
+    for item in structure:
+        if isinstance(item, list):
+            required_reaction_abundances.append(compute_structured_pathway_abundance_or_coverage(item, 
+                key_reactions, reaction_scores, coverage_computation, median_value))
+        else:
+            score=reaction_scores.get(item,0)
+                
+            # Update the score for the reaction if this is a coverage computation
+            if coverage_computation:
+                score=chi2cdf.chi2cdf(score,median_value)
+
+            # Check if this is an optional reaction
+            if item in key_reactions:
+                required_reaction_abundances.append(score)
+            else:
+                optional_reaction_abundances.append(score)
+    
+    # If this is an OR join then use the max of all of the reaction abundances
+    if join == config.pathway_OR:
+        all_reaction_abundances=required_reaction_abundances + optional_reaction_abundances
+        abundance=0
+        if all_reaction_abundances:
+            abundance = max(all_reaction_abundances)
+    else:
+        # If this is not an OR, then take the harmonic mean of the reactions
+        abundance=harmonic_mean(required_reaction_abundances)
+        # Add the optional reactions if they are present
+        if optional_reaction_abundances:
+            # Filter the optional abundances to only include those that are greater than the abundance
+            # from the required reactions
+            optional_reaction_abundances_filtered=[value for value in optional_reaction_abundances if value > abundance]
+            abundance=harmonic_mean(required_reaction_abundances + optional_reaction_abundances_filtered)
+        
+    return abundance
+
 def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     """
     Compute the abundance of pathways for each bug
@@ -301,18 +370,31 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
         for pathway in pathways_and_reactions_store.pathway_list(bug):
             
             reaction_scores=pathways_and_reactions_store.reaction_scores(bug,pathway)
-            # Initialize any reactions in the pathway not found to 0
-            for reaction in pathways_database.find_reactions(pathway):
-                reaction_scores.setdefault(reaction, 0)
-                
-            # Sort the scores for all of the reactions in the pathway from low to high
-            sorted_reaction_scores=sorted(reaction_scores.values())
-                
-            # Select the second half of the list of reaction scores
-            abundance_set=sorted_reaction_scores[(len(sorted_reaction_scores)/ 2):]
             
-            # Compute abundance
-            abundance=sum(abundance_set)/len(abundance_set)
+            # Check if the pathways database is structured
+            if pathways_database.is_structured():
+                structure=pathways_database.get_structure_for_pathway(pathway)
+                key_reactions=pathways_database.get_key_reactions_for_pathway(pathway)
+                # Compute the structured pathway abundance
+                abundance=compute_structured_pathway_abundance_or_coverage(structure,
+                    key_reactions,reaction_scores,False,0)
+                # Multiply by the coverage for the pathway
+                median_score_value=pathways_and_reactions_store.max_median_score(bug)
+                abundance=abundance*compute_structured_pathway_abundance_or_coverage(structure,
+                    key_reactions,reaction_scores,True,median_score_value)
+            else:
+                # Initialize any reactions in the pathway not found to 0
+                for reaction in pathways_database.find_reactions(pathway):
+                    reaction_scores.setdefault(reaction, 0)
+                    
+                # Sort the scores for all of the reactions in the pathway from low to high
+                sorted_reaction_scores=sorted(reaction_scores.values())
+                    
+                # Select the second half of the list of reaction scores
+                abundance_set=sorted_reaction_scores[(len(sorted_reaction_scores)/ 2):]
+                
+                # Compute abundance
+                abundance=sum(abundance_set)/len(abundance_set)
             
             # Store the abundance
             pathways_abundance_store.add(bug, pathway, abundance)
@@ -375,7 +457,7 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "Abundance (reads per kilobase)")
-
+    
     # Compute coverage for all pathways
     pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
         pathways_database)

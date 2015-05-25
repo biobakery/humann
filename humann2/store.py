@@ -706,6 +706,30 @@ class PathwaysAndReactions:
             
         return median_score_value
     
+    def max_median_score(self,bug):
+        """
+        Compute an alternative median score using the max values for the reactions for each pathway
+        """
+        
+        # Create a list of the max scores for each of the pathways
+        all_scores=[]
+        for item in self.__pathways.get(bug,{}).values():
+            all_scores.append(max(item.values()))
+        
+        all_scores.sort()
+        
+        # Find the median score value from the list of max scores per reaction
+        median_score_value=0
+        if all_scores:
+            if len(all_scores) % 2 == 0:
+                index1=len(all_scores)/2
+                index2=index1-1
+                median_score_value=(all_scores[index1]+all_scores[index2])/2.0
+            else:
+                median_score_value=all_scores[len(all_scores)/2]
+            
+        return median_score_value
+    
     def count_pathways(self,bug):
         """
         Return the total number of pathways for a bug
@@ -772,7 +796,9 @@ class Pathways:
         """
         
         score=0
-        if pathway in self.__pathways_per_bug:
+        if bug == "all":
+            score=self.__pathways.get(pathway,0)
+        elif pathway in self.__pathways_per_bug:
             score=self.__pathways_per_bug[pathway].get(bug,0)
          
         return score
@@ -935,7 +961,7 @@ class PathwaysDatabase:
         Find the structure of the pathway from the string
         """
         
-        structure=[config.pathway_AND]
+        structure=[config.pathways_database_stucture_delimiter]
         levels={ 0: structure}
         current_level=0
             
@@ -948,7 +974,7 @@ class PathwaysDatabase:
                         
                 # Check if this is the start of a list
                 if item == "(":
-                    new_list=[config.pathway_AND]
+                    new_list=[config.pathways_database_stucture_delimiter]
                     levels[current_level+1]=new_list
                     # add the new list to the structure
                     levels[current_level].append(new_list)
@@ -1064,6 +1090,16 @@ class PathwaysDatabase:
                 reactions=self._set_pathways_structure(reactions)
             
             self._process_pathways(reactions,recursion)
+            
+    def is_structured(self):
+        """
+        Return True if this is a set of structured pathways
+        """
+        
+        if self.__pathways_structure:
+            return True
+        else:
+            return False
                     
     def add_pathway_structure(self, pathway, structure):
         """
