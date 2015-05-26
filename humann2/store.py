@@ -1067,6 +1067,13 @@ class PathwaysDatabase:
         reactions=self._set_pathways_structure({pathway: structure})
         self._store_pathways(reactions)
         
+    def add_pathway(self, pathway, reactions):
+        """
+        Add the unstructured pathway
+        """
+        
+        self._store_pathways({pathway: reactions})
+        
     def get_structure_for_pathway(self,pathway):
         """ 
         Return the structure for a pathway
