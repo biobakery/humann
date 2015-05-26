@@ -301,7 +301,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
     def test_PathwaysDatabase_read_pathways_count(self):
         """
-        Pathways database class: Test the storing of a recursive set of pathways
+        Pathways database class: Test the storing of a structured set of pathways
         Test for the number of pathways
         """
         
@@ -316,7 +316,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
             
     def test_PathwaysDatabase_read_pathways_ids(self):
         """
-        Pathways database class: Test the storing of a recursive set of pathways
+        Pathways database class: Test the storing of a structured set of pathways
         Test for the pathways ids
         """
         
@@ -333,7 +333,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
 
     def test_PathwaysDatabase_read_reactions_list(self):
         """
-        Pathways database class: Test the storing of a recursive set of pathways
+        Pathways database class: Test the storing of a structured set of pathways
         Test for the reactions list
         """
         
@@ -351,7 +351,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
             
     def test_PathwaysDatabase_read_reactions_count(self):
         """
-        Pathways database class: Test the storing of a recursive set of pathways
+        Pathways database class: Test the storing of a structured set of pathways
         Test for the number of reactions 
         """
         
@@ -374,7 +374,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
 
     def test_PathwaysDatabase_read_reactions_ids(self):
         """
-        Pathways database class: Test the storing of a recursive set of pathways
+        Pathways database class: Test the storing of a structured set of pathways
         Test for the reactions ids 
         """
         
@@ -393,14 +393,14 @@ class TestHumann2StoreFunctions(unittest.TestCase):
             
     def test_PathwaysDatabase_print_flat_file_pathways_count(self):
         """
-        Pathways database class: Test the printing of a flat file from a recursive file
+        Pathways database class: Test the printing of a flat file from a structured file
         Test for the total number of pathways
         """
  
         pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
         pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)       
         
-        # write the flat file created from a recursive file to a temp file
+        # write the flat file created from a structured file to a temp file
         file_out, new_file=tempfile.mkstemp()
         os.write(file_out, pathways_database_store.get_database())
         os.close(file_out)
@@ -419,14 +419,14 @@ class TestHumann2StoreFunctions(unittest.TestCase):
             
     def test_PathwaysDatabase_print_flat_file_pathways_list(self):
         """
-        Pathways database class: Test the printing of a flat file from a recursive file
+        Pathways database class: Test the printing of a flat file from a structured file
         Test for the pathways list
         """
  
         pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
         pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)       
         
-        # write the flat file created from a recursive file to a temp file
+        # write the flat file created from a structured file to a temp file
         file_out, new_file=tempfile.mkstemp()
         os.write(file_out, pathways_database_store.get_database())
         os.close(file_out)
@@ -447,14 +447,14 @@ class TestHumann2StoreFunctions(unittest.TestCase):
             
     def test_PathwaysDatabase_print_flat_file_reactions_list(self):
         """
-        Pathways database class: Test the printing of a flat file from a recursive file
+        Pathways database class: Test the printing of a flat file from a structured file
         Test the reactions list
         """
  
         pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
         pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)       
         
-        # write the flat file created from a recursive file to a temp file
+        # write the flat file created from a structured file to a temp file
         file_out, new_file=tempfile.mkstemp()
         os.write(file_out, pathways_database_store.get_database())
         os.close(file_out)
@@ -626,11 +626,11 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         pathways_and_reactions=store.PathwaysAndReactions()
         
         # add scores all for same pathway and different reaction
-        pathways_and_reactions.add("bug","P1","R1",1)
-        pathways_and_reactions.add("bug","P1","R2",2)        
-        pathways_and_reactions.add("bug","P1","R3",3)
-        pathways_and_reactions.add("bug","P1","R4",4)
-        pathways_and_reactions.add("bug","P1","R5",5)  
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R2","P1",2)        
+        pathways_and_reactions.add("bug","R3","P1",3)
+        pathways_and_reactions.add("bug","R4","P1",4)
+        pathways_and_reactions.add("bug","R5","P1",5)  
         
         # test median score for odd number of values
         self.assertEqual(pathways_and_reactions.median_score("bug"),3)
@@ -644,10 +644,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         pathways_and_reactions=store.PathwaysAndReactions()
         
         # add scores all for same pathway and  different reaction
-        pathways_and_reactions.add("bug","P1","R1",1)
-        pathways_and_reactions.add("bug","P1","R2",2)        
-        pathways_and_reactions.add("bug","P1","R3",3)
-        pathways_and_reactions.add("bug","P1","R4",4) 
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R2","P1",2)        
+        pathways_and_reactions.add("bug","R3","P1",3)
+        pathways_and_reactions.add("bug","R4","P1",4) 
         
         # test median score for an even number of values
         self.assertEqual(pathways_and_reactions.median_score("bug"),2.5)    
@@ -661,11 +661,11 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         pathways_and_reactions=store.PathwaysAndReactions()        
         
         # add scores all for same pathway and reaction
-        pathways_and_reactions.add("bug","P1","R1",1)
-        pathways_and_reactions.add("bug","P2","R1",2)        
-        pathways_and_reactions.add("bug","P3","R1",3)
-        pathways_and_reactions.add("bug","P4","R1",4)
-        pathways_and_reactions.add("bug","P5","R1",5)  
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R1","P2",2)        
+        pathways_and_reactions.add("bug","R1","P3",3)
+        pathways_and_reactions.add("bug","R1","P4",4)
+        pathways_and_reactions.add("bug","R1","P5",5)  
         
         # test median score for odd number of values
         self.assertEqual(pathways_and_reactions.median_score("bug"),3)
@@ -679,13 +679,85 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         pathways_and_reactions=store.PathwaysAndReactions()
         
         # add scores all for same pathway and reaction
-        pathways_and_reactions.add("bug","P1","R1",1)
-        pathways_and_reactions.add("bug","P2","R2",2)        
-        pathways_and_reactions.add("bug","P3","R3",3)
-        pathways_and_reactions.add("bug","P4","R4",4) 
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R1","P2",2)        
+        pathways_and_reactions.add("bug","R1","P3",3)
+        pathways_and_reactions.add("bug","R1","P4",4) 
         
         # test median score for an even number of values
-        self.assertEqual(pathways_and_reactions.median_score("bug"),2.5)         
+        self.assertEqual(pathways_and_reactions.median_score("bug"),2.5)     
+        
+    def test_PathwaysAndReactions_max_median_score_odd_number_vary_reactions(self):
+        """
+        Pathways and Reactions class: Test add and max median score
+        Test and odd number of values and different reactions
+        """
+        
+        pathways_and_reactions=store.PathwaysAndReactions()
+        
+        # add scores all for same pathway and different reaction
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R2","P1",2)        
+        pathways_and_reactions.add("bug","R3","P1",3)
+        pathways_and_reactions.add("bug","R4","P1",4)
+        pathways_and_reactions.add("bug","R5","P1",5)  
+        
+        # test median score for odd number of values
+        self.assertEqual(pathways_and_reactions.max_median_score("bug"),5)
+        
+    def test_PathwaysAndReactions_max_median_score_even_number_vary_reactions(self):
+        """
+        Pathways and Reactions class: Test add and max median score
+        Test an even number of values and different reactions
+        """
+        
+        pathways_and_reactions=store.PathwaysAndReactions()
+        
+        # add scores all for same pathway and  different reaction
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R2","P1",2)        
+        pathways_and_reactions.add("bug","R3","P1",3)
+        pathways_and_reactions.add("bug","R4","P1",4) 
+        
+        # test median score for an even number of values
+        self.assertEqual(pathways_and_reactions.max_median_score("bug"),4)    
+        
+    def test_PathwaysAndReactions_max_median_score_odd_number_vary_pathways(self):
+        """
+        Pathways and Reactions class: Test add and max median score
+        Test an odd number of values and different pathways
+        """
+        
+        pathways_and_reactions=store.PathwaysAndReactions()        
+        
+        # add scores all for same pathway and reaction
+        pathways_and_reactions.add("bug","R1","P1",0.9)
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R1","P2",2)        
+        pathways_and_reactions.add("bug","R1","P3",3)
+        pathways_and_reactions.add("bug","R1","P4",4)
+        pathways_and_reactions.add("bug","R1","P5",5)  
+        
+        # test median score for odd number of values
+        self.assertEqual(pathways_and_reactions.max_median_score("bug"),3)
+        
+    def test_PathwaysAndReactions_max_median_score_even_number_vary_pathways(self):
+        """
+        Pathways and Reactions class: Test add and max median score
+        Test an even number of values and different pathways
+        """
+        
+        pathways_and_reactions=store.PathwaysAndReactions()
+        
+        # add scores all for same pathway and reaction
+        pathways_and_reactions.add("bug","R1","P1",0.9)
+        pathways_and_reactions.add("bug","R1","P1",1)
+        pathways_and_reactions.add("bug","R1","P2",2)        
+        pathways_and_reactions.add("bug","R1","P3",3)
+        pathways_and_reactions.add("bug","R1","P4",4) 
+        
+        # test median score for an even number of values
+        self.assertEqual(pathways_and_reactions.max_median_score("bug"),2.5)       
         
     def test_Alignments_add_bug_count(self):
         """

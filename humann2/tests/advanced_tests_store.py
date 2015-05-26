@@ -514,3 +514,25 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Test the gene list is as expected
         self.assertEqual(sorted(genes.keys()),sorted(gene_scores.gene_list()))
+        
+    def test_PathwaysDatabase_is_structured_structure(self):
+        """
+        Pathways database class: Test the storing of a structured set of pathways
+        Test this file is identified as structured
+        """
+        
+        pathways_database_store=store.PathwaysDatabase(cfg.pathways_file)
+        
+        self.assertTrue(pathways_database_store.is_structured())
+        
+    def test_PathwaysDatabase_is_structured_unstructure(self):
+        """
+        Pathways database class: Test the storing of a unstructured set of pathways
+        Test this file is identified as unstructured
+        """
+        
+        pathways_database_flat_store=store.PathwaysDatabase(cfg.pathways_flat_file)
+        
+        self.assertTrue(not pathways_database_flat_store.is_structured())
+        
+        
