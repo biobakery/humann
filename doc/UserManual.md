@@ -893,9 +893,25 @@ database can be provided to HUMAnN2, specifically made to work with your custom 
 
 One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN2 with the option "--pathways-database $FILE". If two files are provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of gene families to reactions while the second file maps reactions to pathways. 
 
-The first file, which is optional, should be organized to include at least three columns per line. The first column is the item to be mapped to (ie reactions from the example) while the second column (which can be blank) includes additional information about the item to be mapped to (ie EC number from the example). The remaining columns in the row are the gene families which can be mapped to the item included in the first column.
+The first file, which is optional, should be organized to include at least two columns per line. The first column is the item to be mapped to (ie reactions from the example) while the remaining columns in the row are the gene families which can be mapped to the item in the first column. An example follows:
+```
+RXN-123	UniRef50_A0B6Z6	UniRef50_A3CRP6
+RXN-456	UniRef50_A2RVM0	UniRef50_A4IGM4	UniRef50_A6NKP2	UniRef50_B8H806
+```
 
-The pathways file is a tab-delimited file with the first column the name of the pathway. The second column includes the items contained in the pathway. These items are gene families if only one pathways file is provided. If two files are provided, as in the example, these items would be reactions.
+The pathways file is a tab-delimited file with the first column the name of the pathway. It can be in a structured or unstructured format. In a structured format, the second column includes the items (space-delimited) contained in the pathway. The structure follows the same definition as that for Kegg modules. Each structure is a list (space-delimited) of items with a comma to indicate alternatives, a plus to indicate a complex, and a minus sign at the beginning of an item to indicate this is not a key item in the pathway. These items are gene families if only one pathways file is provided. If two files are provided, as in the example, these items would be reactions. In an unstructured format, the second column and any remaining columns in the row are the items that map to the pathway.
+
+An example of a structured pathways file follows:
+```
+PWY-1	A B ( C , D )
+PWY-2	( ( A + B ) , ( C + D ) ) E
+```
+
+An example of an unstructured pathways file follows:
+```
+PWY-3	A	B	C	D
+PWY-4	A	B	C	D	E
+```
 
 ### Analyzing Metatranscriptomes ###
 
