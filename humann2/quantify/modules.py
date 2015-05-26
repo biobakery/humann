@@ -320,8 +320,10 @@ def compute_structured_pathway_abundance_or_coverage(structure, key_reactions, r
     # Process through the structure to compute the abundance
     required_reaction_abundances=[]
     optional_reaction_abundances=[]
-    join=structure.pop(0)
-    for item in structure:
+    # Select the join instead of removing from the list to not alter the list for
+    # the calling function
+    join=structure[0]
+    for item in structure[1:]:
         if isinstance(item, list):
             required_reaction_abundances.append(compute_structured_pathway_abundance_or_coverage(item, 
                 key_reactions, reaction_scores, coverage_computation, median_value))
@@ -378,10 +380,12 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
                 # Compute the structured pathway abundance
                 abundance=compute_structured_pathway_abundance_or_coverage(structure,
                     key_reactions,reaction_scores,False,0)
+
                 # Multiply by the coverage for the pathway
                 median_score_value=pathways_and_reactions_store.max_median_score(bug)
                 abundance=abundance*compute_structured_pathway_abundance_or_coverage(structure,
                     key_reactions,reaction_scores,True,median_score_value)
+            
             else:
                 # Initialize any reactions in the pathway not found to 0
                 for reaction in pathways_database.find_reactions(pathway):
