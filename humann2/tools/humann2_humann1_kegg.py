@@ -26,7 +26,7 @@ import argparse
 #  C. kegg file with bug names: http://www.genome.jp/kegg/catalog/org_list.html             *
 #                                                                                           *
 #  The program is invoked as follows:                                                       *
-#  python humann1_kegg.py --igenels ./data/genels   --ikoc  ./data/koc   --o output_extract *
+#  python humann2_humann1_kegg.py --igenels ./data/genels   --ikoc  ./data/koc   --o output_extract *
 #                                                                                            *
 #
 #  The program tries to read the Kegg translation table OrgId -->OrgName that is located in  *
@@ -34,6 +34,28 @@ import argparse
 #  And if that fails,  it tries to get that info from Kegg itself ( "http://www.genome.jp/kegg/catalog/org_list.html" )
 #                                                                                            *
 # Written by George Weingart  March 31, 2015   george.weingart@gmail.com                     *
+#                                                                                            *
+#                                                                                            *
+#                                                                                            *
+#   --------------------------------------------------------------------------------------   *
+#  PROGRAM MODIFICATION: george.weingart@gmail.com  May 23, 2015                             *
+#  ********************                                                                      *
+#   --------------------------------------------------------------------------------------   *
+#  Modified the program so that it includes the whole taxonomy for each of the bugs          *
+#  The taxonomy is calculated as follows:                                                    *
+#  Take the taxonomy name,  for example "Picrophilus torridus"  and use the ete2 ncbi        *
+#  taxonimy functions to discern the lineage                                                 *
+#  IMPORTANT note:                                                                           *
+#  The program now requires ete2  to be installed                                            *
+#  Because it invokes                                                                        *
+#    from ete2 import NCBITaxa                                                               *
+#    ncbi = NCBITaxa()                                                                       *
+#                                                                                            *
+#   Please see:                                                                              *
+#     http://pythonhosted.org/ete2/tutorial/tutorial_ncbitaxonomy.html                       *
+#     and                                                                                    *
+#     http://pythonhosted.org/ete2/reference/reference_ncbi.html#ete2.NCBITaxa.get_name_translator
+#                                                                                            *
 #********************************************************************************************
 
 
@@ -107,6 +129,32 @@ def  ReadSequentialTranslationFile(CommonArea):
 			OrgName = iKeggOrgLine.split("\t")[1].rstrip('\n')
 			CommonArea['dOrgIdOrgName'][OrgId]  = OrgName 
 		return CommonArea 
+		
+		
+		
+		
+
+#************************************************************************
+#*  Get the Taxonomy of an Organism                                     *
+#************************************************************************
+def  GetTaxonomy(OrgIdName):
+	OrgIDExpandedTaxonomy = OrgIdName  #  Set the default
+	try:
+		lTaxonomyExlusionList = [1,131567]   #These taxonomies are obvious, so we  are not going to include them
+		dTaxId = ncbi.get_name_translator([OrgIdName])	#Get the Tax Id number for the organism
+		lLineage =  ncbi.get_lineage( dTaxId[OrgIdName])   #Get the Lineage for the bug
+		lLineageNames = ncbi.get_taxid_translator(lLineage)  # Get the lineage names
+		lExpandedOrganism = list()  
+		for  LineageEntry  in lLineage:   #Get the Lineage entry in the right order
+			if LineageEntry not in lTaxonomyExlusionList:
+					LineageEntryName = lLineageNames[LineageEntry]    #  Build the list of the lineage names
+					lExpandedOrganism.append(LineageEntryName)   #  add the lineage
+		OrgIDExpandedTaxonomy = "|".join(lExpandedOrganism)   # Post to the new org Name
+	except:
+		pass		
+	return  OrgIDExpandedTaxonomy
+
+
 
 #*************************************************************************************
 #*  Main Program                                                                     *
@@ -137,9 +185,31 @@ CommonArea['dOrgIdOrgName'] = dict()
 try:
 	CommonArea  =  ReadSequentialTranslationFile(CommonArea)   #First,  try to read the sequential file in our directory
 except:
-	print "Reading the Table OrgId--> Name in ../data/pathways/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website"
+	print "Reading the Table OrgId--> Name in ../data/misc/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website"
 	CommonArea  =  ReadHtmlKegTable(CommonArea)   #But if that fails - try directly from Kegg
  
+Flagete2Installed = True
+try:
+	from ete2 import NCBITaxa
+	ncbi = NCBITaxa()
+except:
+	print "ete2 is not installed and thus we cannot provide the full taxonomy for the bug, providing only the name"
+	Flagete2Installed = False
+
+
+	 
+for OrgId, OrgIdName in CommonArea['dOrgIdOrgName'].iteritems():
+	if  Flagete2Installed == True:   #If ete2 is installed, try to get the taxonomy
+		OrgIDExpandedTaxonomy = GetTaxonomy(OrgIdName)
+		if  OrgIDExpandedTaxonomy  !=  OrgIdName:  #If there was a taxonomy list
+			CommonArea['dOrgIdOrgName'][OrgId] = OrgIDExpandedTaxonomy  # Update the entry in the dictionary
+ 
+
+
+
+
+
+
 
 dBugGeneToKO = dict()
 #************************************************************************
