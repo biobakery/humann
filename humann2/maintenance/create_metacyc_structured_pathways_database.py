@@ -41,8 +41,8 @@ METACYC_PREDECESSORS="PREDECESSORS"
 DELIMITER="\t"
 
 OPTIONAL_REACTION_TAG="-"
-OR_DEMILITER=" , "
-AND_DEMILITER=" + "
+OR_DELIMITER=" , "
+AND_DELIMITER=" + "
 
 def node_is_in_list(node,list_of_nodes):
     """
@@ -130,7 +130,7 @@ class PathwayStructure():
                 string_start=" "
                 string_end=" "
                 next_subset=False
-                if item[0] in [OR_DEMILITER,AND_DEMILITER]:
+                if item[0] in [OR_DELIMITER,AND_DELIMITER]:
                     # if present, then join the items with the delimiter
                     delimiter=item.pop(0)
                     if len(item) > 1:
@@ -201,15 +201,15 @@ class PathwayStructure():
             
         # write out the nodes in order by level
         structure=[]
-        insert=False
         prior_nodes={}
+        insert=False
         for level in sorted(nodes_by_levels):
             # start with the node with the most leaves
             for node in nodes_by_levels[level]:
                 # only process if this node has not already been processed before
                 if not node_is_in_list(node, prior_nodes.keys()):
                     if insert:
-                        structure_to_insert, prior_nodes, insert_node=node.create_structure(self.reactions,prior_nodes,insert)
+                        structure_to_insert, insert_node=node.create_structure(self.reactions,prior_nodes)
                         # add this structure to the main structure
                         if not insert_node is None:
                             # find out where in the list to insert
@@ -223,7 +223,7 @@ class PathwayStructure():
                     else:
                         # the first time this is run create the structure
                         # on other runs, insert into the structure
-                        structure, prior_nodes, insert_point=node.create_structure(self.reactions,prior_nodes,insert)
+                        structure, insert_point=node.create_structure(self.reactions,prior_nodes)
                         insert=True
                     
         # add in nodes not accounted for already
@@ -279,7 +279,7 @@ class PathwayStructure():
                 reaction_count=self.count_reactions(reaction_count, structure[i])
             elif isinstance(structure[i],basestring):
                 # do not count AND/OR
-                if not structure[i] in [AND_DEMILITER,OR_DEMILITER]:
+                if not structure[i] in [AND_DELIMITER,OR_DELIMITER]:
                     reaction_count[structure[i]]=reaction_count.get(structure[i],0)+1
                 
         return reaction_count
@@ -451,7 +451,7 @@ class Node():
     def get_level(self):
         return self.level
                 
-    def create_structure(self,reactions,prior_nodes,insert):
+    def create_structure(self,reactions,prior_nodes):
         """
         Get the structure for the node and leaves
         """
@@ -486,17 +486,17 @@ class Node():
                 left,right=reactions.get(node.get_name(),[set(),set()])
                 products.update(right)
                     
-            new_list=[OR_DEMILITER]
+            new_list=[OR_DELIMITER]
             if len(products) > 1:
                 # if the leaves only have a single reactant then this is an OR
                 if len(leaves_reactants) == 1:
                     # check that this is not a space delimited list of reactants
                     if next(iter(leaves_reactants)).count(" ") > 0:
-                        new_list=[AND_DEMILITER]
+                        new_list=[AND_DELIMITER]
                     else:
-                        new_list=[OR_DEMILITER]
+                        new_list=[OR_DELIMITER]
                 else:
-                    new_list=[AND_DEMILITER]
+                    new_list=[AND_DELIMITER]
 
             if structure:
                 new_list+=[structure]
@@ -511,25 +511,23 @@ class Node():
             
         # find the structure for the leaves
         insert_node=None
-        if len(non_recursive_leaves) == 1:
-            leaf_structure, prior_nodes, insert_node=non_recursive_leaves[0].create_structure(reactions,prior_nodes,insert)
-            # add the structure to the location in the leaf structure
+        leaf_structures=[]
+        for node in non_recursive_leaves:
+            leaf_structure, insert_node=node.create_structure(reactions,prior_nodes)
+            leaf_structures.append(leaf_structure)
+        
+        if len(leaf_structures) > 1:
+            # OR expansion if multiple leaves
+            structure+=[[OR_DELIMITER]+leaf_structures]
+        elif len(leaf_structures) == 1:
             prior_nodes[non_recursive_leaves[0]].insert(0,structure)
-            structure=leaf_structure
-        elif len(non_recursive_leaves) > 1:
-            leaf_structures=[]
-            for node in non_recursive_leaves:
-                leaf_structure, prior_nodes, insert_node=node.create_structure(reactions,prior_nodes,insert)
-                leaf_structures.append(leaf_structure)
-            # OR expansion
-            structure+=[[OR_DEMILITER]+leaf_structures]
+            structure=leaf_structures[0]
             
         # check if this is an insert and if there are not any other leaves remaining
-        if insert:
-            if len(non_recursive_leaves) == 0 and self.count_leaves() > 0:
-                insert_node=self.leaves[0]
+        if len(non_recursive_leaves) == 0 and self.count_leaves() > 0:
+            insert_node=self.leaves[0]
 
-        return structure, prior_nodes, insert_node
+        return structure, insert_node
         
 def write_structured_pathways(metacyc_pathways, output_file):
     """
