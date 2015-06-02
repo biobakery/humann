@@ -227,30 +227,29 @@ class PathwayStructure():
                         structure_to_insert, insert_node, join_type=node.create_structure(self.reactions,prior_nodes)
                         # add this structure to the main structure
                         if not insert_node is None:
+                            # find the superlist that contains this node
+                            insert_list, insert_location=find_list(prior_nodes[insert_node], structure)
+                            
                             # check if the insert is into the main structure
-                            if prior_nodes[insert_node] is structure:
-                                # add this as a join to the top items in the main structure
+                            if insert_list is None or prior_nodes[insert_node] is structure:
+                                # add this as a join to the top items in the main structure (or the structure for the insert node)
                                 # find those items in the beginning of the structure before any joins
                                 # by looking for the first list
-                                join_location=len(structure)
-                                for i,item in enumerate(structure):
+                                join_location=len(prior_nodes[insert_node])
+                                for i,item in enumerate(prior_nodes[insert_node]):
                                     if isinstance(item, list):
                                         join_location=i
                                         break
-                                # this will always be a OR join as it is two ways to start the pathway
-                                join_type=OR_DELIMITER
                                     
                                 # if the join location is to use the full structure
-                                if join_location == len(structure):
-                                    new_structure=[join_type,structure,structure_to_insert]
-                                    structure=new_structure
+                                if join_location == len(prior_nodes[insert_node]):
+                                    new_structure=[join_type,prior_nodes[insert_node],structure_to_insert]
+                                    prior_nodes[insert_node]=new_structure
                                 else:
-                                    new_structure=[join_type,structure[0:join_location],structure_to_insert]
-                                    del structure[0:join_location]
-                                    structure=[new_structure]+structure
+                                    new_structure=[join_type,prior_nodes[insert_node][0:join_location],structure_to_insert]
+                                    del prior_nodes[insert_node][0:join_location]
+                                    prior_nodes[insert_node]=[new_structure]+structure
                             else:
-                                # find the superlist that contains this node
-                                insert_list, insert_location=find_list(prior_nodes[insert_node], structure)
                                 
                                 # check if an AND/OR needs to be added
                                 if not insert_list[0] in [AND_DELIMITER,OR_DELIMITER]:
@@ -576,7 +575,7 @@ class Node():
                 insert_node_left,insert_node_right=reactions.get(insert_node.get_name(),[set(),set()])
                 
                 join_type=AND_DELIMITER
-                if left and left == insert_node_left and right and right == insert_node_right:
+                if right and right == insert_node_right:
                     join_type=OR_DELIMITER
 
         return structure_by_level[0], insert_node, join_type
