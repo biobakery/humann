@@ -53,6 +53,20 @@ def node_is_in_list(node,list_of_nodes):
             return True
     return False
 
+def find_list(input_list, structure):
+    """ Find the list and index which contains the input list in the structure of lists """
+            
+    # Check through each of the lists and sub-lists to see if the input_list is included
+    match=None,None
+    for i in xrange(len(structure)):
+        if isinstance(structure[i],list):
+            if structure[i] is input_list:
+                return structure, i
+            else:
+                if match[0] is None:
+                    match=find_list(input_list,structure[i])
+    return match
+
 class PathwayStructure():
     def __init__(self):
         self.nodes=[]
@@ -201,6 +215,7 @@ class PathwayStructure():
             
         # write out the nodes in order by level
         structure=[]
+        structure_by_level={}
         prior_nodes={}
         insert=False
         for level in sorted(nodes_by_levels):
@@ -209,21 +224,48 @@ class PathwayStructure():
                 # only process if this node has not already been processed before
                 if not node_is_in_list(node, prior_nodes.keys()):
                     if insert:
-                        structure_to_insert, insert_node=node.create_structure(self.reactions,prior_nodes)
+                        structure_to_insert, insert_node, join_type=node.create_structure(self.reactions,prior_nodes)
                         # add this structure to the main structure
                         if not insert_node is None:
-                            # find out where in the list to insert
-                            insert_location=prior_nodes[insert_node].index(insert_node.get_name())
-                            # insert this structure in the node location as a new list
-                            structure_to_insert.append(insert_node.get_name())
-                            prior_nodes[insert_node][insert_location]=structure_to_insert
-                            prior_nodes[insert_node]=structure_to_insert
+                            # check if the insert is into the main structure
+                            if prior_nodes[insert_node] is structure:
+                                # add this as a join to the top items in the main structure
+                                # find those items in the beginning of the structure before any joins
+                                # by looking for the first list
+                                join_location=len(structure)
+                                for i,item in enumerate(structure):
+                                    if isinstance(item, list):
+                                        join_location=i
+                                        break
+                                # this will always be a OR join as it is two ways to start the pathway
+                                join_type=OR_DELIMITER
+                                    
+                                # if the join location is to use the full structure
+                                if join_location == len(structure):
+                                    new_structure=[join_type,structure,structure_to_insert]
+                                    structure=new_structure
+                                else:
+                                    new_structure=[join_type,structure[0:join_location],structure_to_insert]
+                                    del structure[0:join_location]
+                                    structure=[new_structure]+structure
+                            else:
+                                # find the superlist that contains this node
+                                insert_list, insert_location=find_list(prior_nodes[insert_node], structure)
+                                
+                                # check if an AND/OR needs to be added
+                                if not insert_list[0] in [AND_DELIMITER,OR_DELIMITER]:
+                                    new_list=[join_type]
+                                    new_list.append(prior_nodes[insert_node])
+                                    new_list.append(structure_to_insert)
+                                    insert_list[insert_location]=new_list
+                                else:
+                                    insert_list.append(structure_to_insert)
                         else:
                             structure+=structure_to_insert
                     else:
                         # the first time this is run create the structure
                         # on other runs, insert into the structure
-                        structure, insert_point=node.create_structure(self.reactions,prior_nodes)
+                        structure, insert_node, join_type=node.create_structure(self.reactions,prior_nodes,structure_by_level)
                         insert=True
                     
         # add in nodes not accounted for already
@@ -422,6 +464,9 @@ class Node():
         
     def get_leaves(self):
         return copy.copy(self.leaves)
+    
+    def get_predecessors(self):
+        return copy.copy(self.predecessors)
         
     def count_predecessors(self):
         return len(self.predecessors)
@@ -451,83 +496,90 @@ class Node():
     def get_level(self):
         return self.level
                 
-    def create_structure(self,reactions,prior_nodes):
+    def create_structure(self,reactions,prior_nodes,structure_by_level=None,current_level=None):
         """
         Get the structure for the node and leaves
         """
         
+        if structure_by_level is None:
+            structure_by_level={}
+        
+        if current_level is None:
+            current_level=0
+            structure_by_level[current_level]=[]
+        
         # search to see if self has already been visited in prior nodes
-        structure=[]
         if not node_is_in_list(self, prior_nodes.keys()):
-            structure=[self.name]
-            prior_nodes[self]=structure
+            # check if this node is from a contraction
+            # check if the contraction is directly into an expansion
+            if self.count_predecessors() > 1 and structure_by_level[current_level]:
+                # if this is from a contraction then pop up one level before adding
+                # if this is already at the starting level, then use the starting level
+                if current_level > 0:
+                    current_level-=1    
+                    structure_by_level[current_level].append(self.name)
+                    prior_nodes[self]=structure_by_level[current_level]
+                else:
+                    # create two lists
+                    new_list=[structure_by_level[0],[self.name]]
+                    structure_by_level[0]=new_list
+                    current_level+=1
+                    structure_by_level[current_level]=structure_by_level[0][1]
+                    prior_nodes[self]=structure_by_level[0][1]
+            else:
+                structure_by_level[current_level].append(self.name)
+                prior_nodes[self]=structure_by_level[current_level]
             
         # remove recursive nodes from leaves if present
         non_recursive_leaves=[]
         for node in self.leaves:
             if not node_is_in_list(node, prior_nodes.keys()):
                 non_recursive_leaves.append(node)
-                
-        # look ahead to see if this should be a contraction
-        # see if any leaves have multiple precedessors
-        multi_predecessor_leaves=[]
-        leaves_reactants=set()
-        for leaf in non_recursive_leaves:
-            if leaf.count_predecessors() > 1:
-                multi_predecessor_leaves+=leaf.predecessors
-                # store the reactants from the leaves
-                left,right=reactions.get(leaf.get_name(),[set(),set()])
-                leaves_reactants.update(left)                
-
-        if multi_predecessor_leaves:
-            # check if this a contraction or expansion
-            products=set()
-            for node in multi_predecessor_leaves:
-                left,right=reactions.get(node.get_name(),[set(),set()])
-                products.update(right)
-                    
-            new_list=[OR_DELIMITER]
-            if len(products) > 1:
-                # if the leaves only have a single reactant then this is an OR
-                if len(leaves_reactants) == 1:
-                    # check that this is not a space delimited list of reactants
-                    if next(iter(leaves_reactants)).count(" ") > 0:
-                        new_list=[AND_DELIMITER]
-                    else:
-                        new_list=[OR_DELIMITER]
-                else:
-                    new_list=[AND_DELIMITER]
-
-            if structure:
-                new_list+=[structure]
-            
-            for node in multi_predecessor_leaves:
-                if not node_is_in_list(node, prior_nodes.keys()):
-                    new_list.append(node.get_name())
-                    # add the predecessors to the prior nodes
-                    prior_nodes[node]=new_list
-                
-            structure=[new_list]    
             
         # find the structure for the leaves
         insert_node=None
-        leaf_structures=[]
-        for node in non_recursive_leaves:
-            leaf_structure, insert_node=node.create_structure(reactions,prior_nodes)
-            leaf_structures.append(leaf_structure)
-        
-        if len(leaf_structures) > 1:
-            # OR expansion if multiple leaves
-            structure+=[[OR_DELIMITER]+leaf_structures]
-        elif len(leaf_structures) == 1:
-            prior_nodes[non_recursive_leaves[0]].insert(0,structure)
-            structure=leaf_structures[0]
+        join_type=None
+        if len(non_recursive_leaves) == 1:
+            # Append this on to the same level as the predecessor
+            leaf_structure, insert_node, join_type = non_recursive_leaves[0].create_structure(reactions,prior_nodes,structure_by_level,current_level)
+        elif len(non_recursive_leaves) > 1:
+            # This is an OR expansion
+            # Add a set of lists each with a higher level value
+            OR_list=[OR_DELIMITER]
+            structure_by_level[current_level].append(OR_list)
+            leaf_level=current_level+1
+            for node in non_recursive_leaves:
+                # Add a new list into the or list
+                new_list=[]
+                OR_list.append(new_list)
+                structure_by_level[leaf_level]=new_list
+                leaf_structure, insert_node, join_type = node.create_structure(reactions,prior_nodes,structure_by_level,leaf_level)
             
         # check if this is an insert and if there are not any other leaves remaining
         if len(non_recursive_leaves) == 0 and self.count_leaves() > 0:
-            insert_node=self.leaves[0]
+            # return the node of the other predecessor to this leaf
+            other_predecessors=[]
+            for leaf in self.get_leaves():
+                if insert_node:
+                    break
+                other_predecessors=leaf.get_predecessors()
+                if len(other_predecessors) > 1:
+                    for other_predecessor in other_predecessors:
+                        if not other_predecessor is self and other_predecessor in prior_nodes:
+                            insert_node=other_predecessor
+                            break
+                
+            if insert_node:
+                # determine the join type
+                # if the insert node and this node have the same products and reactants then this is OR
+                left,right=reactions.get(self.get_name(),[set(),set()])
+                insert_node_left,insert_node_right=reactions.get(insert_node.get_name(),[set(),set()])
+                
+                join_type=AND_DELIMITER
+                if left and left == insert_node_left and right and right == insert_node_right:
+                    join_type=OR_DELIMITER
 
-        return structure, insert_node
+        return structure_by_level[0], insert_node, join_type
         
 def write_structured_pathways(metacyc_pathways, output_file):
     """
