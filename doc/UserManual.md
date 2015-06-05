@@ -609,7 +609,7 @@ output_format : output_max_decimals = 10
 alignment_settings : average_read_length = 1
 alignment_settings : prescreen_threshold = 0.01
 alignment_settings : evalue_threshold = 1.0
-alignment_settings : identity_threshold = 0.4
+alignment_settings : identity_threshold = 40.0
 database_folders : chocophlan = data/chocophlan_DEMO
 database_folders : uniref = data/uniref_DEMO
 run_modes : bypass_nucleotide_search = False
@@ -653,7 +653,7 @@ ALIGNMENT SETTINGS
 evalue threshold = 1.0
 average read length = 1
 prescreen threshold = 0.01
-identity threshold = 0.4
+identity threshold = 40.0
 
 PATHWAYS SETTINGS
 minpath = on
@@ -953,8 +953,8 @@ HUMAnN2 frequently asked questions:
     *   Add the ``--pathways unipathway`` option
 10.  Is there a way to output files in biom format?
     *   Yes, use the ``--output-format biom`` option
-11.  Can I change the e-value threshold for alignments?
-    *   Yes, use the ``--evalue <1.0>`` option
+11.  Can I change the identity threshold for alignments?
+    *   Yes, use the ``--identity-threshold <40.0>`` option
 
 ## Complete option list ##
 
@@ -967,7 +967,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--metaphlan <metaphlan>] [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                [--remove-temp-output] [--bowtie2 <bowtie2>] [--threads <1>]
-               [--prescreen-threshold <0.01>] [--identity-threshold <0.4>]
+               [--prescreen-threshold <0.01>] [--identity-threshold <40.0>]
                [--usearch <usearch>] [--rapsearch <rapsearch>]
                [--diamond <diamond>]
                [--taxonomic-profile <taxonomic_profile.tsv>]
@@ -1013,7 +1013,7 @@ optional arguments:
   --average-read-length <1>
                         the average length of the reads
                         [DEFAULT: 1]
-  --evalue <1.0>        the evalue threshold
+  --evalue <1.0>        the evalue threshold to use with the translated search
                         [DEFAULT: 1.0]
   --metaphlan <metaphlan>
                         directory containing the MetaPhlAn software
@@ -1032,9 +1032,9 @@ optional arguments:
   --prescreen-threshold <0.01>
                         minimum percentage of reads matching a species
                         [DEFAULT: 0.01]
-  --identity-threshold <0.4>
-                        identity threshold to use with the translated search
-                        [DEFAULT: 0.4]
+  --identity-threshold <40.0>
+                        identity threshold for alignments 
+                        [DEFAULT: 40.0]
   --usearch <usearch>   directory containing the usearch executable
                         [DEFAULT: $PATH]
   --rapsearch <rapsearch>

@@ -143,7 +143,7 @@ def parse_arguments(args):
         default=config.average_read_length) 
     parser.add_argument(
         "--evalue", 
-        help="the evalue threshold\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
+        help="the evalue threshold to use with the translated search\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
         metavar="<" + str(config.evalue_threshold) + ">", 
         type=float,
         default=config.evalue_threshold) 
@@ -186,7 +186,7 @@ def parse_arguments(args):
         default=config.prescreen_threshold) 
     parser.add_argument(
         "--identity-threshold", 
-        help="identity threshold to use with the translated search\n[DEFAULT: " 
+        help="identity threshold for alignments\n[DEFAULT: " 
             + str(config.identity_threshold) + "]", 
         metavar="<" + str(config.identity_threshold) + ">", 
         type=float,

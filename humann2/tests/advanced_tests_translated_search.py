@@ -26,7 +26,6 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         Test the unaligned reads and the store alignments
         Test with a blastm8-like output file
         Test with empty reads structure
-        Test that log of evalue is not taken
         Test that function does not require gene lengths in reference id
         """
         
@@ -42,9 +41,9 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 
                 referenceid=data[config.blast_reference_index]
                 queryid=data[config.blast_query_index]
-                evalue=float(data[config.blast_evalue_index])
+                identity=float(data[config.blast_identity_index])
             
-                alignments.add(referenceid, 0, queryid, evalue,"unclassified")
+                alignments.add(referenceid, 0, queryid, identity,"unclassified")
             
         file_handle.close()
         
@@ -58,14 +57,15 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         # remove temp file
         utils.remove_temp_file(unaligned_file_fasta)
         
-        # check the evalues are unchanged
+        # check the values are unchanged
         self.assertEqual(sorted(alignments.get_hit_list()), sorted(alignments_test.get_hit_list()))
         
-    def test_translated_search_unaligned_reads_rapsearch_log(self):
+    def test_translated_search_unaligned_reads_rapsearch_log_evalue_threshold(self):
         """
         Test the unaligned reads function
         Test with a rapsearch output file
         Test that log of evalue is taken
+        Test the evalue threshold for filtering alignments
         """
         
         # create a set of alignments
@@ -74,6 +74,12 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         # load the rapsearch output
         file_handle=open(cfg.rapsearch2_output_file_with_header)
         
+        original_evalue_threshold=config.evalue_threshold
+        
+        # set a new threshold that will select 3 of the 5 alignments if the log
+        # is identified to having been applied
+        config.evalue_threshold=1.5e-07
+        
         for line in file_handle:
             if not re.search("^#",line):
                 data=line.strip().split(config.blast_delimiter)
@@ -81,8 +87,11 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 referenceid=data[config.blast_reference_index]
                 queryid=data[config.blast_query_index]
                 evalue=float(data[config.blast_evalue_index])
-            
-                alignments.add(referenceid, 0, queryid, evalue,"unclassified")
+                identity=float(data[config.blast_identity_index])
+                
+                # only store those alignments with log evalues that meet threshold
+                if math.pow(10.0, evalue) < config.evalue_threshold:
+                    alignments.add(referenceid, 0, queryid, identity,"unclassified")
             
         file_handle.close()
         
@@ -96,11 +105,59 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         # remove temp file
         utils.remove_temp_file(unaligned_file_fasta)
         
-        # check the evalues are changed
-        hit1_evalue=sorted(alignments.get_hit_list())[0][-2]
-        hit1_evalue_test=sorted(alignments_test.get_hit_list())[0][-2]
-        self.assertAlmostEqual(math.pow(10.0,math.log(hit1_evalue)*-1),
-            math.log(hit1_evalue_test)*-1,places=7)
+        # set the threshold back to the default
+        config.evalue_threshold=original_evalue_threshold
+        
+        # check the total number of alignments is the same
+        self.assertEqual(len(alignments.get_hit_list()),len(alignments_test.get_hit_list()))
+        
+    def test_translated_search_unaligned_reads_identity_threshold(self):
+        """
+        Test the unaligned reads function
+        Test with a rapsearch output file
+        Test the identity threshold filtering
+        """
+        
+        # create a set of alignments
+        alignments=store.Alignments()
+        
+        # load the rapsearch output
+        file_handle=open(cfg.rapsearch2_output_file_with_header)
+        
+        original_identity_threshold=config.identity_threshold
+        
+        # set a new threshold that will select 3 of the 5 alignments
+        config.identity_threshold=60.0
+        
+        for line in file_handle:
+            if not re.search("^#",line):
+                data=line.strip().split(config.blast_delimiter)
+                
+                referenceid=data[config.blast_reference_index]
+                queryid=data[config.blast_query_index]
+                identity=float(data[config.blast_identity_index])
+                
+                # only store those alignments with identities that meet threshold
+                if identity > config.identity_threshold:
+                    alignments.add(referenceid, 0, queryid, identity,"unclassified")
+            
+        file_handle.close()
+        
+        alignments_test=store.Alignments()
+        unaligned_reads_store=store.Reads()
+        
+        # load the rapsearch output with the unaligned reads function
+        unaligned_file_fasta=translated.unaligned_reads(unaligned_reads_store, 
+            cfg.rapsearch2_output_file_with_header, alignments_test)
+        
+        # remove temp file
+        utils.remove_temp_file(unaligned_file_fasta)
+        
+        # set the threshold back to the default
+        config.identity_threshold=original_identity_threshold
+        
+        # check the total number of alignments is the same
+        self.assertEqual(len(alignments.get_hit_list()),len(alignments_test.get_hit_list()))
 
     def test_translated_search_unaligned_reads_rapsearch2_no_log(self):
         """
@@ -121,9 +178,9 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 
                 referenceid=data[config.blast_reference_index]
                 queryid=data[config.blast_query_index]
-                evalue=float(data[config.blast_evalue_index])
+                identity=float(data[config.blast_identity_index])
             
-                alignments.add(referenceid, 0, queryid, evalue,"unclassified")
+                alignments.add(referenceid, 0, queryid, identity,"unclassified")
             
         file_handle.close()
         
@@ -210,7 +267,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         
         # check for set and default gene lengths
         for hit in all_hits:
-            query, bug, reference, evalue, length = hit
+            query, bug, reference, score, length = hit
             if reference == "UniRef50":
                 self.assertEqual(length,2000/1000.0)
             else:

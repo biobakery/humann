@@ -35,9 +35,9 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
                 
                 referenceids=data[config.blast_reference_index].split("|")
                 queryid=data[config.blast_query_index]
-                evalue=float(data[config.blast_evalue_index])
+                identity=float(data[config.blast_identity_index])
             
-                alignments.add(referenceids[1], 1, queryid, evalue,referenceids[0])
+                alignments.add(referenceids[1], 1, queryid, identity,referenceids[0])
             
         file_handle.close()
         
@@ -63,9 +63,9 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
                 
                 referenceids=data[config.blast_reference_index].split("|")
                 queryid=data[config.blast_query_index]
-                evalue=float(data[config.blast_evalue_index])
+                identity=float(data[config.blast_identity_index])
             
-                alignments.add(referenceids[1], 1, queryid, evalue,referenceids[0])
+                alignments.add(referenceids[1], 1, queryid, identity,referenceids[0])
             
         file_handle.close()
         
@@ -94,9 +94,9 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
                 
                 referenceids=data[config.blast_reference_index].split("|")
                 queryid=data[config.blast_query_index]
-                evalue=float(data[config.blast_evalue_index])
+                identity=float(data[config.blast_identity_index])
             
-                alignments.add(referenceids[1], 1, queryid, evalue,referenceids[0])
+                alignments.add(referenceids[1], 1, queryid, identity,referenceids[0])
             
         file_handle.close()
         

@@ -154,7 +154,55 @@ def alignment(user_fastq, index_name):
 
     return alignment_file
 
-
+def calculate_percent_identity(cigar_string, md_field):
+    """
+    Calculate the percent identity using the cigar string and md field from the sam file
+    """
+    
+    match_numbers=re.compile("\d+")
+    match_non_numbers=re.compile("\D+")
+    
+    # find the sets of numbers and identifers from the cigar string
+    cigar_numbers=match_numbers.findall(cigar_string)
+    cigar_identifiers=match_non_numbers.findall(cigar_string)
+    
+    # identify the total number of matches and mismatches using the cigar match identifer
+    try:
+        matches_and_mismatches=int(cigar_numbers[cigar_identifiers.index(config.sam_cigar_match_identifer)])
+    except (IndexError, ValueError):
+        matches_and_mismatches=0
+    
+    # remove the tag from the md field
+    md_field=md_field.split(config.sam_md_field_identifier)[-1]
+    
+    # find the sets of numbers from the md field
+    md_field_numbers=match_numbers.findall(md_field)
+    
+    # sum the md field numbers to get the total number of matches
+    try:
+        matches=sum(int(n) for n in md_field_numbers)
+    except ValueError:
+        matches=0
+    
+    percent_identity=0
+    if matches_and_mismatches > 0:
+        percent_identity = 100.0 * ( matches / ( matches_and_mismatches * 1.0 ) )
+        
+    return percent_identity 
+    
+def find_md_field(info):
+    """
+    Using the array of data from an alignment line, find the md field
+    """
+    
+    # Search the data, starting with the first optional column to find the md field
+    md_field=""
+    for data in info[config.sam_start_optional_index:]:
+        if re.match(config.sam_md_field_identifier,data):
+            md_field=data
+            break
+        
+    return md_field
 
 def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_sam=None):
     """ 
@@ -192,7 +240,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     line = file_handle_read.readline()
     query_ids=set()
     no_frames_found_count=0
-    large_evalue_count=0
+    small_identity_count=0
     while line:
         # ignore headers ^@ 
         unaligned_read=False
@@ -211,6 +259,11 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                         info[config.sam_mapq_index])
                     logger.warning("Traceback: \n" + traceback.format_exc())
                     evalue=1.0 
+                    
+                # convert the cigar string and md field to percent identity
+                cigar_string=info[config.sam_cigar_index]
+                md_field=find_md_field(info)
+                identity=calculate_percent_identity(cigar_string, md_field)
                 
                 query=info[config.sam_read_name_index]
                 # write output to be blastm8-like
@@ -218,14 +271,15 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 new_info[config.blast_query_index]=query
                 new_info[config.blast_reference_index]=info[config.sam_reference_index]
                 new_info[config.blast_evalue_index]=str(evalue)
+                new_info[config.blast_identity_index]=str(identity)
                 file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
                    
                 # only store alignments with evalues less than threshold
-                if evalue<config.evalue_threshold:
-                    alignments.add_annotated(query,evalue,info[config.sam_reference_index],
+                if identity > config.identity_threshold:
+                    alignments.add_annotated(query,identity,info[config.sam_reference_index],
                         normalize_by_read_length=True)
                 else:
-                    large_evalue_count+=1
+                    small_identity_count+=1
                     unaligned_read=True
                     
             if unaligned_read:
@@ -251,8 +305,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
     if write_picked_frames:
         logger.debug("Total sequences without frames found: " + str(no_frames_found_count))
-    logger.debug("Total nucleotide alignments not included based on large e-value: " +
-        str(large_evalue_count))
+    logger.debug("Total nucleotide alignments not included based on small percent identities: " +
+        str(small_identity_count))
     
     file_handle_read.close()
     file_handle_write_unaligned.close()   

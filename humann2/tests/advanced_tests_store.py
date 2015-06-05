@@ -29,10 +29,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         """
         
         # create a set of hits
-        eval1=1e-4
-        eval2=3e-7
-        eval3=2e-10
-        eval4=2e-10
+        identity1=41.0
+        identity2=57.1
+        identity3=61.0
+        identity4=72.1
         
         gene1_length=2
         gene2_length=3
@@ -40,10 +40,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Create a set of alignments
         alignments_store=store.Alignments()
-        alignments_store.add("gene1",gene1_length,"query1",eval1,"bug1")
-        alignments_store.add("gene2",gene2_length,"query1",eval2,"bug1")
-        alignments_store.add("gene2",gene2_length,"query2",eval3,"bug1")
-        alignments_store.add("gene3",gene3_length,"query3",eval4,"bug1")
+        alignments_store.add("gene1",gene1_length,"query1",identity1,"bug1")
+        alignments_store.add("gene2",gene2_length,"query1",identity2,"bug1")
+        alignments_store.add("gene2",gene2_length,"query2",identity3,"bug1")
+        alignments_store.add("gene3",gene3_length,"query3",identity4,"bug1")
         
         gene_scores_store=store.GeneScores()
         
@@ -54,7 +54,7 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         gene3_length=gene3_length/1000.0
         
         # gene3
-        hit4_score=math.exp(-eval4)
+        hit4_score=math.pow(identity4, config.identity_power)
         query3_sum=hit4_score
         gene_score=hit4_score/query3_sum/gene3_length
 
@@ -67,12 +67,12 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         """
         
         # create a set of hits
-        # bug, reference, reference_length, query, evalue = hit
+        # bug, reference, reference_length, query, identity = hit
         
-        eval1=1e-4
-        eval2=3e-7
-        eval3=2e-10
-        eval4=2e-10
+        identity1=41.0
+        identity2=57.1
+        identity3=61.0
+        identity4=72.1
         
         gene1_length=2
         gene2_length=3
@@ -80,10 +80,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Create a set of alignments
         alignments_store=store.Alignments()
-        alignments_store.add("gene1",gene1_length,"query1",eval1,"bug1")
-        alignments_store.add("gene2",gene2_length,"query1",eval2,"bug1")
-        alignments_store.add("gene2",gene2_length,"query2",eval3,"bug1")
-        alignments_store.add("gene3",gene3_length,"query3",eval4,"bug1")
+        alignments_store.add("gene1",gene1_length,"query1",identity1,"bug1")
+        alignments_store.add("gene2",gene2_length,"query1",identity2,"bug1")
+        alignments_store.add("gene2",gene2_length,"query2",identity3,"bug1")
+        alignments_store.add("gene3",gene3_length,"query3",identity4,"bug1")
         
         gene_scores_store=store.GeneScores()
         
@@ -94,8 +94,8 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         gene1_length=gene1_length/1000.0
         
         # gene1
-        hit1_score=math.exp(-eval1)
-        hit2_score=math.exp(-eval2)
+        hit1_score=math.pow(identity1, config.identity_power)
+        hit2_score=math.pow(identity2, config.identity_power)
         query1_sum=hit1_score+hit2_score
         gene_score=hit1_score/query1_sum/gene1_length
 
@@ -108,12 +108,12 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         """
         
         # create a set of hits
-        # bug, reference, reference_length, query, evalue = hit
+        # bug, reference, reference_length, query, identity = hit
         
-        eval1=1e-4
-        eval2=3e-7
-        eval3=2e-10
-        eval4=2e-10
+        identity1=41.0
+        identity2=57.1
+        identity3=61.0
+        identity4=72.1
         
         gene1_length=2
         gene2_length=3
@@ -121,10 +121,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Create a set of alignments
         alignments_store=store.Alignments()
-        alignments_store.add("gene1",gene1_length,"query1",eval1,"bug1")
-        alignments_store.add("gene2",gene2_length,"query1",eval2,"bug1")
-        alignments_store.add("gene2",gene2_length,"query2",eval3,"bug1")
-        alignments_store.add("gene3",gene3_length,"query3",eval4,"bug1")
+        alignments_store.add("gene1",gene1_length,"query1",identity1,"bug1")
+        alignments_store.add("gene2",gene2_length,"query1",identity2,"bug1")
+        alignments_store.add("gene2",gene2_length,"query2",identity3,"bug1")
+        alignments_store.add("gene3",gene3_length,"query3",identity4,"bug1")
         
         gene_scores_store=store.GeneScores()
         
@@ -132,15 +132,15 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
         
         # gene1
-        hit1_score=math.exp(-eval1)
-        hit2_score=math.exp(-eval2)
+        hit1_score=math.pow(identity1, config.identity_power)
+        hit2_score=math.pow(identity2, config.identity_power)
         query1_sum=hit1_score+hit2_score
         
         # convert lengths to per kb
         gene2_length=gene2_length/1000.0
         
         # gene2
-        hit3_score=math.exp(-eval3)
+        hit3_score=math.pow(identity3, config.identity_power)
         query2_sum=hit3_score
         gene_score=hit3_score/query2_sum/gene2_length + hit2_score/query1_sum/gene2_length
 
@@ -239,10 +239,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         """
         
         # create a set of hits
-        eval1=1e-4
-        eval2=3e-7
-        eval3=2e-10
-        eval4=2e-10
+        identity1=41.0
+        identity2=57.1
+        identity3=61.0
+        identity4=72.1
         
         gene1_length=2
         gene2_length=3
@@ -250,10 +250,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Create a set of alignments
         alignments_store=store.Alignments(minimize_memory_use=True)
-        alignments_store.add("gene1",gene1_length,"query1",eval1,"bug1")
-        alignments_store.add("gene2",gene2_length,"query1",eval2,"bug1")
-        alignments_store.add("gene2",gene2_length,"query2",eval3,"bug1")
-        alignments_store.add("gene3",gene3_length,"query3",eval4,"bug1")
+        alignments_store.add("gene1",gene1_length,"query1",identity1,"bug1")
+        alignments_store.add("gene2",gene2_length,"query1",identity2,"bug1")
+        alignments_store.add("gene2",gene2_length,"query2",identity3,"bug1")
+        alignments_store.add("gene3",gene3_length,"query3",identity4,"bug1")
         
         gene_scores_store=store.GeneScores()
         
@@ -264,7 +264,7 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         gene3_length=gene3_length/1000.0
         
         # gene3
-        hit4_score=math.exp(-eval4)
+        hit4_score=math.pow(identity4, config.identity_power)
         query3_sum=hit4_score
         expected_gene_score=hit4_score/query3_sum/gene3_length
         
@@ -283,12 +283,12 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         """
         
         # create a set of hits
-        # bug, reference, reference_length, query, evalue = hit
+        # bug, reference, reference_length, query, identity = hit
         
-        eval1=1e-4
-        eval2=3e-7
-        eval3=2e-10
-        eval4=2e-10
+        identity1=41.0
+        identity2=57.1
+        identity3=61.0
+        identity4=72.1
         
         gene1_length=2
         gene2_length=3
@@ -296,10 +296,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Create a set of alignments
         alignments_store=store.Alignments(minimize_memory_use=True)
-        alignments_store.add("gene1",gene1_length,"query1",eval1,"bug1")
-        alignments_store.add("gene2",gene2_length,"query1",eval2,"bug1")
-        alignments_store.add("gene2",gene2_length,"query2",eval3,"bug1")
-        alignments_store.add("gene3",gene3_length,"query3",eval4,"bug1")
+        alignments_store.add("gene1",gene1_length,"query1",identity1,"bug1")
+        alignments_store.add("gene2",gene2_length,"query1",identity2,"bug1")
+        alignments_store.add("gene2",gene2_length,"query2",identity3,"bug1")
+        alignments_store.add("gene3",gene3_length,"query3",identity4,"bug1")
         
         gene_scores_store=store.GeneScores()
         
@@ -310,8 +310,8 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         gene1_length=gene1_length/1000.0
         
         # gene1
-        hit1_score=math.exp(-eval1)
-        hit2_score=math.exp(-eval2)
+        hit1_score=math.pow(identity1, config.identity_power)
+        hit2_score=math.pow(identity2, config.identity_power)
         query1_sum=hit1_score+hit2_score
         expected_gene_score=hit1_score/query1_sum/gene1_length   
         
@@ -330,12 +330,12 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         """
         
         # create a set of hits
-        # bug, reference, reference_length, query, evalue = hit
+        # bug, reference, reference_length, query, identity = hit
         
-        eval1=1e-4
-        eval2=3e-7
-        eval3=2e-10
-        eval4=2e-10
+        identity1=41.0
+        identity2=57.1
+        identity3=61.0
+        identity4=72.1
         
         gene1_length=2
         gene2_length=3
@@ -343,10 +343,10 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         # Create a set of alignments
         alignments_store=store.Alignments(minimize_memory_use=True)
-        alignments_store.add("gene1",gene1_length,"query1",eval1,"bug1")
-        alignments_store.add("gene2",gene2_length,"query1",eval2,"bug1")
-        alignments_store.add("gene2",gene2_length,"query2",eval3,"bug1")
-        alignments_store.add("gene3",gene3_length,"query3",eval4,"bug1")
+        alignments_store.add("gene1",gene1_length,"query1",identity1,"bug1")
+        alignments_store.add("gene2",gene2_length,"query1",identity2,"bug1")
+        alignments_store.add("gene2",gene2_length,"query2",identity3,"bug1")
+        alignments_store.add("gene3",gene3_length,"query3",identity4,"bug1")
         
         gene_scores_store=store.GeneScores()
         
@@ -354,15 +354,15 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
         
         # gene1
-        hit1_score=math.exp(-eval1)
-        hit2_score=math.exp(-eval2)
+        hit1_score=math.pow(identity1, config.identity_power)
+        hit2_score=math.pow(identity2, config.identity_power)
         query1_sum=hit1_score+hit2_score
         
         # convert lengths to per kb
         gene2_length=gene2_length/1000.0
         
         # gene2
-        hit3_score=math.exp(-eval3)
+        hit3_score=math.pow(identity3, config.identity_power)
         query2_sum=hit3_score
         expected_gene_score=hit3_score/query2_sum/gene2_length + hit2_score/query1_sum/gene2_length
 

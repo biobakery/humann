@@ -352,10 +352,16 @@ sam_read_name_index=0
 sam_flag_index=1
 sam_reference_index=2
 sam_mapq_index=4
+sam_cigar_index=5
 sam_read_index=9
+sam_start_optional_index=11
+
 sam_read_quality=10
 sam_unmapped_flag=0x4
 sam_delimiter="\t"
+
+sam_cigar_match_identifer="M"
+sam_md_field_identifier="MD:Z:"
 
 #set the locations of data in a tabulated blast formatted file
 # all translated alignment files will be of the tabulated blast format
@@ -436,4 +442,6 @@ xipe_percent=str(0.1)
 xipe_probability=0.9
 xipe_bin=1
 
-    
+# Alignment Score defaults
+default_reference_length=1000
+identity_power=2

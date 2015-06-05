@@ -299,6 +299,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
 
     log_evalue=False
     large_evalue_count=0
+    small_identity_count=0
     while line:
         if re.search("^#",line):
             # Check for the rapsearch2 header to determine if these are log(e-value)
@@ -316,6 +317,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 identity=float(alignment_info[config.blast_identity_index])
                 if identity < config.identity_threshold:
                     process_alignment=False
+                    small_identity_count+=1
             except ValueError:
                 if alignment_info[config.blast_identity_index]:
                     logger.debug("Unexpected value in identity field: %s",
@@ -347,7 +349,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             
                 # only store alignments with evalues less than threshold
                 if evalue<config.evalue_threshold:
-                    alignments.add_annotated(queryid, evalue, 
+                    alignments.add_annotated(queryid, identity, 
                         alignment_info[config.blast_reference_index], normalize_by_read_length=False)
                     
                     # remove the id of the alignment from the unaligned reads store
@@ -359,6 +361,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
 
     logger.debug("Total translated alignments not included based on large e-value: " + 
         str(large_evalue_count))
+    logger.debug("Total translated alignments not included based on small percent identity: " + 
+        str(small_identity_count))
     file_handle.close()
 
     # create unaligned file using list of remaining unaligned stored data

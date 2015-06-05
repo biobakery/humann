@@ -1,0 +1,132 @@
+import unittest
+import logging
+
+import cfg
+import utils
+import tempfile
+
+from humann2.search import nucleotide
+from humann2 import config
+
+class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
+    """
+    Test the functions found in humann2.search.nucleotide
+    """
+    
+    def setUp(self):
+        config.unnamed_temp_dir=tempfile.gettempdir()
+        config.temp_dir=tempfile.gettempdir()
+        config.file_basename="HUMAnN2_test"
+        
+        # set up nullhandler for logger
+        logging.getLogger('humann2.search.nucleotide').addHandler(logging.NullHandler())
+        
+    def test_calculate_percent_identity(self):
+        """
+        Test the calculate percent identity function
+        """
+        
+        cigar_string="100S84M16S"
+        md_field="MD:Z:27A5G2T6G4T1A6T2C0A7A1A0A0C0G1G1A5"
+        
+        expected_result= 100.0 * ( 68 / 84.0 )
+        
+        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        
+        self.assertEqual(result, expected_result)
+
+    def test_calculate_percent_identity_simple_md_field(self):
+        """
+        Test the calculate percent identity function
+        Test with a simple md field where all bases match
+        """
+        
+        cigar_string="100S84M16S"
+        md_field="MD:Z:84"
+        
+        expected_result= 100.0 * ( 84 / 84.0 )
+        
+        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        
+    def test_calculate_percent_identity_simple_cigar_string(self):
+        """
+        Test the calculate percent identity function
+        Test with a simple cigar string
+        """
+        
+        cigar_string="84M"
+        md_field="MD:Z:27A5G2T6G4T1A6T2C0A7A1A0A0C0G1G1A5"
+        
+        expected_result= 100.0 * ( 84 / 84.0 )
+        
+        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+
+    def test_calculate_percent_identity_missing_cigar_identifier(self):
+        """
+        Test the calculate percent identity function
+        Test with a cigar string that does not have the match/mismatch identifier
+        """
+        
+        cigar_string="*"
+        md_field="MD:Z:84"
+        
+        expected_result= 0.0
+        
+        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        
+        self.assertEqual(result, expected_result)
+        
+    def test_calculate_percent_identity_missing_md_field(self):
+        """
+        Test the calculate percent identity function
+        Test with an empty md field
+        """
+        
+        cigar_string="100S84M16S"
+        md_field=""
+        
+        expected_result= 0.0
+        
+        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        
+        self.assertEqual(result, expected_result)
+        
+    def test_find_md_field(self):
+        """
+        Test the find md field function
+        """
+        
+        info=['r99983|640963016.fna|116533|116684|_from_', '16', 
+            'gi|223667726|ref|NZ_DS264546.1|:115458-117362|46503|g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_R6Y4Q3|UniRef50_D6D6J1|1905', 
+            '927', '42', '151M', '*', '0', '0', 
+            'AAACAATGGAAAAGTACAAGAGCGACTATGGCAAATGTTTTACAACATGGATGCGATTCAACAGGAATGGGTTTGGTTTACCACTCGTGATAAAGATACGGGCTGGTCTGGCGATGTCTTGCCTCCTTCCCAAAATGGTCATGCCCGTCAA',
+            '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+            'AS:i:0', 'XN:i:0', 'XM:i:0', 'XO:i:0', 'XG:i:0', 'NM:i:0', 'MD:Z:151', 'YT:Z:UU']
+        
+        expected_result=info[-2]
+        
+        result=nucleotide.find_md_field(info)
+        
+        self.assertEqual(result, expected_result)
+        
+    def test_find_md_field_missing_column(self):
+        """
+        Test the find md field function
+        Test with an example that does not include the md field column
+        """
+        
+        info=['r99983|640963016.fna|116533|116684|_from_', '16', 
+            'gi|223667726|ref|NZ_DS264546.1|:115458-117362|46503|g__Parabacteroides.s__Parabacteroides_merdae|UniRef90_R6Y4Q3|UniRef50_D6D6J1|1905', 
+            '927', '42', '151M', '*', '0', '0', 
+            'AAACAATGGAAAAGTACAAGAGCGACTATGGCAAATGTTTTACAACATGGATGCGATTCAACAGGAATGGGTTTGGTTTACCACTCGTGATAAAGATACGGGCTGGTCTGGCGATGTCTTGCCTCCTTCCCAAAATGGTCATGCCCGTCAA',
+            '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+            'AS:i:0', 'XN:i:0', 'XM:i:0', 'XO:i:0', 'XG:i:0', 'NM:i:0', 'YT:Z:UU']
+        
+        expected_result=""
+        
+        result=nucleotide.find_md_field(info)
+        
+        self.assertEqual(result, expected_result)
+        
+        
+        
