@@ -285,7 +285,7 @@ class Alignments:
 
         return [gene,length,bug]
 
-    def add_annotated(self, query, identity, annotated_reference, normalize_by_read_length=None):
+    def add_annotated(self, query, matches, annotated_reference, normalize_by_read_length=None):
         """
         Add an alignment with an annotated reference
         """
@@ -293,9 +293,9 @@ class Alignments:
         # Obtain the reference id length and bug
         [referenceid,length,bug]=self.process_reference_annotation(annotated_reference)
         
-        self.add(referenceid, length, query, identity, bug, normalize_by_read_length)
+        self.add(referenceid, length, query, matches, bug, normalize_by_read_length)
 
-    def add(self, reference, reference_length, query, identity, bug, normalize_by_read_length=None): 
+    def add(self, reference, reference_length, query, matches, bug, normalize_by_read_length=None): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
@@ -305,12 +305,12 @@ class Alignments:
             reference_length=config.default_reference_length
             logger.debug("Default gene length used for alignment to gene: " + reference)
         
-        # store the score instead of the identity
+        # store the score instead of the number of matches
         try:
-            score=math.pow(identity,config.identity_power)
+            score=math.pow(matches,config.match_power)
         except ValueError:
-            logger.debug("Could not convert identity to score: " +  str(identity))
-            score=0
+            logger.debug("Could not convert the number of matches to score: " +  str(matches))
+            score=0.0
             
         # Increase the counts for gene and bug
         self.__bug_counts[bug]=self.__bug_counts.get(bug,0)+1

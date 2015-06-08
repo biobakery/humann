@@ -157,6 +157,7 @@ def alignment(user_fastq, index_name):
 def calculate_percent_identity(cigar_string, md_field):
     """
     Calculate the percent identity using the cigar string and md field from the sam file
+    Returns the percent identity and the alignment length
     """
     
     match_numbers=re.compile("\d+")
@@ -168,9 +169,9 @@ def calculate_percent_identity(cigar_string, md_field):
     
     # identify the total number of matches and mismatches using the cigar match identifer
     try:
-        matches_and_mismatches=int(cigar_numbers[cigar_identifiers.index(config.sam_cigar_match_identifer)])
+        matches_and_mismatches=float(cigar_numbers[cigar_identifiers.index(config.sam_cigar_match_identifer)])
     except (IndexError, ValueError):
-        matches_and_mismatches=0
+        matches_and_mismatches=0.0
     
     # remove the tag from the md field
     md_field=md_field.split(config.sam_md_field_identifier)[-1]
@@ -182,13 +183,13 @@ def calculate_percent_identity(cigar_string, md_field):
     try:
         matches=sum(int(n) for n in md_field_numbers)
     except ValueError:
-        matches=0
+        matches=0.0
     
-    percent_identity=0
-    if matches_and_mismatches > 0:
+    percent_identity=0.0
+    if matches_and_mismatches > 0.0:
         percent_identity = 100.0 * ( matches / ( matches_and_mismatches * 1.0 ) )
         
-    return percent_identity 
+    return percent_identity, matches_and_mismatches 
     
 def find_md_field(info):
     """
@@ -263,7 +264,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 # convert the cigar string and md field to percent identity
                 cigar_string=info[config.sam_cigar_index]
                 md_field=find_md_field(info)
-                identity=calculate_percent_identity(cigar_string, md_field)
+                identity, alignment_length=calculate_percent_identity(cigar_string, md_field)
                 
                 query=info[config.sam_read_name_index]
                 # write output to be blastm8-like
@@ -272,11 +273,13 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 new_info[config.blast_reference_index]=info[config.sam_reference_index]
                 new_info[config.blast_evalue_index]=str(evalue)
                 new_info[config.blast_identity_index]=str(identity)
+                new_info[config.blast_aligned_length_index]=str(alignment_length)
                 file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
                    
                 # only store alignments with evalues less than threshold
                 if identity > config.identity_threshold:
-                    alignments.add_annotated(query,identity,info[config.sam_reference_index],
+                    matches=identity/100.0*alignment_length
+                    alignments.add_annotated(query,matches,info[config.sam_reference_index],
                         normalize_by_read_length=True)
                 else:
                     small_identity_count+=1

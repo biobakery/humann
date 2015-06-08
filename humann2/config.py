@@ -444,4 +444,4 @@ xipe_bin=1
 
 # Alignment Score defaults
 default_reference_length=1000
-identity_power=2
+match_power=2

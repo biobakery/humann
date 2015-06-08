@@ -29,11 +29,11 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         cigar_string="100S84M16S"
         md_field="MD:Z:27A5G2T6G4T1A6T2C0A7A1A0A0C0G1G1A5"
         
-        expected_result= 100.0 * ( 68 / 84.0 )
+        expected_identity= 100.0 * ( 68 / 84.0 )
         
-        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        identity, alignment_length =nucleotide.calculate_percent_identity(cigar_string,md_field)
         
-        self.assertEqual(result, expected_result)
+        self.assertEqual(identity, expected_identity)
 
     def test_calculate_percent_identity_simple_md_field(self):
         """
@@ -44,9 +44,11 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         cigar_string="100S84M16S"
         md_field="MD:Z:84"
         
-        expected_result= 100.0 * ( 84 / 84.0 )
+        expected_identity= 100.0 * ( 84 / 84.0 )
         
-        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        identity, alignment_length=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        
+        self.assertEqual(identity, expected_identity)
         
     def test_calculate_percent_identity_simple_cigar_string(self):
         """
@@ -57,9 +59,11 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         cigar_string="84M"
         md_field="MD:Z:27A5G2T6G4T1A6T2C0A7A1A0A0C0G1G1A5"
         
-        expected_result= 100.0 * ( 84 / 84.0 )
+        expected_identity= 100.0 * ( 68 / 84.0 )
         
-        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        identity, alignment_length=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        
+        self.assertEqual(identity, expected_identity)
 
     def test_calculate_percent_identity_missing_cigar_identifier(self):
         """
@@ -70,11 +74,11 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         cigar_string="*"
         md_field="MD:Z:84"
         
-        expected_result= 0.0
+        expected_identity=0.0
         
-        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        identity, alignment_length=nucleotide.calculate_percent_identity(cigar_string,md_field)
         
-        self.assertEqual(result, expected_result)
+        self.assertEqual(identity, expected_identity)
         
     def test_calculate_percent_identity_missing_md_field(self):
         """
@@ -85,11 +89,11 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         cigar_string="100S84M16S"
         md_field=""
         
-        expected_result= 0.0
+        expected_identity=0.0
         
-        result=nucleotide.calculate_percent_identity(cigar_string,md_field)
+        identity, alignment_length=nucleotide.calculate_percent_identity(cigar_string,md_field)
         
-        self.assertEqual(result, expected_result)
+        self.assertEqual(identity, expected_identity)
         
     def test_find_md_field(self):
         """

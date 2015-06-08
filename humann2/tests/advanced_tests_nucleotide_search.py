@@ -277,7 +277,7 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         all_hits=alignments.get_hit_list()
         
         # check for set and default gene lengths
-        expected_score=math.pow(100.0, config.identity_power)
+        expected_score=math.pow(151.0, config.match_power)
         
         for hit in all_hits:
             query, bug, reference, score, length = hit

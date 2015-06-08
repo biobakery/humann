@@ -329,6 +329,15 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             if process_alignment:
                     
                 queryid=alignment_info[config.blast_query_index]
+                alignment_length=alignment_info[config.blast_aligned_length_index]
+                
+                # try converting the alignment length to a number
+                try:
+                    alignment_length=float(alignment_length)
+                except ValueError:
+                    logger.warning("Alignment length is not a number: %s", alignment_length)
+                    alignment_length=0.0
+                
                 evalue=alignment_info[config.blast_evalue_index]   
                 
                 # try converting evalue to float to check if it is a number
@@ -349,7 +358,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             
                 # only store alignments with evalues less than threshold
                 if evalue<config.evalue_threshold:
-                    alignments.add_annotated(queryid, identity, 
+                    matches=identity/100.0*alignment_length
+                    alignments.add_annotated(queryid, matches, 
                         alignment_info[config.blast_reference_index], normalize_by_read_length=False)
                     
                     # remove the id of the alignment from the unaligned reads store

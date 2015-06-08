@@ -42,8 +42,9 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 referenceid=data[config.blast_reference_index]
                 queryid=data[config.blast_query_index]
                 identity=float(data[config.blast_identity_index])
+                alignment_length=float(data[config.blast_aligned_length_index])
             
-                alignments.add(referenceid, 0, queryid, identity,"unclassified")
+                alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
             
         file_handle.close()
         
@@ -88,10 +89,11 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 queryid=data[config.blast_query_index]
                 evalue=float(data[config.blast_evalue_index])
                 identity=float(data[config.blast_identity_index])
+                alignment_length=float(data[config.blast_aligned_length_index])
                 
                 # only store those alignments with log evalues that meet threshold
                 if math.pow(10.0, evalue) < config.evalue_threshold:
-                    alignments.add(referenceid, 0, queryid, identity,"unclassified")
+                    alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
             
         file_handle.close()
         
@@ -136,10 +138,11 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 referenceid=data[config.blast_reference_index]
                 queryid=data[config.blast_query_index]
                 identity=float(data[config.blast_identity_index])
+                alignment_length=float(data[config.blast_aligned_length_index])
                 
                 # only store those alignments with identities that meet threshold
                 if identity > config.identity_threshold:
-                    alignments.add(referenceid, 0, queryid, identity,"unclassified")
+                    alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
             
         file_handle.close()
         
@@ -179,8 +182,9 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 referenceid=data[config.blast_reference_index]
                 queryid=data[config.blast_query_index]
                 identity=float(data[config.blast_identity_index])
+                alignment_length=float(data[config.blast_aligned_length_index])
             
-                alignments.add(referenceid, 0, queryid, identity,"unclassified")
+                alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
             
         file_handle.close()
         
