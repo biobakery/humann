@@ -823,44 +823,56 @@ class ReactionsDatabase:
     Holds all of the genes/reactions data from the file provided
     """
     
-    def __init__(self, database):
+    def __init__(self, database=None):
         """
         Load in the reactions data from the database
         """
         self.__reactions_to_genes={}
         self.__genes_to_reactions={}
         
-        # Check the database file exists and is readable
-        utilities.file_exists_readable(database)
-         
-        file_handle=open(database,"r")
-         
-        line=file_handle.readline()
-         
-        # database is expected to contain a single line per reaction
-        # this line begins with the reaction name and ec number and is followed 
-        # by all genes associated with the reaction
-         
-        while line:
-            data=line.rstrip().split(config.reactions_database_delimiter)
-            if len(data)>2:
-                reaction=data.pop(0)
-                
-                if config.pathways_ec_column:
-                    ec_number=data.pop(0)
+        if not database is None:
+            # Check the database file exists and is readable
+            utilities.file_exists_readable(database)
              
-                # store the data
-                self.__reactions_to_genes[reaction]=data
-             
-                for gene in data:
-                    if gene in self.__genes_to_reactions:
-                        self.__genes_to_reactions[gene]+=[reaction]
-                    else:
-                        self.__genes_to_reactions[gene]=[reaction]    
+            file_handle=open(database,"r")
              
             line=file_handle.readline()
+             
+            # database is expected to contain a single line per reaction
+            # this line begins with the reaction name and ec number and is followed 
+            # by all genes associated with the reaction
+             
+            while line:
+                data=line.rstrip().split(config.reactions_database_delimiter)
+                if len(data)>2:
+                    reaction=data.pop(0)
+                    
+                    if config.pathways_ec_column:
+                        ec_number=data.pop(0)
+                 
+                    # store the data
+                    self.__reactions_to_genes[reaction]=data
+                 
+                    for gene in data:
+                        if gene in self.__genes_to_reactions:
+                            self.__genes_to_reactions[gene]+=[reaction]
+                        else:
+                            self.__genes_to_reactions[gene]=[reaction]    
+                 
+                line=file_handle.readline()
+            
+            file_handle.close()
         
-        file_handle.close()
+    def add_reactions(self, reactions):
+        """
+        Add these reactions and genes
+        """
+        
+        for reaction in reactions:
+            self.__reactions_to_genes[reaction]=self.__reactions_to_genes.get(reaction,[])+reactions[reaction]
+            
+            for gene in reactions[reaction]:
+                self.__genes_to_reactions[gene]=self.__genes_to_reactions.get(gene,[])+[reaction]
         
     def find_reactions(self,gene):
         """
@@ -906,7 +918,40 @@ class PathwaysDatabase:
     Holds all of the reactions/pathways data from the file provided
     """
     
-    def _find_reaction_list_and_key_reactions(self,items):
+    def _is_optional_reaction(self, item, reaction_names=None):
+        """
+        Check if this reaction is optional
+        """
+        
+        if reaction_names is None:
+            reaction_names=[]
+        
+        # count the number of indicators at the beginning of the name
+        char=item[0]
+        index=0
+        optional_indicator_count=0
+        while char == config.pathway_reaction_optional: 
+            optional_indicator_count+=1
+            index+=1
+            try:
+                char=item[index]
+            except IndexError:
+                break
+            
+        # this reaction has an optional indicator only if it is
+        # not part of the original reaction name
+        # original names can start with "--"  
+        
+        # first check for the original name in the reactions names if provided
+        optional=False
+        if item in reaction_names:
+            optional=False
+        elif optional_indicator_count in [1,3]:
+            optional=True
+            
+        return optional
+    
+    def _find_reaction_list_and_key_reactions(self,items,reaction_names=None):
         """
         Find the reactions in the pathways items and also the key reactions
         """
@@ -916,18 +961,19 @@ class PathwaysDatabase:
         for item in items:
             # ignore items that are not reactions as they are part of pathway structure
             if not item in ["(",")","",config.pathway_AND,config.pathway_OR]:
-                # if the reaction has the optional indicator then remove it from the name
-                if re.search("^"+config.pathway_reaction_optional,item):
+                # check if the item name indicates an optional reaction
+                # if so remove the optional reaction indicator at the beginning of the name                
+                if self._is_optional_reaction(item, reaction_names):
                     item=item[1:]
                 else:
                     # record that this is a key reaction
                     key_reactions.append(item)
-
-                reaction_list.append(item)
-                    
+                        
+                reaction_list.append(item)      
+        
         return reaction_list, key_reactions
         
-    def _find_structure(self,items):
+    def _find_structure(self,items,reaction_names=None):
         """
         Find the structure of the pathway from the string
         """
@@ -939,9 +985,10 @@ class PathwaysDatabase:
         # Process through the list of strings
         for item in items:
             if item:
-                # if the reaction has an optional indicator, then remove the optional indicator
-                if re.search("^"+config.pathway_reaction_optional,item):
-                        item=item[1:]
+                # check if the item name indicates an optional reaction
+                # if so remove the optional reaction indicator at the beginning of the name                
+                if self._is_optional_reaction(item, reaction_names):
+                    item=item[1:]
                         
                 # Check if this is the start of a list
                 if item == "(":
@@ -965,7 +1012,7 @@ class PathwaysDatabase:
         return structure
         
     
-    def _set_pathways_structure(self,reactions):
+    def _set_pathways_structure(self,reactions,reaction_names=None):
         """
         Determine the pathways structure from the input string
         """
@@ -979,11 +1026,11 @@ class PathwaysDatabase:
             reactions[pathway]=reactions[pathway].split(config.pathways_database_stucture_delimiter)
             
             # Find and store the structure for the pathway
-            structure=self._find_structure(reactions[pathway])
+            structure=self._find_structure(reactions[pathway],reaction_names)
             self.__pathways_structure[pathway]=structure
             
             # Find the list of reactions and the key reactions
-            reaction_list, key_reactions = self._find_reaction_list_and_key_reactions(reactions[pathway])
+            reaction_list, key_reactions = self._find_reaction_list_and_key_reactions(reactions[pathway],reaction_names)
 
             # Store the list of key reactions for the pathway
             self.__key_reactions[pathway]=key_reactions
@@ -1005,7 +1052,7 @@ class PathwaysDatabase:
                 self.__reactions_to_pathways[reaction]=self.__reactions_to_pathways.get(
                     reaction,[]) + [pathway]
 
-    def __init__(self, database=None):
+    def __init__(self, database=None, reactions_database=None):
         """
         Load in the pathways data from the database
         """
@@ -1013,6 +1060,10 @@ class PathwaysDatabase:
         self.__reactions_to_pathways={}
         self.__pathways_structure={}
         self.__key_reactions={}
+        
+        reaction_names=None
+        if not reactions_database is None:
+            reaction_names=reactions_database.reaction_list()
         
         if not database is None:
             # Check the database file exists and is readable
@@ -1045,7 +1096,7 @@ class PathwaysDatabase:
             
             # if this is a structured pathways set, then store the structure
             if structured_pathway:
-                reactions=self._set_pathways_structure(reactions)
+                reactions=self._set_pathways_structure(reactions, reaction_names)
             
             self._store_pathways(reactions)
             
@@ -1059,12 +1110,16 @@ class PathwaysDatabase:
         else:
             return False
                     
-    def add_pathway_structure(self, pathway, structure):
+    def add_pathway_structure(self, pathway, structure, reactions_database=None):
         """
         Add the string structure for a pathway
         """
         
-        reactions=self._set_pathways_structure({pathway: structure})
+        reaction_names=None
+        if not reactions_database is None:
+            reaction_names=reactions_database.reaction_list()
+        
+        reactions=self._set_pathways_structure({pathway: structure},reaction_names)
         self._store_pathways(reactions)
         
     def add_pathway(self, pathway, reactions):

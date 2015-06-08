@@ -721,7 +721,7 @@ def main():
         logger.info(message)
     
     # Load in the pathways database
-    pathways_database=store.PathwaysDatabase(config.pathways_database_part2)
+    pathways_database=store.PathwaysDatabase(config.pathways_database_part2, reactions_database)
     
     if config.pathways_database_part1:
         message="Load pathways database part 2: " + config.pathways_database_part2

@@ -575,6 +575,23 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         expected_key_reactions=["L","A","Z","D","F"]
         
         self.assertEqual(expected_key_reactions,pathways_database_store.get_key_reactions_for_pathway("pathway1"))
+
+    def test_PathwaysDatabase_add_pathway_structure_test_key_reactions_with_optional_indicator(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with two starting points that contract
+        Test the key reactions are correct for reactions with "--" at the beginning of their name
+        """
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="( (  L A -B ) , ( --Z ---C D ) )  -E F"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string)
+        
+        expected_key_reactions=["L","A","--Z","D","F"]
+        
+        self.assertEqual(expected_key_reactions,pathways_database_store.get_key_reactions_for_pathway("pathway1"))
             
     def test_ReactionsDatabase_read_reactions_count(self):
         """

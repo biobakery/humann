@@ -535,4 +535,28 @@ class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
         
         self.assertTrue(not pathways_database_flat_store.is_structured())
         
+    def test_PathwaysDatabase_add_pathway_structure_test_key_reactions_not_included_in_reactions_database(self):
+        """
+        Pathways database class: Test the add pathway structure
+        Test the function with a structure with two starting points that contract
+        Test the key reactions are correct for reactions that are not included in the reactions database
+        Test that key reactions included are correct for reactions with 1 and 3 optional indicators
+        """
+        
+        # Create a reactions database of a subset of the reactions in the pathways
+        reactions_database_store=store.ReactionsDatabase()
+        
+        reactions={ "A": ["gene1","gene2"], "---B": ["gene3"], "--Z":["gene4"],"-F":["gene5"]}
+        reactions_database_store.add_reactions(reactions)
+        
+        pathways_database_store=store.PathwaysDatabase()
+        
+        structure_string="( (  L A ---B ) , ( --Z ---C D ) )  -E -F"
+        
+        pathways_database_store.add_pathway_structure("pathway1",structure_string,reactions_database_store)
+        
+        expected_key_reactions=["L","A","---B","--Z","D","-F"]
+        
+        self.assertEqual(expected_key_reactions,pathways_database_store.get_key_reactions_for_pathway("pathway1"))
+        
         
