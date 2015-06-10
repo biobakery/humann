@@ -3,8 +3,14 @@ from cStringIO import StringIO
 import sys,string
 import sys, os
 import argparse
-from ete2 import NCBITaxa
-ncbi = NCBITaxa()
+try:
+	from ete2 import NCBITaxa
+	ncbi = NCBITaxa()
+except:
+	print "ete2 is required to run this program"
+	print "See http://pythonhosted.org/ete2/tutorial/tutorial_ncbitaxonomy.html"
+	print "Please install ete2 and rerun"
+	exit()
 
 
 
@@ -20,7 +26,7 @@ ncbi = NCBITaxa()
 #                                                                                           *
 #                                                                                           *
 #  The program is invoked as follows:                                                       *
-#  python humann2_expand_results_taxonomy.py --i   input1 --o o1                            *
+#  python humann2_expand_results_taxonomy.py --input   input1 --ootput o1                   *
 #                                                                                           *
 #  Where input1 can be any of the three files mentioned above                               *
 #  and o1 will be the output                                                                *
@@ -62,8 +68,8 @@ ncbi = NCBITaxa()
 def read_params(x):
 	CommonArea = dict()	
 	parser = argparse.ArgumentParser(description='Humann1_kegg extract generator')
-	parser.add_argument('--i', action="store", dest='i',nargs='?')
-	parser.add_argument('--o', action="store", dest='o',nargs='?')
+	parser.add_argument('--input', action="store", dest='i',nargs='?')
+	parser.add_argument('--output', action="store", dest='o',nargs='?')
 	CommonArea['parser'] = parser
 	return  CommonArea
 
@@ -81,13 +87,17 @@ def  GetTaxonomy(OrgIdName):
 		lTaxonomyExlusionList = [1,131567]   #These taxonomies are obvious, so we  are not going to include them
 		dTaxId = ncbi.get_name_translator([OrgIdName])	#Get the Tax Id number for the organism
 		lLineage =  ncbi.get_lineage( dTaxId[OrgIdName])   #Get the Lineage for the bug
+		dRanksOfLineage = ncbi.get_rank(lLineage)   #Get the ranks of the lineages
 		lLineageNames = ncbi.get_taxid_translator(lLineage)  # Get the lineage names
 		lExpandedOrganism = list()  
 		for  LineageEntry  in lLineage:   #Get the Lineage entry in the right order
 			if LineageEntry not in lTaxonomyExlusionList:
+ 
 					LineageEntryName = lLineageNames[LineageEntry]    #  Build the list of the lineage names
-					lExpandedOrganism.append(LineageEntryName)   #  add the lineage
-		OrgIDExpandedTaxonomy = "_".join(lExpandedOrganism)   # Post to the new org Name
+					if  dRanksOfLineage[LineageEntry] !=  "no rank":  # If there is a rank for this lineage level
+						LineageEntryName  =  dRanksOfLineage[LineageEntry]  + "__" + LineageEntryName # Append the lineage level 
+						lExpandedOrganism.append(LineageEntryName)   #  add the lineage
+		OrgIDExpandedTaxonomy = "|".join(lExpandedOrganism)   # Post to the new org Name
 	except:
 		pass		
 	return  OrgIDExpandedTaxonomy
@@ -124,7 +134,7 @@ for sLine in CommonArea['InputFile']:
 	sB3 = sB2[0].split('\t') 
 	sBugName = sB3[0].replace("_"," ")
 	BugAndTaxonomy = GetTaxonomy(sBugName)
-	RebuiltOutputLine = sLineBrokenByPipe[0] + "|" + BugAndTaxonomy + "\t" + sB3[1]  
+	RebuiltOutputLine = sLineBrokenByPipe[0] + "\t" + BugAndTaxonomy + "\t" + sB3[1]  
 	OutputFile.write(RebuiltOutputLine)
  
 	
