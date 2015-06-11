@@ -25,7 +25,6 @@ THE SOFTWARE.
 
 import os
 import re
-import math
 import logging
 import traceback
 import sys
@@ -252,14 +251,6 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 unaligned_read=True
             else:
-                # convert the e-value from global to local
-                try:
-                    evalue=math.pow(10.0, float(info[config.sam_mapq_index])/-10.0)
-                except ValueError:
-                    logger.warning("Unable to convert bowtie2 e-value: %s", 
-                        info[config.sam_mapq_index])
-                    logger.warning("Traceback: \n" + traceback.format_exc())
-                    evalue=1.0 
                     
                 # convert the cigar string and md field to percent identity
                 cigar_string=info[config.sam_cigar_index]
@@ -271,12 +262,12 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 new_info=[""] * config.blast_total_columns
                 new_info[config.blast_query_index]=query
                 new_info[config.blast_reference_index]=info[config.sam_reference_index]
-                new_info[config.blast_evalue_index]=str(evalue)
+                new_info[config.blast_evalue_index]="0"
                 new_info[config.blast_identity_index]=str(identity)
                 new_info[config.blast_aligned_length_index]=str(alignment_length)
                 file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
                    
-                # only store alignments with evalues less than threshold
+                # only store alignments with identity greater than threshold
                 if identity > config.identity_threshold:
                     matches=identity/100.0*alignment_length
                     alignments.add_annotated(query,matches,info[config.sam_reference_index],
