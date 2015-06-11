@@ -717,7 +717,7 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 
 #### 6.  Combine metagenomic and metatranscriptomic sequencing data ####
 
-`` $ humann2_rna_dna_norm --input_dna $TABLE_DNA --input_rna --output_basename $OUTPUT_BASENAME ``
+`` $ humann2_rna_dna_norm --input_dna $TABLE_DNA --input_rna $TABLE_RNA --output_basename $OUTPUT_BASENAME ``
 
 *   $TABLE_DNA = gene families output for sample DNA (tsv format)
 *   $TABLE_RNA = gene families output for sample RNA (tsv format)
