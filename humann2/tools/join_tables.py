@@ -33,12 +33,17 @@ def join_gene_tables(gene_tables,output,verbose=None):
     gene_table_data={}
     start_column_id=""
     samples=[]
+    file_basenames=[]
     for index,gene_table in enumerate(gene_tables):
         
         if verbose:
             print("Reading file: " + gene_table)
         
         file_handle,header,line=util.process_gene_table_header(gene_table, allow_for_missing_header=True)
+        
+        # get the basename of the file
+        file_basename='.'.join(os.path.basename(gene_table).split('.')[:-1])
+        file_basenames.append(file_basename)
         
         if header:
             header_info=header.rstrip().split(GENE_TABLE_DELIMITER)
@@ -47,7 +52,7 @@ def join_gene_tables(gene_tables,output,verbose=None):
             sample_name=header_info[1]
         else:
             # if there is no header in the file then use the file name as the sample name
-            sample_name=os.path.splitext(os.path.basename(gene_table))[0]
+            sample_name=file_basename
         
         samples.append(sample_name)
         while line:
@@ -76,6 +81,11 @@ def join_gene_tables(gene_tables,output,verbose=None):
             line=file_handle.readline()
             
         file_handle.close()
+        
+    # if all of the header names for the files are the same
+    # then use the file names as headers
+    if samples.count(samples[0]) == len(samples):
+        samples=file_basenames
                 
     # write the joined gene table
     if not start_column_id:
