@@ -177,6 +177,43 @@ class PathwayStructure():
                     return ""
             else:
                 return ""
+            
+    def insert_into_structure(self,structure_to_insert, insert_list, insert_node, insert_location, join_type, prior_nodes, structure=None):
+        """ Insert this new sub-structure into the main structure """
+        
+        if structure is None:
+            structure=self.structure
+               
+        # check if the insert is into the main structure
+        if insert_list is None or prior_nodes[insert_node] is structure:
+            # add this as a join to the top items in the main structure (or the structure for the insert node)
+            # find those items in the beginning of the structure before any joins
+            # by looking for the first list
+            join_location=len(prior_nodes[insert_node])
+            for i,item in enumerate(prior_nodes[insert_node]):
+                if isinstance(item, list):
+                    join_location=i
+                    break
+                                    
+            # if the join location is to use the full structure
+            if join_location == len(prior_nodes[insert_node]):
+                new_structure=[join_type,prior_nodes[insert_node],structure_to_insert]
+                prior_nodes[insert_node]=new_structure
+            else:
+                new_structure=[join_type,prior_nodes[insert_node][0:join_location],structure_to_insert]
+                del prior_nodes[insert_node][0:join_location]
+                prior_nodes[insert_node]=[new_structure]+structure
+        else:
+            # check if an AND/OR needs to be added
+            if not insert_list[0] in [AND_DELIMITER,OR_DELIMITER]:
+                new_list=[join_type]
+                new_list.append(prior_nodes[insert_node])
+                new_list.append(structure_to_insert)
+                insert_list[insert_location]=new_list
+            else:
+                insert_list.append(structure_to_insert)        
+        
+        return structure
         
     def create_structure(self):
         """ Get the structure for the pathway based on the levels of the nodes """
@@ -225,40 +262,15 @@ class PathwayStructure():
                 if not node_is_in_list(node, prior_nodes.keys()):
                     if insert:
                         structure_to_insert, insert_node, join_type=node.create_structure(self.reactions,prior_nodes)
+                        
                         # add this structure to the main structure
                         if not insert_node is None:
                             # find the superlist that contains this node
                             insert_list, insert_location=find_list(prior_nodes[insert_node], structure)
                             
-                            # check if the insert is into the main structure
-                            if insert_list is None or prior_nodes[insert_node] is structure:
-                                # add this as a join to the top items in the main structure (or the structure for the insert node)
-                                # find those items in the beginning of the structure before any joins
-                                # by looking for the first list
-                                join_location=len(prior_nodes[insert_node])
-                                for i,item in enumerate(prior_nodes[insert_node]):
-                                    if isinstance(item, list):
-                                        join_location=i
-                                        break
-                                    
-                                # if the join location is to use the full structure
-                                if join_location == len(prior_nodes[insert_node]):
-                                    new_structure=[join_type,prior_nodes[insert_node],structure_to_insert]
-                                    prior_nodes[insert_node]=new_structure
-                                else:
-                                    new_structure=[join_type,prior_nodes[insert_node][0:join_location],structure_to_insert]
-                                    del prior_nodes[insert_node][0:join_location]
-                                    prior_nodes[insert_node]=[new_structure]+structure
-                            else:
-                                
-                                # check if an AND/OR needs to be added
-                                if not insert_list[0] in [AND_DELIMITER,OR_DELIMITER]:
-                                    new_list=[join_type]
-                                    new_list.append(prior_nodes[insert_node])
-                                    new_list.append(structure_to_insert)
-                                    insert_list[insert_location]=new_list
-                                else:
-                                    insert_list.append(structure_to_insert)
+                            # insert the sub-structure into the main structure
+                            structure=self.insert_into_structure(structure_to_insert, insert_list, insert_node, insert_location, join_type, prior_nodes, structure)
+
                         else:
                             structure+=structure_to_insert
                     else:
@@ -508,26 +520,29 @@ class Node():
             structure_by_level[current_level]=[]
         
         # search to see if self has already been visited in prior nodes
-        if not node_is_in_list(self, prior_nodes.keys()):
-            # check if this node is from a contraction
-            # check if the contraction is directly into an expansion
-            if self.count_predecessors() > 1 and structure_by_level[current_level]:
-                # if this is from a contraction then pop up one level before adding
-                # if this is already at the starting level, then use the starting level
-                if current_level > 0:
-                    current_level-=1    
-                    structure_by_level[current_level].append(self.name)
-                    prior_nodes[self]=structure_by_level[current_level]
-                else:
-                    # create two lists
-                    new_list=[structure_by_level[0],[self.name]]
-                    structure_by_level[0]=new_list
-                    current_level+=1
-                    structure_by_level[current_level]=structure_by_level[0][1]
-                    prior_nodes[self]=structure_by_level[0][1]
-            else:
+        if node_is_in_list(self, prior_nodes.keys()):
+            # if this node has already been visited, remove prior location in structure
+            prior_nodes[self].remove(self.name)
+            
+        # check if this node is from a contraction
+        # check if the contraction is directly into an expansion
+        if self.count_predecessors() > 1 and structure_by_level[current_level]:
+            # if this is from a contraction then pop up one level before adding
+            # if this is already at the starting level, then use the starting level
+            if current_level > 0:
+                current_level-=1    
                 structure_by_level[current_level].append(self.name)
                 prior_nodes[self]=structure_by_level[current_level]
+            else:
+                # create two lists
+                new_list=[structure_by_level[0],[self.name]]
+                structure_by_level[0]=new_list
+                current_level+=1
+                structure_by_level[current_level]=structure_by_level[0][1]
+                prior_nodes[self]=structure_by_level[0][1]
+        else:
+            structure_by_level[current_level].append(self.name)
+            prior_nodes[self]=structure_by_level[current_level]
             
         # remove recursive nodes from leaves if present
         non_recursive_leaves=[]
