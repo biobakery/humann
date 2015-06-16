@@ -247,7 +247,7 @@ class PathwayStructure():
         # set the levels for the nodes
         # all nodes that are specified by metacyc to not have predecessors are level 1
         for node in self.start_nodes:
-            node.set_level(1)
+            node.set_level(0)
             
         # identify nodes that do not currently have levels and set the levels
         for node in self.nodes:
@@ -419,7 +419,14 @@ class PathwayStructure():
         sublists=[]
         for i in xrange(len(structure)):
             if isinstance(structure[i],list):
-                sublists.append(i)
+                # check if this is a list with one string
+                if len(structure[i]) == 1 and isinstance(structure[i][0], basestring):
+                    if structure[i][0] == reaction:
+                        if count > 1:
+                            structure[i]=""
+                            count-=1
+                else:
+                    sublists.append(i)
             elif isinstance(structure[i],basestring):
                 if structure[i] == reaction:
                     if count > 1:
@@ -539,11 +546,6 @@ class Node():
         for node in self.leaves:
             if not node_is_in_list(node, prior_nodes):
                 node.set_level(level+1,prior_nodes)
-                
-        # set the level of the predecessors
-        for node in self.predecessors:
-            if not node_is_in_list(node, prior_nodes):
-                node.set_level(level-1,prior_nodes)
         
     def get_level(self):
         return self.level
@@ -710,9 +712,13 @@ def read_metacyc_pathways_structure(metacyc_pathways_file):
                 for item in data:
                     # check for the type of identifier
                     if re.search(METACYC_LEFT_PRIMARY,item):
-                        left.add(item.replace(METACYC_LEFT_PRIMARY,"").strip())
+                        compound=item.replace(METACYC_LEFT_PRIMARY,"").strip()
+                        if compound:
+                            left.add(compound)
                     elif re.search(METACYC_RIGHT_PRIMARY,item):
-                        right.add(item.replace(METACYC_RIGHT_PRIMARY,"").strip())                      
+                        compound=item.replace(METACYC_RIGHT_PRIMARY,"").strip()
+                        if compound:
+                            right.add(compound)                      
                     elif re.search(METACYC_DIRECTION,item):
                         direction=item.replace(METACYC_DIRECTION,"").strip()
                 if re.search(METACYC_LEFT2RIGHT,direction):
