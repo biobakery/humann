@@ -381,6 +381,13 @@ class PathwayStructure():
             if ( re.match(OPTIONAL_REACTION_TAG+"*"+METACYC_PATHWAY_ID, name) 
                 or re.search(METACYC_PATHWAY_ID+"$", name) ):
                 self.subpathways.add(name)
+            # check if the name is a pathway as not all pathways have the identifier
+            # example is "ASPARAGINE-BIOSYNTEHSIS"
+            elif name in metacyc_pathway_structures:
+                self.subpathways.add(name)
+            # also check for name without OPTIONAL_REACTION_TAG if added
+            elif re.match(OPTIONAL_REACTION_TAG,name) and name[1:] in metacyc_pathway_structures:
+                self.subpathways.add(name)
                 
         # Get the structure for the subpathway
         # Then replace the subpathway name with the structure for the subpathway
@@ -388,7 +395,10 @@ class PathwayStructure():
             subpathway_id=subpathway
             # remove the optional reaction identifier if present
             if re.match(OPTIONAL_REACTION_TAG,subpathway_id):
-                subpathway_id=subpathway_id.replace(OPTIONAL_REACTION_TAG,"",1)
+                # only remove if this is not already part of the pathway name
+                if not subpathway_id in metacyc_pathway_structures:
+                    subpathway_id=subpathway_id.replace(OPTIONAL_REACTION_TAG,"",1)
+                
             if subpathway_id in metacyc_pathway_structures:
                 subpathway_structure=metacyc_pathway_structures[subpathway_id].get_structure()
             else:
