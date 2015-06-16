@@ -183,7 +183,7 @@ class PathwayStructure():
         
         if structure is None:
             structure=self.structure
-               
+            
         # check if the insert is into the main structure
         if insert_list is None or prior_nodes[insert_node] is structure:
             # add this as a join to the top items in the main structure (or the structure for the insert node)
@@ -198,11 +198,21 @@ class PathwayStructure():
             # if the join location is to use the full structure
             if join_location == len(prior_nodes[insert_node]):
                 new_structure=[join_type,prior_nodes[insert_node],structure_to_insert]
-                prior_nodes[insert_node]=new_structure
+                if prior_nodes[insert_node] is structure:
+                    structure=[new_structure]
+                else:
+                    prior_nodes[insert_node]=[new_structure]
+                    # update the prior node to point to the location in the new structure
+                    prior_nodes[insert_node]=new_structure[1]
             else:
                 new_structure=[join_type,prior_nodes[insert_node][0:join_location],structure_to_insert]
-                del prior_nodes[insert_node][0:join_location]
-                prior_nodes[insert_node]=[new_structure]+structure
+                if prior_nodes[insert_node] is structure:
+                    structure=[new_structure]+prior_nodes[insert_node][join_location:]
+                else:
+                    prior_nodes[insert_node]=[new_structure]+prior_nodes[insert_node][join_location:]
+                    # update the prior node to point to the location in the new structure
+                    prior_nodes[insert_node]=new_structure[1]
+
         else:
             # check if an AND/OR needs to be added
             if not insert_list[0] in [AND_DELIMITER,OR_DELIMITER]:
@@ -255,6 +265,9 @@ class PathwayStructure():
         structure_by_level={}
         prior_nodes={}
         insert=False
+        first_node=None
+        first_left=None
+        first_right=None
         for level in sorted(nodes_by_levels):
             # start with the node with the most leaves
             for node in nodes_by_levels[level]:
@@ -272,10 +285,28 @@ class PathwayStructure():
                             structure=self.insert_into_structure(structure_to_insert, insert_list, insert_node, insert_location, join_type, prior_nodes, structure)
 
                         else:
-                            structure+=structure_to_insert
+                            # if this has the same reactant (left compound) as the main structure,
+                            # or if this has the same product (right compound) as the main structure,
+                            # then this should be added to the main structure with an OR
+                            # as some multiples of the start node are not included in 
+                            # the predecessors sections
+                            left,right=self.reactions.get(node.get_name(),[set(),set()])
+                            if (first_left and first_left == left) or (first_right and first_right == right):
+                                insert_node=first_node
+                                # find the superlist that contains this node
+                                insert_list, insert_location=find_list(prior_nodes[insert_node], structure)
+                                join_type=OR_DELIMITER
+                                
+                                # insert the sub-structure into the main structure
+                                structure=self.insert_into_structure(structure_to_insert, insert_list, insert_node, insert_location, join_type, prior_nodes, structure)
+                            
+                            else:
+                                structure+=structure_to_insert
                     else:
                         # the first time this is run create the structure
                         # on other runs, insert into the structure
+                        first_node=node
+                        first_left, first_right=self.reactions.get(node.get_name(),[set(),set()])
                         structure, insert_node, join_type=node.create_structure(self.reactions,prior_nodes,structure_by_level)
                         insert=True
                     
@@ -590,7 +621,7 @@ class Node():
                 insert_node_left,insert_node_right=reactions.get(insert_node.get_name(),[set(),set()])
                 
                 join_type=AND_DELIMITER
-                if right and right == insert_node_right:
+                if (right and right == insert_node_right) or (left and left == insert_node_left):
                     join_type=OR_DELIMITER
 
         return structure_by_level[0], insert_node, join_type
