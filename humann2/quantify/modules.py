@@ -380,11 +380,6 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
                 # Compute the structured pathway abundance
                 abundance=compute_structured_pathway_abundance_or_coverage(structure,
                     key_reactions,reaction_scores,False,0)
-
-                # Multiply by the coverage for the pathway
-                median_score_value=pathways_and_reactions_store.max_median_score(bug)
-                abundance=abundance*compute_structured_pathway_abundance_or_coverage(structure,
-                    key_reactions,reaction_scores,True,median_score_value)
             
             else:
                 # Initialize any reactions in the pathway not found to 0

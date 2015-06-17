@@ -351,15 +351,6 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         pathway2_values=[19,20,30,40,50,60]
         pathway2_abundance=len(pathway2_values)/sum(1.0/v for v in pathway2_values)    
         
-        # Get the coverage result
-        # The median in the average of the max value from each pathway
-        median_score_value=(60+14)/2.0
-        coverage_pathway1=len(pathway1_values)/sum(1.0/chi2cdf.chi2cdf(v,median_score_value) for v in pathway1_values)
-        pathway1_abundance=pathway1_abundance*coverage_pathway1
-
-        coverage_pathway2=len(pathway2_values)/sum(1.0/chi2cdf.chi2cdf(v,median_score_value) for v in pathway2_values)
-        pathway2_abundance=pathway2_abundance*coverage_pathway2
-        
         # Find the actual result
         pathways_abundance_store_result=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
         
