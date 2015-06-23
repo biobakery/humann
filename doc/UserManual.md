@@ -745,14 +745,15 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 
 ### HUMAnN2 and paired-end sequencing data ###
 
-While HUMAnN2 is perfectly compatible with paired-end sequencing data, end-pairing relationships are currently not taken into account during the alignment process. This is due to the fact that HUMAnN2 aligns to isolated coding sequences: either at the nucleotide level or through translated search. As such, it will frequently be the case that one read will map inside a given coding sequence while its mate-pair will not.
+End-pairing relationships are currently not taken into account during HUMAnN2's alignment steps. This is due to the fact that HUMAnN2 strictly aligns reads to isolated coding sequences: either at the nucleotide level or through translated search. As such, it will frequently be the case that one read (`READ1`) will map inside a given coding sequence while its mate-pair (`READ2`) will not.
 
+Example:
 ```
 GENEGENEGENE
      READ1-------READ2
 ```
 
-Penalizing such cases would be overly strict: in the absence of a the coding sequence's genomic context, this looks like a perfectly reasonable alignment (READ2 may fall in a non-coding region, and hence be unaligned, or in another [isolated] coding sequence). As a result, the best way to use paired-end sequencing data with HUMAnN2 is simply to concatenate all reads into a single FASTA or FASTQ file.
+Penalizing such cases would be overly strict: in the absence of a the gene's genomic context, this looks like a perfectly reasonable alignment (`READ2` may fall in a non-coding region and not align, or it may align to another [isolated] coding sequence). *As a result, the best way to use paired-end sequencing data with HUMAnN2 is simply to concatenate all reads into a single FASTA or FASTQ file.*
 
 ### PICRUSt output ###
 
