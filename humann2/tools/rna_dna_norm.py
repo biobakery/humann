@@ -6,6 +6,7 @@ Run ./rna_dna_norm.py -h for usage help
 """
 
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
+from math import log
 import argparse
 import sys
 import util
@@ -30,6 +31,11 @@ def get_args ():
         "-o", "--output_basename", 
         default = "results",
         help="Path/basename for the three output tables",
+        )
+    parser.add_argument( 
+        "-l", "--log_transform", 
+        action="store_true",
+        help="Report log2 relative expression values",
         )
     args = parser.parse_args()
     return args
@@ -125,13 +131,15 @@ def main ( ):
         if strat_mode:
             hsum( t )
     # write out dna/rna
-    dna.write( args.output_basename+c_new_dna_extension )
-    rna.write( args.output_basename+c_new_rna_extension )
+    dna.write( args.output_basename+c_new_dna_extension, unfloat=True )
+    rna.write( args.output_basename+c_new_rna_extension, unfloat=True )
     # normalize rna by dna (account for seq depth [scale]), then write
     scale = [d / r for r, d in zip( rna.colsums, dna.colsums )]
     for i in range( len( dna.data ) ):
         rna.data[i] = [s * r / d for s, r, d in zip( scale, rna.data[i], dna.data[i] )]
-    rna.write( args.output_basename+c_norm_rna_extension )
+        if args.log_transform:
+            rna.data[i] = map( lambda x: log( x ) / log( 2 ), rna.data[i] )
+    rna.write( args.output_basename+c_norm_rna_extension, unfloat=True )
 
 if __name__ == "__main__":
     main()

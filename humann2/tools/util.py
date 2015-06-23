@@ -133,12 +133,15 @@ class Table ( ):
                 self.is_stratified = True
                 break
 
-    def write ( self, path=None ):
+    def write ( self, path=None, unfloat=False ):
         fh = try_zip_open( path, "w" ) if path is not None else sys.stdout
         writer = csv.writer( fh, dialect='excel-tab' )
         writer.writerow( [self.anchor] + self.colheads )
         for i in range( len( self.rowheads ) ):
-            writer.writerow( [self.rowheads[i]] + self.data[i] )
+            values = self.data[i][:]
+            if unfloat:
+                values = map( lambda x: "%.6g" % ( x ), values )
+            writer.writerow( [self.rowheads[i]] + values )
 
 def try_zip_open( path, *args ):
     """ 
