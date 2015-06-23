@@ -57,7 +57,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         7. [Strain-level functional profiling](#markdown-header-7-strain-level-functional-profiling)
         8. [Reduce table](#markdown-header-8-reduce-table)
 * [Tutorials](#markdown-header-tutorials)
-    * [Paired-end reads](##markdown-header-humann2-and-paired-end-sequencing-data)
+    * [Paired-end reads](#markdown-header-humann2-and-paired-end-sequencing-data)
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
     * [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile)
