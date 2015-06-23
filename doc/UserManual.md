@@ -57,6 +57,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         7. [Strain-level functional profiling](#markdown-header-7-strain-level-functional-profiling)
         8. [Reduce table](#markdown-header-8-reduce-table)
 * [Tutorials](#markdown-header-tutorials)
+    * [Paired-end reads](##markdown-header-humann2-and-paired-end-sequencing-data)
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
     * [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile)
@@ -741,6 +742,17 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 *   Optional: ``--sort-by {level|name|value}`` to indicate how the output should be sorted (default is original order)
 
 ## Tutorials ##
+
+### HUMAnN2 and paired-end sequencing data ###
+
+While HUMAnN2 is perfectly compatible with paired-end sequencing data, end-pairing relationships are currently not taken into account during the alignment process. This is due to the fact that HUMAnN2 aligns to isolated coding sequences: either at the nucleotide level or through translated search. As such, it will frequently be the case that one read will map inside a given coding sequence while its mate-pair will not.
+
+"""
+GENEGENEGENE
+     READ1-------READ2
+"""
+
+Penalizing such cases would be overly strict: in the absence of a the coding sequence's genomic context, this looks like a perfectly reasonable alignment (READ2 may fall in a non-coding region, and hence be unaligned, or in another [isolated] coding sequence). As a result, the best way to use paired-end sequencing data with HUMAnN2 is simply to concatenate all reads into a single FASTA or FASTQ file.
 
 ### PICRUSt output ###
 
