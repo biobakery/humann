@@ -629,10 +629,11 @@ class GeneScores:
                     
                 try:
                     value=float(data[config.gene_table_value_index])
-                except ValueError:
+                except (ValueError, IndexError):
                     value=0
-                    logger.debug("Unable to convert gene table value to float: %s",
-                        data[config.gene_table_value_index])
+                    if line.rstrip():
+                        logger.debug("Unable to convert gene table value to float: %s",
+                            line.rstrip())
                 self.add_single_score(bug,gene,value)
             line=file_handle.readline()
 
