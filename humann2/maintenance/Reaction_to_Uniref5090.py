@@ -257,6 +257,7 @@ def InitializeProcess(strUniref50gz,  strUniref90gz):
 def GenerateExtract(CommonArea, OutputFileName):
 	strNewLine = "\n"
 	strTab = "\t"
+	strComma = ","
 	ReactionToUnirefCntr = 0
 	sReactionsWritten = set()
 	
@@ -264,7 +265,7 @@ def GenerateExtract(CommonArea, OutputFileName):
 	for Reaction, lACs  in CommonArea["dReactionsToACs"].iteritems():
 		bFlagUnirefFound = False
 		lBuiltRecord = [Reaction]
-		lBuiltRecord.append(CommonArea["dReactionsToECs"][Reaction][0])  #Post the first EC
+		lBuiltRecord.append(strComma.join(CommonArea["dReactionsToECs"][Reaction]))  #Post the list of ECs
 		lU50 = list()
 		lU90 = list()	
 		for AC in lACs:
