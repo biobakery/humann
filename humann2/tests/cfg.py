@@ -27,10 +27,17 @@ pathways_flat_file=os.path.join(data_folder, "test_pathways_flat.tsv")
 reactions_file=os.path.join(data_folder, "reactions.tsv")
 
 usearch_file=os.path.join(data_folder, "usearch_output.tsv")
+usearch_uniref50_file=os.path.join(data_folder, "usearch_with_uniref50_output.tsv")
 usearch_file_bug_list=["bug1","bug2","bug3","unclassified"]
 usearch_file_gene_list=["UniRef50_unknown","gene1","gene2","gene3","gene4","gene5"]
 
 gene_familes_file=os.path.join(data_folder, "gene_families.tsv")
+gene_familes_uniref50_with_names_file=os.path.join(data_folder, "gene_families_uniref50_with_names.tsv")
+larger_gene_families_uniref50_with_names_file=os.path.join(data_folder, "demo_genefamilies_with_names.tsv")
+gene_families_to_names_file=os.path.join(data_folder, "small_map_uniref50_name.txt.gz")
+
+demo_pathabundance_file=os.path.join(data_folder, "demo_pathabundance_with_names.tsv")
+demo_pathcoverage_file=os.path.join(data_folder, "demo_pathcoverage_with_names.tsv")
 
 sam_file_with_header=os.path.join(data_folder, "file_with_header.sam")
 sam_file_without_header=os.path.join(data_folder, "file_without_header.sam")

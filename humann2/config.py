@@ -246,6 +246,12 @@ metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_direc
 unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_uniprots.uniref"))
 unipathway_database_part2=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_pathways"))
 
+# pathways and gene families name mapping files
+gene_family_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_uniref50_name.txt.gz"))
+pathway_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_metacyc-pwy_name.txt.gz"))
+name_mapping_file_delimiter="\t"
+name_mapping_join=": "
+
 # pathways database selection
 pathways_database_choices=["metacyc","unipathway"]
 pathways_database=pathways_database_choices[0]

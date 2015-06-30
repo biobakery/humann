@@ -29,6 +29,7 @@ import math
 
 from .. import config
 from .. import utilities
+from .. import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -43,8 +44,11 @@ def gene_families(alignments,gene_scores):
     # Compute scores for each gene family for each bug set
     alignments.convert_alignments_to_gene_scores(gene_scores)
         
+    # Process the gene id to names mappings
+    gene_names=store.Names(config.gene_family_name_mapping_file)
+     
     # Write the scores ordered with the top first
-    tsv_output=["# Gene Family"+config.output_file_column_delimiter+config.file_basename]
+    tsv_output=["# Gene Family"+config.output_file_column_delimiter+config.file_basename+"_Abundance"]
     
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter
@@ -55,15 +59,16 @@ def gene_families(alignments,gene_scores):
         if not gene in config.uniref_gene_filters:
             all_score=gene_scores.get_score("all",gene)
             if all_score>0:
+                gene_name=gene_names.get_name(gene)
                 # Print the computation of all bugs for gene family
-                tsv_output.append(gene+delimiter+utilities.format_float_to_string(all_score))
+                tsv_output.append(gene_name+delimiter+utilities.format_float_to_string(all_score))
                 # Process and print per bug if selected
                 if not config.remove_stratified_output:
                     # Print scores per bug for family ordered with those with the highest values first
                     scores_by_bug=gene_scores.get_scores_for_gene_by_bug(gene)
                     for bug in utilities.double_sort(scores_by_bug):
                         if scores_by_bug[bug]>0:
-                            tsv_output.append(gene+category_delimiter+bug+delimiter
+                            tsv_output.append(gene_name+category_delimiter+bug+delimiter
                                 +utilities.format_float_to_string(scores_by_bug[bug]))       
         
     if config.output_format=="biom":

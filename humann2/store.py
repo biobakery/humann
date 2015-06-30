@@ -32,6 +32,7 @@ import logging
 import copy
 import math
 import sys
+import gzip
 
 from . import config
 from . import utilities
@@ -626,6 +627,10 @@ class GeneScores:
                         bug=gene_data[1]
                     else:
                         gene=data[config.gene_table_gene_index]
+                    
+                # remove the name of the gene if present
+                if gene:
+                    gene=gene.split(config.name_mapping_join)[0]
                     
                 try:
                     value=float(data[config.gene_table_value_index])
@@ -1341,4 +1346,64 @@ class Reads:
         
         return self.__initial_read_count
          
+class Names:
+    """ 
+    Holds all of the names that map to ids from a given file 
+    """
+    
+    def __init__(self,file=None):
+        """
+        Read in the names and store
+        """
+        
+        self.__names={}
+        
+        # Check the file exists and is readable
+        unreadable_file=False
+        if file is None:
+            unreadable_file=True
+        else:
+            try:
+                utilities.file_exists_readable(file, raise_IOError=True)
+            except IOError:
+                unreadable_file=True
+                logger.debug("Unable to read Names file: " + file)
+            
+                       
+        # Test if this is a gzipped file
+        if not unreadable_file:
+            if file.endswith(".gz"):
+                file_handle = gzip.open(file, "r")
+            else:
+                file_handle = open(file,"r")
+                
+            line=file_handle.readline()
+            while line:
+                try:
+                    data = line.rstrip().split(config.name_mapping_file_delimiter)
+                    id = data[0]
+                    name = data[1]
+                except IndexError:
+                    id = ""
+                
+                if id:
+                    self.__names[id]=name
+                line=file_handle.readline()
+                
+            file_handle.close()
+            
+    def get_name(self,id):
+        """
+        Return the name for the given id
+        """
+        
+        name = self.__names.get(id,"")
+        
+        if name:
+            name = id + config.name_mapping_join + name
+        else:
+            # If there is not a name for the id, then just use the id
+            name = id
+        
+        return name
     

@@ -1,0 +1,363 @@
+# Pathway	HUMAnN2_test_Coverage
+PWY-1042: glycolysis IV (plant cytosol)	0.5000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_caccae	0.3000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.3000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Parabacteroides.s__Parabacteroides_distasonis	0.3000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Alistipes.s__Alistipes_shahii	0.2000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_stercoris	0.2000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.2000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Eubacterium.s__Eubacterium_rectale	0.2000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Parabacteroides.s__Parabacteroides_merdae	0.2000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Ruminococcus.s__Ruminococcus_bromii	0.2000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_uniformis	0.1000000
+PWY-1042: glycolysis IV (plant cytosol)|g__Dialister.s__Dialister_invisus	0.1000000
+PWY-5484: glycolysis II (from fructose-6P)	0.3636364
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.2727273
+PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2727273
+PWY-5484: glycolysis II (from fructose-6P)|g__Alistipes.s__Alistipes_shahii	0.1818182
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1818182
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_stercoris	0.1818182
+PWY-5484: glycolysis II (from fructose-6P)|g__Eubacterium.s__Eubacterium_rectale	0.1818182
+PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides_merdae	0.1818182
+PWY-5484: glycolysis II (from fructose-6P)|g__Ruminococcus.s__Ruminococcus_bromii	0.1818182
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0909091
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_uniformis	0.0909091
+PWY-5484: glycolysis II (from fructose-6P)|g__Dialister.s__Dialister_invisus	0.0909091
+GLYCOLYSIS: glycolysis I (from glucose-6P)	0.3333333
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.2500000
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2500000
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Alistipes.s__Alistipes_shahii	0.1666667
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1666667
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Bacteroides.s__Bacteroides_stercoris	0.1666667
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Eubacterium.s__Eubacterium_rectale	0.1666667
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Parabacteroides.s__Parabacteroides_merdae	0.1666667
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Ruminococcus.s__Ruminococcus_bromii	0.1666667
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0833333
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Bacteroides.s__Bacteroides_uniformis	0.0833333
+GLYCOLYSIS: glycolysis I (from glucose-6P)|g__Dialister.s__Dialister_invisus	0.0833333
+P341-PWY: glycolysis V (Pyrococcus)	0.3333333
+P341-PWY: glycolysis V (Pyrococcus)|g__Alistipes.s__Alistipes_shahii	0.2222222
+P341-PWY: glycolysis V (Pyrococcus)|g__Bacteroides.s__Bacteroides_caccae	0.2222222
+P341-PWY: glycolysis V (Pyrococcus)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.2222222
+P341-PWY: glycolysis V (Pyrococcus)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2222222
+P341-PWY: glycolysis V (Pyrococcus)|g__Parabacteroides.s__Parabacteroides_merdae	0.2222222
+P341-PWY: glycolysis V (Pyrococcus)|g__Bacteroides.s__Bacteroides_stercoris	0.1111111
+P341-PWY: glycolysis V (Pyrococcus)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1111111
+P341-PWY: glycolysis V (Pyrococcus)|g__Bacteroides.s__Bacteroides_uniformis	0.1111111
+P341-PWY: glycolysis V (Pyrococcus)|g__Eubacterium.s__Eubacterium_rectale	0.1111111
+P341-PWY: glycolysis V (Pyrococcus)|g__Ruminococcus.s__Ruminococcus_bromii	0.1111111
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)	0.3000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Bacteroides.s__Bacteroides_caccae	0.2000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Eubacterium.s__Eubacterium_rectale	0.2000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Ruminococcus.s__Ruminococcus_bromii	0.2000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Alistipes.s__Alistipes_shahii	0.1000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Bacteroides.s__Bacteroides_stercoris	0.1000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Bacteroides.s__Bacteroides_uniformis	0.1000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Dialister.s__Dialister_invisus	0.1000000
+ANAGLYCOLYSIS-PWY: glycolysis III (from glucose)|g__Parabacteroides.s__Parabacteroides_merdae	0.1000000
+PWY66-400: glycolysis VI (metazoan)	0.3000000
+PWY66-400: glycolysis VI (metazoan)|g__Bacteroides.s__Bacteroides_caccae	0.2000000
+PWY66-400: glycolysis VI (metazoan)|g__Eubacterium.s__Eubacterium_rectale	0.2000000
+PWY66-400: glycolysis VI (metazoan)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2000000
+PWY66-400: glycolysis VI (metazoan)|g__Ruminococcus.s__Ruminococcus_bromii	0.2000000
+PWY66-400: glycolysis VI (metazoan)|g__Alistipes.s__Alistipes_shahii	0.1000000
+PWY66-400: glycolysis VI (metazoan)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1000000
+PWY66-400: glycolysis VI (metazoan)|g__Bacteroides.s__Bacteroides_stercoris	0.1000000
+PWY66-400: glycolysis VI (metazoan)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1000000
+PWY66-400: glycolysis VI (metazoan)|g__Bacteroides.s__Bacteroides_uniformis	0.1000000
+PWY66-400: glycolysis VI (metazoan)|g__Dialister.s__Dialister_invisus	0.1000000
+PWY66-400: glycolysis VI (metazoan)|g__Parabacteroides.s__Parabacteroides_merdae	0.1000000
+ANAEROFRUCAT-PWY: homolactic fermentation	0.2857143
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Bacteroides.s__Bacteroides_caccae	0.2142857
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Parabacteroides.s__Parabacteroides_distasonis	0.2142857
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Alistipes.s__Alistipes_shahii	0.1428571
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1428571
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Bacteroides.s__Bacteroides_stercoris	0.1428571
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Eubacterium.s__Eubacterium_rectale	0.1428571
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Parabacteroides.s__Parabacteroides_merdae	0.1428571
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Ruminococcus.s__Ruminococcus_bromii	0.1428571
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0714286
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Bacteroides.s__Bacteroides_uniformis	0.0714286
+ANAEROFRUCAT-PWY: homolactic fermentation|g__Dialister.s__Dialister_invisus	0.0714286
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)	0.2352941
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Bacteroides.s__Bacteroides_caccae	0.1764706
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Parabacteroides.s__Parabacteroides_distasonis	0.1764706
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Alistipes.s__Alistipes_shahii	0.1176471
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1176471
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Bacteroides.s__Bacteroides_stercoris	0.1176471
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Eubacterium.s__Eubacterium_rectale	0.1176471
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Parabacteroides.s__Parabacteroides_merdae	0.1176471
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Ruminococcus.s__Ruminococcus_bromii	0.1176471
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0588235
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Bacteroides.s__Bacteroides_uniformis	0.0588235
+HEXITOLDEGSUPER-PWY: superpathway of hexitol degradation (bacteria)|g__Dialister.s__Dialister_invisus	0.0588235
+GLUCONEO-PWY: gluconeogenesis I	0.2307692
+GLUCONEO-PWY: gluconeogenesis I|g__Bacteroides.s__Bacteroides_caccae	0.2307692
+GLUCONEO-PWY: gluconeogenesis I|g__Alistipes.s__Alistipes_shahii	0.1538462
+GLUCONEO-PWY: gluconeogenesis I|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1538462
+GLUCONEO-PWY: gluconeogenesis I|g__Parabacteroides.s__Parabacteroides_distasonis	0.1538462
+GLUCONEO-PWY: gluconeogenesis I|g__Parabacteroides.s__Parabacteroides_merdae	0.1538462
+GLUCONEO-PWY: gluconeogenesis I|g__Ruminococcus.s__Ruminococcus_bromii	0.1538462
+GLUCONEO-PWY: gluconeogenesis I|g__Bacteroides.s__Bacteroides_stercoris	0.0769231
+GLUCONEO-PWY: gluconeogenesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0769231
+GLUCONEO-PWY: gluconeogenesis I|g__Bacteroides.s__Bacteroides_uniformis	0.0769231
+GLUCONEO-PWY: gluconeogenesis I|g__Dialister.s__Dialister_invisus	0.0769231
+GLUCONEO-PWY: gluconeogenesis I|g__Eubacterium.s__Eubacterium_rectale	0.0769231
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle	0.2272727
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Bacteroides.s__Bacteroides_caccae	0.1363636
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1363636
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Parabacteroides.s__Parabacteroides_distasonis	0.1363636
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Alistipes.s__Alistipes_shahii	0.0909091
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Bacteroides.s__Bacteroides_stercoris	0.0909091
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0909091
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Eubacterium.s__Eubacterium_rectale	0.0909091
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Parabacteroides.s__Parabacteroides_merdae	0.0909091
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Ruminococcus.s__Ruminococcus_bromii	0.0909091
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Bacteroides.s__Bacteroides_uniformis	0.0454545
+PWY-5464: superpathway of cytosolic glycolysis (plants), pyruvate dehydrogenase and TCA cycle|g__Dialister.s__Dialister_invisus	0.0454545
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)	0.2222222
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2222222
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Alistipes.s__Alistipes_shahii	0.1111111
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Bacteroides.s__Bacteroides_caccae	0.1111111
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Bacteroides.s__Bacteroides_stercoris	0.1111111
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1111111
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Bacteroides.s__Bacteroides_uniformis	0.1111111
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Eubacterium.s__Eubacterium_rectale	0.1111111
+PWY-1861: formaldehyde assimilation II (RuMP Cycle)|g__Parabacteroides.s__Parabacteroides_merdae	0.1111111
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)	0.2222222
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.2222222
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Alistipes.s__Alistipes_shahii	0.1111111
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Bacteroides.s__Bacteroides_caccae	0.1111111
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Bacteroides.s__Bacteroides_stercoris	0.1111111
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Parabacteroides.s__Parabacteroides_distasonis	0.1111111
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Parabacteroides.s__Parabacteroides_merdae	0.1111111
+PWY-2221: Entner-Doudoroff pathway III (semi-phosphorylative)|g__Ruminococcus.s__Ruminococcus_bromii	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)	0.2222222
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Parabacteroides.s__Parabacteroides_distasonis	0.2222222
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Alistipes.s__Alistipes_shahii	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Bacteroides.s__Bacteroides_caccae	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Bacteroides.s__Bacteroides_stercoris	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Bacteroides.s__Bacteroides_uniformis	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Eubacterium.s__Eubacterium_rectale	0.1111111
+PWY-7385: 1,3-propanediol biosynthesis (engineered)|g__Parabacteroides.s__Parabacteroides_merdae	0.1111111
+PWY-3801: sucrose degradation II (sucrose synthase)	0.2105263
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Bacteroides.s__Bacteroides_caccae	0.1578947
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Parabacteroides.s__Parabacteroides_distasonis	0.1578947
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Alistipes.s__Alistipes_shahii	0.1052632
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1052632
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Bacteroides.s__Bacteroides_stercoris	0.1052632
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Eubacterium.s__Eubacterium_rectale	0.1052632
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Parabacteroides.s__Parabacteroides_merdae	0.1052632
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Ruminococcus.s__Ruminococcus_bromii	0.1052632
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0526316
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Bacteroides.s__Bacteroides_uniformis	0.0526316
+PWY-3801: sucrose degradation II (sucrose synthase)|g__Dialister.s__Dialister_invisus	0.0526316
+PWY-7345: superpathway of anaerobic sucrose degradation	0.2105263
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Bacteroides.s__Bacteroides_caccae	0.1578947
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Parabacteroides.s__Parabacteroides_distasonis	0.1578947
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Alistipes.s__Alistipes_shahii	0.1052632
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1052632
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Bacteroides.s__Bacteroides_stercoris	0.1052632
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Eubacterium.s__Eubacterium_rectale	0.1052632
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Parabacteroides.s__Parabacteroides_merdae	0.1052632
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Ruminococcus.s__Ruminococcus_bromii	0.1052632
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0526316
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Bacteroides.s__Bacteroides_uniformis	0.0526316
+PWY-7345: superpathway of anaerobic sucrose degradation|g__Dialister.s__Dialister_invisus	0.0526316
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate	0.2000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Bacteroides.s__Bacteroides_caccae	0.1500000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Parabacteroides.s__Parabacteroides_distasonis	0.1500000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Alistipes.s__Alistipes_shahii	0.1000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Bacteroides.s__Bacteroides_stercoris	0.1000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Eubacterium.s__Eubacterium_rectale	0.1000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Parabacteroides.s__Parabacteroides_merdae	0.1000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Ruminococcus.s__Ruminococcus_bromii	0.1000000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0500000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Bacteroides.s__Bacteroides_uniformis	0.0500000
+P461-PWY: hexitol fermentation to lactate, formate, ethanol and acetate|g__Dialister.s__Dialister_invisus	0.0500000
+PWY-5723: Rubisco shunt	0.2000000
+PWY-5723: Rubisco shunt|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.2000000
+PWY-5723: Rubisco shunt|g__Alistipes.s__Alistipes_shahii	0.1000000
+PWY-5723: Rubisco shunt|g__Bacteroides.s__Bacteroides_caccae	0.1000000
+PWY-5723: Rubisco shunt|g__Bacteroides.s__Bacteroides_stercoris	0.1000000
+PWY-5723: Rubisco shunt|g__Parabacteroides.s__Parabacteroides_distasonis	0.1000000
+PWY-5723: Rubisco shunt|g__Parabacteroides.s__Parabacteroides_merdae	0.1000000
+PWY-5723: Rubisco shunt|g__Ruminococcus.s__Ruminococcus_bromii	0.1000000
+P441-PWY: superpathway of N-acetylneuraminate degradation	0.1904762
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Bacteroides.s__Bacteroides_caccae	0.1428571
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Parabacteroides.s__Parabacteroides_distasonis	0.1428571
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Alistipes.s__Alistipes_shahii	0.0952381
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0952381
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Bacteroides.s__Bacteroides_stercoris	0.0952381
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Eubacterium.s__Eubacterium_rectale	0.0952381
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Parabacteroides.s__Parabacteroides_merdae	0.0952381
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Ruminococcus.s__Ruminococcus_bromii	0.0952381
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0476190
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Bacteroides.s__Bacteroides_uniformis	0.0476190
+P441-PWY: superpathway of N-acetylneuraminate degradation|g__Dialister.s__Dialister_invisus	0.0476190
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Alistipes.s__Alistipes_shahii	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Bacteroides.s__Bacteroides_caccae	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Bacteroides.s__Bacteroides_uniformis	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Eubacterium.s__Eubacterium_rectale	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Parabacteroides.s__Parabacteroides_distasonis	0.1666667
+PWY66-373: sucrose degradation V (sucrose &alpha;-glucosidase)|g__Parabacteroides.s__Parabacteroides_merdae	0.1666667
+PWY66-399: gluconeogenesis III	0.1666667
+PWY66-399: gluconeogenesis III|g__Bacteroides.s__Bacteroides_caccae	0.1666667
+PWY66-399: gluconeogenesis III|g__Ruminococcus.s__Ruminococcus_bromii	0.1666667
+PWY66-399: gluconeogenesis III|g__Alistipes.s__Alistipes_shahii	0.0833333
+PWY66-399: gluconeogenesis III|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0833333
+PWY66-399: gluconeogenesis III|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0833333
+PWY66-399: gluconeogenesis III|g__Bacteroides.s__Bacteroides_uniformis	0.0833333
+PWY66-399: gluconeogenesis III|g__Dialister.s__Dialister_invisus	0.0833333
+PWY66-399: gluconeogenesis III|g__Eubacterium.s__Eubacterium_rectale	0.0833333
+PWY66-399: gluconeogenesis III|g__Parabacteroides.s__Parabacteroides_distasonis	0.0833333
+PWY66-399: gluconeogenesis III|g__Parabacteroides.s__Parabacteroides_merdae	0.0833333
+PWY-7003: glycerol degradation to butanol	0.1538462
+PWY-7003: glycerol degradation to butanol|g__Bacteroides.s__Bacteroides_caccae	0.1538462
+PWY-7003: glycerol degradation to butanol|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1538462
+PWY-7003: glycerol degradation to butanol|g__Ruminococcus.s__Ruminococcus_bromii	0.1538462
+PWY-7003: glycerol degradation to butanol|g__Alistipes.s__Alistipes_shahii	0.0769231
+PWY-7003: glycerol degradation to butanol|g__Bacteroides.s__Bacteroides_stercoris	0.0769231
+PWY-7003: glycerol degradation to butanol|g__Dialister.s__Dialister_invisus	0.0769231
+PWY-7003: glycerol degradation to butanol|g__Eubacterium.s__Eubacterium_rectale	0.0769231
+PWY-7003: glycerol degradation to butanol|g__Parabacteroides.s__Parabacteroides_distasonis	0.0769231
+PWY-7003: glycerol degradation to butanol|g__Parabacteroides.s__Parabacteroides_merdae	0.0769231
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)	0.1500000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Alistipes.s__Alistipes_shahii	0.1000000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Bacteroides.s__Bacteroides_caccae	0.1000000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1000000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Parabacteroides.s__Parabacteroides_distasonis	0.1000000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Parabacteroides.s__Parabacteroides_merdae	0.1000000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Bacteroides.s__Bacteroides_stercoris	0.0500000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0500000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Bacteroides.s__Bacteroides_uniformis	0.0500000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Eubacterium.s__Eubacterium_rectale	0.0500000
+PWY-6142: gluconeogenesis II (Methanobacterium thermoautotrophicum)|g__Ruminococcus.s__Ruminococcus_bromii	0.0500000
+PWY-6531: mannitol cycle	0.1428571
+PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1428571
+PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1428571
+P124-PWY: Bifidobacterium shunt	0.1333333
+P124-PWY: Bifidobacterium shunt|g__Bacteroides.s__Bacteroides_caccae	0.1333333
+P124-PWY: Bifidobacterium shunt|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1333333
+P124-PWY: Bifidobacterium shunt|g__Ruminococcus.s__Ruminococcus_bromii	0.1333333
+P124-PWY: Bifidobacterium shunt|g__Alistipes.s__Alistipes_shahii	0.0666667
+P124-PWY: Bifidobacterium shunt|g__Bacteroides.s__Bacteroides_stercoris	0.0666667
+P124-PWY: Bifidobacterium shunt|g__Dialister.s__Dialister_invisus	0.0666667
+P124-PWY: Bifidobacterium shunt|g__Parabacteroides.s__Parabacteroides_distasonis	0.0666667
+P124-PWY: Bifidobacterium shunt|g__Parabacteroides.s__Parabacteroides_merdae	0.0666667
+PWY-7124: ethylene biosynthesis V	0.1200000
+PWY-7124: ethylene biosynthesis V|g__Alistipes.s__Alistipes_shahii	0.0800000
+PWY-7124: ethylene biosynthesis V|g__Bacteroides.s__Bacteroides_caccae	0.0800000
+PWY-7124: ethylene biosynthesis V|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0800000
+PWY-7124: ethylene biosynthesis V|g__Parabacteroides.s__Parabacteroides_distasonis	0.0800000
+PWY-7124: ethylene biosynthesis V|g__Parabacteroides.s__Parabacteroides_merdae	0.0800000
+PWY-7124: ethylene biosynthesis V|g__Ruminococcus.s__Ruminococcus_bromii	0.0800000
+PWY-7124: ethylene biosynthesis V|g__Bacteroides.s__Bacteroides_stercoris	0.0400000
+PWY-7124: ethylene biosynthesis V|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0400000
+PWY-7124: ethylene biosynthesis V|g__Bacteroides.s__Bacteroides_uniformis	0.0400000
+PWY-7124: ethylene biosynthesis V|g__Dialister.s__Dialister_invisus	0.0400000
+PWY-7124: ethylene biosynthesis V|g__Eubacterium.s__Eubacterium_rectale	0.0400000
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis	0.1153846
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Alistipes.s__Alistipes_shahii	0.0769231
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Bacteroides.s__Bacteroides_caccae	0.0769231
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0769231
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Parabacteroides.s__Parabacteroides_distasonis	0.0769231
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Parabacteroides.s__Parabacteroides_merdae	0.0769231
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Ruminococcus.s__Ruminococcus_bromii	0.0769231
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0384615
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0384615
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Bacteroides.s__Bacteroides_uniformis	0.0384615
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Dialister.s__Dialister_invisus	0.0384615
+PWY-7218: photosynthetic 3-hydroxybutyrate biosynthesis|g__Eubacterium.s__Eubacterium_rectale	0.0384615
+NPGLUCAT-PWY: Entner-Doudoroff pathway II (non-phosphorylative)	0.1111111
+NPGLUCAT-PWY: Entner-Doudoroff pathway II (non-phosphorylative)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1111111
+NPGLUCAT-PWY: Entner-Doudoroff pathway II (non-phosphorylative)|g__Ruminococcus.s__Ruminococcus_bromii	0.1111111
+PWY-6901: superpathway of glucose and xylose degradation	0.1111111
+PWY-6901: superpathway of glucose and xylose degradation|g__Bacteroides.s__Bacteroides_caccae	0.1111111
+PWY-6901: superpathway of glucose and xylose degradation|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.1111111
+PWY-6901: superpathway of glucose and xylose degradation|g__Ruminococcus.s__Ruminococcus_bromii	0.1111111
+PWY-6901: superpathway of glucose and xylose degradation|g__Alistipes.s__Alistipes_shahii	0.0555556
+PWY-6901: superpathway of glucose and xylose degradation|g__Bacteroides.s__Bacteroides_stercoris	0.0555556
+PWY-6901: superpathway of glucose and xylose degradation|g__Dialister.s__Dialister_invisus	0.0555556
+PWY-6901: superpathway of glucose and xylose degradation|g__Parabacteroides.s__Parabacteroides_distasonis	0.0555556
+PWY-6901: superpathway of glucose and xylose degradation|g__Parabacteroides.s__Parabacteroides_merdae	0.0555556
+PWY-6886: 1-butanol autotrophic biosynthesis	0.1000000
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Alistipes.s__Alistipes_shahii	0.0666667
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Bacteroides.s__Bacteroides_caccae	0.0666667
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0666667
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Parabacteroides.s__Parabacteroides_distasonis	0.0666667
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Parabacteroides.s__Parabacteroides_merdae	0.0666667
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Ruminococcus.s__Ruminococcus_bromii	0.0666667
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0333333
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0333333
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Bacteroides.s__Bacteroides_uniformis	0.0333333
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Dialister.s__Dialister_invisus	0.0333333
+PWY-6886: 1-butanol autotrophic biosynthesis|g__Eubacterium.s__Eubacterium_rectale	0.0333333
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Bacteroides.s__Bacteroides_caccae	0.2000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Alistipes.s__Alistipes_shahii	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Bacteroides.s__Bacteroides_uniformis	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Dialister.s__Dialister_invisus	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Parabacteroides.s__Parabacteroides_distasonis	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Parabacteroides.s__Parabacteroides_merdae	0.1000000
+SUCSYN-PWY: sucrose biosynthesis I (from photosynthesis)|g__Ruminococcus.s__Ruminococcus_bromii	0.1000000
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Bacteroides.s__Bacteroides_caccae	0.1666667
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Alistipes.s__Alistipes_shahii	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Bacteroides.s__Bacteroides_uniformis	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Dialister.s__Dialister_invisus	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Eubacterium.s__Eubacterium_rectale	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Parabacteroides.s__Parabacteroides_distasonis	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Parabacteroides.s__Parabacteroides_merdae	0.0833333
+P185-PWY: formaldehyde assimilation III (dihydroxyacetone cycle)|g__Ruminococcus.s__Ruminococcus_bromii	0.0833333
+ANARESP1-PWY: respiration (anaerobic)	0.0769231
+ANARESP1-PWY: respiration (anaerobic)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0769231
+ANARESP1-PWY: respiration (anaerobic)|g__Ruminococcus.s__Ruminococcus_bromii	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Alistipes.s__Alistipes_shahii	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_caccae	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_uniformis	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Dialister.s__Dialister_invisus	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Eubacterium.s__Eubacterium_rectale	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Parabacteroides.s__Parabacteroides_distasonis	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Parabacteroides.s__Parabacteroides_merdae	0.0769231
+CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Ruminococcus.s__Ruminococcus_bromii	0.0769231
+PWY-1622: formaldehyde assimilation I (serine pathway)	0.0769231
+PWY-1622: formaldehyde assimilation I (serine pathway)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0769231
+PWY-1622: formaldehyde assimilation I (serine pathway)|g__Ruminococcus.s__Ruminococcus_bromii	0.0769231
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism	0.0625000
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Alistipes.s__Alistipes_shahii	0.0416667
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Bacteroides.s__Bacteroides_caccae	0.0416667
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0416667
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Parabacteroides.s__Parabacteroides_distasonis	0.0416667
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Parabacteroides.s__Parabacteroides_merdae	0.0416667
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Bacteroides.s__Bacteroides_stercoris	0.0208333
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0208333
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Bacteroides.s__Bacteroides_uniformis	0.0208333
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Eubacterium.s__Eubacterium_rectale	0.0208333
+PWY-6146: Methanobacterium thermoautotrophicum biosynthetic metabolism|g__Ruminococcus.s__Ruminococcus_bromii	0.0208333
+PHOTOALL-PWY: oxygenic photosynthesis	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Alistipes.s__Alistipes_shahii	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Bacteroides.s__Bacteroides_caccae	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Bacteroides.s__Bacteroides_uniformis	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Dialister.s__Dialister_invisus	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Eubacterium.s__Eubacterium_rectale	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Parabacteroides.s__Parabacteroides_distasonis	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Parabacteroides.s__Parabacteroides_merdae	0.0588235
+PHOTOALL-PWY: oxygenic photosynthesis|g__Ruminococcus.s__Ruminococcus_bromii	0.0588235
+P122-PWY: heterolactic fermentation	0.0555556
+P122-PWY: heterolactic fermentation|g__Ruminococcus.s__Ruminococcus_bromii	0.1111111
+P122-PWY: heterolactic fermentation|g__Bacteroides.s__Bacteroides_caccae	0.0555556
+P122-PWY: heterolactic fermentation|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.0555556
+P122-PWY: heterolactic fermentation|g__Dialister.s__Dialister_invisus	0.0555556

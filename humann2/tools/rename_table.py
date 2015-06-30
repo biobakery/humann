@@ -33,7 +33,8 @@ def rename ( table, polymap ):
     seen = {}
     for i, rowhead in enumerate( table.rowheads ):
         items = rowhead.split( util.c_strat_delim )
-        old_name = items[0]
+        # account for previously renamed features
+        old_name = items[0].split( util.c_name_delim )[0]
         seen[old_name] = False
         if old_name in polymap:
             new_name = util.c_multiname_delim.join( polymap[old_name].keys() )

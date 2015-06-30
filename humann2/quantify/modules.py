@@ -401,7 +401,7 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     return pathways_abundance_store
     
     
-def print_pathways(pathways, file, header):
+def print_pathways(pathways, file, header, pathway_names):
     """
     Print the pathways data to a file organized by pathway
     """
@@ -412,21 +412,22 @@ def print_pathways(pathways, file, header):
     category_delimiter=config.output_file_category_delimiter            
  
     # Create the header
-    tsv_output=["# Pathway"+ delimiter + config.file_basename]       
+    tsv_output=["# Pathway"+ delimiter + config.file_basename + header]       
             
     # Print out the pathways with those with the highest scores first
     for pathway in pathways.get_pathways_double_sorted():
         all_score=pathways.get_score(pathway)
         if all_score>0:
+            pathway_name=pathway_names.get_name(pathway)
             # Print the computation of all bugs for pathway
-            tsv_output.append(pathway+delimiter+utilities.format_float_to_string(all_score))
+            tsv_output.append(pathway_name+delimiter+utilities.format_float_to_string(all_score))
             # Process and print per bug if selected
             if not config.remove_stratified_output:
                 # Print scores per bug for pathway ordered with those with the highest values first
                 for bug in pathways.get_bugs_double_sorted(pathway):
                     score=pathways.get_score_for_bug(bug,pathway)
                     if score>0:
-                        tsv_output.append(pathway+category_delimiter+bug+delimiter
+                        tsv_output.append(pathway_name+category_delimiter+bug+delimiter
                             +utilities.format_float_to_string(score))
  
     if config.output_format == "biom":
@@ -450,18 +451,21 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     Compute the abundance and coverage of the pathways
     """
     
+    # Read in and store the pathway id to name mappings
+    pathway_names=store.Names(config.pathway_name_mapping_file)
+    
     # Compute abundance for all pathways
     pathways_abundance=compute_pathways_abundance(pathways_and_reactions_store,
         pathways_database)
 
     # Print the pathways abundance data to file
-    print_pathways(pathways_abundance, config.pathabundance_file, "Abundance (reads per kilobase)")
+    print_pathways(pathways_abundance, config.pathabundance_file, "_Abundance", pathway_names)
     
     # Compute coverage for all pathways
     pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
         pathways_database)
     
     # Print the pathways abundance data to file
-    print_pathways(pathways_coverage, config.pathcoverage_file, "Coverage")
+    print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", pathway_names)
 
     return config.pathabundance_file, config.pathcoverage_file

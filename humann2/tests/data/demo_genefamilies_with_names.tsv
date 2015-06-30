@@ -1,0 +1,2169 @@
+# Gene Family	demo
+UniRef50_O83668: Fructose-bisphosphate aldolase	12.9443495581
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_caccae	3.9800995025
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	3.9800995025
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Parabacteroides.s__Parabacteroides_distasonis	1.0010010010
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Parabacteroides.s__Parabacteroides_merdae	1.0010010010
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Alistipes.s__Alistipes_shahii	0.9980039920
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9950248756
+UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_uniformis	0.9891196835
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1	11.3988169701
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Parabacteroides.s__Parabacteroides_distasonis	2.8490489680
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Bacteroides.s__Bacteroides_caccae	2.8490028490
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Bacteroides.s__Bacteroides_uniformis	1.9047619048
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Bacteroides.s__Bacteroides_stercoris	0.9523809524
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Alistipes.s__Alistipes_shahii	0.9496676163
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9496676163
+UniRef50_P0A992: Fructose-bisphosphate aldolase class 1|g__Parabacteroides.s__Parabacteroides_merdae	0.9442870633
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase	10.9300697131
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	4.2501517911
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.4286581664
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase|g__Bacteroides.s__Bacteroides_caccae	1.2143290832
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase|g__Bacteroides.s__Bacteroides_stercoris	1.2143290832
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase|g__Bacteroides.s__Bacteroides_uniformis	1.2143290832
+UniRef50_O83553: Pyrophosphate--fructose 6-phosphate 1-phosphotransferase|g__Parabacteroides.s__Parabacteroides_distasonis	0.6082725061
+UniRef50_B2GAM0: Enolase	10.1176432178
+UniRef50_B2GAM0: Enolase|g__Bacteroides.s__Bacteroides_cellulosilyticus	3.1225604996
+UniRef50_B2GAM0: Enolase|g__Parabacteroides.s__Parabacteroides_distasonis	1.5612802498
+UniRef50_B2GAM0: Enolase|g__Bacteroides.s__Bacteroides_uniformis	1.5558339234
+UniRef50_B2GAM0: Enolase|g__Bacteroides.s__Bacteroides_caccae	0.7806401249
+UniRef50_B2GAM0: Enolase|g__Bacteroides.s__Bacteroides_stercoris	0.7806401249
+UniRef50_B2GAM0: Enolase|g__Parabacteroides.s__Parabacteroides_merdae	0.7788161994
+UniRef50_B2GAM0: Enolase|g__Dialister.s__Dialister_invisus	0.7698229407
+UniRef50_B2GAM0: Enolase|g__Alistipes.s__Alistipes_shahii	0.7680491551
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase	9.2163078805
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.6402640264
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Bacteroides.s__Bacteroides_caccae	1.9801980198
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Alistipes.s__Alistipes_shahii	1.9607843137
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.3201320132
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Parabacteroides.s__Parabacteroides_merdae	0.6587615283
+UniRef50_A6L050: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Parabacteroides.s__Parabacteroides_distasonis	0.6561679790
+UniRef50_P58812: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase	8.1829003779
+UniRef50_P58812: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Parabacteroides.s__Parabacteroides_distasonis	4.1356492969
+UniRef50_P58812: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Parabacteroides.s__Parabacteroides_merdae	1.6625103907
+UniRef50_P58812: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Bacteroides.s__Bacteroides_stercoris	1.5910898966
+UniRef50_P58812: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Bacteroides.s__Bacteroides_uniformis	0.7936507937
+UniRef50_A7AJ75	7.4074074074
+UniRef50_A7AJ75|g__Parabacteroides.s__Parabacteroides_merdae	7.4074074074
+UniRef50_Q7MU77: Phosphoglycerate kinase	7.1297767542
+UniRef50_Q7MU77: Phosphoglycerate kinase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	3.1746031746
+UniRef50_Q7MU77: Phosphoglycerate kinase|g__Bacteroides.s__Bacteroides_caccae	1.5873015873
+UniRef50_Q7MU77: Phosphoglycerate kinase|g__Parabacteroides.s__Parabacteroides_distasonis	1.5723270440
+UniRef50_Q7MU77: Phosphoglycerate kinase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7955449483
+UniRef50_C9LQU5	6.8027210884
+UniRef50_C9LQU5|g__Dialister.s__Dialister_invisus	6.8027210884
+UniRef50_A6LAE3	6.7340067340
+UniRef50_A6LAE3|g__Parabacteroides.s__Parabacteroides_distasonis	6.7340067340
+UniRef50_R6KFM7	6.5359477124
+UniRef50_R6KFM7|g__Bacteroides.s__Bacteroides_cellulosilyticus	6.5359477124
+UniRef50_Q8A776: Glycoside transferase family 25	5.8997050147
+UniRef50_Q8A776: Glycoside transferase family 25|g__Bacteroides.s__Bacteroides_thetaiotaomicron	5.8997050147
+UniRef50_R6U655	5.6497175141
+UniRef50_R6U655|g__Eubacterium.s__Eubacterium_rectale	5.6497175141
+UniRef50_R7JT89: Protein translocase subunit SecE	5.1282051282
+UniRef50_R7JT89: Protein translocase subunit SecE|g__Parabacteroides.s__Parabacteroides_merdae	5.1282051282
+UniRef50_Q8A624: ATP-dependent 6-phosphofructokinase 2	5.0968399592
+UniRef50_Q8A624: ATP-dependent 6-phosphofructokinase 2|g__Parabacteroides.s__Parabacteroides_distasonis	2.0387359837
+UniRef50_Q8A624: ATP-dependent 6-phosphofructokinase 2|g__Bacteroides.s__Bacteroides_caccae	1.0193679918
+UniRef50_Q8A624: ATP-dependent 6-phosphofructokinase 2|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0193679918
+UniRef50_Q8A624: ATP-dependent 6-phosphofructokinase 2|g__Bacteroides.s__Bacteroides_stercoris	1.0193679918
+UniRef50_D2EW75	4.9784315861
+UniRef50_D2EW75|unclassified	4.9784315861
+UniRef50_I0Q078	4.9751243781
+UniRef50_I0Q078|unclassified	4.9751243781
+UniRef50_E2N7X4: DNA-binding helix-turn-helix protein	4.7619047619
+UniRef50_E2N7X4: DNA-binding helix-turn-helix protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	4.7619047619
+UniRef50_R6LA51	4.5662100457
+UniRef50_R6LA51|g__Bacteroides.s__Bacteroides_cellulosilyticus	4.5662100457
+UniRef50_Q8AA02	4.4742729306
+UniRef50_Q8AA02|g__Bacteroides.s__Bacteroides_thetaiotaomicron	4.4742729306
+UniRef50_R6X9R1	4.4444444444
+UniRef50_R6X9R1|g__Parabacteroides.s__Parabacteroides_merdae	4.4444444444
+UniRef50_A5ZE00	4.3859649123
+UniRef50_A5ZE00|g__Bacteroides.s__Bacteroides_caccae	4.3859649123
+UniRef50_R5DGS0	4.3859649123
+UniRef50_R5DGS0|g__Parabacteroides.s__Parabacteroides_distasonis	4.3859649123
+UniRef50_C6W2K5	4.1666666667
+UniRef50_C6W2K5|g__Bacteroides.s__Bacteroides_stercoris	4.1666666667
+UniRef50_U2CXY9: Transposase	4.1152263374
+UniRef50_U2CXY9: Transposase|g__Bacteroides.s__Bacteroides_stercoris	4.1152263374
+UniRef50_A6LAB9	4.0160642570
+UniRef50_A6LAB9|g__Parabacteroides.s__Parabacteroides_distasonis	4.0160642570
+UniRef50_Q1D8I9: Triosephosphate isomerase	3.9687500000
+UniRef50_Q1D8I9: Triosephosphate isomerase|g__Eubacterium.s__Eubacterium_rectale	2.6666666667
+UniRef50_Q1D8I9: Triosephosphate isomerase|g__Ruminococcus.s__Ruminococcus_bromii	1.3020833333
+UniRef50_Q8A980	3.9682539683
+UniRef50_Q8A980|g__Bacteroides.s__Bacteroides_thetaiotaomicron	3.9682539683
+UniRef50_R5M9I3	3.9682539683
+UniRef50_R5M9I3|g__Bacteroides.s__Bacteroides_uniformis	3.9682539683
+UniRef50_A5ZE64	3.8759689922
+UniRef50_A5ZE64|g__Bacteroides.s__Bacteroides_caccae	3.8759689922
+UniRef50_D4ILE7	3.8759689922
+UniRef50_D4ILE7|g__Alistipes.s__Alistipes_shahii	3.8759689922
+UniRef50_E2NFK6	3.8759689922
+UniRef50_E2NFK6|g__Bacteroides.s__Bacteroides_cellulosilyticus	3.8759689922
+UniRef50_A5ZD89	3.7878787879
+UniRef50_A5ZD89|g__Bacteroides.s__Bacteroides_caccae	3.7878787879
+UniRef50_E2NGU0	3.7878787879
+UniRef50_E2NGU0|g__Bacteroides.s__Bacteroides_cellulosilyticus	3.7878787879
+UniRef50_A0M0D8: 30S ribosomal protein S18	3.7037037037
+UniRef50_A0M0D8: 30S ribosomal protein S18|g__Parabacteroides.s__Parabacteroides_distasonis	3.7037037037
+UniRef50_C9LTH3: Excinuclease ABC C subunit domain protein	3.7037037037
+UniRef50_C9LTH3: Excinuclease ABC C subunit domain protein|g__Dialister.s__Dialister_invisus	3.7037037037
+UniRef50_R5U3F6	3.6630036630
+UniRef50_R5U3F6|g__Bacteroides.s__Bacteroides_caccae	3.6630036630
+UniRef50_R5W7I7	3.6630036630
+UniRef50_R5W7I7|g__Alistipes.s__Alistipes_shahii	3.6630036630
+UniRef50_F0R7R4	3.5842293907
+UniRef50_F0R7R4|g__Alistipes.s__Alistipes_shahii	3.5842293907
+UniRef50_F3PKF8: Conserved domain protein	3.5842293907
+UniRef50_F3PKF8: Conserved domain protein|g__Bacteroides.s__Bacteroides_caccae	3.5842293907
+UniRef50_R5JLK9	3.5842293907
+UniRef50_R5JLK9|g__Bacteroides.s__Bacteroides_caccae	3.5842293907
+UniRef50_R7CVT7	3.5842293907
+UniRef50_R7CVT7|g__Bacteroides.s__Bacteroides_uniformis	3.5842293907
+UniRef50_C4Z847	3.5460992908
+UniRef50_C4Z847|g__Eubacterium.s__Eubacterium_rectale	3.5460992908
+UniRef50_C9LQR0	3.5460992908
+UniRef50_C9LQR0|g__Dialister.s__Dialister_invisus	3.5460992908
+UniRef50_B0NL51	3.4364261168
+UniRef50_B0NL51|g__Bacteroides.s__Bacteroides_stercoris	3.4364261168
+UniRef50_K5YEP3	3.4013605442
+UniRef50_K5YEP3|g__Parabacteroides.s__Parabacteroides_merdae	3.4013605442
+UniRef50_R5UU43	3.3670033670
+UniRef50_R5UU43|g__Bacteroides.s__Bacteroides_caccae	3.3670033670
+UniRef50_B0NME3	3.3333333333
+UniRef50_B0NME3|g__Bacteroides.s__Bacteroides_stercoris	3.3333333333
+UniRef50_R5ES89	3.3003300330
+UniRef50_R5ES89|g__Bacteroides.s__Bacteroides_cellulosilyticus	3.3003300330
+UniRef50_R5M3S4	3.2679738562
+UniRef50_R5M3S4|g__Bacteroides.s__Bacteroides_stercoris	3.2679738562
+UniRef50_R5DWI2: Helix-turn-helix	3.2362459547
+UniRef50_R5DWI2: Helix-turn-helix|g__Ruminococcus.s__Ruminococcus_bromii	3.2362459547
+UniRef50_A5ZE89	3.2051282051
+UniRef50_A5ZE89|g__Bacteroides.s__Bacteroides_caccae	3.2051282051
+UniRef50_R5U3Q7	3.1446540881
+UniRef50_R5U3Q7|g__Bacteroides.s__Bacteroides_caccae	3.1446540881
+UniRef50_A7V3V8	3.1152647975
+UniRef50_A7V3V8|g__Bacteroides.s__Bacteroides_uniformis	3.1152647975
+UniRef50_A6LGZ2	3.0864197531
+UniRef50_A6LGZ2|g__Parabacteroides.s__Parabacteroides_distasonis	3.0864197531
+UniRef50_A6L9H2	3.0581039755
+UniRef50_A6L9H2|g__Parabacteroides.s__Parabacteroides_distasonis	3.0581039755
+UniRef50_B8D1K5: ATP-dependent 6-phosphofructokinase	3.0519834775
+UniRef50_B8D1K5: ATP-dependent 6-phosphofructokinase|g__Eubacterium.s__Eubacterium_rectale	2.0263424519
+UniRef50_B8D1K5: ATP-dependent 6-phosphofructokinase|g__Ruminococcus.s__Ruminococcus_bromii	1.0256410256
+UniRef50_E2NLX4	3.0030030030
+UniRef50_E2NLX4|g__Bacteroides.s__Bacteroides_cellulosilyticus	3.0030030030
+UniRef50_E2ZES3	2.9498525074
+UniRef50_E2ZES3|unclassified	2.9498525074
+UniRef50_R5U534	2.9498525074
+UniRef50_R5U534|g__Parabacteroides.s__Parabacteroides_distasonis	2.9498525074
+UniRef50_R5WP00	2.9498525074
+UniRef50_R5WP00|g__Alistipes.s__Alistipes_shahii	2.9498525074
+UniRef50_C4ZGT5: Glycosyltransferase Family 2-like b-glycosyltransferase	2.9411764706
+UniRef50_C4ZGT5: Glycosyltransferase Family 2-like b-glycosyltransferase|g__Eubacterium.s__Eubacterium_rectale	2.9411764706
+UniRef50_A5ZE78	2.9239766082
+UniRef50_A5ZE78|g__Bacteroides.s__Bacteroides_caccae	2.9239766082
+UniRef50_A5ZK55	2.8985507246
+UniRef50_A5ZK55|g__Bacteroides.s__Bacteroides_caccae	2.8985507246
+UniRef50_D4IKD8	2.8985507246
+UniRef50_D4IKD8|g__Alistipes.s__Alistipes_shahii	2.8985507246
+UniRef50_R6MSL7	2.8612303290
+UniRef50_R6MSL7|g__Ruminococcus.s__Ruminococcus_bromii	2.8612303290
+UniRef50_R6I7R4: 7-cyano-7-deazaguanine synthase	2.8490028490
+UniRef50_R6I7R4: 7-cyano-7-deazaguanine synthase|g__Dialister.s__Dialister_invisus	2.8490028490
+UniRef50_R6FEK9	2.8011204482
+UniRef50_R6FEK9|g__Parabacteroides.s__Parabacteroides_merdae	2.8011204482
+UniRef50_A5ZIS8: Glycosyl hydrolase family 35	2.7894002789
+UniRef50_A5ZIS8: Glycosyl hydrolase family 35|g__Bacteroides.s__Bacteroides_caccae	2.7894002789
+UniRef50_F9D7B9: ISPg5 transposase Orf2	2.7777777778
+UniRef50_F9D7B9: ISPg5 transposase Orf2|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.7777777778
+UniRef50_A5ZD18: Conserved domain protein	2.7662517289
+UniRef50_A5ZD18: Conserved domain protein|g__Bacteroides.s__Bacteroides_caccae	2.7662517289
+UniRef50_R7CSD7	2.7322404372
+UniRef50_R7CSD7|g__Dialister.s__Dialister_invisus	2.7322404372
+UniRef50_E2NCG0	2.6881720430
+UniRef50_E2NCG0|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.6881720430
+UniRef50_I8VM35	2.6666666667
+UniRef50_I8VM35|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.6666666667
+UniRef50_R5M4C8	2.6666666667
+UniRef50_R5M4C8|g__Bacteroides.s__Bacteroides_stercoris	2.6666666667
+UniRef50_R7DPS5	2.6666666667
+UniRef50_R7DPS5|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.6666666667
+UniRef50_R5SVA8: Glutaredoxin family protein	2.6455026455
+UniRef50_R5SVA8: Glutaredoxin family protein|g__Dialister.s__Dialister_invisus	2.6455026455
+UniRef50_D4JZ72	2.5943532418
+UniRef50_D4JZ72|unclassified	2.5943532418
+UniRef50_Q01WB8: 30S ribosomal protein S11	2.5641025641
+UniRef50_Q01WB8: 30S ribosomal protein S11|g__Parabacteroides.s__Parabacteroides_distasonis	2.5641025641
+UniRef50_R5DSE9	2.5641025641
+UniRef50_R5DSE9|g__Ruminococcus.s__Ruminococcus_bromii	2.5641025641
+UniRef50_R5RCC8	2.5510204082
+UniRef50_R5RCC8|g__Bacteroides.s__Bacteroides_stercoris	2.5510204082
+UniRef50_R5E750	2.5445292621
+UniRef50_R5E750|g__Ruminococcus.s__Ruminococcus_bromii	2.5445292621
+UniRef50_R5NTW4: Glycosyl transferase family 2	2.5348542459
+UniRef50_R5NTW4: Glycosyl transferase family 2|g__Bacteroides.s__Bacteroides_uniformis	2.5348542459
+UniRef50_C5CGI8: 30S ribosomal protein S8	2.5252525253
+UniRef50_C5CGI8: 30S ribosomal protein S8|g__Parabacteroides.s__Parabacteroides_distasonis	2.5252525253
+UniRef50_D4K2Q1	2.5252525253
+UniRef50_D4K2Q1|unclassified	2.5252525253
+UniRef50_I9Q1M6	2.5252525253
+UniRef50_I9Q1M6|g__Bacteroides.s__Bacteroides_caccae	2.5252525253
+UniRef50_A6L902	2.5157232704
+UniRef50_A6L902|g__Parabacteroides.s__Parabacteroides_distasonis	2.5157232704
+UniRef50_A5ZE13	2.4875621891
+UniRef50_A5ZE13|g__Bacteroides.s__Bacteroides_caccae	2.4875621891
+UniRef50_R6MSH7: Mini-ribonuclease 3	2.4875621891
+UniRef50_R6MSH7: Mini-ribonuclease 3|g__Ruminococcus.s__Ruminococcus_bromii	2.4875621891
+UniRef50_R5U6S5	2.4752475248
+UniRef50_R5U6S5|g__Bacteroides.s__Bacteroides_caccae	2.4752475248
+UniRef50_R6TJH6: AraC family transcriptional regulator	2.4691358025
+UniRef50_R6TJH6: AraC family transcriptional regulator|g__Parabacteroides.s__Parabacteroides_merdae	2.4691358025
+UniRef50_I3YHI6: Biopolymer transport protein	2.4509803922
+UniRef50_I3YHI6: Biopolymer transport protein|g__Alistipes.s__Alistipes_shahii	2.4509803922
+UniRef50_R6JQ40	2.4330900243
+UniRef50_R6JQ40|g__Eubacterium.s__Eubacterium_rectale	2.4330900243
+UniRef50_R6A6J8	2.4271844660
+UniRef50_R6A6J8|g__Bacteroides.s__Bacteroides_stercoris	2.4271844660
+UniRef50_R6B6B8: DegV family EDD domain-containing protein	2.4067388688
+UniRef50_R6B6B8: DegV family EDD domain-containing protein|g__Dialister.s__Dialister_invisus	2.4067388688
+UniRef50_A6L5Z9	2.3980815348
+UniRef50_A6L5Z9|g__Alistipes.s__Alistipes_shahii	2.3980815348
+UniRef50_I9PND7	2.3980815348
+UniRef50_I9PND7|g__Bacteroides.s__Bacteroides_caccae	2.3980815348
+UniRef50_R6LJN3: Transcriptional regulator AraC family	2.3894862605
+UniRef50_R6LJN3: Transcriptional regulator AraC family|g__Bacteroides.s__Bacteroides_uniformis	2.3894862605
+UniRef50_F2KQE8: WxcM-like domain-containing protein	2.3809523810
+UniRef50_F2KQE8: WxcM-like domain-containing protein|g__Parabacteroides.s__Parabacteroides_distasonis	2.3809523810
+UniRef50_A0A016IPZ2	2.3752969121
+UniRef50_A0A016IPZ2|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.3752969121
+UniRef50_R6UTA1	2.3640661939
+UniRef50_R6UTA1|g__Eubacterium.s__Eubacterium_rectale	2.3640661939
+UniRef50_D4IIK5: Transcriptional regulators	2.3391812865
+UniRef50_D4IIK5: Transcriptional regulators|g__Alistipes.s__Alistipes_shahii	2.3391812865
+UniRef50_D1K9J7	2.3356649078
+UniRef50_D1K9J7|g__Parabacteroides.s__Parabacteroides_distasonis	1.1862396204
+UniRef50_D1K9J7|g__Parabacteroides.s__Parabacteroides_merdae	1.1494252874
+UniRef50_R6ADA7	2.3310023310
+UniRef50_R6ADA7|g__Dialister.s__Dialister_invisus	2.3310023310
+UniRef50_R5SWB4	2.3148148148
+UniRef50_R5SWB4|g__Dialister.s__Dialister_invisus	2.3148148148
+UniRef50_A6L8M3	2.2988505747
+UniRef50_A6L8M3|g__Parabacteroides.s__Parabacteroides_distasonis	2.2988505747
+UniRef50_A6LI89	2.2988505747
+UniRef50_A6LI89|g__Parabacteroides.s__Parabacteroides_distasonis	2.2988505747
+UniRef50_R6S1A8	2.2909507446
+UniRef50_R6S1A8|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.2909507446
+UniRef50_A7UZY6	2.2831050228
+UniRef50_A7UZY6|g__Bacteroides.s__Bacteroides_stercoris	2.2831050228
+UniRef50_E2NKW9	2.2831050228
+UniRef50_E2NKW9|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.2831050228
+UniRef50_R6WXL9	2.2831050228
+UniRef50_R6WXL9|g__Parabacteroides.s__Parabacteroides_merdae	2.2831050228
+UniRef50_E6SWZ4	2.2522522523
+UniRef50_E6SWZ4|g__Bacteroides.s__Bacteroides_stercoris	2.2522522523
+UniRef50_R6KFV3	2.2522522523
+UniRef50_R6KFV3|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.2522522523
+UniRef50_R7ELP3: Glycosyltransferase group 2 family protein	2.2522522523
+UniRef50_R7ELP3: Glycosyltransferase group 2 family protein|g__Bacteroides.s__Bacteroides_uniformis	2.2522522523
+UniRef50_R6M5X0	2.2421524664
+UniRef50_R6M5X0|g__Bacteroides.s__Bacteroides_stercoris	2.2421524664
+UniRef50_D4JYP8	2.2371364653
+UniRef50_D4JYP8|unclassified	2.2371364653
+UniRef50_A5ZE49	2.2222222222
+UniRef50_A5ZE49|g__Bacteroides.s__Bacteroides_caccae	2.2222222222
+UniRef50_K5Z6I3	2.2222222222
+UniRef50_K5Z6I3|g__Parabacteroides.s__Parabacteroides_merdae	2.2222222222
+UniRef50_R7CRQ1: Lipoprotein signal peptidase	2.2222222222
+UniRef50_R7CRQ1: Lipoprotein signal peptidase|g__Dialister.s__Dialister_invisus	2.2222222222
+UniRef50_I9UAT2	2.2075055188
+UniRef50_I9UAT2|g__Bacteroides.s__Bacteroides_uniformis	2.2075055188
+UniRef50_Q8A7E3	2.2075055188
+UniRef50_Q8A7E3|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.2075055188
+UniRef50_R7EDC2	2.2075055188
+UniRef50_R7EDC2|g__Bacteroides.s__Bacteroides_stercoris	2.2075055188
+UniRef50_I8UVT9	2.1978021978
+UniRef50_I8UVT9|g__Bacteroides.s__Bacteroides_caccae	2.1978021978
+UniRef50_D4IIK1: SusD family	2.1929824561
+UniRef50_D4IIK1: SusD family|g__Alistipes.s__Alistipes_shahii	2.1929824561
+UniRef50_W8F2E4: 50S ribosomal protein L13	2.1929824561
+UniRef50_W8F2E4: 50S ribosomal protein L13|g__Parabacteroides.s__Parabacteroides_merdae	2.1929824561
+UniRef50_A7UZA4	2.1786492375
+UniRef50_A7UZA4|g__Bacteroides.s__Bacteroides_uniformis	2.1786492375
+UniRef50_Q8A2E8: Ribonuclease 3	2.1632974534
+UniRef50_Q8A2E8: Ribonuclease 3|g__Bacteroides.s__Bacteroides_uniformis	1.1376564278
+UniRef50_Q8A2E8: Ribonuclease 3|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0256410256
+UniRef50_D4L5H2	2.1505376344
+UniRef50_D4L5H2|g__Ruminococcus.s__Ruminococcus_bromii	2.1505376344
+UniRef50_D6CYB8: Transcriptional regulator, AsnC family	2.1505376344
+UniRef50_D6CYB8: Transcriptional regulator, AsnC family|g__Bacteroides.s__Bacteroides_uniformis	2.1505376344
+UniRef50_H2IBE5	2.1505376344
+UniRef50_H2IBE5|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.1505376344
+UniRef50_K5ZK07	2.1505376344
+UniRef50_K5ZK07|g__Parabacteroides.s__Parabacteroides_merdae	2.1505376344
+UniRef50_R6KNZ3	2.1505376344
+UniRef50_R6KNZ3|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.1505376344
+UniRef50_UPI0004171A07: hypothetical protein	2.1505376344
+UniRef50_UPI0004171A07: hypothetical protein|unclassified	2.1505376344
+UniRef50_R5MFS6: Acyltransferase	2.1436227224
+UniRef50_R5MFS6: Acyltransferase|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.1436227224
+UniRef50_A6LFU1	2.1367521368
+UniRef50_A6LFU1|g__Parabacteroides.s__Parabacteroides_distasonis	2.1367521368
+UniRef50_A6LHR9: Ribosome maturation factor RimP	2.1367521368
+UniRef50_A6LHR9: Ribosome maturation factor RimP|g__Bacteroides.s__Bacteroides_caccae	2.1367521368
+UniRef50_A6LIC4	2.1231422505
+UniRef50_A6LIC4|g__Parabacteroides.s__Parabacteroides_distasonis	2.1231422505
+UniRef50_D4IMP2	2.1231422505
+UniRef50_D4IMP2|g__Alistipes.s__Alistipes_shahii	2.1231422505
+UniRef50_E1WRH6	2.1231422505
+UniRef50_E1WRH6|g__Bacteroides.s__Bacteroides_caccae	2.1231422505
+UniRef50_E2N867	2.1231422505
+UniRef50_E2N867|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.1231422505
+UniRef50_R5WN55	2.1231422505
+UniRef50_R5WN55|g__Alistipes.s__Alistipes_shahii	2.1231422505
+UniRef50_Q8AAJ1: Glycoside transferase family 2	2.1164234459
+UniRef50_Q8AAJ1: Glycoside transferase family 2|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0615711253
+UniRef50_Q8AAJ1: Glycoside transferase family 2|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0548523207
+UniRef50_D4L7B1: ATP synthase subunit C	2.1097046414
+UniRef50_D4L7B1: ATP synthase subunit C|g__Ruminococcus.s__Ruminococcus_bromii	2.1097046414
+UniRef50_R7ACG2	2.1097046414
+UniRef50_R7ACG2|g__Bacteroides.s__Bacteroides_caccae	2.1097046414
+UniRef50_C4ZCM3	2.0964360587
+UniRef50_C4ZCM3|g__Eubacterium.s__Eubacterium_rectale	2.0964360587
+UniRef50_R6JA28	2.0964360587
+UniRef50_R6JA28|g__Bacteroides.s__Bacteroides_uniformis	2.0964360587
+UniRef50_R6KFV9	2.0964360587
+UniRef50_R6KFV9|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.0964360587
+UniRef50_R7A7Q4	2.0964360587
+UniRef50_R7A7Q4|g__Bacteroides.s__Bacteroides_stercoris	2.0964360587
+UniRef50_R5E6P2: Cys-tRNA(Pro)/Cys-tRNA(Cys) deacylase	2.0833333333
+UniRef50_R5E6P2: Cys-tRNA(Pro)/Cys-tRNA(Cys) deacylase|g__Ruminococcus.s__Ruminococcus_bromii	2.0833333333
+UniRef50_R6PV40: Cys-tRNA(Pro)/Cys-tRNA(Cys) deacylase	2.0833333333
+UniRef50_R6PV40: Cys-tRNA(Pro)/Cys-tRNA(Cys) deacylase|g__Bacteroides.s__Bacteroides_uniformis	2.0833333333
+UniRef50_E1WS50: Ferritin	2.0703933747
+UniRef50_E1WS50: Ferritin|g__Bacteroides.s__Bacteroides_uniformis	2.0703933747
+UniRef50_R7KL77	2.0576131687
+UniRef50_R7KL77|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.0576131687
+UniRef50_R6JBQ5	2.0512820513
+UniRef50_R6JBQ5|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.0512820513
+UniRef50_D4JIM5: Methyl-accepting chemotaxis protein	2.0408163265
+UniRef50_D4JIM5: Methyl-accepting chemotaxis protein|g__Eubacterium.s__Eubacterium_rectale	2.0408163265
+UniRef50_D4K4X1: YabP family	2.0389254966
+UniRef50_D4K4X1: YabP family|unclassified	2.0389254966
+UniRef50_K1UGI9: Metallo-beta-lactamase family protein	2.0373040930
+UniRef50_K1UGI9: Metallo-beta-lactamase family protein|unclassified	2.0373040930
+UniRef50_Q8A7L8	2.0325203252
+UniRef50_Q8A7L8|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.0325203252
+UniRef50_Q8A4G5: Putative integrase/recombinase	2.0140986908
+UniRef50_Q8A4G5: Putative integrase/recombinase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.0140986908
+UniRef50_C4ZCR3	2.0080321285
+UniRef50_C4ZCR3|g__Eubacterium.s__Eubacterium_rectale	2.0080321285
+UniRef50_D4JZ70	2.0080321285
+UniRef50_D4JZ70|unclassified	2.0080321285
+UniRef50_R6VXN8	2.0080321285
+UniRef50_R6VXN8|g__Alistipes.s__Alistipes_shahii	2.0080321285
+UniRef50_A6LII8	1.9960079840
+UniRef50_A6LII8|unclassified	1.9960079840
+UniRef50_P22513: Glyceraldehyde-3-phosphate dehydrogenase, glycosomal	1.9960079840
+UniRef50_P22513: Glyceraldehyde-3-phosphate dehydrogenase, glycosomal|g__Parabacteroides.s__Parabacteroides_distasonis	1.9960079840
+UniRef50_O67161: Glyceraldehyde-3-phosphate dehydrogenase	1.9900497512
+UniRef50_O67161: Glyceraldehyde-3-phosphate dehydrogenase|g__Dialister.s__Dialister_invisus	1.9900497512
+UniRef50_B7LQ20: Glyceraldehyde-3-phosphate dehydrogenase A	1.9782393670
+UniRef50_B7LQ20: Glyceraldehyde-3-phosphate dehydrogenase A|g__Bacteroides.s__Bacteroides_caccae	1.9782393670
+UniRef50_Q8A2E9: ATP-dependent 6-phosphofructokinase 3	1.9753129774
+UniRef50_Q8A2E9: ATP-dependent 6-phosphofructokinase 3|g__Bacteroides.s__Bacteroides_stercoris	0.9891196835
+UniRef50_Q8A2E9: ATP-dependent 6-phosphofructokinase 3|g__Parabacteroides.s__Parabacteroides_distasonis	0.9861932939
+UniRef50_C6IJ24	1.9723865878
+UniRef50_C6IJ24|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.9723865878
+UniRef50_R5V515: Glycosyltransferase Family 2-like b-glycosyltransferase	1.9723865878
+UniRef50_R5V515: Glycosyltransferase Family 2-like b-glycosyltransferase|g__Eubacterium.s__Eubacterium_rectale	1.9723865878
+UniRef50_A1AHE9: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase	1.9712597534
+UniRef50_A1AHE9: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Ruminococcus.s__Ruminococcus_bromii	1.3227513228
+UniRef50_A1AHE9: 2,3-bisphosphoglycerate-independent phosphoglycerate mutase|g__Eubacterium.s__Eubacterium_rectale	0.6485084306
+UniRef50_A6L9H6	1.9665683382
+UniRef50_A6L9H6|g__Parabacteroides.s__Parabacteroides_distasonis	1.9665683382
+UniRef50_R6WT97	1.9550342131
+UniRef50_R6WT97|g__Parabacteroides.s__Parabacteroides_merdae	1.9550342131
+UniRef50_R6FBK7	1.9493177388
+UniRef50_R6FBK7|g__Bacteroides.s__Bacteroides_stercoris	1.9493177388
+UniRef50_E2NH47	1.9379844961
+UniRef50_E2NH47|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.9379844961
+UniRef50_R5WMH8	1.9379844961
+UniRef50_R5WMH8|g__Alistipes.s__Alistipes_shahii	1.9379844961
+UniRef50_R6DY53	1.9323671498
+UniRef50_R6DY53|g__Bacteroides.s__Bacteroides_caccae	1.9323671498
+UniRef50_R7JK00	1.9267822736
+UniRef50_R7JK00|g__Alistipes.s__Alistipes_shahii	1.9267822736
+UniRef50_R6LLA2: Glycosyltransferase group 2 family protein	1.9212295869
+UniRef50_R6LLA2: Glycosyltransferase group 2 family protein|g__Bacteroides.s__Bacteroides_stercoris	1.9212295869
+UniRef50_I8ZVB6	1.9157088123
+UniRef50_I8ZVB6|g__Bacteroides.s__Bacteroides_uniformis	1.9157088123
+UniRef50_Q8A898: Component of multidrug efflux system	1.9047619048
+UniRef50_Q8A898: Component of multidrug efflux system|g__Bacteroides.s__Bacteroides_stercoris	1.9047619048
+UniRef50_Q8A9G5: Putative transcriptional regulator	1.9047619048
+UniRef50_Q8A9G5: Putative transcriptional regulator|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.9047619048
+UniRef50_R6Y2F5	1.9047619048
+UniRef50_R6Y2F5|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.9047619048
+UniRef50_D4L5L8: CobQ/CobB/MinD/ParA nucleotide binding domain	1.8779342723
+UniRef50_D4L5L8: CobQ/CobB/MinD/ParA nucleotide binding domain|g__Ruminococcus.s__Ruminococcus_bromii	1.8779342723
+UniRef50_R5LC10: Methylated-DNA--protein-cysteine methyltransferase	1.8726591760
+UniRef50_R5LC10: Methylated-DNA--protein-cysteine methyltransferase|g__Bacteroides.s__Bacteroides_caccae	1.8726591760
+UniRef50_C7XFE6: Glycosyltransferase, group 1 family protein	1.8674136321
+UniRef50_C7XFE6: Glycosyltransferase, group 1 family protein|g__Parabacteroides.s__Parabacteroides_distasonis	1.8674136321
+UniRef50_R5SJ31	1.8621973929
+UniRef50_R5SJ31|g__Dialister.s__Dialister_invisus	1.8621973929
+UniRef50_B0NSB3	1.8518518519
+UniRef50_B0NSB3|g__Bacteroides.s__Bacteroides_stercoris	1.8518518519
+UniRef50_K1TCN4: Jag protein (Fragment)	1.8518518519
+UniRef50_K1TCN4: Jag protein (Fragment)|unclassified	1.8518518519
+UniRef50_R5T2U8	1.8518518519
+UniRef50_R5T2U8|g__Dialister.s__Dialister_invisus	1.8518518519
+UniRef50_A5ZE29	1.8416206262
+UniRef50_A5ZE29|g__Bacteroides.s__Bacteroides_caccae	1.8416206262
+UniRef50_R5DIS1	1.8416206262
+UniRef50_R5DIS1|g__Bacteroides.s__Bacteroides_caccae	1.8416206262
+UniRef50_R6D8N1	1.8416206262
+UniRef50_R6D8N1|g__Bacteroides.s__Bacteroides_uniformis	1.8416206262
+UniRef50_A5ZE27	1.8315018315
+UniRef50_A5ZE27|g__Bacteroides.s__Bacteroides_caccae	1.8315018315
+UniRef50_C4ZCW1	1.8315018315
+UniRef50_C4ZCW1|g__Eubacterium.s__Eubacterium_rectale	1.8315018315
+UniRef50_M4HMR6: Galactoside O-acetyltransferase	1.8315018315
+UniRef50_M4HMR6: Galactoside O-acetyltransferase|g__Parabacteroides.s__Parabacteroides_distasonis	1.8315018315
+UniRef50_C4Z9B1	1.8214936248
+UniRef50_C4Z9B1|g__Eubacterium.s__Eubacterium_rectale	1.8214936248
+UniRef50_Q8A9Y6: Cation efflux system protein czcB	1.8214936248
+UniRef50_Q8A9Y6: Cation efflux system protein czcB|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.8214936248
+UniRef50_R7JPY1: Permease YjgP/YjgQ family	1.8115942029
+UniRef50_R7JPY1: Permease YjgP/YjgQ family|g__Alistipes.s__Alistipes_shahii	1.8115942029
+UniRef50_A6L805	1.8018018018
+UniRef50_A6L805|g__Parabacteroides.s__Parabacteroides_distasonis	1.8018018018
+UniRef50_A7GRF4: Ribosome-recycling factor	1.8018018018
+UniRef50_A7GRF4: Ribosome-recycling factor|g__Ruminococcus.s__Ruminococcus_bromii	1.8018018018
+UniRef50_R6WU46: RNA polymerase sigma-70 factor	1.8018018018
+UniRef50_R6WU46: RNA polymerase sigma-70 factor|g__Parabacteroides.s__Parabacteroides_merdae	1.8018018018
+UniRef50_I8ZJ02	1.7921146953
+UniRef50_I8ZJ02|g__Bacteroides.s__Bacteroides_uniformis	1.7921146953
+UniRef50_R7EM64	1.7921146953
+UniRef50_R7EM64|g__Bacteroides.s__Bacteroides_uniformis	1.7921146953
+UniRef50_A6LGX2: Glycosyltransferase family 4	1.7730496454
+UniRef50_A6LGX2: Glycosyltransferase family 4|g__Parabacteroides.s__Parabacteroides_distasonis	1.7730496454
+UniRef50_B0NTS2	1.7730496454
+UniRef50_B0NTS2|g__Bacteroides.s__Bacteroides_stercoris	1.7730496454
+UniRef50_Q8A7A8: RNA polymerase ECF-type sigma factor	1.7730496454
+UniRef50_Q8A7A8: RNA polymerase ECF-type sigma factor|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.7730496454
+UniRef50_D4IP99	1.7636684303
+UniRef50_D4IP99|g__Alistipes.s__Alistipes_shahii	1.7636684303
+UniRef50_R6IEE8: Cyclic nucleotide-binding domain protein	1.7636684303
+UniRef50_R6IEE8: Cyclic nucleotide-binding domain protein|g__Bacteroides.s__Bacteroides_uniformis	1.7636684303
+UniRef50_R7JZD4: Sporulation specific N-acetylmuramoyl-L-alanine amidase	1.7636684303
+UniRef50_R7JZD4: Sporulation specific N-acetylmuramoyl-L-alanine amidase|g__Eubacterium.s__Eubacterium_rectale	1.7636684303
+UniRef50_C4Z9Q8	1.7543859649
+UniRef50_C4Z9Q8|g__Eubacterium.s__Eubacterium_rectale	1.7543859649
+UniRef50_Q8AA56: Glycoside transferase family 4	1.7543859649
+UniRef50_Q8AA56: Glycoside transferase family 4|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.7543859649
+UniRef50_C4ZEM1	1.7452006981
+UniRef50_C4ZEM1|g__Eubacterium.s__Eubacterium_rectale	1.7452006981
+UniRef50_D5EXZ0	1.7291066282
+UniRef50_D5EXZ0|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.7291066282
+UniRef50_I9TY23	1.7271157168
+UniRef50_I9TY23|g__Bacteroides.s__Bacteroides_uniformis	1.7271157168
+UniRef50_Q8AA58: Serine acetyltransferase	1.7182130584
+UniRef50_Q8AA58: Serine acetyltransferase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.7182130584
+UniRef50_R5TXN6	1.7182130584
+UniRef50_R5TXN6|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.7182130584
+UniRef50_R5YJG7	1.7182130584
+UniRef50_R5YJG7|g__Eubacterium.s__Eubacterium_rectale	1.7182130584
+UniRef50_B0NN47	1.7094017094
+UniRef50_B0NN47|g__Bacteroides.s__Bacteroides_stercoris	1.7094017094
+UniRef50_C4ZDG9	1.7050298380
+UniRef50_C4ZDG9|g__Eubacterium.s__Eubacterium_rectale	1.7050298380
+UniRef50_R7JTG3	1.7006802721
+UniRef50_R7JTG3|g__Bacteroides.s__Bacteroides_stercoris	1.7006802721
+UniRef50_R5C4Q9	1.6920473773
+UniRef50_R5C4Q9|g__Bacteroides.s__Bacteroides_stercoris	1.6920473773
+UniRef50_R5TX50	1.6920473773
+UniRef50_R5TX50|g__Eubacterium.s__Eubacterium_rectale	1.6920473773
+UniRef50_R7J3T5: RNA polymerase sigma-70 factor	1.6920473773
+UniRef50_R7J3T5: RNA polymerase sigma-70 factor|g__Parabacteroides.s__Parabacteroides_merdae	1.6920473773
+UniRef50_F3PQD2: Phage protein F-like protein	1.6877637131
+UniRef50_F3PQD2: Phage protein F-like protein|g__Bacteroides.s__Bacteroides_caccae	1.6877637131
+UniRef50_Q8AB85	1.6835016835
+UniRef50_Q8AB85|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.6835016835
+UniRef50_F2NSB2: Methyltransferase type 12	1.6750418760
+UniRef50_F2NSB2: Methyltransferase type 12|g__Eubacterium.s__Eubacterium_rectale	1.6750418760
+UniRef50_R5UED9: Sigma-70 region 2	1.6750418760
+UniRef50_R5UED9: Sigma-70 region 2|g__Bacteroides.s__Bacteroides_caccae	1.6750418760
+UniRef50_B0NPN0	1.6583747927
+UniRef50_B0NPN0|g__Bacteroides.s__Bacteroides_stercoris	1.6583747927
+UniRef50_Q8DNL6	1.6583747927
+UniRef50_Q8DNL6|g__Ruminococcus.s__Ruminococcus_bromii	1.6583747927
+UniRef50_R6JBG2: RNA polymerase ECF-type sigma factor	1.6583747927
+UniRef50_R6JBG2: RNA polymerase ECF-type sigma factor|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.6583747927
+UniRef50_P40924: Phosphoglycerate kinase	1.6542597188
+UniRef50_P40924: Phosphoglycerate kinase|g__Ruminococcus.s__Ruminococcus_bromii	1.6542597188
+UniRef50_A6LFV7	1.6339869281
+UniRef50_A6LFV7|g__Parabacteroides.s__Parabacteroides_distasonis	1.6339869281
+UniRef50_R5MI60	1.6260162602
+UniRef50_R5MI60|g__Bacteroides.s__Bacteroides_stercoris	1.6260162602
+UniRef50_R6BE90: Phosphoglycerol transferase and related proteins alkaline phosphatase superfamily	1.6233766234
+UniRef50_R6BE90: Phosphoglycerol transferase and related proteins alkaline phosphatase superfamily|g__Eubacterium.s__Eubacterium_rectale	1.6233766234
+UniRef50_R5DQK6	1.6181229773
+UniRef50_R5DQK6|g__Ruminococcus.s__Ruminococcus_bromii	1.6181229773
+UniRef50_R6AZF2: RNAse H family protein	1.6103059581
+UniRef50_R6AZF2: RNAse H family protein|g__Eubacterium.s__Eubacterium_rectale	1.6103059581
+UniRef50_R6WTW9	1.6025641026
+UniRef50_R6WTW9|g__Parabacteroides.s__Parabacteroides_distasonis	1.6025641026
+UniRef50_C4ZCA4	1.5910898966
+UniRef50_C4ZCA4|g__Eubacterium.s__Eubacterium_rectale	1.5910898966
+UniRef50_Q8AAM0	1.5910898966
+UniRef50_Q8AAM0|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.5910898966
+UniRef50_A7V3Q5	1.5873015873
+UniRef50_A7V3Q5|g__Bacteroides.s__Bacteroides_uniformis	1.5873015873
+UniRef50_F7V232: Zn-dependent hydrolase including glyoxylase	1.5873015873
+UniRef50_F7V232: Zn-dependent hydrolase including glyoxylase|g__Eubacterium.s__Eubacterium_rectale	1.5873015873
+UniRef50_Q7VNU6: Na(+)-translocating NADH-quinone reductase subunit D	1.5873015873
+UniRef50_Q7VNU6: Na(+)-translocating NADH-quinone reductase subunit D|g__Parabacteroides.s__Parabacteroides_distasonis	1.5873015873
+UniRef50_A6LA13	1.5797788310
+UniRef50_A6LA13|g__Parabacteroides.s__Parabacteroides_distasonis	1.5797788310
+UniRef50_B0NQG5: HAD hydrolase, family IA, variant 1	1.5723270440
+UniRef50_B0NQG5: HAD hydrolase, family IA, variant 1|g__Bacteroides.s__Bacteroides_stercoris	1.5723270440
+UniRef50_Q8AA00: Fibronectin, type III-like fold	1.5649452269
+UniRef50_Q8AA00: Fibronectin, type III-like fold|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.5649452269
+UniRef50_E2NE92: Glycosyl hydrolase family 2, sugar binding domain protein	1.5600624025
+UniRef50_E2NE92: Glycosyl hydrolase family 2, sugar binding domain protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.5600624025
+UniRef50_R5PPN6	1.5576323988
+UniRef50_R5PPN6|g__Bacteroides.s__Bacteroides_uniformis	1.5576323988
+UniRef50_R5UXJ2	1.5503875969
+UniRef50_R5UXJ2|g__Bacteroides.s__Bacteroides_caccae	1.5503875969
+UniRef50_R6D4F6	1.5503875969
+UniRef50_R6D4F6|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.5503875969
+UniRef50_A6LI19: Probable serine O-acetyltransferase	1.5432098765
+UniRef50_A6LI19: Probable serine O-acetyltransferase|g__Parabacteroides.s__Parabacteroides_distasonis	1.5432098765
+UniRef50_Q8A1T4	1.5432098765
+UniRef50_Q8A1T4|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.5432098765
+UniRef50_Q9PDT8: Enolase	1.5396458814
+UniRef50_Q9PDT8: Enolase|g__Ruminococcus.s__Ruminococcus_bromii	1.5396458814
+UniRef50_A6LAG3	1.5360983103
+UniRef50_A6LAG3|g__Parabacteroides.s__Parabacteroides_distasonis	1.5360983103
+UniRef50_R6X7X0: MgtC family protein	1.5360983103
+UniRef50_R6X7X0: MgtC family protein|g__Alistipes.s__Alistipes_shahii	1.5360983103
+UniRef50_A7V3F5	1.5325670498
+UniRef50_A7V3F5|g__Bacteroides.s__Bacteroides_uniformis	1.5325670498
+UniRef50_A6LFU3	1.5220700152
+UniRef50_A6LFU3|g__Parabacteroides.s__Parabacteroides_distasonis	1.5220700152
+UniRef50_R6JHB2	1.5220700152
+UniRef50_R6JHB2|g__Bacteroides.s__Bacteroides_caccae	1.5220700152
+UniRef50_R7JM02	1.5220700152
+UniRef50_R7JM02|g__Alistipes.s__Alistipes_shahii	1.5220700152
+UniRef50_E6SVP2: DNA mismatch repair protein MutS domain protein	1.5186028853
+UniRef50_E6SVP2: DNA mismatch repair protein MutS domain protein|g__Bacteroides.s__Bacteroides_caccae	1.5186028853
+UniRef50_C4ZB85	1.5151515152
+UniRef50_C4ZB85|g__Eubacterium.s__Eubacterium_rectale	1.5151515152
+UniRef50_R5J537	1.5151515152
+UniRef50_R5J537|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.5151515152
+UniRef50_R5UQF7	1.5151515152
+UniRef50_R5UQF7|g__Bacteroides.s__Bacteroides_caccae	1.5151515152
+UniRef50_R6AE66: 7-carboxy-7-deazaguanine synthase	1.5151515152
+UniRef50_R6AE66: 7-carboxy-7-deazaguanine synthase|g__Dialister.s__Dialister_invisus	1.5151515152
+UniRef50_A7AKG6	1.5082956259
+UniRef50_A7AKG6|g__Parabacteroides.s__Parabacteroides_merdae	1.5082956259
+UniRef50_B0NPY7	1.5082956259
+UniRef50_B0NPY7|g__Bacteroides.s__Bacteroides_stercoris	1.5082956259
+UniRef50_A6LIC8	1.5015015015
+UniRef50_A6LIC8|g__Parabacteroides.s__Parabacteroides_distasonis	1.5015015015
+UniRef50_R5JVY0	1.4947683109
+UniRef50_R5JVY0|g__Bacteroides.s__Bacteroides_stercoris	1.4947683109
+UniRef50_R5UH67: Polysaccharide biosynthesis protein	1.4914243102
+UniRef50_R5UH67: Polysaccharide biosynthesis protein|g__Bacteroides.s__Bacteroides_caccae	1.4914243102
+UniRef50_Q8A3A6	1.4880952381
+UniRef50_Q8A3A6|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4880952381
+UniRef50_R6MUT9: Cation/multidrug efflux pump	1.4858841010
+UniRef50_R6MUT9: Cation/multidrug efflux pump|g__Ruminococcus.s__Ruminococcus_bromii	1.4858841010
+UniRef50_A6LGM0	1.4814814815
+UniRef50_A6LGM0|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.4814814815
+UniRef50_R5SW81: Dephospho-CoA kinase	1.4749262537
+UniRef50_R5SW81: Dephospho-CoA kinase|g__Dialister.s__Dialister_invisus	1.4749262537
+UniRef50_D5HIM4: Sugar (Glycoside-Pentoside-Hexuronide) transporter	1.4716703458
+UniRef50_D5HIM4: Sugar (Glycoside-Pentoside-Hexuronide) transporter|g__Eubacterium.s__Eubacterium_rectale	1.4716703458
+UniRef50_A4X5J8: 4-diphosphocytidyl-2C-methyl-D-erythritol synthase	1.4684287812
+UniRef50_A4X5J8: 4-diphosphocytidyl-2C-methyl-D-erythritol synthase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4684287812
+UniRef50_E2NMS8	1.4684287812
+UniRef50_E2NMS8|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.4684287812
+UniRef50_R5F1K0	1.4430014430
+UniRef50_R5F1K0|g__Bacteroides.s__Bacteroides_stercoris	1.4430014430
+UniRef50_R7DUT6: F5/8 type C domain protein	1.4430014430
+UniRef50_R7DUT6: F5/8 type C domain protein|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4430014430
+UniRef50_D7I9G0: F5/8 type C domain-containing protein	1.4398848092
+UniRef50_D7I9G0: F5/8 type C domain-containing protein|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4398848092
+UniRef50_Q8A115	1.4367816092
+UniRef50_Q8A115|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4367816092
+UniRef50_D4K283: Sortase (Surface protein transpeptidase)	1.4359996331
+UniRef50_D4K283: Sortase (Surface protein transpeptidase)|unclassified	1.4359996331
+UniRef50_C4ZDN2: Serine-type D-Ala-D-Ala carboxypeptidase	1.4306151645
+UniRef50_C4ZDN2: Serine-type D-Ala-D-Ala carboxypeptidase|g__Eubacterium.s__Eubacterium_rectale	1.4306151645
+UniRef50_R6ABH0: Leucine Rich Repeat protein	1.4306151645
+UniRef50_R6ABH0: Leucine Rich Repeat protein|g__Bacteroides.s__Bacteroides_stercoris	1.4306151645
+UniRef50_R7DPU7	1.4245014245
+UniRef50_R7DPU7|g__Bacteroides.s__Bacteroides_uniformis	1.4245014245
+UniRef50_R5E3S0: Predicted membrane protein	1.4184397163
+UniRef50_R5E3S0: Predicted membrane protein|g__Ruminococcus.s__Ruminococcus_bromii	1.4184397163
+UniRef50_Q8A335	1.4154281670
+UniRef50_Q8A335|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4154281670
+UniRef50_Q8A1F1	1.4124293785
+UniRef50_Q8A1F1|g__Bacteroides.s__Bacteroides_caccae	1.4124293785
+UniRef50_R5U2B3	1.4124293785
+UniRef50_R5U2B3|g__Bacteroides.s__Bacteroides_caccae	1.4124293785
+UniRef50_R6KGB4	1.4124293785
+UniRef50_R6KGB4|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.4124293785
+UniRef50_R6WUJ0: Phospholipase D domain protein	1.4124293785
+UniRef50_R6WUJ0: Phospholipase D domain protein|g__Alistipes.s__Alistipes_shahii	1.4124293785
+UniRef50_S3YU07	1.4124293785
+UniRef50_S3YU07|g__Bacteroides.s__Bacteroides_stercoris	1.4124293785
+UniRef50_Q8A4U0	1.4064697609
+UniRef50_Q8A4U0|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.4064697609
+UniRef50_R6X0R2	1.4064697609
+UniRef50_R6X0R2|g__Parabacteroides.s__Parabacteroides_merdae	1.4064697609
+UniRef50_R6IXQ6	1.4035087719
+UniRef50_R6IXQ6|g__Parabacteroides.s__Parabacteroides_merdae	1.4035087719
+UniRef50_R5DT88	1.4005602241
+UniRef50_R5DT88|g__Ruminococcus.s__Ruminococcus_bromii	1.4005602241
+UniRef50_R6CAA4	1.4005602241
+UniRef50_R6CAA4|g__Dialister.s__Dialister_invisus	1.4005602241
+UniRef50_D4L8D7: Response regulator of the LytR/AlgR family	1.3947001395
+UniRef50_D4L8D7: Response regulator of the LytR/AlgR family|g__Ruminococcus.s__Ruminococcus_bromii	1.3947001395
+UniRef50_A5ZIT5	1.3888888889
+UniRef50_A5ZIT5|g__Bacteroides.s__Bacteroides_caccae	1.3888888889
+UniRef50_R6WZB2: Glycosyltransferase group 2 family protein	1.3888888889
+UniRef50_R6WZB2: Glycosyltransferase group 2 family protein|g__Alistipes.s__Alistipes_shahii	1.3888888889
+UniRef50_C4Z843	1.3831258645
+UniRef50_C4Z843|g__Eubacterium.s__Eubacterium_rectale	1.3831258645
+UniRef50_R7EL24	1.3774104683
+UniRef50_R7EL24|g__Bacteroides.s__Bacteroides_uniformis	1.3774104683
+UniRef50_R7KYE7	1.3689253936
+UniRef50_R7KYE7|g__Bacteroides.s__Bacteroides_caccae	1.3689253936
+UniRef50_C4ZEY8	1.3661202186
+UniRef50_C4ZEY8|g__Eubacterium.s__Eubacterium_rectale	1.3661202186
+UniRef50_R5WTB5	1.3661202186
+UniRef50_R5WTB5|g__Alistipes.s__Alistipes_shahii	1.3661202186
+UniRef50_I9IL27	1.3657196466
+UniRef50_I9IL27|unclassified	1.3657196466
+UniRef50_E2NL88: MATE domain protein	1.3605442177
+UniRef50_E2NL88: MATE domain protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.3605442177
+UniRef50_Q8A7D9	1.3605442177
+UniRef50_Q8A7D9|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3605442177
+UniRef50_R5SS96	1.3605442177
+UniRef50_R5SS96|g__Dialister.s__Dialister_invisus	1.3605442177
+UniRef50_R6USG2: Anti-sigma factor antagonist	1.3605442177
+UniRef50_R6USG2: Anti-sigma factor antagonist|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.3605442177
+UniRef50_R6MST4: Predicted O-methyltransferase	1.3495276653
+UniRef50_R6MST4: Predicted O-methyltransferase|g__Ruminococcus.s__Ruminococcus_bromii	1.3495276653
+UniRef50_D4L5J4: Signal peptidase I, archaeal type	1.3440860215
+UniRef50_D4L5J4: Signal peptidase I, archaeal type|g__Ruminococcus.s__Ruminococcus_bromii	1.3440860215
+UniRef50_D4KS96: N-acetylmuramoyl-L-alanine amidase	1.3386880857
+UniRef50_D4KS96: N-acetylmuramoyl-L-alanine amidase|g__Eubacterium.s__Eubacterium_rectale	1.3386880857
+UniRef50_Q8A971	1.3386880857
+UniRef50_Q8A971|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3386880857
+UniRef50_R6C7Z0: ABC-type polysaccharide/polyol phosphate transport system ATPase component	1.3386880857
+UniRef50_R6C7Z0: ABC-type polysaccharide/polyol phosphate transport system ATPase component|g__Ruminococcus.s__Ruminococcus_bromii	1.3386880857
+UniRef50_C4ZH58	1.3333333333
+UniRef50_C4ZH58|g__Eubacterium.s__Eubacterium_rectale	1.3333333333
+UniRef50_D4K284	1.3333333333
+UniRef50_D4K284|unclassified	1.3333333333
+UniRef50_R5WP03	1.3333333333
+UniRef50_R5WP03|g__Alistipes.s__Alistipes_shahii	1.3333333333
+UniRef50_A6LBI2: Glycosyltransferase family 32	1.3280212483
+UniRef50_A6LBI2: Glycosyltransferase family 32|g__Parabacteroides.s__Parabacteroides_distasonis	1.3280212483
+UniRef50_C4ZDH5	1.3227513228
+UniRef50_C4ZDH5|g__Eubacterium.s__Eubacterium_rectale	1.3227513228
+UniRef50_Q5L923: Triosephosphate isomerase	1.3227513228
+UniRef50_Q5L923: Triosephosphate isomerase|g__Bacteroides.s__Bacteroides_stercoris	1.3227513228
+UniRef50_A5UZW4: Triosephosphate isomerase	1.3175230567
+UniRef50_A5UZW4: Triosephosphate isomerase|g__Alistipes.s__Alistipes_shahii	1.3175230567
+UniRef50_R6RT73: Triosephosphate isomerase	1.3175230567
+UniRef50_R6RT73: Triosephosphate isomerase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3175230567
+UniRef50_E2NED2: SusD family protein	1.3149243918
+UniRef50_E2NED2: SusD family protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.3149243918
+UniRef50_D4INE5	1.3123359580
+UniRef50_D4INE5|g__Alistipes.s__Alistipes_shahii	1.3123359580
+UniRef50_Q8A2Y5	1.3123359580
+UniRef50_Q8A2Y5|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3123359580
+UniRef50_A6LAL0	1.3071895425
+UniRef50_A6LAL0|g__Parabacteroides.s__Parabacteroides_distasonis	1.3071895425
+UniRef50_A6LHK5	1.3071895425
+UniRef50_A6LHK5|g__Parabacteroides.s__Parabacteroides_distasonis	1.3071895425
+UniRef50_R5UUV0: Phage regulatory protein Rha family	1.3071895425
+UniRef50_R5UUV0: Phage regulatory protein Rha family|g__Bacteroides.s__Bacteroides_stercoris	1.3071895425
+UniRef50_R6X2J7: Polysaccharide biosynthesis protein	1.3071895425
+UniRef50_R6X2J7: Polysaccharide biosynthesis protein|g__Parabacteroides.s__Parabacteroides_merdae	1.3071895425
+UniRef50_E2N780: Arylsulfatase	1.3046314416
+UniRef50_E2N780: Arylsulfatase|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.3046314416
+UniRef50_R5AYJ5	1.2978771832
+UniRef50_R5AYJ5|unclassified	1.2978771832
+UniRef50_D4IPW9	1.2970168612
+UniRef50_D4IPW9|g__Alistipes.s__Alistipes_shahii	1.2970168612
+UniRef50_R6N342	1.2970168612
+UniRef50_R6N342|g__Ruminococcus.s__Ruminococcus_bromii	1.2970168612
+UniRef50_R7EQZ3: Tetratricopeptide repeat protein	1.2970168612
+UniRef50_R7EQZ3: Tetratricopeptide repeat protein|g__Bacteroides.s__Bacteroides_uniformis	1.2970168612
+UniRef50_A7V3W2	1.2919896641
+UniRef50_A7V3W2|g__Bacteroides.s__Bacteroides_uniformis	1.2919896641
+UniRef50_Q64QJ4	1.2919896641
+UniRef50_Q64QJ4|g__Parabacteroides.s__Parabacteroides_distasonis	1.2919896641
+UniRef50_R5AZ46: TPR domain protein	1.2870012870
+UniRef50_R5AZ46: TPR domain protein|unclassified	1.2870012870
+UniRef50_R5XVF0: Protein serine/threonine phosphatase	1.2870012870
+UniRef50_R5XVF0: Protein serine/threonine phosphatase|g__Eubacterium.s__Eubacterium_rectale	1.2870012870
+UniRef50_A6L7B8	1.2820512821
+UniRef50_A6L7B8|g__Bacteroides.s__Bacteroides_caccae	1.2820512821
+UniRef50_R5SKQ5	1.2820512821
+UniRef50_R5SKQ5|g__Dialister.s__Dialister_invisus	1.2820512821
+UniRef50_R6VNH3: Metallo-beta-lactamase domain protein	1.2820512821
+UniRef50_R6VNH3: Metallo-beta-lactamase domain protein|g__Alistipes.s__Alistipes_shahii	1.2820512821
+UniRef50_C4ZD71	1.2771392082
+UniRef50_C4ZD71|g__Eubacterium.s__Eubacterium_rectale	1.2771392082
+UniRef50_C4ZG36	1.2771392082
+UniRef50_C4ZG36|g__Eubacterium.s__Eubacterium_rectale	1.2771392082
+UniRef50_C4ZFZ1	1.2722646310
+UniRef50_C4ZFZ1|g__Eubacterium.s__Eubacterium_rectale	1.2722646310
+UniRef50_A6L8L7: Helicase domain protein	1.2626262626
+UniRef50_A6L8L7: Helicase domain protein|g__Parabacteroides.s__Parabacteroides_distasonis	1.2626262626
+UniRef50_A7V2W6: Glycosyltransferase, group 2 family protein	1.2626262626
+UniRef50_A7V2W6: Glycosyltransferase, group 2 family protein|g__Bacteroides.s__Bacteroides_uniformis	1.2626262626
+UniRef50_C4ZCR5	1.2626262626
+UniRef50_C4ZCR5|g__Eubacterium.s__Eubacterium_rectale	1.2626262626
+UniRef50_A6LHQ0: Transposase	1.2602394455
+UniRef50_A6LHQ0: Transposase|g__Parabacteroides.s__Parabacteroides_distasonis	1.2602394455
+UniRef50_I3YHN2: Acyl-(Acyl-carrier-protein)--UDP-N-acetylglucosamine O-acyltransferase	1.2578616352
+UniRef50_I3YHN2: Acyl-(Acyl-carrier-protein)--UDP-N-acetylglucosamine O-acyltransferase|g__Alistipes.s__Alistipes_shahii	1.2578616352
+UniRef50_D4ILU5	1.2554927809
+UniRef50_D4ILU5|g__Alistipes.s__Alistipes_shahii	1.2554927809
+UniRef50_R5DMH7: tRNA pseudouridine synthase A	1.2484394507
+UniRef50_R5DMH7: tRNA pseudouridine synthase A|g__Ruminococcus.s__Ruminococcus_bromii	1.2484394507
+UniRef50_R5SKP5: ABC transporter ATP-binding protein oligopeptide/dipeptide uptake family	1.2484394507
+UniRef50_R5SKP5: ABC transporter ATP-binding protein oligopeptide/dipeptide uptake family|g__Dialister.s__Dialister_invisus	1.2484394507
+UniRef50_R6ZV72	1.2484394507
+UniRef50_R6ZV72|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.2484394507
+UniRef50_D4IL33: Fibrobacter succinogenes major domain (Fib_succ_major)	1.2437810945
+UniRef50_D4IL33: Fibrobacter succinogenes major domain (Fib_succ_major)|g__Alistipes.s__Alistipes_shahii	1.2437810945
+UniRef50_D6GQD6: O-methyltransferase domain protein	1.2437810945
+UniRef50_D6GQD6: O-methyltransferase domain protein|g__Dialister.s__Dialister_invisus	1.2437810945
+UniRef50_F3Z421: Phosphonate-transporting ATPase	1.2437810945
+UniRef50_F3Z421: Phosphonate-transporting ATPase|g__Ruminococcus.s__Ruminococcus_bromii	1.2437810945
+UniRef50_R7DI58	1.2391573730
+UniRef50_R7DI58|g__Alistipes.s__Alistipes_shahii	1.2391573730
+UniRef50_I0AFW5: HNH nuclease	1.2368583797
+UniRef50_I0AFW5: HNH nuclease|g__Bacteroides.s__Bacteroides_caccae	1.2368583797
+UniRef50_A6LBP1	1.2300123001
+UniRef50_A6LBP1|g__Parabacteroides.s__Parabacteroides_distasonis	1.2300123001
+UniRef50_E2NLL9	1.2277470841
+UniRef50_E2NLL9|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.2277470841
+UniRef50_D6D4R7: Transcriptional regulator	1.2210012210
+UniRef50_D6D4R7: Transcriptional regulator|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.2210012210
+UniRef50_R6XC85: Polysaccharide export protein	1.2210012210
+UniRef50_R6XC85: Polysaccharide export protein|g__Parabacteroides.s__Parabacteroides_distasonis	1.2210012210
+UniRef50_R5U556	1.2165450122
+UniRef50_R5U556|g__Bacteroides.s__Bacteroides_caccae	1.2165450122
+UniRef50_R6VRL5	1.2165450122
+UniRef50_R6VRL5|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.2165450122
+UniRef50_R5UR01	1.2154360377
+UniRef50_R5UR01|g__Bacteroides.s__Bacteroides_caccae	1.2154360377
+UniRef50_D4IK76: Distinct helicase family with a unique C-terminal domain including a metal-binding cysteine cluster	1.2152777778
+UniRef50_D4IK76: Distinct helicase family with a unique C-terminal domain including a metal-binding cysteine cluster|g__Alistipes.s__Alistipes_shahii	1.2152777778
+UniRef50_A6L9L3	1.2033694344
+UniRef50_A6L9L3|g__Parabacteroides.s__Parabacteroides_distasonis	1.2033694344
+UniRef50_R5UL54: Stage V sporulation protein B putative	1.2012012012
+UniRef50_R5UL54: Stage V sporulation protein B putative|g__Eubacterium.s__Eubacterium_rectale	1.2012012012
+UniRef50_R6DKG4: Solute:sodium symporter (SSS) family transporter	1.1990407674
+UniRef50_R6DKG4: Solute:sodium symporter (SSS) family transporter|g__Alistipes.s__Alistipes_shahii	1.1990407674
+UniRef50_A6L819	1.1947431302
+UniRef50_A6L819|g__Parabacteroides.s__Parabacteroides_distasonis	1.1947431302
+UniRef50_R7ENW3	1.1904761905
+UniRef50_R7ENW3|g__Bacteroides.s__Bacteroides_stercoris	1.1904761905
+UniRef50_R6DGN3	1.1862396204
+UniRef50_R6DGN3|g__Bacteroides.s__Bacteroides_caccae	1.1862396204
+UniRef50_C4ZH62	1.1841326229
+UniRef50_C4ZH62|g__Eubacterium.s__Eubacterium_rectale	1.1841326229
+UniRef50_C4ZDF4	1.1820330969
+UniRef50_C4ZDF4|g__Eubacterium.s__Eubacterium_rectale	1.1820330969
+UniRef50_E4T4M7: Prephenate dehydratase	1.1820330969
+UniRef50_E4T4M7: Prephenate dehydratase|g__Parabacteroides.s__Parabacteroides_distasonis	1.1820330969
+UniRef50_R6LFD5	1.1820330969
+UniRef50_R6LFD5|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1820330969
+UniRef50_R7EHP0	1.1778563015
+UniRef50_R7EHP0|g__Bacteroides.s__Bacteroides_uniformis	1.1778563015
+UniRef50_D4K6C3: Preprotein translocase, YajC subunit	1.1768004603
+UniRef50_D4K6C3: Preprotein translocase, YajC subunit|unclassified	1.1768004603
+UniRef50_R6WDX0: Conserved repeat protein	1.1737089202
+UniRef50_R6WDX0: Conserved repeat protein|g__Eubacterium.s__Eubacterium_rectale	1.1737089202
+UniRef50_A5ZC69	1.1695906433
+UniRef50_A5ZC69|g__Bacteroides.s__Bacteroides_caccae	1.1695906433
+UniRef50_B0NRG8	1.1655011655
+UniRef50_B0NRG8|g__Bacteroides.s__Bacteroides_stercoris	1.1655011655
+UniRef50_R5RZQ5: AraC family transcriptional regulator	1.1655011655
+UniRef50_R5RZQ5: AraC family transcriptional regulator|g__Bacteroides.s__Bacteroides_caccae	1.1655011655
+UniRef50_R6JJF7	1.1655011655
+UniRef50_R6JJF7|g__Parabacteroides.s__Parabacteroides_merdae	1.1655011655
+UniRef50_R7NK51: NAD kinase	1.1655011655
+UniRef50_R7NK51: NAD kinase|g__Ruminococcus.s__Ruminococcus_bromii	1.1655011655
+UniRef50_A1VDI2: D12 class N6 adenine-specific DNA methyltransferase	1.1614401858
+UniRef50_A1VDI2: D12 class N6 adenine-specific DNA methyltransferase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.1614401858
+UniRef50_I4BUC1: Methylenetetrahydrofolate reductase	1.1614401858
+UniRef50_I4BUC1: Methylenetetrahydrofolate reductase|g__Ruminococcus.s__Ruminococcus_bromii	1.1614401858
+UniRef50_E2NB51	1.1574074074
+UniRef50_E2NB51|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1574074074
+UniRef50_P0CZ58: Fructose-bisphosphate aldolase	1.1534025375
+UniRef50_P0CZ58: Fructose-bisphosphate aldolase|g__Eubacterium.s__Eubacterium_rectale	1.1534025375
+UniRef50_R5MLE3	1.1534025375
+UniRef50_R5MLE3|g__Bacteroides.s__Bacteroides_caccae	1.1534025375
+UniRef50_A5ZE25	1.1494252874
+UniRef50_A5ZE25|g__Bacteroides.s__Bacteroides_caccae	1.1494252874
+UniRef50_E2NCB7	1.1454753723
+UniRef50_E2NCB7|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1454753723
+UniRef50_R5SNA3	1.1454753723
+UniRef50_R5SNA3|g__Dialister.s__Dialister_invisus	1.1454753723
+UniRef50_R6N824: EDD domain protein DegV family	1.1454753723
+UniRef50_R6N824: EDD domain protein DegV family|g__Ruminococcus.s__Ruminococcus_bromii	1.1454753723
+UniRef50_R6V5Y7	1.1415525114
+UniRef50_R6V5Y7|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.1415525114
+UniRef50_C4ZAF9: 2-isopropylmalate synthase	1.1376564278
+UniRef50_C4ZAF9: 2-isopropylmalate synthase|g__Eubacterium.s__Eubacterium_rectale	1.1376564278
+UniRef50_A6LAT0	1.1337868481
+UniRef50_A6LAT0|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1337868481
+UniRef50_R5M7G7: Capsular polysaccharide synthesis protein	1.1337868481
+UniRef50_R5M7G7: Capsular polysaccharide synthesis protein|g__Bacteroides.s__Bacteroides_stercoris	1.1337868481
+UniRef50_R6MQK1	1.1337868481
+UniRef50_R6MQK1|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1337868481
+UniRef50_I9QYE3	1.1325028313
+UniRef50_I9QYE3|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1325028313
+UniRef50_A6LAB4	1.1299435028
+UniRef50_A6LAB4|g__Parabacteroides.s__Parabacteroides_merdae	1.1299435028
+UniRef50_R7JIC0: Transcriptional regulator AraC family	1.1299435028
+UniRef50_R7JIC0: Transcriptional regulator AraC family|g__Alistipes.s__Alistipes_shahii	1.1299435028
+UniRef50_B0NVB0	1.1261261261
+UniRef50_B0NVB0|g__Bacteroides.s__Bacteroides_stercoris	1.1261261261
+UniRef50_Q8A1H9	1.1261261261
+UniRef50_Q8A1H9|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.1261261261
+UniRef50_R5K3I5	1.1261261261
+UniRef50_R5K3I5|g__Bacteroides.s__Bacteroides_stercoris	1.1261261261
+UniRef50_R7CQY6	1.1261261261
+UniRef50_R7CQY6|g__Dialister.s__Dialister_invisus	1.1261261261
+UniRef50_A9KSY6: Sulfate ABC transporter, inner membrane subunit	1.1223344557
+UniRef50_A9KSY6: Sulfate ABC transporter, inner membrane subunit|g__Eubacterium.s__Eubacterium_rectale	1.1223344557
+UniRef50_C4ZFZ2	1.1223344557
+UniRef50_C4ZFZ2|g__Eubacterium.s__Eubacterium_rectale	1.1223344557
+UniRef50_R7A9N4: LysR family Transcriptional regulatory protein	1.1223344557
+UniRef50_R7A9N4: LysR family Transcriptional regulatory protein|g__Eubacterium.s__Eubacterium_rectale	1.1223344557
+UniRef50_C9LL09: Cell envelope-like function transcriptional attenuator common domain protein	1.1185682327
+UniRef50_C9LL09: Cell envelope-like function transcriptional attenuator common domain protein|g__Dialister.s__Dialister_invisus	1.1185682327
+UniRef50_E2NL87: Putative glyoxal reductase	1.1185682327
+UniRef50_E2NL87: Putative glyoxal reductase|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.1185682327
+UniRef50_Q8PYT3: Glycosyltransferase	1.1185682327
+UniRef50_Q8PYT3: Glycosyltransferase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.1185682327
+UniRef50_D6D3C2: Predicted permeases	1.1148272018
+UniRef50_D6D3C2: Predicted permeases|g__Parabacteroides.s__Parabacteroides_distasonis	1.1148272018
+UniRef50_D6D3G0: Glycerophosphoryl diester phosphodiesterase	1.1148272018
+UniRef50_D6D3G0: Glycerophosphoryl diester phosphodiesterase|g__Bacteroides.s__Bacteroides_stercoris	1.1148272018
+UniRef50_R5DSG6	1.1148272018
+UniRef50_R5DSG6|g__Ruminococcus.s__Ruminococcus_bromii	1.1148272018
+UniRef50_F2JIR2	1.1111111111
+UniRef50_F2JIR2|g__Eubacterium.s__Eubacterium_rectale	1.1111111111
+UniRef50_D4K502	1.1074197121
+UniRef50_D4K502|unclassified	1.1074197121
+UniRef50_C4ZCC7: RecT family protein	1.1001100110
+UniRef50_C4ZCC7: RecT family protein|g__Eubacterium.s__Eubacterium_rectale	1.1001100110
+UniRef50_R9I923	1.1001100110
+UniRef50_R9I923|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.1001100110
+UniRef50_R7CT18	1.0964912281
+UniRef50_R7CT18|g__Dialister.s__Dialister_invisus	1.0964912281
+UniRef50_S8H0T4: Starch-binding protein, SusD-like family	1.0946907499
+UniRef50_S8H0T4: Starch-binding protein, SusD-like family|g__Parabacteroides.s__Parabacteroides_distasonis	1.0946907499
+UniRef50_A5ZGN8	1.0940919037
+UniRef50_A5ZGN8|g__Bacteroides.s__Bacteroides_caccae	1.0940919037
+UniRef50_R5BPM4: Iron chelate uptake ABC transporter FeCT family permease protein	1.0893246187
+UniRef50_R5BPM4: Iron chelate uptake ABC transporter FeCT family permease protein|g__Dialister.s__Dialister_invisus	1.0893246187
+UniRef50_R7EL55: N-acetylneuraminate lyase	1.0893246187
+UniRef50_R7EL55: N-acetylneuraminate lyase|g__Bacteroides.s__Bacteroides_uniformis	1.0893246187
+UniRef50_C4ZBR6	1.0822510823
+UniRef50_C4ZBR6|g__Eubacterium.s__Eubacterium_rectale	1.0822510823
+UniRef50_C4ZHJ0	1.0822510823
+UniRef50_C4ZHJ0|g__Eubacterium.s__Eubacterium_rectale	1.0822510823
+UniRef50_R5CTX8: Galactofuranosyltransferase	1.0787486516
+UniRef50_R5CTX8: Galactofuranosyltransferase|g__Parabacteroides.s__Parabacteroides_merdae	1.0787486516
+UniRef50_R6B5M7: Precorrin-4 C(11)-methyltransferase	1.0787486516
+UniRef50_R6B5M7: Precorrin-4 C(11)-methyltransferase|g__Bacteroides.s__Bacteroides_uniformis	1.0787486516
+UniRef50_A5ZDG1: HAD hydrolase, family IA, variant 1	1.0752688172
+UniRef50_A5ZDG1: HAD hydrolase, family IA, variant 1|g__Bacteroides.s__Bacteroides_caccae	1.0752688172
+UniRef50_R5K3A3	1.0752688172
+UniRef50_R5K3A3|g__Parabacteroides.s__Parabacteroides_merdae	1.0752688172
+UniRef50_A6LAA7	1.0718113612
+UniRef50_A6LAA7|g__Parabacteroides.s__Parabacteroides_merdae	1.0718113612
+UniRef50_D4JI03: Permeases of the drug/metabolite transporter (DMT) superfamily	1.0718113612
+UniRef50_D4JI03: Permeases of the drug/metabolite transporter (DMT) superfamily|g__Eubacterium.s__Eubacterium_rectale	1.0718113612
+UniRef50_K5ZTP2	1.0649627263
+UniRef50_K5ZTP2|g__Parabacteroides.s__Parabacteroides_distasonis	1.0649627263
+UniRef50_R6HUC6	1.0649627263
+UniRef50_R6HUC6|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0649627263
+UniRef50_D4JP46	1.0615711253
+UniRef50_D4JP46|g__Eubacterium.s__Eubacterium_rectale	1.0615711253
+UniRef50_E2NL86	1.0582010582
+UniRef50_E2NL86|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0582010582
+UniRef50_R6TUK8: Sensory transduction protein kinase	1.0582010582
+UniRef50_R6TUK8: Sensory transduction protein kinase|g__Eubacterium.s__Eubacterium_rectale	1.0582010582
+UniRef50_R6Y6S8: Glycosyl hydrolase family 43	1.0582010582
+UniRef50_R6Y6S8: Glycosyl hydrolase family 43|g__Parabacteroides.s__Parabacteroides_merdae	1.0582010582
+UniRef50_R5U3U1	1.0548523207
+UniRef50_R5U3U1|g__Bacteroides.s__Bacteroides_caccae	1.0548523207
+UniRef50_L7VKJ7: Nucleoside-diphosphate-sugar epimerase	1.0515247108
+UniRef50_L7VKJ7: Nucleoside-diphosphate-sugar epimerase|g__Parabacteroides.s__Parabacteroides_distasonis	1.0515247108
+UniRef50_Q8A5P4: Sialidase, exo-alpha-sialidase	1.0515247108
+UniRef50_Q8A5P4: Sialidase, exo-alpha-sialidase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0515247108
+UniRef50_R5DFD9	1.0482180294
+UniRef50_R5DFD9|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0482180294
+UniRef50_A6LHQ9	1.0449320794
+UniRef50_A6LHQ9|g__Parabacteroides.s__Parabacteroides_distasonis	1.0449320794
+UniRef50_C4ZHL0: Predicted ABC-type polysaccharide/polyol phosphate export system, ATP-binding protein	1.0449320794
+UniRef50_C4ZHL0: Predicted ABC-type polysaccharide/polyol phosphate export system, ATP-binding protein|g__Eubacterium.s__Eubacterium_rectale	1.0449320794
+UniRef50_I9IPM1: RHS repeat-associated core domain-containing protein	1.0416666667
+UniRef50_I9IPM1: RHS repeat-associated core domain-containing protein|g__Bacteroides.s__Bacteroides_uniformis	1.0416666667
+UniRef50_R7KZF1	1.0416666667
+UniRef50_R7KZF1|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0416666667
+UniRef50_R7NVB1: Helicase	1.0416666667
+UniRef50_R7NVB1: Helicase|g__Parabacteroides.s__Parabacteroides_distasonis	1.0416666667
+UniRef50_R7PTX0: Glycoprotease family protein	1.0416666667
+UniRef50_R7PTX0: Glycoprotease family protein|g__Dialister.s__Dialister_invisus	1.0416666667
+UniRef50_A6LBF8	1.0384215992
+UniRef50_A6LBF8|g__Parabacteroides.s__Parabacteroides_distasonis	1.0384215992
+UniRef50_R6W5V6	1.0384215992
+UniRef50_R6W5V6|g__Bacteroides.s__Bacteroides_stercoris	1.0384215992
+UniRef50_R5K404	1.0351966874
+UniRef50_R5K404|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0351966874
+UniRef50_R6Y574: SusD family protein	1.0335917313
+UniRef50_R6Y574: SusD family protein|g__Parabacteroides.s__Parabacteroides_merdae	1.0335917313
+UniRef50_D7I7W2: Anti-sigma factor	1.0319917441
+UniRef50_D7I7W2: Anti-sigma factor|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0319917441
+UniRef50_R6B8Z4: Response regulator receiver domain protein	1.0319917441
+UniRef50_R6B8Z4: Response regulator receiver domain protein|g__Bacteroides.s__Bacteroides_stercoris	1.0319917441
+UniRef50_K9EGL3	1.0288065844
+UniRef50_K9EGL3|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0288065844
+UniRef50_R6HKL8	1.0288065844
+UniRef50_R6HKL8|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0288065844
+UniRef50_R6KM97	1.0288065844
+UniRef50_R6KM97|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.0288065844
+UniRef50_A6LGX5: Glycosyltransferase family 8	1.0224948875
+UniRef50_A6LGX5: Glycosyltransferase family 8|g__Parabacteroides.s__Parabacteroides_distasonis	1.0224948875
+UniRef50_R7J7R2: Arabinan endo-1 5-alpha-L-arabinosidase	1.0224948875
+UniRef50_R7J7R2: Arabinan endo-1 5-alpha-L-arabinosidase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0224948875
+UniRef50_R7EJG7	1.0209290454
+UniRef50_R7EJG7|g__Bacteroides.s__Bacteroides_uniformis	1.0209290454
+UniRef50_D4IM86: Competence protein CoiA-like family	1.0162601626
+UniRef50_D4IM86: Competence protein CoiA-like family|g__Alistipes.s__Alistipes_shahii	1.0162601626
+UniRef50_Q8A8R5: ATP-dependent 6-phosphofructokinase 1	1.0162601626
+UniRef50_Q8A8R5: ATP-dependent 6-phosphofructokinase 1|g__Parabacteroides.s__Parabacteroides_merdae	1.0162601626
+UniRef50_R5V1G7	1.0162601626
+UniRef50_R5V1G7|g__Bacteroides.s__Bacteroides_caccae	1.0162601626
+UniRef50_A6L9H4	1.0131712259
+UniRef50_A6L9H4|g__Parabacteroides.s__Parabacteroides_distasonis	1.0131712259
+UniRef50_C9LM13: CRISPR-associated RAMP protein, Csm4 family	1.0131712259
+UniRef50_C9LM13: CRISPR-associated RAMP protein, Csm4 family|g__Dialister.s__Dialister_invisus	1.0131712259
+UniRef50_R6L6N2	1.0131712259
+UniRef50_R6L6N2|g__Bacteroides.s__Bacteroides_stercoris	1.0131712259
+UniRef50_R6XNB2: Subtilisin-like serine proteases	1.0131712259
+UniRef50_R6XNB2: Subtilisin-like serine proteases|g__Alistipes.s__Alistipes_shahii	1.0131712259
+UniRef50_A6LE28: Glycosyltransferase family 2	1.0101010101
+UniRef50_A6LE28: Glycosyltransferase family 2|g__Parabacteroides.s__Parabacteroides_distasonis	1.0101010101
+UniRef50_R5TIE5	1.0101010101
+UniRef50_R5TIE5|g__Bacteroides.s__Bacteroides_caccae	1.0101010101
+UniRef50_R6AGI4: Thiamine-monophosphate kinase	1.0101010101
+UniRef50_R6AGI4: Thiamine-monophosphate kinase|g__Dialister.s__Dialister_invisus	1.0101010101
+UniRef50_C7HA55	1.0086781686
+UniRef50_C7HA55|unclassified	1.0086781686
+UniRef50_R5U483	1.0070493454
+UniRef50_R5U483|g__Bacteroides.s__Bacteroides_caccae	1.0070493454
+UniRef50_R6X6W5: Sigma factor regulatory protein FecR/PupR family	1.0070493454
+UniRef50_R6X6W5: Sigma factor regulatory protein FecR/PupR family|g__Parabacteroides.s__Parabacteroides_merdae	1.0070493454
+UniRef50_A6LFN4: Glycosyltransferase family 10	1.0040160643
+UniRef50_A6LFN4: Glycosyltransferase family 10|g__Parabacteroides.s__Parabacteroides_distasonis	1.0040160643
+UniRef50_R5SH17: Membrane-associated lipoprotein	1.0040160643
+UniRef50_R5SH17: Membrane-associated lipoprotein|g__Dialister.s__Dialister_invisus	1.0040160643
+UniRef50_R7CR56: Hydrid cluster protein-associated redox disulfide domain protein	1.0040160643
+UniRef50_R7CR56: Hydrid cluster protein-associated redox disulfide domain protein|g__Dialister.s__Dialister_invisus	1.0040160643
+UniRef50_F4LXA8: 3-oxoacyl-(Acyl-carrier-protein) synthase 3	1.0010010010
+UniRef50_F4LXA8: 3-oxoacyl-(Acyl-carrier-protein) synthase 3|g__Parabacteroides.s__Parabacteroides_distasonis	1.0010010010
+UniRef50_A7V3G4: Glycosyltransferase, group 2 family protein	0.9980039920
+UniRef50_A7V3G4: Glycosyltransferase, group 2 family protein|g__Bacteroides.s__Bacteroides_uniformis	0.9980039920
+UniRef50_I3YND8: Sugar kinase, ribokinase	0.9980039920
+UniRef50_I3YND8: Sugar kinase, ribokinase|g__Alistipes.s__Alistipes_shahii	0.9980039920
+UniRef50_R6RCP6	0.9950248756
+UniRef50_R6RCP6|g__Ruminococcus.s__Ruminococcus_bromii	0.9950248756
+UniRef50_R6VQT6: Glucokinase	0.9950248756
+UniRef50_R6VQT6: Glucokinase|g__Alistipes.s__Alistipes_shahii	0.9950248756
+UniRef50_Q8A5Y7: Fe3+ ABC transporter, permease	0.9920634921
+UniRef50_Q8A5Y7: Fe3+ ABC transporter, permease|g__Alistipes.s__Alistipes_shahii	0.9920634921
+UniRef50_R5HR43	0.9920634921
+UniRef50_R5HR43|g__Ruminococcus.s__Ruminococcus_bromii	0.9920634921
+UniRef50_R5JSF9	0.9920634921
+UniRef50_R5JSF9|g__Bacteroides.s__Bacteroides_caccae	0.9920634921
+UniRef50_R7ELA5	0.9920634921
+UniRef50_R7ELA5|g__Bacteroides.s__Bacteroides_uniformis	0.9920634921
+UniRef50_I9R6N7	0.9891196835
+UniRef50_I9R6N7|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9891196835
+UniRef50_R5KY62	0.9876543210
+UniRef50_R5KY62|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9876543210
+UniRef50_R6B2T2: Hemin transport system permease protein HmuU	0.9832841691
+UniRef50_R6B2T2: Hemin transport system permease protein HmuU|g__Dialister.s__Dialister_invisus	0.9832841691
+UniRef50_R6ISX9	0.9832841691
+UniRef50_R6ISX9|g__Parabacteroides.s__Parabacteroides_distasonis	0.9832841691
+UniRef50_C9RPC0: NAD-dependent epimerase/dehydratase	0.9803921569
+UniRef50_C9RPC0: NAD-dependent epimerase/dehydratase|g__Parabacteroides.s__Parabacteroides_distasonis	0.9803921569
+UniRef50_E2N7N8	0.9803921569
+UniRef50_E2N7N8|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9803921569
+UniRef50_R6X6Y7	0.9803921569
+UniRef50_R6X6Y7|g__Parabacteroides.s__Parabacteroides_merdae	0.9803921569
+UniRef50_A6L3B6	0.9775171065
+UniRef50_A6L3B6|g__Bacteroides.s__Bacteroides_uniformis	0.9775171065
+UniRef50_R9H684	0.9746588694
+UniRef50_R9H684|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9746588694
+UniRef50_A5ZG09	0.9704027171
+UniRef50_A5ZG09|g__Bacteroides.s__Bacteroides_caccae	0.9704027171
+UniRef50_E6SSW3: Anaerobic cobalt chelatase	0.9689922481
+UniRef50_E6SSW3: Anaerobic cobalt chelatase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9689922481
+UniRef50_A6LBH9	0.9633911368
+UniRef50_A6LBH9|g__Parabacteroides.s__Parabacteroides_distasonis	0.9633911368
+UniRef50_R5DNT2: Sigma factor regulatory protein FecR/PupR family	0.9633911368
+UniRef50_R5DNT2: Sigma factor regulatory protein FecR/PupR family|g__Parabacteroides.s__Parabacteroides_merdae	0.9633911368
+UniRef50_R7EM48	0.9606147935
+UniRef50_R7EM48|g__Bacteroides.s__Bacteroides_uniformis	0.9606147935
+UniRef50_P38674: Ketol-acid reductoisomerase, mitochondrial	0.9578544061
+UniRef50_P38674: Ketol-acid reductoisomerase, mitochondrial|g__Parabacteroides.s__Parabacteroides_merdae	0.9578544061
+UniRef50_R5SQL3: Zeta toxin family protein	0.9578544061
+UniRef50_R5SQL3: Zeta toxin family protein|g__Dialister.s__Dialister_invisus	0.9578544061
+UniRef50_A6L9H9: 3-oxoacyl-[acyl-carrier-protein] synthase	0.9551098376
+UniRef50_A6L9H9: 3-oxoacyl-[acyl-carrier-protein] synthase|g__Parabacteroides.s__Parabacteroides_distasonis	0.9551098376
+UniRef50_K5ZFF6	0.9551098376
+UniRef50_K5ZFF6|g__Parabacteroides.s__Parabacteroides_merdae	0.9551098376
+UniRef50_R5W485: Mannose-1-phosphate guanylyltransferase (GDP)	0.9551098376
+UniRef50_R5W485: Mannose-1-phosphate guanylyltransferase (GDP)|g__Alistipes.s__Alistipes_shahii	0.9551098376
+UniRef50_R6A9B5: Glycosyltransferase group 2 family protein	0.9551098376
+UniRef50_R6A9B5: Glycosyltransferase group 2 family protein|g__Bacteroides.s__Bacteroides_stercoris	0.9551098376
+UniRef50_R6Y4M7: Glycosyltransferase group 1 family protein	0.9523809524
+UniRef50_R6Y4M7: Glycosyltransferase group 1 family protein|g__Parabacteroides.s__Parabacteroides_merdae	0.9523809524
+UniRef50_E2NEW2	0.9505703422
+UniRef50_E2NEW2|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9505703422
+UniRef50_R6S1M3	0.9496676163
+UniRef50_R6S1M3|g__Parabacteroides.s__Parabacteroides_merdae	0.9496676163
+UniRef50_Q8A388	0.9483167378
+UniRef50_Q8A388|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9483167378
+UniRef50_A6LI73: Riboflavin biosynthesis protein RibD	0.9469696970
+UniRef50_A6LI73: Riboflavin biosynthesis protein RibD|g__Bacteroides.s__Bacteroides_uniformis	0.9469696970
+UniRef50_E2NI01	0.9442870633
+UniRef50_E2NI01|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9442870633
+UniRef50_P0C0G7: Glyceraldehyde-3-phosphate dehydrogenase	0.9442870633
+UniRef50_P0C0G7: Glyceraldehyde-3-phosphate dehydrogenase|g__Eubacterium.s__Eubacterium_rectale	0.9442870633
+UniRef50_R6JBG3	0.9442870633
+UniRef50_R6JBG3|g__Bacteroides.s__Bacteroides_stercoris	0.9442870633
+UniRef50_D7IN95: ATP-grasp domain protein	0.9416195857
+UniRef50_D7IN95: ATP-grasp domain protein|g__Parabacteroides.s__Parabacteroides_distasonis	0.9416195857
+UniRef50_R5S3S1	0.9389671362
+UniRef50_R5S3S1|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9389671362
+UniRef50_R6B9A4: Radical SAM additional 4Fe4S-binding domain-containing protein	0.9389671362
+UniRef50_R6B9A4: Radical SAM additional 4Fe4S-binding domain-containing protein|g__Dialister.s__Dialister_invisus	0.9389671362
+UniRef50_R5UMM6	0.9337068161
+UniRef50_R5UMM6|g__Bacteroides.s__Bacteroides_caccae	0.9337068161
+UniRef50_R5WA50: DNA polymerase III delta subunit	0.9337068161
+UniRef50_R5WA50: DNA polymerase III delta subunit|g__Alistipes.s__Alistipes_shahii	0.9337068161
+UniRef50_A6L9H3: Putative O-antigen polymerase	0.9310986965
+UniRef50_A6L9H3: Putative O-antigen polymerase|g__Parabacteroides.s__Parabacteroides_distasonis	0.9310986965
+UniRef50_R5SJ68: OmpA family protein	0.9310986965
+UniRef50_R5SJ68: OmpA family protein|g__Dialister.s__Dialister_invisus	0.9310986965
+UniRef50_R5UBQ4: Alpha-N-acetylglucosaminidase (NAGLU)	0.9310986965
+UniRef50_R5UBQ4: Alpha-N-acetylglucosaminidase (NAGLU)|g__Bacteroides.s__Bacteroides_caccae	0.9310986965
+UniRef50_R6KJV0	0.9285051068
+UniRef50_R6KJV0|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9285051068
+UniRef50_K5ZRC7	0.9259259259
+UniRef50_K5ZRC7|g__Parabacteroides.s__Parabacteroides_distasonis	0.9259259259
+UniRef50_R5J839	0.9259259259
+UniRef50_R5J839|g__Parabacteroides.s__Parabacteroides_distasonis	0.9259259259
+UniRef50_E4LL06: TonB-dependent receptor	0.9233610342
+UniRef50_E4LL06: TonB-dependent receptor|g__Dialister.s__Dialister_invisus	0.9233610342
+UniRef50_D4K0T5	0.9218087043
+UniRef50_D4K0T5|unclassified	0.9218087043
+UniRef50_C4ZHL7	0.9208103131
+UniRef50_C4ZHL7|g__Eubacterium.s__Eubacterium_rectale	0.9208103131
+UniRef50_R6TB33: Linear amide C-N hydrolase choloylglycine hydrolase family protein	0.9208103131
+UniRef50_R6TB33: Linear amide C-N hydrolase choloylglycine hydrolase family protein|g__Bacteroides.s__Bacteroides_uniformis	0.9208103131
+UniRef50_E6SPQ2	0.9182736455
+UniRef50_E6SPQ2|g__Bacteroides.s__Bacteroides_caccae	0.9182736455
+UniRef50_F2NRQ6	0.9157509158
+UniRef50_F2NRQ6|g__Parabacteroides.s__Parabacteroides_distasonis	0.9157509158
+UniRef50_Q8AAS0: Capsular polysaccharide biosynthesis glycosyltransferase	0.9132420091
+UniRef50_Q8AAS0: Capsular polysaccharide biosynthesis glycosyltransferase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9132420091
+UniRef50_R6TB39: Alpha-N-acetylglucosaminidase	0.9095043201
+UniRef50_R6TB39: Alpha-N-acetylglucosaminidase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9095043201
+UniRef50_R6HK03	0.9009009009
+UniRef50_R6HK03|g__Parabacteroides.s__Parabacteroides_distasonis	0.9009009009
+UniRef50_D4IM02: Thiol-disulfide isomerase and thioredoxins	0.9009009009
+UniRef50_D4IM02: Thiol-disulfide isomerase and thioredoxins|g__Alistipes.s__Alistipes_shahii	0.9009009009
+UniRef50_D4IMQ2	0.8984725966
+UniRef50_D4IMQ2|g__Alistipes.s__Alistipes_shahii	0.8984725966
+UniRef50_W0EVT9: Integrase	0.8960573477
+UniRef50_W0EVT9: Integrase|g__Bacteroides.s__Bacteroides_uniformis	0.8960573477
+UniRef50_E3CWW3: 4Fe-4S ferredoxin iron-sulfur binding domain protein	0.8936550492
+UniRef50_E3CWW3: 4Fe-4S ferredoxin iron-sulfur binding domain protein|g__Parabacteroides.s__Parabacteroides_distasonis	0.8936550492
+UniRef50_R6S7B1: Glycosyl hydrolase family 31	0.8936550492
+UniRef50_R6S7B1: Glycosyl hydrolase family 31|g__Bacteroides.s__Bacteroides_caccae	0.8936550492
+UniRef50_A6LDX2	0.8865248227
+UniRef50_A6LDX2|g__Parabacteroides.s__Parabacteroides_distasonis	0.8865248227
+UniRef50_D6E0V0: Glycosyltransferases involved in cell wall biogenesis	0.8865248227
+UniRef50_D6E0V0: Glycosyltransferases involved in cell wall biogenesis|g__Eubacterium.s__Eubacterium_rectale	0.8865248227
+UniRef50_R5DYK8: Cysteine sulfinate desulfinase/cysteine desulfurase and related enzymes	0.8865248227
+UniRef50_R5DYK8: Cysteine sulfinate desulfinase/cysteine desulfurase and related enzymes|g__Ruminococcus.s__Ruminococcus_bromii	0.8865248227
+UniRef50_C4ZI14: Extracellular/cell surface DNA-entry nuclease	0.8841732980
+UniRef50_C4ZI14: Extracellular/cell surface DNA-entry nuclease|g__Eubacterium.s__Eubacterium_rectale	0.8841732980
+UniRef50_Q8A110: Concanavalin A-like lectin/glucanase	0.8841732980
+UniRef50_Q8A110: Concanavalin A-like lectin/glucanase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8841732980
+UniRef50_R5AZL6	0.8841732980
+UniRef50_R5AZL6|g__Parabacteroides.s__Parabacteroides_distasonis	0.8841732980
+UniRef50_R7EGS1	0.8818342152
+UniRef50_R7EGS1|g__Bacteroides.s__Bacteroides_uniformis	0.8818342152
+UniRef50_R6KUJ3	0.8795074758
+UniRef50_R6KUJ3|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8795074758
+UniRef50_A4CGF3: Pigmentation and extracellular proteinase regulator	0.8771929825
+UniRef50_A4CGF3: Pigmentation and extracellular proteinase regulator|g__Parabacteroides.s__Parabacteroides_distasonis	0.8771929825
+UniRef50_C4ZGT4: Glycosyltransferase Family 4 candidate a-glycosyltransferase	0.8748906387
+UniRef50_C4ZGT4: Glycosyltransferase Family 4 candidate a-glycosyltransferase|g__Eubacterium.s__Eubacterium_rectale	0.8748906387
+UniRef50_A6L4M9	0.8726003490
+UniRef50_A6L4M9|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8726003490
+UniRef50_F3ZNS2	0.8726003490
+UniRef50_F3ZNS2|g__Parabacteroides.s__Parabacteroides_distasonis	0.8726003490
+UniRef50_Q8A2A4: Toll-Interleukin receptor	0.8726003490
+UniRef50_Q8A2A4: Toll-Interleukin receptor|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8726003490
+UniRef50_R6F9M4	0.8726003490
+UniRef50_R6F9M4|g__Bacteroides.s__Bacteroides_stercoris	0.8726003490
+UniRef50_D6D1V7: Glycosyl hydrolase family 71	0.8703220191
+UniRef50_D6D1V7: Glycosyl hydrolase family 71|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8703220191
+UniRef50_C4ZGU0	0.8680555556
+UniRef50_C4ZGU0|g__Eubacterium.s__Eubacterium_rectale	0.8680555556
+UniRef50_Q8AAS3	0.8680555556
+UniRef50_Q8AAS3|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8680555556
+UniRef50_R5JQJ0	0.8658008658
+UniRef50_R5JQJ0|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8658008658
+UniRef50_A6LBV3: Glycosyltransferase family 4	0.8635578584
+UniRef50_A6LBV3: Glycosyltransferase family 4|g__Parabacteroides.s__Parabacteroides_distasonis	0.8635578584
+UniRef50_R5E4C7	0.8635578584
+UniRef50_R5E4C7|g__Ruminococcus.s__Ruminococcus_bromii	0.8635578584
+UniRef50_R6ADK9: Peptidase S54 family	0.8635578584
+UniRef50_R6ADK9: Peptidase S54 family|g__Bacteroides.s__Bacteroides_stercoris	0.8635578584
+UniRef50_A6LG68: Site-specific recombinase	0.8591065292
+UniRef50_A6LG68: Site-specific recombinase|g__Parabacteroides.s__Parabacteroides_distasonis	0.8591065292
+UniRef50_Q8AA62	0.8591065292
+UniRef50_Q8AA62|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8591065292
+UniRef50_C6IEY4	0.8568980291
+UniRef50_C6IEY4|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8568980291
+UniRef50_K5ZGQ4	0.8568980291
+UniRef50_K5ZGQ4|g__Bacteroides.s__Bacteroides_caccae	0.8568980291
+UniRef50_A5ZJJ0	0.8525149190
+UniRef50_A5ZJJ0|g__Bacteroides.s__Bacteroides_caccae	0.8525149190
+UniRef50_C4ZHM0: Glycosyltransferase Family 2-like b-glycosyltransferase	0.8525149190
+UniRef50_C4ZHM0: Glycosyltransferase Family 2-like b-glycosyltransferase|g__Eubacterium.s__Eubacterium_rectale	0.8525149190
+UniRef50_D8K6Z3	0.8525149190
+UniRef50_D8K6Z3|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8525149190
+UniRef50_E2ND53: Alpha-L-arabinofuranosidase domain protein (Fragment)	0.8525149190
+UniRef50_E2ND53: Alpha-L-arabinofuranosidase domain protein (Fragment)|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8525149190
+UniRef50_R5BBJ9	0.8525149190
+UniRef50_R5BBJ9|g__Bacteroides.s__Bacteroides_stercoris	0.8525149190
+UniRef50_D6CXU0: Glycerophosphoryl diester phosphodiesterase	0.8503401361
+UniRef50_D6CXU0: Glycerophosphoryl diester phosphodiesterase|g__Bacteroides.s__Bacteroides_stercoris	0.8503401361
+UniRef50_R5U7L8	0.8503401361
+UniRef50_R5U7L8|g__Bacteroides.s__Bacteroides_caccae	0.8503401361
+UniRef50_R5W766: Histidine kinase	0.8503401361
+UniRef50_R5W766: Histidine kinase|g__Alistipes.s__Alistipes_shahii	0.8503401361
+UniRef50_R6AHG3: Phosphate-selective porin O and P	0.8503401361
+UniRef50_R6AHG3: Phosphate-selective porin O and P|g__Bacteroides.s__Bacteroides_stercoris	0.8503401361
+UniRef50_R6JIX6	0.8503401361
+UniRef50_R6JIX6|g__Parabacteroides.s__Parabacteroides_distasonis	0.8503401361
+UniRef50_C4Z8S8	0.8492569002
+UniRef50_C4Z8S8|g__Eubacterium.s__Eubacterium_rectale	0.8492569002
+UniRef50_R6IFF7	0.8460236887
+UniRef50_R6IFF7|g__Parabacteroides.s__Parabacteroides_distasonis	0.8460236887
+UniRef50_R5M917: Glycosyl hydrolase family 3	0.8417843916
+UniRef50_R5M917: Glycosyl hydrolase family 3|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4235493435
+UniRef50_R5M917: Glycosyl hydrolase family 3|g__Bacteroides.s__Bacteroides_uniformis	0.4182350481
+UniRef50_B0NMV2	0.8417508418
+UniRef50_B0NMV2|g__Bacteroides.s__Bacteroides_stercoris	0.8417508418
+UniRef50_B1W0Z3: Phosphoglycerate kinase	0.8417508418
+UniRef50_B1W0Z3: Phosphoglycerate kinase|g__Dialister.s__Dialister_invisus	0.8417508418
+UniRef50_R5ARS4	0.8417508418
+UniRef50_R5ARS4|g__Parabacteroides.s__Parabacteroides_distasonis	0.8417508418
+UniRef50_K1FWR9	0.8396305626
+UniRef50_K1FWR9|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8396305626
+UniRef50_E2ZAD6: Virulence-associated protein E	0.8385744235
+UniRef50_E2ZAD6: Virulence-associated protein E|g__Dialister.s__Dialister_invisus	0.8385744235
+UniRef50_I3YUM6	0.8375209380
+UniRef50_I3YUM6|g__Parabacteroides.s__Parabacteroides_distasonis	0.8375209380
+UniRef50_Q8AAS8: Putative F420H2-dehydrogenase	0.8375209380
+UniRef50_Q8AAS8: Putative F420H2-dehydrogenase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8375209380
+UniRef50_R5WW57	0.8375209380
+UniRef50_R5WW57|g__Alistipes.s__Alistipes_shahii	0.8375209380
+UniRef50_A6LEP2: Putative surface antigen BspA	0.8354218881
+UniRef50_A6LEP2: Putative surface antigen BspA|g__Parabacteroides.s__Parabacteroides_distasonis	0.8354218881
+UniRef50_K6BMT3: TonB-dependent outer membrane receptor, SusC/RagA subfamily, signature region	0.8354218881
+UniRef50_K6BMT3: TonB-dependent outer membrane receptor, SusC/RagA subfamily, signature region|g__Parabacteroides.s__Parabacteroides_merdae	0.8354218881
+UniRef50_F3PW89	0.8312551953
+UniRef50_F3PW89|g__Parabacteroides.s__Parabacteroides_distasonis	0.8312551953
+UniRef50_R5NM46: Site-specific recombinase XerD	0.8312551953
+UniRef50_R5NM46: Site-specific recombinase XerD|g__Alistipes.s__Alistipes_shahii	0.8312551953
+UniRef50_A5ZE05: Ser/Thr phosphatase family protein	0.8302200083
+UniRef50_A5ZE05: Ser/Thr phosphatase family protein|g__Bacteroides.s__Bacteroides_caccae	0.8302200083
+UniRef50_A6L9I7: Glycosyltransferase family 4	0.8291873964
+UniRef50_A6L9I7: Glycosyltransferase family 4|g__Parabacteroides.s__Parabacteroides_distasonis	0.8291873964
+UniRef50_D4L4I3	0.8291873964
+UniRef50_D4L4I3|g__Ruminococcus.s__Ruminococcus_bromii	0.8291873964
+UniRef50_R5SMH8: Permease of the major facilitator family protein	0.8291873964
+UniRef50_R5SMH8: Permease of the major facilitator family protein|g__Dialister.s__Dialister_invisus	0.8291873964
+UniRef50_R7EE70	0.8291873964
+UniRef50_R7EE70|g__Bacteroides.s__Bacteroides_uniformis	0.8291873964
+UniRef50_R7N2S5: Iron compound ABC transporter periplasmic iron compound-binding protein putative	0.8291873964
+UniRef50_R7N2S5: Iron compound ABC transporter periplasmic iron compound-binding protein putative|g__Eubacterium.s__Eubacterium_rectale	0.8291873964
+UniRef50_R6KQW8	0.8281573499
+UniRef50_R6KQW8|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8281573499
+UniRef50_I9QK91	0.8271298594
+UniRef50_I9QK91|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8271298594
+UniRef50_Q8A3Q2	0.8271298594
+UniRef50_Q8A3Q2|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8271298594
+UniRef50_A6LDX1	0.8250825083
+UniRef50_A6LDX1|g__Parabacteroides.s__Parabacteroides_distasonis	0.8250825083
+UniRef50_E2NAL0	0.8250825083
+UniRef50_E2NAL0|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.8250825083
+UniRef50_B0NP74	0.8210180624
+UniRef50_B0NP74|g__Bacteroides.s__Bacteroides_stercoris	0.8210180624
+UniRef50_R5UET0	0.8210180624
+UniRef50_R5UET0|g__Bacteroides.s__Bacteroides_caccae	0.8210180624
+UniRef50_S3YF35	0.8210180624
+UniRef50_S3YF35|g__Bacteroides.s__Bacteroides_stercoris	0.8210180624
+UniRef50_D4KS22: Histidine kinase-, DNA gyrase B-, and HSP90-like ATPase	0.8190008190
+UniRef50_D4KS22: Histidine kinase-, DNA gyrase B-, and HSP90-like ATPase|g__Eubacterium.s__Eubacterium_rectale	0.8190008190
+UniRef50_Q8AA59	0.8190008190
+UniRef50_Q8AA59|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8190008190
+UniRef50_R6TLC9	0.8190008190
+UniRef50_R6TLC9|g__Eubacterium.s__Eubacterium_rectale	0.8190008190
+UniRef50_R5UX79	0.8169934641
+UniRef50_R5UX79|g__Bacteroides.s__Bacteroides_caccae	0.8169934641
+UniRef50_R6BXN3	0.8169934641
+UniRef50_R6BXN3|g__Parabacteroides.s__Parabacteroides_merdae	0.8169934641
+UniRef50_S3YTK7	0.8159934721
+UniRef50_S3YTK7|g__Bacteroides.s__Bacteroides_stercoris	0.8159934721
+UniRef50_D4L706: Bacterial membrane protein YfhO	0.8130081301
+UniRef50_D4L706: Bacterial membrane protein YfhO|g__Ruminococcus.s__Ruminococcus_bromii	0.8130081301
+UniRef50_P46920: Glycine betaine transport ATP-binding protein OpuAA	0.8090614887
+UniRef50_P46920: Glycine betaine transport ATP-binding protein OpuAA|g__Parabacteroides.s__Parabacteroides_distasonis	0.8090614887
+UniRef50_Q8A5J6: Protein prenyltransferase	0.8061265619
+UniRef50_Q8A5J6: Protein prenyltransferase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8061265619
+UniRef50_A6LGQ6	0.8051529791
+UniRef50_A6LGQ6|g__Parabacteroides.s__Parabacteroides_distasonis	0.8051529791
+UniRef50_C4ZC88	0.8051529791
+UniRef50_C4ZC88|g__Eubacterium.s__Eubacterium_rectale	0.8051529791
+UniRef50_C4ZEL8: Cysteine aminopeptidase C2 (Bleomycin hydrolase)	0.8051529791
+UniRef50_C4ZEL8: Cysteine aminopeptidase C2 (Bleomycin hydrolase)|g__Eubacterium.s__Eubacterium_rectale	0.8051529791
+UniRef50_R5JQU8	0.8051529791
+UniRef50_R5JQU8|g__Bacteroides.s__Bacteroides_stercoris	0.8051529791
+UniRef50_Q8A3I8: Galactose-binding like protein	0.8012820513
+UniRef50_Q8A3I8: Galactose-binding like protein|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8012820513
+UniRef50_R6T7L9	0.8012820513
+UniRef50_R6T7L9|g__Eubacterium.s__Eubacterium_rectale	0.8012820513
+UniRef50_D4IPR1: Antirepressor regulating drug resistance, predicted signal transduction N-terminal membrane component	0.7898894155
+UniRef50_D4IPR1: Antirepressor regulating drug resistance, predicted signal transduction N-terminal membrane component|g__Alistipes.s__Alistipes_shahii	0.7898894155
+UniRef50_R5UH62	0.7898894155
+UniRef50_R5UH62|g__Bacteroides.s__Bacteroides_caccae	0.7898894155
+UniRef50_B0NP71	0.7880220646
+UniRef50_B0NP71|g__Bacteroides.s__Bacteroides_stercoris	0.7880220646
+UniRef50_E2NHK8	0.7880220646
+UniRef50_E2NHK8|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7880220646
+UniRef50_F4C8Z9	0.7852375344
+UniRef50_F4C8Z9|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7852375344
+UniRef50_D4JJD4: Signal transduction histidine kinase	0.7843137255
+UniRef50_D4JJD4: Signal transduction histidine kinase|g__Eubacterium.s__Eubacterium_rectale	0.7843137255
+UniRef50_R6JV34	0.7831361023
+UniRef50_R6JV34|unclassified	0.7831361023
+UniRef50_A6LD16	0.7806401249
+UniRef50_A6LD16|g__Parabacteroides.s__Parabacteroides_distasonis	0.7806401249
+UniRef50_I8W4H1	0.7806401249
+UniRef50_I8W4H1|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7806401249
+UniRef50_E2N9K9	0.7797270955
+UniRef50_E2N9K9|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7797270955
+UniRef50_A7V8T6: Outer membrane efflux protein	0.7788161994
+UniRef50_A7V8T6: Outer membrane efflux protein|g__Bacteroides.s__Bacteroides_uniformis	0.7788161994
+UniRef50_K6AFS9: DNA primase	0.7788161994
+UniRef50_K6AFS9: DNA primase|g__Parabacteroides.s__Parabacteroides_merdae	0.7788161994
+UniRef50_Q8A285	0.7770007770
+UniRef50_Q8A285|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7770007770
+UniRef50_R6V2H3	0.7770007770
+UniRef50_R6V2H3|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7770007770
+UniRef50_D4JYR2: FRG domain	0.7751937984
+UniRef50_D4JYR2: FRG domain|unclassified	0.7751937984
+UniRef50_R7CRI9	0.7751937984
+UniRef50_R7CRI9|g__Dialister.s__Dialister_invisus	0.7751937984
+UniRef50_R7L1Z2	0.7751937984
+UniRef50_R7L1Z2|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7751937984
+UniRef50_R7KKE3	0.7698229407
+UniRef50_R7KKE3|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7698229407
+UniRef50_R6DIY5: Glycosyl hydrolase family 3 protein	0.7662835249
+UniRef50_R6DIY5: Glycosyl hydrolase family 3 protein|g__Bacteroides.s__Bacteroides_uniformis	0.7662835249
+UniRef50_D4IK73	0.7654037505
+UniRef50_D4IK73|g__Alistipes.s__Alistipes_shahii	0.7654037505
+UniRef50_D4IIJ7: Signal transduction histidine kinase	0.7621951220
+UniRef50_D4IIJ7: Signal transduction histidine kinase|g__Alistipes.s__Alistipes_shahii	0.7621951220
+UniRef50_M1YWT6	0.7610350076
+UniRef50_M1YWT6|g__Bacteroides.s__Bacteroides_uniformis	0.7610350076
+UniRef50_R7DH58: Threonine synthase	0.7610350076
+UniRef50_R7DH58: Threonine synthase|g__Parabacteroides.s__Parabacteroides_distasonis	0.7610350076
+UniRef50_I8VG25	0.7593014427
+UniRef50_I8VG25|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7593014427
+UniRef50_R5LL55: MATE efflux family protein	0.7575757576
+UniRef50_R5LL55: MATE efflux family protein|g__Eubacterium.s__Eubacterium_rectale	0.7575757576
+UniRef50_Q5L9G5	0.7558578987
+UniRef50_Q5L9G5|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7558578987
+UniRef50_R5W6P3: Trigger factor tig	0.7541478130
+UniRef50_R5W6P3: Trigger factor tig|g__Alistipes.s__Alistipes_shahii	0.7541478130
+UniRef50_R6DK68	0.7541478130
+UniRef50_R6DK68|g__Bacteroides.s__Bacteroides_caccae	0.7541478130
+UniRef50_R6WJD3	0.7524454477
+UniRef50_R6WJD3|g__Parabacteroides.s__Parabacteroides_merdae	0.7524454477
+UniRef50_Q8A589	0.7490636704
+UniRef50_Q8A589|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7490636704
+UniRef50_R7KRE7: Membrane protein	0.7440476190
+UniRef50_R7KRE7: Membrane protein|g__Bacteroides.s__Bacteroides_caccae	0.7440476190
+UniRef50_R5U978	0.7390983001
+UniRef50_R5U978|g__Bacteroides.s__Bacteroides_caccae	0.7390983001
+UniRef50_R5W2R4	0.7390983001
+UniRef50_R5W2R4|g__Alistipes.s__Alistipes_shahii	0.7390983001
+UniRef50_S3ZFI5	0.7374631268
+UniRef50_S3ZFI5|g__Bacteroides.s__Bacteroides_stercoris	0.7374631268
+UniRef50_R5UUP0	0.7358351729
+UniRef50_R5UUP0|g__Bacteroides.s__Bacteroides_caccae	0.7358351729
+UniRef50_R6N1C9: Dipeptidase putative	0.7342143906
+UniRef50_R6N1C9: Dipeptidase putative|g__Ruminococcus.s__Ruminococcus_bromii	0.7342143906
+UniRef50_Q8A282	0.7330143371
+UniRef50_Q8A282|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7330143371
+UniRef50_R5U378	0.7326007326
+UniRef50_R5U378|g__Bacteroides.s__Bacteroides_stercoris	0.7326007326
+UniRef50_R6LH14: SusD family protein	0.7293946025
+UniRef50_R6LH14: SusD family protein|g__Bacteroides.s__Bacteroides_stercoris	0.7293946025
+UniRef50_T4C3Q7: Putative membrane protein	0.7293946025
+UniRef50_T4C3Q7: Putative membrane protein|unclassified	0.7293946025
+UniRef50_C4ZEL7: Transcriptional regulatory protein	0.7262164125
+UniRef50_C4ZEL7: Transcriptional regulatory protein|g__Eubacterium.s__Eubacterium_rectale	0.7262164125
+UniRef50_E2NEA3	0.7262164125
+UniRef50_E2NEA3|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7262164125
+UniRef50_R6AAC2	0.7262164125
+UniRef50_R6AAC2|g__Bacteroides.s__Bacteroides_stercoris	0.7262164125
+UniRef50_A7V2W2	0.7230657990
+UniRef50_A7V2W2|g__Bacteroides.s__Bacteroides_uniformis	0.7230657990
+UniRef50_R9I4J5	0.7230657990
+UniRef50_R9I4J5|g__Bacteroides.s__Bacteroides_uniformis	0.7230657990
+UniRef50_R5UEH8: MATE efflux family protein	0.7215007215
+UniRef50_R5UEH8: MATE efflux family protein|g__Alistipes.s__Alistipes_shahii	0.7215007215
+UniRef50_R5WPH6: Predicted membrane protein	0.7215007215
+UniRef50_R5WPH6: Predicted membrane protein|g__Alistipes.s__Alistipes_shahii	0.7215007215
+UniRef50_R6KI52	0.7199424046
+UniRef50_R6KI52|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7199424046
+UniRef50_Q5LEH8: Conserved protein found in conjugate transposon	0.7183908046
+UniRef50_Q5LEH8: Conserved protein found in conjugate transposon|g__Parabacteroides.s__Parabacteroides_merdae	0.7183908046
+UniRef50_R5E4L2: Putrescine-ornithine antiporter	0.7183908046
+UniRef50_R5E4L2: Putrescine-ornithine antiporter|g__Dialister.s__Dialister_invisus	0.7183908046
+UniRef50_R7P086	0.7183908046
+UniRef50_R7P086|g__Parabacteroides.s__Parabacteroides_distasonis	0.7183908046
+UniRef50_E2N8E2: Polysaccharide biosynthesis protein	0.7107320540
+UniRef50_E2N8E2: Polysaccharide biosynthesis protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.7107320540
+UniRef50_R5DTN0	0.7092198582
+UniRef50_R5DTN0|g__Ruminococcus.s__Ruminococcus_bromii	0.7092198582
+UniRef50_A7V8T7	0.7047216350
+UniRef50_A7V8T7|g__Bacteroides.s__Bacteroides_uniformis	0.7047216350
+UniRef50_R7EAY3: Peptidase S41 family	0.7032348805
+UniRef50_R7EAY3: Peptidase S41 family|g__Bacteroides.s__Bacteroides_uniformis	0.7032348805
+UniRef50_D4JXN3	0.7002801120
+UniRef50_D4JXN3|unclassified	0.7002801120
+UniRef50_K6AUC0: Radical SAM additional 4Fe4S-binding domain-containing protein	0.6958942241
+UniRef50_K6AUC0: Radical SAM additional 4Fe4S-binding domain-containing protein|g__Parabacteroides.s__Parabacteroides_distasonis	0.6958942241
+UniRef50_A6L9H0: Exopolysaccharide biosynthesis protein	0.6944444444
+UniRef50_A6L9H0: Exopolysaccharide biosynthesis protein|g__Parabacteroides.s__Parabacteroides_distasonis	0.6944444444
+UniRef50_I5AVN0: Aminoacyl-histidine dipeptidase	0.6944444444
+UniRef50_I5AVN0: Aminoacyl-histidine dipeptidase|g__Eubacterium.s__Eubacterium_rectale	0.6944444444
+UniRef50_D3ICC6	0.6901311249
+UniRef50_D3ICC6|g__Bacteroides.s__Bacteroides_stercoris	0.6901311249
+UniRef50_R5VHT6	0.6887052342
+UniRef50_R5VHT6|g__Parabacteroides.s__Parabacteroides_merdae	0.6887052342
+UniRef50_R6AL47: Clostripain family	0.6887052342
+UniRef50_R6AL47: Clostripain family|g__Bacteroides.s__Bacteroides_stercoris	0.6887052342
+UniRef50_D4L6F0	0.6858710562
+UniRef50_D4L6F0|g__Ruminococcus.s__Ruminococcus_bromii	0.6858710562
+UniRef50_R7ENP4	0.6858710562
+UniRef50_R7ENP4|g__Bacteroides.s__Bacteroides_uniformis	0.6858710562
+UniRef50_A6L812: O-antigen repeat unit transporter	0.6844626968
+UniRef50_A6L812: O-antigen repeat unit transporter|g__Parabacteroides.s__Parabacteroides_distasonis	0.6844626968
+UniRef50_R7DYE6	0.6844626968
+UniRef50_R7DYE6|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.6844626968
+UniRef50_A6LAF2	0.6788866259
+UniRef50_A6LAF2|g__Parabacteroides.s__Parabacteroides_distasonis	0.6788866259
+UniRef50_R5NYZ1: FAD dependent oxidoreductase	0.6775067751
+UniRef50_R5NYZ1: FAD dependent oxidoreductase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.6775067751
+UniRef50_R5W7P7	0.6747638327
+UniRef50_R5W7P7|g__Alistipes.s__Alistipes_shahii	0.6747638327
+UniRef50_R5UG30: Parallel beta-helix	0.6706908115
+UniRef50_R5UG30: Parallel beta-helix|g__Bacteroides.s__Bacteroides_caccae	0.6706908115
+UniRef50_R6MHH6	0.6693440428
+UniRef50_R6MHH6|g__Bacteroides.s__Bacteroides_uniformis	0.6693440428
+UniRef50_R5TDA9	0.6680026720
+UniRef50_R5TDA9|g__Dialister.s__Dialister_invisus	0.6680026720
+UniRef50_R5U9F9	0.6680026720
+UniRef50_R5U9F9|g__Bacteroides.s__Bacteroides_caccae	0.6680026720
+UniRef50_R6E2P7	0.6680026720
+UniRef50_R6E2P7|g__Bacteroides.s__Bacteroides_stercoris	0.6680026720
+UniRef50_C4ZAS8: Stage IV sporulation protein A	0.6666666667
+UniRef50_C4ZAS8: Stage IV sporulation protein A|g__Eubacterium.s__Eubacterium_rectale	0.6666666667
+UniRef50_D4IK19: Predicted permeases	0.6653359947
+UniRef50_D4IK19: Predicted permeases|g__Alistipes.s__Alistipes_shahii	0.6653359947
+UniRef50_R6TXN1	0.6653359947
+UniRef50_R6TXN1|g__Eubacterium.s__Eubacterium_rectale	0.6653359947
+UniRef50_D4N0H8: Type I site-specific restriction-modification system, R (Restriction) subunit and related helicases	0.6646726487
+UniRef50_D4N0H8: Type I site-specific restriction-modification system, R (Restriction) subunit and related helicases|g__Dialister.s__Dialister_invisus	0.6646726487
+UniRef50_Q9KDS9: Biotin carboxylase	0.6613756614
+UniRef50_Q9KDS9: Biotin carboxylase|g__Bacteroides.s__Bacteroides_uniformis	0.6613756614
+UniRef50_R6ID17: NADH-dependent dehydrogenase	0.6613756614
+UniRef50_R6ID17: NADH-dependent dehydrogenase|g__Parabacteroides.s__Parabacteroides_distasonis	0.6613756614
+UniRef50_R6M6C5: Bacterial sugar transferase	0.6613756614
+UniRef50_R6M6C5: Bacterial sugar transferase|g__Bacteroides.s__Bacteroides_stercoris	0.6613756614
+UniRef50_R6SXR7: TonB-linked outer membrane protein SusC/RagA family	0.6613756614
+UniRef50_R6SXR7: TonB-linked outer membrane protein SusC/RagA family|g__Bacteroides.s__Bacteroides_stercoris	0.6613756614
+UniRef50_Q89YN9	0.6587615283
+UniRef50_Q89YN9|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6587615283
+UniRef50_R6MRY6	0.6561679790
+UniRef50_R6MRY6|g__Ruminococcus.s__Ruminococcus_bromii	0.6561679790
+UniRef50_Q8A286	0.6548788474
+UniRef50_Q8A286|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6548788474
+UniRef50_R7HQF2: Polysaccharide biosynthesis protein	0.6548788474
+UniRef50_R7HQF2: Polysaccharide biosynthesis protein|g__Bacteroides.s__Bacteroides_stercoris	0.6548788474
+UniRef50_E2NAZ1: Arylsulfatase	0.6535947712
+UniRef50_E2NAZ1: Arylsulfatase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.6535947712
+UniRef50_E2N889	0.6527415144
+UniRef50_E2N889|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.6527415144
+UniRef50_R5BNJ9: Periplasmic dipeptide transport protein	0.6510416667
+UniRef50_R5BNJ9: Periplasmic dipeptide transport protein|g__Dialister.s__Dialister_invisus	0.6510416667
+UniRef50_R5V127	0.6510416667
+UniRef50_R5V127|g__Bacteroides.s__Bacteroides_caccae	0.6510416667
+UniRef50_C7H7C7	0.6507402977
+UniRef50_C7H7C7|unclassified	0.6507402977
+UniRef50_I8UTM5	0.6472491909
+UniRef50_I8UTM5|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.6472491909
+UniRef50_G8UKK8: SusD family protein	0.6459948320
+UniRef50_G8UKK8: SusD family protein|g__Bacteroides.s__Bacteroides_uniformis	0.6459948320
+UniRef50_Q8A216	0.6459948320
+UniRef50_Q8A216|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6459948320
+UniRef50_F5J2A7	0.6435006435
+UniRef50_F5J2A7|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6435006435
+UniRef50_R6X6G1	0.6397952655
+UniRef50_R6X6G1|g__Bacteroides.s__Bacteroides_uniformis	0.6397952655
+UniRef50_Q64Y51	0.6349206349
+UniRef50_Q64Y51|g__Parabacteroides.s__Parabacteroides_distasonis	0.6349206349
+UniRef50_R6DQ84	0.6325110689
+UniRef50_R6DQ84|g__Bacteroides.s__Bacteroides_caccae	0.6325110689
+UniRef50_Q8A0A9: Putative Fibronectin	0.6313131313
+UniRef50_Q8A0A9: Putative Fibronectin|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6313131313
+UniRef50_R6IF02: RagB/SusD domain-containing protein	0.6277463905
+UniRef50_R6IF02: RagB/SusD domain-containing protein|g__Parabacteroides.s__Parabacteroides_distasonis	0.6277463905
+UniRef50_R6DQP6	0.6265664160
+UniRef50_R6DQP6|g__Bacteroides.s__Bacteroides_stercoris	0.6265664160
+UniRef50_R6LNW7: SusD family protein	0.6253908693
+UniRef50_R6LNW7: SusD family protein|g__Bacteroides.s__Bacteroides_stercoris	0.6253908693
+UniRef50_C6W0G9: TonB-dependent receptor plug	0.6195786865
+UniRef50_C6W0G9: TonB-dependent receptor plug|g__Parabacteroides.s__Parabacteroides_merdae	0.6195786865
+UniRef50_R6HSY4	0.6195786865
+UniRef50_R6HSY4|g__Parabacteroides.s__Parabacteroides_distasonis	0.6195786865
+UniRef50_R5W8Y2: Metal-dependent hydrolase	0.6172839506
+UniRef50_R5W8Y2: Metal-dependent hydrolase|g__Alistipes.s__Alistipes_shahii	0.6172839506
+UniRef50_A7LXT5: SusD-like protein BACOVA_02651	0.6161429452
+UniRef50_A7LXT5: SusD-like protein BACOVA_02651|g__Bacteroides.s__Bacteroides_uniformis	0.6161429452
+UniRef50_E2N779: Arylsulfatase	0.6161429452
+UniRef50_E2N779: Arylsulfatase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.6161429452
+UniRef50_D4K3E8	0.6154304834
+UniRef50_D4K3E8|unclassified	0.6154304834
+UniRef50_Q64PA3: Sialidase	0.6127450980
+UniRef50_Q64PA3: Sialidase|g__Bacteroides.s__Bacteroides_uniformis	0.6127450980
+UniRef50_R5UU67: SusC/RagA family TonB-linked outer membrane protein	0.6127450980
+UniRef50_R5UU67: SusC/RagA family TonB-linked outer membrane protein|g__Bacteroides.s__Bacteroides_caccae	0.6127450980
+UniRef50_R7KKH7	0.6116207951
+UniRef50_R7KKH7|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6116207951
+UniRef50_R6ZBH5: Metallo-beta-lactamase domain protein	0.6098742672
+UniRef50_R6ZBH5: Metallo-beta-lactamase domain protein|unclassified	0.6098742672
+UniRef50_C4ZDJ0	0.6093845216
+UniRef50_C4ZDJ0|g__Eubacterium.s__Eubacterium_rectale	0.6093845216
+UniRef50_R6B7M5: SusD family protein	0.5995203837
+UniRef50_R6B7M5: SusD family protein|g__Bacteroides.s__Bacteroides_stercoris	0.5995203837
+UniRef50_D4K2N0: Phage tail sheath protein FI	0.5992893062
+UniRef50_D4K2N0: Phage tail sheath protein FI|unclassified	0.5992893062
+UniRef50_R6GWL4	0.5962029816
+UniRef50_R6GWL4|unclassified	0.5962029816
+UniRef50_D4ILT1	0.5952380952
+UniRef50_D4ILT1|g__Alistipes.s__Alistipes_shahii	0.5952380952
+UniRef50_E6SWM6: RagB/SusD domain protein	0.5952380952
+UniRef50_E6SWM6: RagB/SusD domain protein|g__Bacteroides.s__Bacteroides_stercoris	0.5952380952
+UniRef50_R5RPZ1: SusD family	0.5952380952
+UniRef50_R5RPZ1: SusD family|g__Alistipes.s__Alistipes_shahii	0.5952380952
+UniRef50_R6A3M4	0.5952380952
+UniRef50_R6A3M4|g__Bacteroides.s__Bacteroides_stercoris	0.5952380952
+UniRef50_R6LNP4	0.5941770648
+UniRef50_R6LNP4|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5941770648
+UniRef50_R5U3Y1	0.5920663114
+UniRef50_R5U3Y1|g__Bacteroides.s__Bacteroides_caccae	0.5920663114
+UniRef50_T2NBI2: Tetratricopeptide repeat protein	0.5910165485
+UniRef50_T2NBI2: Tetratricopeptide repeat protein|g__Parabacteroides.s__Parabacteroides_merdae	0.5910165485
+UniRef50_R6M5D0	0.5899705015
+UniRef50_R6M5D0|g__Bacteroides.s__Bacteroides_stercoris	0.5899705015
+UniRef50_R5GRX5	0.5889281508
+UniRef50_R5GRX5|g__Bacteroides.s__Bacteroides_caccae	0.5889281508
+UniRef50_A6LFP7	0.5858230814
+UniRef50_A6LFP7|g__Parabacteroides.s__Parabacteroides_distasonis	0.5858230814
+UniRef50_Q89YR2	0.5837711617
+UniRef50_Q89YR2|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5837711617
+UniRef50_D4IK77	0.5832604258
+UniRef50_D4IK77|g__Alistipes.s__Alistipes_shahii	0.5832604258
+UniRef50_E3IDD3: Terminase	0.5807200929
+UniRef50_E3IDD3: Terminase|g__Dialister.s__Dialister_invisus	0.5807200929
+UniRef50_C7H896	0.5805891128
+UniRef50_C7H896|unclassified	0.5805891128
+UniRef50_D4IIL6: Glycerophosphoryl diester phosphodiesterase	0.5797101449
+UniRef50_D4IIL6: Glycerophosphoryl diester phosphodiesterase|g__Alistipes.s__Alistipes_shahii	0.5797101449
+UniRef50_C4ZAB2	0.5787037037
+UniRef50_C4ZAB2|g__Eubacterium.s__Eubacterium_rectale	0.5787037037
+UniRef50_A5ZGN9: Papain family cysteine protease	0.5782017924
+UniRef50_A5ZGN9: Papain family cysteine protease|g__Bacteroides.s__Bacteroides_caccae	0.5782017924
+UniRef50_R6KI58	0.5767012687
+UniRef50_R6KI58|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5767012687
+UniRef50_K6A7H7	0.5707762557
+UniRef50_K6A7H7|g__Parabacteroides.s__Parabacteroides_merdae	0.5707762557
+UniRef50_D4L5J7	0.5698005698
+UniRef50_D4L5J7|g__Ruminococcus.s__Ruminococcus_bromii	0.5698005698
+UniRef50_R6WZW8: 2-succinyl-5-enolpyruvyl-6-hydroxy-3-cyclohexene-1-carboxylate synthase	0.5688282139
+UniRef50_R6WZW8: 2-succinyl-5-enolpyruvyl-6-hydroxy-3-cyclohexene-1-carboxylate synthase|g__Bacteroides.s__Bacteroides_uniformis	0.5688282139
+UniRef50_R5U804: Glycosyl hydrolase family 3 N-terminal domain protein	0.5678591709
+UniRef50_R5U804: Glycosyl hydrolase family 3 N-terminal domain protein|g__Bacteroides.s__Bacteroides_caccae	0.5678591709
+UniRef50_R5UX84: Thiamine pyrophosphate enzyme N-terminal TPP binding domain protein	0.5678591709
+UniRef50_R5UX84: Thiamine pyrophosphate enzyme N-terminal TPP binding domain protein|g__Bacteroides.s__Bacteroides_caccae	0.5678591709
+UniRef50_A6LIX6: N-acetylgalactosamine 6-sulfatase	0.5649717514
+UniRef50_A6LIX6: N-acetylgalactosamine 6-sulfatase|g__Parabacteroides.s__Parabacteroides_distasonis	0.5649717514
+UniRef50_R5W2T0	0.5649717514
+UniRef50_R5W2T0|g__Alistipes.s__Alistipes_shahii	0.5649717514
+UniRef50_E6STE9: Peptidase S41	0.5640157924
+UniRef50_E6STE9: Peptidase S41|g__Bacteroides.s__Bacteroides_uniformis	0.5640157924
+UniRef50_R6DQP2	0.5640157924
+UniRef50_R6DQP2|g__Bacteroides.s__Bacteroides_stercoris	0.5640157924
+UniRef50_Q8A2L3: Beta-glucuronidase	0.5630630631
+UniRef50_Q8A2L3: Beta-glucuronidase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5630630631
+UniRef50_R5WNY0	0.5611672278
+UniRef50_R5WNY0|g__Alistipes.s__Alistipes_shahii	0.5611672278
+UniRef50_R5UVE6	0.5602240896
+UniRef50_R5UVE6|g__Bacteroides.s__Bacteroides_caccae	0.5602240896
+UniRef50_R6CKF4: RagB/SusD domain-containing protein	0.5602240896
+UniRef50_R6CKF4: RagB/SusD domain-containing protein|g__Bacteroides.s__Bacteroides_uniformis	0.5602240896
+UniRef50_K1RQ43: Relaxase/mobilization nuclease domain protein (Fragment)	0.5593611820
+UniRef50_K1RQ43: Relaxase/mobilization nuclease domain protein (Fragment)|unclassified	0.5593611820
+UniRef50_R5MQM3: SusD family protein	0.5583472920
+UniRef50_R5MQM3: SusD family protein|g__Bacteroides.s__Bacteroides_uniformis	0.5583472920
+UniRef50_C8W8A2: Beta-lactamase domain protein	0.5581373701
+UniRef50_C8W8A2: Beta-lactamase domain protein|unclassified	0.5581373701
+UniRef50_D4L5G4	0.5574136009
+UniRef50_D4L5G4|g__Ruminococcus.s__Ruminococcus_bromii	0.5574136009
+UniRef50_E2N773: SusD family protein	0.5574136009
+UniRef50_E2N773: SusD family protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5574136009
+UniRef50_R6KI42	0.5574136009
+UniRef50_R6KI42|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5574136009
+UniRef50_D4L6Y8	0.5564830273
+UniRef50_D4L6Y8|g__Ruminococcus.s__Ruminococcus_bromii	0.5564830273
+UniRef50_Q8AA03: O-antigen polymerase	0.5564830273
+UniRef50_Q8AA03: O-antigen polymerase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5564830273
+UniRef50_E2NL90: 4Fe-4S binding domain protein	0.5546311703
+UniRef50_E2NL90: 4Fe-4S binding domain protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5546311703
+UniRef50_R6A5T2	0.5546311703
+UniRef50_R6A5T2|g__Bacteroides.s__Bacteroides_stercoris	0.5546311703
+UniRef50_R6B7K2	0.5527915976
+UniRef50_R6B7K2|g__Bacteroides.s__Bacteroides_stercoris	0.5527915976
+UniRef50_C7X4M3: SusD family protein	0.5500550055
+UniRef50_C7X4M3: SusD family protein|g__Parabacteroides.s__Parabacteroides_distasonis	0.5500550055
+UniRef50_R7DQY3: SusD family protein	0.5500550055
+UniRef50_R7DQY3: SusD family protein|g__Bacteroides.s__Bacteroides_caccae	0.5500550055
+UniRef50_R6IEK8	0.5490624496
+UniRef50_R6IEK8|unclassified	0.5490624496
+UniRef50_X5DCZ6: Glycan metabolism protein RagB	0.5473453749
+UniRef50_X5DCZ6: Glycan metabolism protein RagB|g__Parabacteroides.s__Parabacteroides_distasonis	0.5473453749
+UniRef50_R5URF5: Leucine Rich Repeat protein	0.5455537370
+UniRef50_R5URF5: Leucine Rich Repeat protein|g__Bacteroides.s__Bacteroides_stercoris	0.5455537370
+UniRef50_R5U7A9: Alkaline phosphatase family protein	0.5437737901
+UniRef50_R5U7A9: Alkaline phosphatase family protein|g__Bacteroides.s__Bacteroides_caccae	0.5437737901
+UniRef50_A5ZGU7	0.5420054201
+UniRef50_A5ZGU7|g__Bacteroides.s__Bacteroides_caccae	0.5420054201
+UniRef50_R6W707	0.5376344086
+UniRef50_R6W707|g__Eubacterium.s__Eubacterium_rectale	0.5376344086
+UniRef50_R5RWC1	0.5341880342
+UniRef50_R5RWC1|g__Parabacteroides.s__Parabacteroides_distasonis	0.5341880342
+UniRef50_R6D576	0.5316321106
+UniRef50_R6D576|g__Bacteroides.s__Bacteroides_stercoris	0.5316321106
+UniRef50_Q8AAM4: SusD homolog	0.5307855626
+UniRef50_Q8AAM4: SusD homolog|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5307855626
+UniRef50_R6C5V1	0.5291005291
+UniRef50_R6C5V1|g__Bacteroides.s__Bacteroides_uniformis	0.5291005291
+UniRef50_D4JP86: Tfp pilus assembly protein, ATPase PilM	0.5282620180
+UniRef50_D4JP86: Tfp pilus assembly protein, ATPase PilM|g__Eubacterium.s__Eubacterium_rectale	0.5282620180
+UniRef50_R6Z0Y1: Cobalamin biosynthesis protein CbiD	0.5274261603
+UniRef50_R6Z0Y1: Cobalamin biosynthesis protein CbiD|g__Bacteroides.s__Bacteroides_stercoris	0.5274261603
+UniRef50_D6D6J1: SusD family	0.5249343832
+UniRef50_D6D6J1: SusD family|g__Parabacteroides.s__Parabacteroides_merdae	0.5249343832
+UniRef50_F7L5T2	0.5249343832
+UniRef50_F7L5T2|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5249343832
+UniRef50_Q8A5N8	0.5249343832
+UniRef50_Q8A5N8|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5249343832
+UniRef50_R5U338: SusD family protein	0.5216484090
+UniRef50_R5U338: SusD family protein|g__Bacteroides.s__Bacteroides_caccae	0.5216484090
+UniRef50_R6KUS8: SusD homolog	0.5200208008
+UniRef50_R6KUS8: SusD homolog|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5200208008
+UniRef50_R6U5S3	0.5192107996
+UniRef50_R6U5S3|g__Eubacterium.s__Eubacterium_rectale	0.5192107996
+UniRef50_C6XYM0: RagB/SusD domain protein	0.5151983514
+UniRef50_C6XYM0: RagB/SusD domain protein|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5151983514
+UniRef50_E2NBP1	0.5128205128
+UniRef50_E2NBP1|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5128205128
+UniRef50_R5U9M0	0.5128205128
+UniRef50_R5U9M0|g__Bacteroides.s__Bacteroides_caccae	0.5128205128
+UniRef50_R6DQ33	0.5128205128
+UniRef50_R6DQ33|g__Bacteroides.s__Bacteroides_stercoris	0.5128205128
+UniRef50_R5UT07: Glycosyl hydrolase family 20 catalytic domain protein	0.5120327701
+UniRef50_R5UT07: Glycosyl hydrolase family 20 catalytic domain protein|g__Bacteroides.s__Bacteroides_caccae	0.5120327701
+UniRef50_B0NSA9	0.5112474438
+UniRef50_B0NSA9|g__Bacteroides.s__Bacteroides_stercoris	0.5112474438
+UniRef50_R6L9Y6	0.5089058524
+UniRef50_R6L9Y6|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.5089058524
+UniRef50_R5VJE2: Leucine Rich Repeat protein	0.5073566717
+UniRef50_R5VJE2: Leucine Rich Repeat protein|g__Bacteroides.s__Bacteroides_stercoris	0.5073566717
+UniRef50_R7E8E9	0.5073566717
+UniRef50_R7E8E9|g__Bacteroides.s__Bacteroides_caccae	0.5073566717
+UniRef50_R8W2D5: Sporulation protein YabP	0.5061483488
+UniRef50_R8W2D5: Sporulation protein YabP|unclassified	0.5061483488
+UniRef50_Q8A1I0: SusD homolog	0.4960317460
+UniRef50_Q8A1I0: SusD homolog|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4960317460
+UniRef50_D4L505: Phage minor capsid protein 2	0.4901960784
+UniRef50_D4L505: Phage minor capsid protein 2|g__Ruminococcus.s__Ruminococcus_bromii	0.4901960784
+UniRef50_K1S9X5: Metallo-beta-lactamase family protein (Fragment)	0.4888452241
+UniRef50_K1S9X5: Metallo-beta-lactamase family protein (Fragment)|unclassified	0.4888452241
+UniRef50_Q8A5J3	0.4880429478
+UniRef50_Q8A5J3|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4880429478
+UniRef50_D4INS2: AraC-type DNA-binding domain-containing proteins	0.4869734599
+UniRef50_D4INS2: AraC-type DNA-binding domain-containing proteins|g__Alistipes.s__Alistipes_shahii	0.4869734599
+UniRef50_E2NC71	0.4866180049
+UniRef50_E2NC71|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4866180049
+UniRef50_A6LGD7	0.4861448712
+UniRef50_A6LGD7|g__Parabacteroides.s__Parabacteroides_distasonis	0.4861448712
+UniRef50_Q8A1J0: SusD homolog	0.4823926676
+UniRef50_Q8A1J0: SusD homolog|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4823926676
+UniRef50_R5U7X8: SusD family protein	0.4816955684
+UniRef50_R5U7X8: SusD family protein|g__Bacteroides.s__Bacteroides_caccae	0.4816955684
+UniRef50_E2NE86	0.4803073967
+UniRef50_E2NE86|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4803073967
+UniRef50_R6KNB5	0.4803073967
+UniRef50_R6KNB5|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4803073967
+UniRef50_R7ERT7: VirE domain-containing protein	0.4782400765
+UniRef50_R7ERT7: VirE domain-containing protein|g__Bacteroides.s__Bacteroides_uniformis	0.4782400765
+UniRef50_R5DV01: Fibronectin type III domain	0.4761904762
+UniRef50_R5DV01: Fibronectin type III domain|g__Ruminococcus.s__Ruminococcus_bromii	0.4761904762
+UniRef50_R6BXS3	0.4748338082
+UniRef50_R6BXS3|g__Eubacterium.s__Eubacterium_rectale	0.4748338082
+UniRef50_R6IGV9	0.4708097928
+UniRef50_R6IGV9|g__Parabacteroides.s__Parabacteroides_distasonis	0.4708097928
+UniRef50_R7EDG8	0.4681647940
+UniRef50_R7EDG8|g__Bacteroides.s__Bacteroides_uniformis	0.4681647940
+UniRef50_D4L908: CHAP domain./Ricin-type beta-trefoil lectin domain	0.4629629630
+UniRef50_D4L908: CHAP domain./Ricin-type beta-trefoil lectin domain|g__Ruminococcus.s__Ruminococcus_bromii	0.4629629630
+UniRef50_R6AZJ2	0.4610419548
+UniRef50_R6AZJ2|g__Bacteroides.s__Bacteroides_stercoris	0.4610419548
+UniRef50_D4IL13	0.4547521601
+UniRef50_D4IL13|g__Alistipes.s__Alistipes_shahii	0.4547521601
+UniRef50_R6T351: Preprotein translocase YajC subunit	0.4526490415
+UniRef50_R6T351: Preprotein translocase YajC subunit|unclassified	0.4526490415
+UniRef50_Q8A2L4: Peptidase	0.4516711834
+UniRef50_Q8A2L4: Peptidase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4516711834
+UniRef50_R5DME2: Predicted membrane metal-binding protein	0.4462293619
+UniRef50_R5DME2: Predicted membrane metal-binding protein|g__Ruminococcus.s__Ruminococcus_bromii	0.4462293619
+UniRef50_R7JE13: TrkA C-terminal domain protein	0.4450378282
+UniRef50_R7JE13: TrkA C-terminal domain protein|g__Parabacteroides.s__Parabacteroides_merdae	0.4450378282
+UniRef50_R6MUC5: Glycosidases	0.4432624113
+UniRef50_R6MUC5: Glycosidases|g__Ruminococcus.s__Ruminococcus_bromii	0.4432624113
+UniRef50_R6XYT9: Cell division protein FtsI/penicillin-binding protein 2	0.4420866490
+UniRef50_R6XYT9: Cell division protein FtsI/penicillin-binding protein 2|g__Alistipes.s__Alistipes_shahii	0.4420866490
+UniRef50_R5NFR8	0.4397537379
+UniRef50_R5NFR8|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4397537379
+UniRef50_E6SS83	0.4380201489
+UniRef50_E6SS83|g__Bacteroides.s__Bacteroides_caccae	0.4380201489
+UniRef50_R6XBJ7	0.4374453193
+UniRef50_R6XBJ7|g__Bacteroides.s__Bacteroides_caccae	0.4374453193
+UniRef50_R5PW10: Preprotein translocase YajC subunit	0.4343348637
+UniRef50_R5PW10: Preprotein translocase YajC subunit|unclassified	0.4343348637
+UniRef50_A8S8J3	0.4338352710
+UniRef50_A8S8J3|unclassified	0.4338352710
+UniRef50_C4ZHK5: Protein tyrosine phosphatase, receptor type, J	0.4312203536
+UniRef50_C4ZHK5: Protein tyrosine phosphatase, receptor type, J|g__Eubacterium.s__Eubacterium_rectale	0.4312203536
+UniRef50_R6LAI0	0.4290004290
+UniRef50_R6LAI0|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4290004290
+UniRef50_A6TQM9: Preprotein translocase, YajC subunit	0.4240647825
+UniRef50_A6TQM9: Preprotein translocase, YajC subunit|unclassified	0.4240647825
+UniRef50_D4JLP4: DNA internalization-related competence protein ComEC/Rec2	0.4230118443
+UniRef50_D4JLP4: DNA internalization-related competence protein ComEC/Rec2|g__Eubacterium.s__Eubacterium_rectale	0.4230118443
+UniRef50_R6UWJ8: Preprotein translocase YajC subunit	0.4207722050
+UniRef50_R6UWJ8: Preprotein translocase YajC subunit|unclassified	0.4207722050
+UniRef50_C4ZHJ9: Cellulose 1,4-beta-cellobiosidase	0.4203446826
+UniRef50_C4ZHJ9: Cellulose 1,4-beta-cellobiosidase|g__Eubacterium.s__Eubacterium_rectale	0.4203446826
+UniRef50_R5U2S7: F5/8 type C domain protein	0.4161464836
+UniRef50_R5U2S7: F5/8 type C domain protein|g__Bacteroides.s__Bacteroides_caccae	0.4161464836
+UniRef50_R6LHA4: Chain length determinant protein	0.4120313144
+UniRef50_R6LHA4: Chain length determinant protein|g__Bacteroides.s__Bacteroides_stercoris	0.4120313144
+UniRef50_R7EKN6	0.4120313144
+UniRef50_R7EKN6|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4120313144
+UniRef50_R7NU49: Aspartokinase I-homoserine dehydrogenase	0.4095004095
+UniRef50_R7NU49: Aspartokinase I-homoserine dehydrogenase|g__Bacteroides.s__Bacteroides_caccae	0.4095004095
+UniRef50_R7PPZ1: Endonuclease MutS2	0.4089979550
+UniRef50_R7PPZ1: Endonuclease MutS2|g__Dialister.s__Dialister_invisus	0.4089979550
+UniRef50_E2NAR0	0.4084967320
+UniRef50_E2NAR0|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.4084967320
+UniRef50_B0PB30: Preprotein translocase, YajC subunit	0.4056451361
+UniRef50_B0PB30: Preprotein translocase, YajC subunit|unclassified	0.4056451361
+UniRef50_F0RTB0	0.4008485574
+UniRef50_F0RTB0|unclassified	0.4008485574
+UniRef50_F0R5R3: RHS repeat-associated core domain	0.4001600640
+UniRef50_F0R5R3: RHS repeat-associated core domain|g__Bacteroides.s__Bacteroides_uniformis	0.4001600640
+UniRef50_R5DH69	0.3972983711
+UniRef50_R5DH69|g__Parabacteroides.s__Parabacteroides_merdae	0.3972983711
+UniRef50_R7KSZ1: Preprotein translocase YajC subunit	0.3966295375
+UniRef50_R7KSZ1: Preprotein translocase YajC subunit|unclassified	0.3966295375
+UniRef50_A7LXU3: Beta-glucosidase BoGH3B	0.3963535474
+UniRef50_A7LXU3: Beta-glucosidase BoGH3B|g__Bacteroides.s__Bacteroides_uniformis	0.3963535474
+UniRef50_E4M7A2: KAP family P-loop domain protein	0.3912363067
+UniRef50_E4M7A2: KAP family P-loop domain protein|unclassified	0.3912363067
+UniRef50_R6K6S5	0.3912363067
+UniRef50_R6K6S5|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.3912363067
+UniRef50_B0NSB0: Leucine Rich Repeat protein	0.3770739065
+UniRef50_B0NSB0: Leucine Rich Repeat protein|g__Bacteroides.s__Bacteroides_stercoris	0.3770739065
+UniRef50_D1PNQ6	0.3711938744
+UniRef50_D1PNQ6|unclassified	0.3711938744
+UniRef50_D4JYX1	0.3706402630
+UniRef50_D4JYX1|unclassified	0.3706402630
+UniRef50_R5DYU1	0.3679175865
+UniRef50_R5DYU1|g__Ruminococcus.s__Ruminococcus_bromii	0.3679175865
+UniRef50_R6A824: TonB-dependent receptor	0.3675119441
+UniRef50_R6A824: TonB-dependent receptor|g__Bacteroides.s__Bacteroides_stercoris	0.3675119441
+UniRef50_E6UAV0: Preprotein translocase, YajC subunit	0.3589779966
+UniRef50_E6UAV0: Preprotein translocase, YajC subunit|unclassified	0.3589779966
+UniRef50_G8TPV7: Alpha-L-rhamnosidase	0.3588087549
+UniRef50_G8TPV7: Alpha-L-rhamnosidase|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.3588087549
+UniRef50_R5B5X0	0.3560805955
+UniRef50_R5B5X0|unclassified	0.3560805955
+UniRef50_R5V0D5: Peptidase M16 inactive domain protein	0.3512469266
+UniRef50_R5V0D5: Peptidase M16 inactive domain protein|g__Bacteroides.s__Bacteroides_caccae	0.3512469266
+UniRef50_A5ZG68: TonB-linked outer membrane protein, SusC/RagA family	0.3501400560
+UniRef50_A5ZG68: TonB-linked outer membrane protein, SusC/RagA family|g__Bacteroides.s__Bacteroides_caccae	0.3501400560
+UniRef50_R6CW99	0.3489502274
+UniRef50_R6CW99|unclassified	0.3489502274
+UniRef50_D9RX34: DNA primase small subunit	0.3483106931
+UniRef50_D9RX34: DNA primase small subunit|g__Parabacteroides.s__Parabacteroides_merdae	0.3483106931
+UniRef50_C0EGU9: Preprotein translocase, YajC subunit	0.3477395061
+UniRef50_C0EGU9: Preprotein translocase, YajC subunit|unclassified	0.3477395061
+UniRef50_R5UQM0	0.3472222222
+UniRef50_R5UQM0|g__Bacteroides.s__Bacteroides_caccae	0.3472222222
+UniRef50_E2NAU6: TonB-linked outer membrane protein, SusC/RagA family	0.3425830764
+UniRef50_E2NAU6: TonB-linked outer membrane protein, SusC/RagA family|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.3425830764
+UniRef50_R5UZM4	0.3408316292
+UniRef50_R5UZM4|g__Bacteroides.s__Bacteroides_caccae	0.3408316292
+UniRef50_B9CND3: Metallo-beta-lactamase domain protein	0.3404627059
+UniRef50_B9CND3: Metallo-beta-lactamase domain protein|unclassified	0.3404627059
+UniRef50_W1UET6	0.3355592625
+UniRef50_W1UET6|unclassified	0.3355592625
+UniRef50_R5S7C5: RND transporter HAE1/HME family permease protein	0.3168567807
+UniRef50_R5S7C5: RND transporter HAE1/HME family permease protein|g__Bacteroides.s__Bacteroides_uniformis	0.3168567807
+UniRef50_R6S1W8: Preprotein translocase YajC subunit	0.3148224207
+UniRef50_R6S1W8: Preprotein translocase YajC subunit|unclassified	0.3148224207
+UniRef50_U2HYR6	0.3058103976
+UniRef50_U2HYR6|g__Parabacteroides.s__Parabacteroides_distasonis	0.3058103976
+UniRef50_R6K995	0.3049710278
+UniRef50_R6K995|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.3049710278
+UniRef50_V7I6F1	0.3043829747
+UniRef50_V7I6F1|unclassified	0.3043829747
+UniRef50_A6LBF6	0.3005710851
+UniRef50_A6LBF6|g__Parabacteroides.s__Parabacteroides_distasonis	0.3005710851
+UniRef50_UPI00047DCCC7: hypothetical protein	0.2979067412
+UniRef50_UPI00047DCCC7: hypothetical protein|unclassified	0.2979067412
+UniRef50_R7EQ30	0.2949852507
+UniRef50_R7EQ30|g__Bacteroides.s__Bacteroides_stercoris	0.2949852507
+UniRef50_R7G0X3: Preprotein translocase YajC subunit	0.2897465258
+UniRef50_R7G0X3: Preprotein translocase YajC subunit|unclassified	0.2897465258
+UniRef50_A5ZNV7	0.2860821162
+UniRef50_A5ZNV7|unclassified	0.2860821162
+UniRef50_R6WD94: Sporulation protein YabP	0.2847795655
+UniRef50_R6WD94: Sporulation protein YabP|unclassified	0.2847795655
+UniRef50_W4V567	0.2824104229
+UniRef50_W4V567|unclassified	0.2824104229
+UniRef50_K1SCA6: Penicillin-binding protein (Fragment)	0.2793051913
+UniRef50_K1SCA6: Penicillin-binding protein (Fragment)|unclassified	0.2793051913
+UniRef50_R7N6R8: Predicted transcriptional regulator	0.2785898811
+UniRef50_R7N6R8: Predicted transcriptional regulator|unclassified	0.2785898811
+UniRef50_D4L8M8	0.2784739627
+UniRef50_D4L8M8|g__Ruminococcus.s__Ruminococcus_bromii	0.2784739627
+UniRef50_R5JUU1: Sporulation protein YabP	0.2780987981
+UniRef50_R5JUU1: Sporulation protein YabP|unclassified	0.2780987981
+UniRef50_R5BYD5	0.2756602551
+UniRef50_R5BYD5|unclassified	0.2756602551
+UniRef50_Q8A3M6	0.2745744097
+UniRef50_Q8A3M6|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.2745744097
+UniRef50_U2Q6I3	0.2680324038
+UniRef50_U2Q6I3|unclassified	0.2680324038
+UniRef50_X8IQ17: Preprotein translocase, YajC subunit	0.2667526727
+UniRef50_X8IQ17: Preprotein translocase, YajC subunit|unclassified	0.2667526727
+UniRef50_R9L5B8	0.2636846978
+UniRef50_R9L5B8|unclassified	0.2636846978
+UniRef50_UPI0003B3BA62: MULTISPECIES: beta-lactamase	0.2563453775
+UniRef50_UPI0003B3BA62: MULTISPECIES: beta-lactamase|unclassified	0.2563453775
+UniRef50_R6KF61	0.2491280518
+UniRef50_R6KF61|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.2491280518
+UniRef50_W0EII3	0.2377112275
+UniRef50_W0EII3|unclassified	0.2377112275
+UniRef50_G2SYM8	0.2349146248
+UniRef50_G2SYM8|unclassified	0.2349146248
+UniRef50_W7YQ96	0.2313439742
+UniRef50_W7YQ96|unclassified	0.2313439742
+UniRef50_R5E5R9	0.2228163993
+UniRef50_R5E5R9|g__Ruminococcus.s__Ruminococcus_bromii	0.2228163993
+UniRef50_R5UTV1	0.2158894646
+UniRef50_R5UTV1|g__Bacteroides.s__Bacteroides_caccae	0.2158894646
+UniRef50_C7HA97	0.2157571098
+UniRef50_C7HA97|unclassified	0.2157571098
+UniRef50_C7HA98	0.2079835977
+UniRef50_C7HA98|unclassified	0.2079835977
+UniRef50_B0P613	0.1961242478
+UniRef50_B0P613|unclassified	0.1961242478
+UniRef50_UPI00047A0AAD: hypothetical protein	0.1941608422
+UniRef50_UPI00047A0AAD: hypothetical protein|unclassified	0.1941608422
+UniRef50_K1UMQ9	0.1814728432
+UniRef50_K1UMQ9|unclassified	0.1814728432
+UniRef50_A5Z437: Conserved domain protein	0.1795103149
+UniRef50_A5Z437: Conserved domain protein|unclassified	0.1795103149
+UniRef50_E2ZJD8	0.1771313876
+UniRef50_E2ZJD8|unclassified	0.1771313876
+UniRef50_UPI000479BBB0: hypothetical protein	0.1724996365
+UniRef50_UPI000479BBB0: hypothetical protein|unclassified	0.1724996365
+UniRef50_UPI000465F39E: sporulation protein	0.1723523485
+UniRef50_UPI000465F39E: sporulation protein|unclassified	0.1723523485
+UniRef50_A4J3U0	0.1697870541
+UniRef50_A4J3U0|unclassified	0.1697870541
+UniRef50_UPI0004179AD4: hypothetical protein	0.1686736051
+UniRef50_UPI0004179AD4: hypothetical protein|unclassified	0.1686736051
+UniRef50_UPI00047B04D1: hypothetical protein	0.1619253993
+UniRef50_UPI00047B04D1: hypothetical protein|unclassified	0.1619253993
+UniRef50_UPI0002D3CA08: hypothetical protein	0.1575465667
+UniRef50_UPI0002D3CA08: hypothetical protein|unclassified	0.1575465667
+UniRef50_E2ZJT7: Relaxase/mobilization nuclease domain protein	0.1527654916
+UniRef50_E2ZJT7: Relaxase/mobilization nuclease domain protein|unclassified	0.1527654916
+UniRef50_UPI0003B7B989: molecular chaperone GrpE	0.1508782308
+UniRef50_UPI0003B7B989: molecular chaperone GrpE|unclassified	0.1508782308
+UniRef50_Q03KF1	0.1492031556
+UniRef50_Q03KF1|unclassified	0.1492031556
+UniRef50_D1AJ42: Pentapeptide repeat protein	0.1485265336
+UniRef50_D1AJ42: Pentapeptide repeat protein|unclassified	0.1485265336
+UniRef50_R6BDV2	0.1474067175
+UniRef50_R6BDV2|unclassified	0.1474067175
+UniRef50_W1TW43: CotH protein	0.1466353356
+UniRef50_W1TW43: CotH protein|unclassified	0.1466353356
+UniRef50_B1HTN5	0.1436131178
+UniRef50_B1HTN5|unclassified	0.1436131178
+UniRef50_UPI00047A3824: hypothetical protein	0.1427762877
+UniRef50_UPI00047A3824: hypothetical protein|unclassified	0.1427762877
+UniRef50_R6M1F2	0.1377640455
+UniRef50_R6M1F2|unclassified	0.1377640455
+UniRef50_R6BK43: Preprotein translocase YajC subunit	0.1310531880
+UniRef50_R6BK43: Preprotein translocase YajC subunit|unclassified	0.1310531880
+UniRef50_UPI000376C913: hypothetical protein	0.1297413265
+UniRef50_UPI000376C913: hypothetical protein|unclassified	0.1297413265
+UniRef50_UPI0004703B35: hypothetical protein	0.1275121331
+UniRef50_UPI0004703B35: hypothetical protein|unclassified	0.1275121331
+UniRef50_UPI000364B430: hypothetical protein	0.1271186686
+UniRef50_UPI000364B430: hypothetical protein|unclassified	0.1271186686
+UniRef50_W8YPF3	0.1258741768
+UniRef50_W8YPF3|unclassified	0.1258741768
+UniRef50_G1WTU6	0.1252152750
+UniRef50_G1WTU6|unclassified	0.1252152750
+UniRef50_UPI0004634D49: hypothetical protein	0.1187974441
+UniRef50_UPI0004634D49: hypothetical protein|unclassified	0.1187974441
+UniRef50_D4L879: Preprotein translocase, YajC subunit	0.1187754873
+UniRef50_D4L879: Preprotein translocase, YajC subunit|unclassified	0.1187754873
+UniRef50_UPI0004724CD8: conjugal transfer protein TraI, partial	0.1186165611
+UniRef50_UPI0004724CD8: conjugal transfer protein TraI, partial|unclassified	0.1186165611
+UniRef50_D4K7D8: Relaxase/Mobilisation nuclease domain	0.1157399598
+UniRef50_D4K7D8: Relaxase/Mobilisation nuclease domain|unclassified	0.1157399598
+UniRef50_E2ZHU1	0.1153285359
+UniRef50_E2ZHU1|unclassified	0.1153285359
+UniRef50_K0B1I9	0.1138807768
+UniRef50_K0B1I9|unclassified	0.1138807768
+UniRef50_W5X9C7: Protein GrpE	0.1130559756
+UniRef50_W5X9C7: Protein GrpE|unclassified	0.1130559756
+UniRef50_B6FZS0: Pentapeptide repeat protein	0.1125579425
+UniRef50_B6FZS0: Pentapeptide repeat protein|unclassified	0.1125579425
+UniRef50_D1PIH5: Pentapeptide repeat protein	0.1103067837
+UniRef50_D1PIH5: Pentapeptide repeat protein|unclassified	0.1103067837
+UniRef50_UPI0003B52986: molecular chaperone GrpE	0.1078342803
+UniRef50_UPI0003B52986: molecular chaperone GrpE|unclassified	0.1078342803
+UniRef50_UPI00035F97CD: hypothetical protein	0.1009445352
+UniRef50_UPI00035F97CD: hypothetical protein|unclassified	0.1009445352
+UniRef50_UPI00046C9188: hypothetical protein	0.1004472715
+UniRef50_UPI00046C9188: hypothetical protein|unclassified	0.1004472715
+UniRef50_K1SV39: Penicillin-binding protein, 1A family (Fragment)	0.0997668968
+UniRef50_K1SV39: Penicillin-binding protein, 1A family (Fragment)|unclassified	0.0997668968
+UniRef50_R6NGC1: Preprotein translocase YajC subunit	0.0966097219
+UniRef50_R6NGC1: Preprotein translocase YajC subunit|unclassified	0.0966097219
+UniRef50_R9MTT0	0.0962655184
+UniRef50_R9MTT0|unclassified	0.0962655184
+UniRef50_UPI000409101B: glycosyl transferase family 1	0.0891756800
+UniRef50_UPI000409101B: glycosyl transferase family 1|unclassified	0.0891756800
+UniRef50_B8HRW6: Pentapeptide repeat protein	0.0891670263
+UniRef50_B8HRW6: Pentapeptide repeat protein|unclassified	0.0891670263
+UniRef50_UPI00031A06A1: hypothetical protein	0.0860371144
+UniRef50_UPI00031A06A1: hypothetical protein|unclassified	0.0860371144
+UniRef50_UPI0004673475: hypothetical protein	0.0853859025
+UniRef50_UPI0004673475: hypothetical protein|unclassified	0.0853859025
+UniRef50_UPI0003B4A6B4: spore coat protein CotH	0.0849800030
+UniRef50_UPI0003B4A6B4: spore coat protein CotH|unclassified	0.0849800030
+UniRef50_UPI000471E34A: hypothetical protein	0.0840863120
+UniRef50_UPI000471E34A: hypothetical protein|unclassified	0.0840863120
+UniRef50_E1R897: Pentapeptide repeat protein	0.0840210342
+UniRef50_E1R897: Pentapeptide repeat protein|unclassified	0.0840210342
+UniRef50_UPI000255CC21: group 1 glycosyl transferase	0.0823096134
+UniRef50_UPI000255CC21: group 1 glycosyl transferase|unclassified	0.0823096134
+UniRef50_S2Y527	0.0818298383
+UniRef50_S2Y527|unclassified	0.0818298383
+UniRef50_UPI0003B7B11D: heat shock protein GrpE	0.0818181457
+UniRef50_UPI0003B7B11D: heat shock protein GrpE|unclassified	0.0818181457
+UniRef50_E3HBL9	0.0813701915
+UniRef50_E3HBL9|unclassified	0.0813701915
+UniRef50_X2GT31: Phage tail protein	0.0799986938
+UniRef50_X2GT31: Phage tail protein|unclassified	0.0799986938
+UniRef50_E6MJ67: Metallo-beta-lactamase domain protein	0.0794243440
+UniRef50_E6MJ67: Metallo-beta-lactamase domain protein|unclassified	0.0794243440
+UniRef50_I7LIE9	0.0791818249
+UniRef50_I7LIE9|unclassified	0.0791818249
+UniRef50_UPI00047C1185: GrpE protein HSP-70 cofactor	0.0789664321
+UniRef50_UPI00047C1185: GrpE protein HSP-70 cofactor|unclassified	0.0789664321
+UniRef50_UPI00047D6C29: glycosyl transferase family 1	0.0782396276
+UniRef50_UPI00047D6C29: glycosyl transferase family 1|unclassified	0.0782396276
+UniRef50_S6AWY7	0.0744341805
+UniRef50_S6AWY7|unclassified	0.0744341805
+UniRef50_UPI00035F394F: hypothetical protein, partial	0.0709406764
+UniRef50_UPI00035F394F: hypothetical protein, partial|unclassified	0.0709406764
+UniRef50_D8ILD0: Oligosaccharide translocase	0.0709039777
+UniRef50_D8ILD0: Oligosaccharide translocase|unclassified	0.0709039777
+UniRef50_E0RVA6: CotH family protein	0.0707456608
+UniRef50_E0RVA6: CotH family protein|unclassified	0.0707456608
+UniRef50_UPI000467D44F: hypothetical protein	0.0685666727
+UniRef50_UPI000467D44F: hypothetical protein|unclassified	0.0685666727
+UniRef50_UPI0002D75D20: hypothetical protein	0.0681817843
+UniRef50_UPI0002D75D20: hypothetical protein|unclassified	0.0681817843
+UniRef50_UPI0002DDE4BC: hypothetical protein	0.0671718844
+UniRef50_UPI0002DDE4BC: hypothetical protein|unclassified	0.0671718844
+UniRef50_R6LQR6: Phage terminase large subunit (GpA)	0.0644765458
+UniRef50_R6LQR6: Phage terminase large subunit (GpA)|unclassified	0.0644765458
+UniRef50_C7H1R2: Relaxase/mobilization nuclease domain protein	0.0637504472
+UniRef50_C7H1R2: Relaxase/mobilization nuclease domain protein|unclassified	0.0637504472
+UniRef50_UPI0004678E7B: hypothetical protein	0.0582456061
+UniRef50_UPI0004678E7B: hypothetical protein|unclassified	0.0582456061
+UniRef50_F0STV1	0.0556533348
+UniRef50_F0STV1|unclassified	0.0556533348
+UniRef50_UPI0000310616: hypothetical protein	0.0536715060
+UniRef50_UPI0000310616: hypothetical protein|unclassified	0.0536715060
+UniRef50_UPI000315C15D: hypothetical protein	0.0529596572
+UniRef50_UPI000315C15D: hypothetical protein|unclassified	0.0529596572
+UniRef50_UPI0003B6ADE7: conjugal transfer protein TraI, partial	0.0526424147
+UniRef50_UPI0003B6ADE7: conjugal transfer protein TraI, partial|unclassified	0.0526424147
+UniRef50_R6NMC4	0.0488756352
+UniRef50_R6NMC4|unclassified	0.0488756352
+UniRef50_U5S2B0	0.0477947882
+UniRef50_U5S2B0|unclassified	0.0477947882
+UniRef50_K2CAH1	0.0474930759
+UniRef50_K2CAH1|unclassified	0.0474930759
+UniRef50_UPI00046D35E7: hypothetical protein	0.0473480194
+UniRef50_UPI00046D35E7: hypothetical protein|unclassified	0.0473480194
+UniRef50_UPI00042828A5: hypothetical protein	0.0466666091
+UniRef50_UPI00042828A5: hypothetical protein|unclassified	0.0466666091
+UniRef50_C9MV82	0.0461808517
+UniRef50_C9MV82|unclassified	0.0461808517
+UniRef50_S7HS25: Phage terminase large subunit (GpA)	0.0449142576
+UniRef50_S7HS25: Phage terminase large subunit (GpA)|unclassified	0.0449142576
+UniRef50_UPI000470DF1C: hypothetical protein	0.0444512227
+UniRef50_UPI000470DF1C: hypothetical protein|unclassified	0.0444512227
+UniRef50_R5TBY6: Membrane protein involved in the export of O-antigen and teichoic acid	0.0443725354
+UniRef50_R5TBY6: Membrane protein involved in the export of O-antigen and teichoic acid|unclassified	0.0443725354
+UniRef50_W1I8X6: Uncultured bacterium extrachromosomal DNA RGI02187	0.0427233134
+UniRef50_W1I8X6: Uncultured bacterium extrachromosomal DNA RGI02187|unclassified	0.0427233134
+UniRef50_N2BER9	0.0422803761
+UniRef50_N2BER9|unclassified	0.0422803761
+UniRef50_UPI00036BA820: hypothetical protein	0.0405935258
+UniRef50_UPI00036BA820: hypothetical protein|unclassified	0.0405935258
+UniRef50_UPI000287D4C0: putative glycosyltransferase	0.0392622908
+UniRef50_UPI000287D4C0: putative glycosyltransferase|unclassified	0.0392622908
+UniRef50_UPI0002657860: PREDICTED: large terminase protein-like	0.0391852074
+UniRef50_UPI0002657860: PREDICTED: large terminase protein-like|unclassified	0.0391852074
+UniRef50_UPI000479FC71: polysaccharide biosynthesis protein	0.0389310895
+UniRef50_UPI000479FC71: polysaccharide biosynthesis protein|unclassified	0.0389310895
+UniRef50_UPI0003B6924C: hypothetical protein	0.0385646828
+UniRef50_UPI0003B6924C: hypothetical protein|unclassified	0.0385646828
+UniRef50_R7BLJ3	0.0384545543
+UniRef50_R7BLJ3|unclassified	0.0384545543
+UniRef50_UPI00041B21EB: hypothetical protein	0.0380753613
+UniRef50_UPI00041B21EB: hypothetical protein|unclassified	0.0380753613
+UniRef50_D4K952: Relaxase/Mobilisation nuclease domain	0.0378929775
+UniRef50_D4K952: Relaxase/Mobilisation nuclease domain|unclassified	0.0378929775
+UniRef50_UPI000402DA27: hypothetical protein	0.0375542206
+UniRef50_UPI000402DA27: hypothetical protein|unclassified	0.0375542206
+UniRef50_UPI000375026E: hypothetical protein	0.0373750265
+UniRef50_UPI000375026E: hypothetical protein|unclassified	0.0373750265
+UniRef50_G0VPD5: Phage terminase large subunit (GpA)	0.0366089812
+UniRef50_G0VPD5: Phage terminase large subunit (GpA)|unclassified	0.0366089812
+UniRef50_UPI0003B50A86: peptidoglycan glycosyltransferase	0.0357138284
+UniRef50_UPI0003B50A86: peptidoglycan glycosyltransferase|unclassified	0.0357138284
+UniRef50_R6JM48: Polysaccharide biosynthesis protein	0.0354134421
+UniRef50_R6JM48: Polysaccharide biosynthesis protein|unclassified	0.0354134421
+UniRef50_UPI00040B335C: polysaccharide biosynthesis protein	0.0350755275
+UniRef50_UPI00040B335C: polysaccharide biosynthesis protein|unclassified	0.0350755275
+UniRef50_B2V2A6: Phage terminase GpA	0.0345801024
+UniRef50_B2V2A6: Phage terminase GpA|unclassified	0.0345801024
+UniRef50_UPI00037DE085: hypothetical protein	0.0343116102
+UniRef50_UPI00037DE085: hypothetical protein|unclassified	0.0343116102
+UniRef50_UPI00047D4EB4: hypothetical protein	0.0342376418
+UniRef50_UPI00047D4EB4: hypothetical protein|unclassified	0.0342376418
+UniRef50_G5HMF4	0.0340030306
+UniRef50_G5HMF4|unclassified	0.0340030306
+UniRef50_V2ZD46	0.0338602883
+UniRef50_V2ZD46|unclassified	0.0338602883
+UniRef50_UPI0003719D0B: hypothetical protein	0.0334696497
+UniRef50_UPI0003719D0B: hypothetical protein|unclassified	0.0334696497
+UniRef50_UPI0003B6B1F7: methyltransferase	0.0333854857
+UniRef50_UPI0003B6B1F7: methyltransferase|unclassified	0.0333854857
+UniRef50_UPI000417C9A9: adenine methyltransferase	0.0333400746
+UniRef50_UPI000417C9A9: adenine methyltransferase|unclassified	0.0333400746
+UniRef50_UPI0002F5C72A: hypothetical protein	0.0333322952
+UniRef50_UPI0002F5C72A: hypothetical protein|unclassified	0.0333322952
+UniRef50_UPI00041BDB1D: DNA methyltransferase	0.0331982438
+UniRef50_UPI00041BDB1D: DNA methyltransferase|unclassified	0.0331982438
+UniRef50_G4Q4L8	0.0323553127
+UniRef50_G4Q4L8|unclassified	0.0323553127
+UniRef50_H1CGE8	0.0321286661
+UniRef50_H1CGE8|unclassified	0.0321286661
+UniRef50_R7DC82	0.0315249411
+UniRef50_R7DC82|unclassified	0.0315249411
+UniRef50_C5EKB5: Polysaccharide biosynthesis protein	0.0309353384
+UniRef50_C5EKB5: Polysaccharide biosynthesis protein|unclassified	0.0309353384
+UniRef50_A4J3T4: Phage terminase GpA	0.0308611698
+UniRef50_A4J3T4: Phage terminase GpA|unclassified	0.0308611698
+UniRef50_UPI0003744878: hypothetical protein	0.0305837412
+UniRef50_UPI0003744878: hypothetical protein|unclassified	0.0305837412
+UniRef50_R7JZP9	0.0305498737
+UniRef50_R7JZP9|unclassified	0.0305498737
+UniRef50_UPI0004634679: hypothetical protein	0.0304219733
+UniRef50_UPI0004634679: hypothetical protein|unclassified	0.0304219733
+UniRef50_UPI00047E7990: glycosyl transferase family 1	0.0303845681
+UniRef50_UPI00047E7990: glycosyl transferase family 1|unclassified	0.0303845681
+UniRef50_D5GGP2: Whole genome shotgun sequence assembly, scaffold_36, strain Mel28	0.0302189034
+UniRef50_D5GGP2: Whole genome shotgun sequence assembly, scaffold_36, strain Mel28|unclassified	0.0302189034
+UniRef50_UPI0004279968: DNA methylase	0.0299759674
+UniRef50_UPI0004279968: DNA methylase|unclassified	0.0299759674
+UniRef50_UPI0003623070: hypothetical protein	0.0295277509
+UniRef50_UPI0003623070: hypothetical protein|unclassified	0.0295277509
+UniRef50_UPI000400F44B: hypothetical protein	0.0293642736
+UniRef50_UPI000400F44B: hypothetical protein|unclassified	0.0293642736
+UniRef50_UPI000465487B: hypothetical protein	0.0288809045
+UniRef50_UPI000465487B: hypothetical protein|unclassified	0.0288809045
+UniRef50_UPI00047B7C81: hypothetical protein	0.0286128257
+UniRef50_UPI00047B7C81: hypothetical protein|unclassified	0.0286128257
+UniRef50_F0RXV2: Polysaccharide biosynthesis protein	0.0285006185
+UniRef50_F0RXV2: Polysaccharide biosynthesis protein|unclassified	0.0285006185
+UniRef50_R5BHA3: Phage terminase large subunit family protein	0.0283573827
+UniRef50_R5BHA3: Phage terminase large subunit family protein|unclassified	0.0283573827
+UniRef50_A6BH42: Polysaccharide biosynthesis protein	0.0283339482
+UniRef50_A6BH42: Polysaccharide biosynthesis protein|unclassified	0.0283339482
+UniRef50_UPI0003B6C616: glycosyl transferase family 1	0.0272666719
+UniRef50_UPI0003B6C616: glycosyl transferase family 1|unclassified	0.0272666719
+UniRef50_E7C7Y7: Bacteriophage tail assembly protein	0.0266218835
+UniRef50_E7C7Y7: Bacteriophage tail assembly protein|unclassified	0.0266218835
+UniRef50_V5ZMI4	0.0264332667
+UniRef50_V5ZMI4|unclassified	0.0264332667
+UniRef50_UPI000417E849: hypothetical protein	0.0262174146
+UniRef50_UPI000417E849: hypothetical protein|unclassified	0.0262174146
+UniRef50_UPI0004720CBE: hypothetical protein	0.0261382054
+UniRef50_UPI0004720CBE: hypothetical protein|unclassified	0.0261382054
+UniRef50_UPI00047C3310: hypothetical protein	0.0261095506
+UniRef50_UPI00047C3310: hypothetical protein|unclassified	0.0261095506
+UniRef50_C9L5L7: Relaxase/mobilization nuclease domain protein	0.0260734888
+UniRef50_C9L5L7: Relaxase/mobilization nuclease domain protein|unclassified	0.0260734888
+UniRef50_UPI0004662477: terminase	0.0257159718
+UniRef50_UPI0004662477: terminase|unclassified	0.0257159718
+UniRef50_UPI0003B2EDAF: penicillin-binding protein	0.0253907068
+UniRef50_UPI0003B2EDAF: penicillin-binding protein|unclassified	0.0253907068
+UniRef50_D1ALM4: Terminase GpA	0.0250542931
+UniRef50_D1ALM4: Terminase GpA|unclassified	0.0250542931
+UniRef50_U7T735	0.0248706882
+UniRef50_U7T735|unclassified	0.0248706882
+UniRef50_UPI0003FBF5B7: hypothetical protein	0.0245375688
+UniRef50_UPI0003FBF5B7: hypothetical protein|unclassified	0.0245375688
+UniRef50_UPI00047BA0B2: DNA methyltransferase	0.0244387937
+UniRef50_UPI00047BA0B2: DNA methyltransferase|unclassified	0.0244387937
+UniRef50_UPI0001470028: MULTISPECIES: penicillin-binding protein 1A	0.0243076442
+UniRef50_UPI0001470028: MULTISPECIES: penicillin-binding protein 1A|unclassified	0.0243076442
+UniRef50_Q9KUC0: Penicillin-binding protein 1B	0.0242125339
+UniRef50_Q9KUC0: Penicillin-binding protein 1B|unclassified	0.0242125339
+UniRef50_R9IYT8	0.0232180698
+UniRef50_R9IYT8|unclassified	0.0232180698
+UniRef50_W0J6N1	0.0231079676
+UniRef50_W0J6N1|unclassified	0.0231079676
+UniRef50_UPI000344A6BD: hypothetical protein	0.0229379032
+UniRef50_UPI000344A6BD: hypothetical protein|unclassified	0.0229379032
+UniRef50_UPI000466C0DF: MULTISPECIES: hypothetical protein	0.0227263217
+UniRef50_UPI000466C0DF: MULTISPECIES: hypothetical protein|unclassified	0.0227263217
+UniRef50_U2RDL5: Phage terminase large subunit	0.0225608497
+UniRef50_U2RDL5: Phage terminase large subunit|unclassified	0.0225608497
+UniRef50_S6D5G4: Phage terminase GpA	0.0224650413
+UniRef50_S6D5G4: Phage terminase GpA|unclassified	0.0224650413
+UniRef50_UPI00047131A1: hypothetical protein	0.0213475526
+UniRef50_UPI00047131A1: hypothetical protein|unclassified	0.0213475526
+UniRef50_UPI00031B86FE: hypothetical protein	0.0209241251
+UniRef50_UPI00031B86FE: hypothetical protein|unclassified	0.0209241251
+UniRef50_UPI0002B8E7D2: hypothetical protein	0.0208824778
+UniRef50_UPI0002B8E7D2: hypothetical protein|unclassified	0.0208824778
+UniRef50_F7V4X2	0.0204816670
+UniRef50_F7V4X2|unclassified	0.0204816670
+UniRef50_UPI0003785400: hypothetical protein	0.0202461878
+UniRef50_UPI0003785400: hypothetical protein|unclassified	0.0202461878
+UniRef50_UPI0002EDDB5A: hypothetical protein	0.0193048003
+UniRef50_UPI0002EDDB5A: hypothetical protein|unclassified	0.0193048003
+UniRef50_G5IB12	0.0190934243
+UniRef50_G5IB12|unclassified	0.0190934243
+UniRef50_F7KIM0	0.0177259944
+UniRef50_F7KIM0|unclassified	0.0177259944
+UniRef50_UPI0003F982F6: rlx protein	0.0177050286
+UniRef50_UPI0003F982F6: rlx protein|unclassified	0.0177050286
+UniRef50_H2IGC3: Phage terminase GpA	0.0175854286
+UniRef50_H2IGC3: Phage terminase GpA|unclassified	0.0175854286
+UniRef50_UPI00038080A4: DNA methyltransferase	0.0174339719
+UniRef50_UPI00038080A4: DNA methyltransferase|unclassified	0.0174339719
+UniRef50_UPI00030BBB25: hypothetical protein	0.0169021302
+UniRef50_UPI00030BBB25: hypothetical protein|unclassified	0.0169021302
+UniRef50_D4LVD6: Relaxase/Mobilisation nuclease domain	0.0167779297
+UniRef50_D4LVD6: Relaxase/Mobilisation nuclease domain|unclassified	0.0167779297
+UniRef50_A8A1J2: Phage terminase large subunit (GpA)	0.0165414385
+UniRef50_A8A1J2: Phage terminase large subunit (GpA)|unclassified	0.0165414385
+UniRef50_UPI0003B7A3EC: DNA methylase	0.0149998011
+UniRef50_UPI0003B7A3EC: DNA methylase|unclassified	0.0149998011
+UniRef50_UPI00036AA3BA: hypothetical protein	0.0111150088
+UniRef50_UPI00036AA3BA: hypothetical protein|unclassified	0.0111150088

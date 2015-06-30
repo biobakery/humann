@@ -1,8 +1,11 @@
 import unittest
 import logging
+import tempfile
+import filecmp
 
 import cfg
 import utils
+import os
 
 from humann2.quantify import modules
 from humann2 import store
@@ -17,6 +20,8 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
     def setUp(self):
         # set up nullhandler for logger
         logging.getLogger('humann2.quantify.modules').addHandler(logging.NullHandler())
+        
+        config.unnamed_temp_dir=tempfile.gettempdir()
         
     def test_compute_structured_pathway_abundance_or_coverage_test_abundance(self):
         """
@@ -455,4 +460,106 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         # Test the pathways abundance match those expected
         self.assertEqual(pathways_abundance_store_result.get_score_for_bug(bug,"pathway1"), coverage_pathway1)
         self.assertEqual(pathways_abundance_store_result.get_score_for_bug(bug,"pathway2"), coverage_pathway2)
+        
+    def test_pathways_coverage_with_names(self):
+        """
+        Test the pathways coverage computation (xipe and minpath are off)
+        Test the pathways print function
+        Test the pathways mapping to names
+        """
+        
+        # update the max decimals to allow for rounding
+        config.output_max_decimals=7
+        
+        # Load in the pathways databases
+        reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
+        pathways_database=store.PathwaysDatabase(config.pathways_database_part2, reactions_database)
+        
+        # Load in the gene scores from the file
+        # This file has the gene names included
+        gene_scores=store.GeneScores()
+        gene_scores.add_from_file(cfg.larger_gene_families_uniref50_with_names_file)
+        
+        # Turn off xipe and minpath
+        minpath_toggle_original=config.minpath_toggle
+        config.minpath_toggle="off"
+        xipe_toggle_original=config.xipe_toggle
+        config.xipe_toggle="off"
+        
+        pathways_and_reactions_store=modules.identify_reactions_and_pathways(
+        gene_scores, reactions_database, pathways_database)
+        
+        # set the locations to write as temp files
+        file_out, abundance_file=tempfile.mkstemp()
+        os.close(file_out)
+        config.pathabundance_file=abundance_file
+        
+        file_out, coverage_file=tempfile.mkstemp()
+        os.close(file_out)
+        config.pathcoverage_file=coverage_file
+        
+        abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
+        pathways_and_reactions_store, pathways_database)
+        
+        # Reset xipe and minpath
+        config.minpath_toggle=minpath_toggle_original
+        config.xipe_toggle=xipe_toggle_original
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(coverage_file,
+            cfg.demo_pathcoverage_file, shallow=False))
+        
+        utils.remove_temp_file(abundance_file)
+        utils.remove_temp_file(coverage_file)
+        
+    def test_pathways_abundance_with_names(self):
+        """
+        Test the pathways abundance computation (xipe and minpath are off)
+        Test the pathways print function
+        Test the pathways mapping to names
+        """
+        
+        # update the max decimals to allow for rounding
+        config.output_max_decimals=7
+        
+        # Load in the pathways databases
+        reactions_database=store.ReactionsDatabase(config.pathways_database_part1)
+        pathways_database=store.PathwaysDatabase(config.pathways_database_part2, reactions_database)
+        
+        # Load in the gene scores from the file
+        # This file has the gene names included
+        gene_scores=store.GeneScores()
+        gene_scores.add_from_file(cfg.larger_gene_families_uniref50_with_names_file)
+        
+        # Turn off xipe and minpath
+        minpath_toggle_original=config.minpath_toggle
+        config.minpath_toggle="off"
+        xipe_toggle_original=config.xipe_toggle
+        config.xipe_toggle="off"
+        
+        pathways_and_reactions_store=modules.identify_reactions_and_pathways(
+        gene_scores, reactions_database, pathways_database)
+        
+        # set the locations to write as temp files
+        file_out, abundance_file=tempfile.mkstemp()
+        os.close(file_out)
+        config.pathabundance_file=abundance_file
+        
+        file_out, coverage_file=tempfile.mkstemp()
+        os.close(file_out)
+        config.pathcoverage_file=coverage_file
+        
+        abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
+        pathways_and_reactions_store, pathways_database)
+        
+        # Reset xipe and minpath
+        config.minpath_toggle=minpath_toggle_original
+        config.xipe_toggle=xipe_toggle_original
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(abundance_file,
+            cfg.demo_pathabundance_file, shallow=False))
+        
+        utils.remove_temp_file(abundance_file)
+        utils.remove_temp_file(coverage_file)
         
