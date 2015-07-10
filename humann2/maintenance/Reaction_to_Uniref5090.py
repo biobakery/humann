@@ -64,8 +64,11 @@ def ReadReactions(iFileReactions):
   
 			if iLine.startswith("EC-NUMBER"):
 				EC = iLine.split("-")[3].replace("\n","")
-				bFlagEC = True
-				lECs.append(EC)
+				EC = EC.replace(".-","")	# Modification by George Weingart 20150709: Calculate EC level
+				iECLevel = EC.count(".") + 1 # GW 20150709  We are going to use only ECs that are level 3 or 4
+				if iECLevel > 2:   		# GW 20150709
+					bFlagEC = True  	# GW 20150709
+					lECs.append(EC)   	# GW 20150709
 				
  
 			if  bFlagEC == True and iLine.startswith("//"):
