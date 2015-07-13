@@ -106,8 +106,30 @@ def filter_pathways(pathways_file, reactions_to_ec, output_file):
                         distinct_ecs.add(ec)
                         break
                     
+        # check for any ECs that are of the same group with different numbers of levels
+        total_distinct_ecs=0
+        distinct_ecs=list(distinct_ecs)
+        for index, ec in enumerate(distinct_ecs):
+            ec_level=len(ec.split("."))
+            match=False
+            for ec2 in distinct_ecs[(index+1):]:
+                ec2_level=len(ec2.split("."))
+                # compare ecs at the same level
+                if ec2_level < ec_level:
+                    reduced_ec=".".join(ec.split(".")[0:ec2_level])
+                    if reduced_ec == ec2:
+                        match=True
+                        break
+                elif ec2_level > ec_level:
+                    reduced_ec=".".join(ec2.split(".")[0:ec_level])
+                    if reduced_ec == ec:
+                        match=True
+                        break
+            if not match:
+                total_distinct_ecs+=1   
+                    
         # check if this pathway should be filtered
-        if total_well_specified_ecs/(len(reactions)*1.0) >= 0.10 and len(distinct_ecs) >= 4:
+        if total_well_specified_ecs/(len(reactions)*1.0) >= 0.10 and total_distinct_ecs >= 4:
             file_handle_out.write(line)
             
         line=file_handle.readline()    
