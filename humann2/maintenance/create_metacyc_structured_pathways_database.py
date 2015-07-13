@@ -40,7 +40,6 @@ METACYC_KEYREACTION_ID="KEY-REACTIONS"
 METACYC_PREDECESSORS="PREDECESSORS"
 DELIMITER="\t"
 
-OPTIONAL_REACTION_TAG="-"
 OR_DELIMITER=" , "
 AND_DELIMITER=" + "
 
@@ -72,7 +71,6 @@ class PathwayStructure():
         self.nodes=[]
         self.reactions=[]
         self.start_nodes=[]
-        self.key_reactions=set()
         self.structure=[]
         self.subpathways=set()
         
@@ -114,9 +112,6 @@ class PathwayStructure():
             if node.get_name() == name:
                 return node
         return None
-    
-    def set_key_reactions(self, key_reactions):
-        self.key_reactions=key_reactions
         
     def set_reactions(self, reactions):
         self.reactions=reactions
@@ -227,22 +222,6 @@ class PathwayStructure():
         
     def create_structure(self):
         """ Get the structure for the pathway based on the levels of the nodes """
-        
-        # update the names of the nodes if key reactions are included
-        if self.key_reactions:
-            # find each of those nodes which are NOT key reactions and update their names
-            for node in self.nodes:
-                if not node.get_name() in self.key_reactions:
-                    node.set_name(OPTIONAL_REACTION_TAG+node.get_name())
-            #  also update the names of the reactions
-            new_reactions={}
-            for reaction in self.reactions:
-                if not reaction in self.key_reactions:
-                    # add the optional reaction identifier
-                    new_reactions[OPTIONAL_REACTION_TAG+reaction]=self.reactions[reaction]
-                else:
-                    new_reactions[reaction]=self.reactions[reaction]
-            self.reactions=new_reactions
         
         # set the levels for the nodes
         # all nodes that are specified by metacyc to not have predecessors are level 1
@@ -378,31 +357,19 @@ class PathwayStructure():
         self.subpathways=set()
         names_to_check=list(self.reactions)+[node.get_name() for node in self.nodes]
         for name in names_to_check:
-            if ( re.match(OPTIONAL_REACTION_TAG+"*"+METACYC_PATHWAY_ID, name) 
-                or re.search(METACYC_PATHWAY_ID+"$", name) ):
-                self.subpathways.add(name)
-            # check if the name is a pathway as not all pathways have the identifier
+            # check if the name is a pathway
+            # note, not all pathways have the identifier
             # example is "ASPARAGINE-BIOSYNTEHSIS"
-            elif name in metacyc_pathway_structures:
-                self.subpathways.add(name)
-            # also check for name without OPTIONAL_REACTION_TAG if added
-            elif re.match(OPTIONAL_REACTION_TAG,name) and name[1:] in metacyc_pathway_structures:
+            if name in metacyc_pathway_structures:
                 self.subpathways.add(name)
                 
         # Get the structure for the subpathway
         # Then replace the subpathway name with the structure for the subpathway
         for subpathway in self.subpathways:
-            subpathway_id=subpathway
-            # remove the optional reaction identifier if present
-            if re.match(OPTIONAL_REACTION_TAG,subpathway_id):
-                # only remove if this is not already part of the pathway name
-                if not subpathway_id in metacyc_pathway_structures:
-                    subpathway_id=subpathway_id.replace(OPTIONAL_REACTION_TAG,"",1)
-                
-            if subpathway_id in metacyc_pathway_structures:
-                subpathway_structure=metacyc_pathway_structures[subpathway_id].get_structure()
+            if subpathway in metacyc_pathway_structures:
+                subpathway_structure=metacyc_pathway_structures[subpathway].get_structure()
             else:
-                print("WARNING: Missing subpathway from database: " + subpathway_id)
+                print("WARNING: Missing subpathway from database: " + subpathway)
                 subpathway_structure=[""]
             # replace the pathway id with the structure for the pathway
             self.replace_subpathway(subpathway,subpathway_structure)
@@ -444,12 +411,6 @@ class PathwayStructure():
         
         # Check there are not any duplicate reactions by counting the reactions
         reaction_count=self.count_reactions()
-        
-        # Check for duplicate reactions that are optional and key reactions in pathway
-        duplicate_optional_reactions=set()
-        for reaction,count in reaction_count.items():
-            if OPTIONAL_REACTION_TAG+reaction in reaction_count:
-                duplicate_optional_reactions.add(OPTIONAL_REACTION_TAG+reaction)
                 
         # Update the structure to a deep copy of each object to
         # avoid recursive objects which reference themselves in the copy
@@ -459,13 +420,6 @@ class PathwayStructure():
         # do not have duplicate reactions removed from them that are only
         # considered duplicates if they are part of a super-pathway
         self.structure=deepcopy(self.structure)
-                    
-        # First remove the duplicate reactions that are optional that also have key reactions
-        for reaction in duplicate_optional_reactions:
-            # Remove all of these optional reactions which are duplicates to a key reaction
-            self.structure,new_count=self.remove_duplicate_reaction(reaction,reaction_count[reaction]+1,self.structure)
-            # Remove this reaction from the set of counts
-            del reaction_count[reaction]
         
         # remove the duplicate reactions
         for reaction, count in reaction_count.items():
@@ -671,7 +625,6 @@ def read_metacyc_pathways_structure(metacyc_pathways_file):
         sys.exit("Unable to read file: " + metacyc_pathways_file)
         
     pathway=""
-    key_reactions=set()
     reactions={}
     pathway_structure=PathwayStructure()
     while line:
@@ -680,12 +633,10 @@ def read_metacyc_pathways_structure(metacyc_pathways_file):
             if re.match(METACYC_ID, line):
                 if pathway:
                     # record the last pathway
-                    pathway_structure.set_key_reactions(key_reactions)
                     pathway_structure.set_reactions(reactions)
                     metacyc_pathways[pathway]=pathway_structure
                         
                 pathway=""
-                key_reactions=set()
                 pathway_structure=PathwayStructure()
                 reactions={}
                 pathway=line.rstrip().split(METACYC_ID_DELIMITER)[-1]
@@ -693,10 +644,6 @@ def read_metacyc_pathways_structure(metacyc_pathways_file):
             # find the ordering for the pathway
             elif re.match(METACYC_PREDECESSORS, line):
                 pathway_structure.add_node(line.rstrip().split(METACYC_ID_DELIMITER)[-1].replace("(","").replace(")","").split(" "))
-                
-            # find the key reactions for the pathway
-            elif re.match(METACYC_KEYREACTION_ID, line):
-                key_reactions.add(line.rstrip().split(METACYC_ID_DELIMITER)[-1])
                 
             # find the reaction information 
             elif re.match(METACYC_REACTION_LAYOUT_ID, line):
@@ -730,7 +677,6 @@ def read_metacyc_pathways_structure(metacyc_pathways_file):
         
     # store the last pathway
     if pathway:
-        pathway_structure.set_key_reactions(key_reactions)
         pathway_structure.set_reactions(reactions)
         metacyc_pathways[pathway]=pathway_structure
         
