@@ -49,6 +49,15 @@ import tempfile
 
 #*************************************************************************************
 #* Read Reactions file and build relation: REACTION --> ECs                          *
+#*                                                                                   *
+#*  Modification LOG                                                                 *
+#*  George Weingart 2015/07/10                                                       *
+#*  When reading the reactions.dat file,  also capture the direct relation           *
+#*  reaction --> AC                                                                  *
+#* Load it into a dictionary and use it after the relation Reaction -> EC -> AC      *
+#* as an additional set of relations                                                 *
+#* These new relations are identified via the DBLINKS - (UNIPROT prefix in the       *
+#* reactions.dat file                                                                *
 #*************************************************************************************
 def ReadReactions(iFileReactions):
 	bFlagEC = False
@@ -57,18 +66,33 @@ def ReadReactions(iFileReactions):
 	LineReactionsCntr = 0
 	ReactionsToECCntr = 0
 	dReactionsToECs = dict()
+	dDirectReactionToACs = dict()  #*  Modification: GW 20150710 - Get the direct reaction--> AC relations*
 	for iLine in InputFile: 
 			LineReactionsCntr = LineReactionsCntr +1
+			
+				
 			if iLine.startswith("UNIQUE-ID"):
 				ReactionName = iLine.split(" ")[2].replace("\n","")
+				
+			#***********************************************************************
+			#*  Modification: GW 20150710 - Get the direct reaction--> AC relations*
+			#***********************************************************************
+
+			if iLine.startswith("DBLINKS - (UNIPROT"):	
+				AC = iLine.split('"')[1]					# Get the AC
+				if ReactionName not in dDirectReactionToACs: #  If new entry - build the dictionary entry made of a new list
+					dDirectReactionToACs[ReactionName] = list() 
+				dDirectReactionToACs[ReactionName].append(AC)		# And add the AC entry
+  			#***************************************************************************
+			#*  End Modification: GW 20150710 - Get the direct reaction--> AC relations*
+			#***************************************************************************
+  
   
 			if iLine.startswith("EC-NUMBER"):
 				EC = iLine.split("-")[3].replace("\n","")
-				EC = EC.replace(".-","")	# Modification by George Weingart 20150709: Calculate EC level
-				iECLevel = EC.count(".") + 1 # GW 20150709  We are going to use only ECs that are level 3 or 4
-				if iECLevel > 2:   		# GW 20150709
-					bFlagEC = True  	# GW 20150709
-					lECs.append(EC)   	# GW 20150709
+				bFlagEC = True  	# GW 20150709
+				lECs.append(EC)   	# GW 20150709
+				
 				
  
 			if  bFlagEC == True and iLine.startswith("//"):
@@ -83,6 +107,7 @@ def ReadReactions(iFileReactions):
 	print "The table Reactions --> ECs contains " + str(ReactionsToECCntr) + " Reactions"
 	InputFile.close()
 	CommonArea["dReactionsToECs"] =  dReactionsToECs
+	CommonArea["dDirectReactionToACs"] = dDirectReactionToACs #   Modification: GW 20150710
 	return CommonArea
 
 
@@ -157,6 +182,25 @@ def read_params(x):
 	CommonArea['parser'] = parser
 	return  CommonArea
 
+#********************************************************************************************
+#*  Modification: GW 20150710 - Get the direct reaction--> AC relations                     *
+#*                                                                                           *
+#********************************************************************************************
+#*   Incorporate the direct relations  Reactions--> AC  to the ones retrieved from          *
+#*       Reactions --> EC --> AC                                                            *
+#*   We will be adding the entries in dDirectReactionsToACs to dReactionsToACs              *
+#*   Note:  Many of the reactions don't have a direct reaction --> AC                       *
+#*   but we want to take advantage of these relations                                       *
+#********************************************************************************************	
+def  IncorporateDirectReactionsToACEntries(CommonArea):
+	for Reaction, lACs  in CommonArea["dDirectReactionToACs"].iteritems():
+		if Reaction  not in CommonArea['dReactionsToACs']:   #If there is not an entry for this reaction - build it
+			CommonArea['dReactionsToACs'][Reaction] = list()  # As an empty list
+		CommonArea['dReactionsToACs'][Reaction] = list(set(CommonArea['dReactionsToACs'][Reaction])|set(CommonArea["dDirectReactionToACs"][Reaction])) # And merge the lists
+	return CommonArea
+	
+	
+	
 
 #*************************************************************************************
 #* Build relation: REACTION --> ACs                                                  *
@@ -175,8 +219,12 @@ def ResolveReactionsToACs(CommonArea):
 						dReactionsToACs[Reaction] = CommonArea["dECsToUniprotACs"][EC]
 					except:
 						pass
-    print "The table Reactions --> UniprotKb ACs contains "  + str(ECsToUniprotACsCntr) + " Reactions"
+ 	
     CommonArea['dReactionsToACs'] = dReactionsToACs
+    CommonArea =  IncorporateDirectReactionsToACEntries(CommonArea)  #   Modification: GW 20150710
+    print "The table Reactions --> UniprotKb ACs contains "  + str(ECsToUniprotACsCntr) + " Reactions"
+
+ 
     del CommonArea["dECsToUniprotACs"]
 	#*****************************************************************
 	#*   Select only the ACs that are needed for next step           *
@@ -187,10 +235,11 @@ def ResolveReactionsToACs(CommonArea):
 			lAccumulatedACs.append(AC)
     CommonArea["sAccumulatedACs"] = set(lAccumulatedACs)		#Get rid of dups
     print "The total number of AC entries is: ",  str(len(CommonArea["sAccumulatedACs"]))
+	
+
     return CommonArea
 
 	
-
 #********************************************************************************************
 #*   Read Uniref 5090 file  and build translation table                                     *
 #********************************************************************************************
@@ -262,13 +311,30 @@ def GenerateExtract(CommonArea, OutputFileName):
 	strTab = "\t"
 	strComma = ","
 	ReactionToUnirefCntr = 0
+	CntrReactionsWithNoEc = 0  # Counting how many there are 
+
 	sReactionsWritten = set()
 	
 	OutputFile = open(OutputFileName,'w')		#Open the Output file
 	for Reaction, lACs  in CommonArea["dReactionsToACs"].iteritems():
 		bFlagUnirefFound = False
 		lBuiltRecord = [Reaction]
-		lBuiltRecord.append(strComma.join(CommonArea["dReactionsToECs"][Reaction]))  #Post the list of ECs
+
+		try:
+			lListOfECsToCheckECLevel = CommonArea["dReactionsToECs"][Reaction]  # Modification by George Weingart 20150710  We are checking the EC Level of all ECs
+			lPostedECList = list()	# Modification by George Weingart 20150710
+			for ECToCheck in lListOfECsToCheckECLevel:   	# Modification by George Weingart 20150710 
+				ECToCheck = ECToCheck.replace(".-","")  	# Modification by George Weingart 20150710 
+				iECLevel = ECToCheck.count(".") + 1			# Modification by George Weingart 20150710 
+				if iECLevel > 2:  # Modification by George Weingart 20150710
+					lPostedECList.append(ECToCheck)  # Modification by George Weingart 20150710
+			if len(lPostedECList) == 0:		# Modification by George Weingart 20150710 - If no ECs because we eliminated levels 1 and 2 - Set empty list
+				lPostedECList.append(" ")
+			lBuiltRecord.append(strComma.join(lPostedECList))  #Post the list of ECs
+		except:
+			lBuiltRecord.append(" ")    # Note that there is no EC for this reaction - so we are posing an empty list
+			CntrReactionsWithNoEc =  CntrReactionsWithNoEc  # No EC for this Reaction
+			
 		lU50 = list()
 		lU90 = list()	
 		for AC in lACs:
