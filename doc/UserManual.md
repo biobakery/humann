@@ -979,7 +979,9 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--annotation-gene-index <8>]
                [--protein-database <protein_database>]
                [--average-read-length <1>] [--evalue <1.0>]
-               [--metaphlan <metaphlan>] [--o-log <sample.log>]
+               [--metaphlan <metaphlan>]
+               [--metaphlan-options <metaphlan_options>]
+               [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                [--remove-temp-output] [--bowtie2 <bowtie2>] [--threads <1>]
                [--prescreen-threshold <0.01>] [--identity-threshold <40.0>]
@@ -1033,6 +1035,9 @@ optional arguments:
   --metaphlan <metaphlan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
+  --metaphlan-options <metaphlan_options>
+                        options to be provided to the MetaPhlAn software
+                        [DEFAULT: "-t rel_ab"]
   --o-log <sample.log>  log file
                         [DEFAULT: temp/sample.log]
   --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}

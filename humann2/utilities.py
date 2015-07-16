@@ -670,8 +670,9 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
             else:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 logger.debug(p_out)            
-        except (EnvironmentError, subprocess.CalledProcessError):
-            message="Problem executing " + " ".join(cmd) + "\n"
+        except (EnvironmentError, subprocess.CalledProcessError) as e:
+            message="Error executing: " + " ".join(cmd) + "\n"
+            message+="\nError message returned from " + os.path.basename(exe) + " :\n" + e.output
             logger.critical(message)
             logger.critical("TRACEBACK: \n" + traceback.format_exc())
             log_system_status()

@@ -52,27 +52,36 @@ def alignment(input):
     bug_file = utilities.name_temp_file(config.bugs_list_name)
     bowtie2_out = utilities.name_temp_file(config.metaphlan_bowtie2_name) 
 
-    infiles=[input, os.path.join(metaphlan_dir, config.metaphlan_pkl_file)]
+    # set the pkl file, if not set in options
+    if not "--mpa_pkl" in opts:
+        pkl_file=os.path.join(metaphlan_dir, config.metaphlan_pkl_file)
+        # check that the file exists
+        if os.path.isfile(pkl_file):
+            opts+=["--mpa_pkl",pkl_file]
+        else:
+            sys.exit("The database file for MetaPhlAn does not exist at "
+                + pkl_file + " . Please provide the location with --metaphlan-options .")
     
-    # location of the index name to multiple files
-    infiles_index=[os.path.join(metaphlan_dir, config.metaphlan_mpa_index)]
+    # set the bowtie2 database file, if not set in options
+    if not "--bowtie2db" in opts:
+        mpa_index=os.path.join(metaphlan_dir, config.metaphlan_mpa_index)
+        # check that the database exits, by adding the extension to the index name
+        mpa_file=mpa_index+config.bowtie2_index_ext_list[0]
+        if os.path.isfile(mpa_file):
+            opts+=["--bowtie2db",mpa_index]
+        else:
+            sys.exit("The bowtie2 database file for MetaPhlAn does not exist at "
+                + mpa_file + " . Please provide the location with --metaphlan-options ." )
     
-    outfiles=[bug_file, bowtie2_out]
-    
-    args=[infiles[0],"--bowtie2db",infiles_index[0],
-        "-o",outfiles[0],"--input_type",input_type,
-        "--bowtie2out",bowtie2_out,
-        "--mpa_pkl",infiles[1]]
+    args=[input]+opts+["-o",bug_file,"--input_type",input_type, "--bowtie2out",bowtie2_out]
     
     if config.threads >1:
         args+=["--nproc",config.threads]
 
-    args+=opts
-
     message="Running " + exe + " ........"
     logger.info(message)
     print("\n"+message+"\n")
-    utilities.execute_command(exe, args, infiles, outfiles)
+    utilities.execute_command(exe, args, [input], [bug_file, bowtie2_out])
     
     return bug_file
 

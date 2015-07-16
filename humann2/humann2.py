@@ -152,6 +152,11 @@ def parse_arguments(args):
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaphlan>")
     parser.add_argument(
+        "--metaphlan-options",
+        help="options to be provided to the MetaPhlAn software\n[DEFAULT: \"" + str(" ".join(config.metaphlan_opts)) + "\"]",
+        metavar="<metaphlan_options>",
+        default=" ".join(config.metaphlan_opts))
+    parser.add_argument(
         "--o-log", 
         help="log file\n" + 
         "[DEFAULT: temp/sample.log]", 
@@ -302,6 +307,10 @@ def update_configuration(args):
         
     if args.diamond:
         utilities.add_exe_to_path(os.path.abspath(args.diamond))
+        
+    # Set the metaphlan options, removing any extra spaces
+    if args.metaphlan_options:
+        config.metaphlan_opts=filter(None,args.metaphlan_options.split(" "))
  
     # Set the pathways database selection
     if args.pathways == "metacyc":
