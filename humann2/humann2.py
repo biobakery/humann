@@ -120,21 +120,21 @@ def parse_arguments(args):
         metavar="<output>", 
         required=True)
     parser.add_argument(
-        "-c", "--chocophlan",
-        help="directory containing the ChocoPhlAn database\n[DEFAULT: " 
-            + config.chocophlan + "]", 
-        metavar="<chocophlan>")
+        "--nucleotide-database",
+        help="directory containing the nucleotide database\n[DEFAULT: " 
+            + config.nucleotide_database + "]", 
+        metavar="<nucleotide_database>")
     parser.add_argument(
-        "--chocophlan-gene-index",
+        "--annotation-gene-index",
         help="the index of the gene in the sequence annotation\n[DEFAULT: " 
             + ",".join(str(i) for i in config.chocophlan_gene_indexes) + "]", 
         metavar="<"+",".join(str(i) for i in config.chocophlan_gene_indexes)+">",
         default=",".join(str(i) for i in config.chocophlan_gene_indexes))
     parser.add_argument(
-        "-u", "--uniref",
-        help="directory containing the UniRef database\n[DEFAULT: " 
-            + config.uniref + "]", 
-        metavar="<uniref>")
+        "--protein-database",
+        help="directory containing the protein database\n[DEFAULT: " 
+            + config.protein_database + "]", 
+        metavar="<protein_database>")
     parser.add_argument(
         "--average-read-length", 
         help="the average length of the reads\n[DEFAULT: " + str(config.average_read_length) + "]", 
@@ -328,11 +328,11 @@ def update_configuration(args):
         config.pathways_ec_column=False
         
     # Set the locations of the other databases
-    if args.chocophlan:
-        config.chocophlan=os.path.abspath(args.chocophlan)
+    if args.nucleotide_database:
+        config.nucleotide_database=os.path.abspath(args.nucleotide_database)
         
-    if args.uniref:
-        config.uniref=os.path.abspath(args.uniref)
+    if args.protein_database:
+        config.protein_database=os.path.abspath(args.protein_database)
 
     # if set, update the config run mode to resume
     if args.resume:
@@ -390,7 +390,7 @@ def update_configuration(args):
     
     # Update the chocophlan gene indexes
     config.chocophlan_gene_indexes=[]
-    for index in args.chocophlan_gene_index.split(","):
+    for index in args.annotation_gene_index.split(","):
         # Look for array range
         if ":" in index:
             split_index=index.split(":")
@@ -580,19 +580,19 @@ def check_requirements(args):
     if args.input_format in ["fasta","fastq"]:
         # Check that the chocophlan directory exists
         if not config.bypass_nucleotide_index:
-            if not os.path.isdir(config.chocophlan):
-                if args.chocophlan:
+            if not os.path.isdir(config.nucleotide_database):
+                if args.nucleotide_database:
                     sys.exit("CRITICAL ERROR: The directory provided for the ChocoPhlAn database at " 
-                        + args.chocophlan + " does not exist. Please select another directory.")
+                        + args.nucleotide_database + " does not exist. Please select another directory.")
                 else:
                     sys.exit("CRITICAL ERROR: The default ChocoPhlAn database directory of "
-                        + config.chocophlan + " does not exist. Please provide the location "
-                        + "of the ChocoPhlAn directory using the --chocophlan option.")	
+                        + config.nucleotide_database + " does not exist. Please provide the location "
+                        + "of the ChocoPhlAn directory using the --nucleotide-database option.")	
     
         # Check that the files in the chocophlan folder are of the right format
         if not config.bypass_nucleotide_index:
             valid_format_count=0
-            for file in os.listdir(config.chocophlan):
+            for file in os.listdir(config.nucleotide_database):
                 # expect most of the file names to be of the format g__*s__*
                 if re.search("^[g__][s__]",file): 
                     valid_format_count+=1
@@ -616,17 +616,17 @@ def check_requirements(args):
             utilities.check_software_version("bowtie2", config.bowtie2_version)
  
         if not config.bypass_translated_search:
-            # Check that the uniref directory exists
-            if not os.path.isdir(config.uniref):
-                if args.uniref:
-                    sys.exit("CRITICAL ERROR: The directory provided for the UniRef database at " 
-                        + args.uniref + " does not exist. Please select another directory.")
+            # Check that the protein database directory exists
+            if not os.path.isdir(config.protein_database):
+                if args.protein_database:
+                    sys.exit("CRITICAL ERROR: The directory provided for the protein database at " 
+                        + args.protein_database + " does not exist. Please select another directory.")
                 else:
-                    sys.exit("CRITICAL ERROR: The default UniRef database directory of "
-                        + config.uniref + " does not exist. Please provide the location "
-                        + "of the UniRef directory using the --uniref option.")            	
+                    sys.exit("CRITICAL ERROR: The default protein database directory of "
+                        + config.protein_database + " does not exist. Please provide the location "
+                        + "of the directory using the --protein-database option.")            	
     
-            # Check that some files in the uniref folder are of the expected extension
+            # Check that some files in the protein database folder are of the expected extension
             expected_database_extension=""
             if config.translated_alignment_selected == "usearch":
                 expected_database_extension=config.usearch_database_extension
@@ -636,7 +636,7 @@ def check_requirements(args):
                 expected_database_extension=config.diamond_database_extension
             
             valid_format_count=0
-            database_files=os.listdir(config.uniref)
+            database_files=os.listdir(config.protein_database)
             for file in database_files:
                 if file.endswith(expected_database_extension):
                     # if rapsearch check for the second database file
@@ -648,7 +648,7 @@ def check_requirements(args):
                         valid_format_count+=1
                         
             if valid_format_count == 0:
-                sys.exit("CRITICAL ERROR: The UniRef directory provided ( " + config.uniref 
+                sys.exit("CRITICAL ERROR: The protein database directory provided ( " + config.protein_database 
                     + " ) does not contain any files that have been formatted to run with"
                     " the translated alignment software selected ( " +
                     config.translated_alignment_selected + " ). Please format these files so"
@@ -746,7 +746,7 @@ def main():
         # Create the custom database from the bugs list
         custom_database = ""
         if not config.bypass_nucleotide_index:
-            custom_database = prescreen.create_custom_database(config.chocophlan, bug_file)
+            custom_database = prescreen.create_custom_database(config.nucleotide_database, bug_file)
             start_time=timestamp_message("custom database creation",start_time)
         else:
             custom_database = "Bypass"
@@ -757,7 +757,7 @@ def main():
                 nucleotide_index_file = nucleotide.index(custom_database)
                 start_time=timestamp_message("database index",start_time)
             else:
-                nucleotide_index_file = nucleotide.find_index(config.chocophlan)
+                nucleotide_index_file = nucleotide.find_index(config.nucleotide_database)
                 
             nucleotide_alignment_file = nucleotide.alignment(args.input, 
                 nucleotide_index_file)
@@ -799,7 +799,7 @@ def main():
         if not config.bypass_translated_search:
             # Run translated search on UniRef database if unaligned reads exit
             if unaligned_reads_store.count_reads()>0:
-                translated_alignment_file = translated.alignment(config.uniref, 
+                translated_alignment_file = translated.alignment(config.protein_database, 
                     unaligned_reads_file_fasta)
         
                 start_time=timestamp_message("translated alignment",start_time)

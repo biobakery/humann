@@ -38,8 +38,8 @@ def log_settings():
     
     lines=[]    
     lines.append("DATABASE SETTINGS")
-    lines.append("chocophlan database folder = " + chocophlan)
-    lines.append("uniref database folder = " + uniref)
+    lines.append("nucleotide database folder = " + nucleotide_database)
+    lines.append("protein database folder = " + protein_database)
     if pathways_database_part1:
         lines.append("pathways database file 1 = " + pathways_database_part1)
         lines.append("pathways database file 2 = " + pathways_database_part2)
@@ -206,8 +206,8 @@ config_items=read_user_edit_config_file()
 # set those items that are included in the user edit config file
 
 # database folders
-chocophlan=get_item(config_items, "database_folders" , "chocophlan", "string")
-uniref=get_item(config_items, "database_folders", "uniref", "string")
+nucleotide_database=get_item(config_items, "database_folders" , "nucleotide", "string")
+protein_database=get_item(config_items, "database_folders", "protein", "string")
         
 # run modes
 resume=get_item(config_items, "run_modes", "resume", "bool")

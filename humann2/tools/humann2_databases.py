@@ -62,6 +62,10 @@ current_downloads={
         }
 }
 
+database_type={
+    "chocophlan" : "nucleotide",
+    "uniref" : "protein"
+}
 
 def download_database(database, build, location):
     """
@@ -139,7 +143,7 @@ def main():
         install_location=download_database(database,build,location)
         # update the config file with the installed location
         config.update_user_edit_config_file_single_item("database_folders",
-            database,install_location)
+            database_type[database],install_location)
     
     if args.available or not args.download:
         # print the available databases

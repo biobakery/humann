@@ -141,7 +141,7 @@ Bypass options:
 *   --taxonomic-profile bugs_list.tsv 
     *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
 *   --bypass-nucleotide-index
-    *   starts the workflow with the nucleotide alignment step using the indexed database from "--chocophlan $DIR"
+    *   starts the workflow with the nucleotide alignment step using the indexed database from "--nucleotide-database $DIR"
 
 
 ### Workflow of the resume option ###
@@ -252,7 +252,7 @@ Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to 
 
 `` $ humann2_databases --download chocophlan full $INSTALL_LOCATION ``
 
-NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--chocophlan <chocophlan>" option to humann2.
+NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--nucleotide-database <chocophlan>" option to humann2.
 
 
 #### Download the UniRef50 database ####
@@ -261,7 +261,7 @@ Download the UniRef50 database providing $INSTALL_LOCATION as the location to in
 
 `` $ humann2_databases --download uniref diamond $INSTALL_LOCATION ``
 
-NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--uniref <uniref>" option to humann2.
+NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--protein-database <uniref>" option to humann2.
 
 NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would like to use rapsearch2 for translated alignment, first download the rapsearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
 
@@ -279,11 +279,11 @@ To update your HUMAnN2 configuration file to include the locations of your downl
 
 1. Update the location of the ChocoPhlAn database ($INSTALL_LOCATION)
 
-    ``$ humann2_config --update database_folders chocophlan $INSTALL_LOCATION ``
+    ``$ humann2_config --update database_folders nucleotide $INSTALL_LOCATION ``
 
 2. Update the location of the UniRef database ($INSTALL_LOCATION)
 
-    ``$ humann2_config --update database_folders uniref $INSTALL_LOCATION ``
+    ``$ humann2_config --update database_folders protein $INSTALL_LOCATION ``
 
 Please note, after a new installation, all of the settings in the configuration file, like the database folders, will be reset to the defaults. If you have any additional settings that differ from the defaults, please update them at this time.
 
@@ -567,8 +567,8 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 03/16/2015 01:09:52 PM - humann2.utilities - INFO: File ( demo.fastq ) is of format:  fastq
 03/16/2015 01:09:52 PM - humann2.config - INFO: Run config settings:
 DATABASE SETTINGS
-chocophlan database folder = data/chocophlan_DEMO
-uniref database folder = data/uniref_DEM
+nucleotide database folder = data/chocophlan_DEMO
+protein database folder = data/uniref_DEM
 ```
 
 *   File name: `` $DIR/$SAMPLENAME.log ``
@@ -611,8 +611,8 @@ alignment_settings : average_read_length = 1
 alignment_settings : prescreen_threshold = 0.01
 alignment_settings : evalue_threshold = 1.0
 alignment_settings : identity_threshold = 40.0
-database_folders : chocophlan = data/chocophlan_DEMO
-database_folders : uniref = data/uniref_DEMO
+database_folders : nucleotide = data/chocophlan_DEMO
+database_folders : protein = data/uniref_DEMO
 run_modes : bypass_nucleotide_search = False
 run_modes : verbose = False
 run_modes : bypass_nucleotide_index = False
@@ -634,8 +634,8 @@ Example log file configuration settings section:
 Run config settings: 
 
 DATABASE SETTINGS
-chocophlan database folder = data/chocophlan_DEMO
-uniref database folder = data/uniref_DEMO
+nucleotide database folder = data/chocophlan_DEMO
+protein database folder = data/uniref_DEMO
 pathways database file 1 = data/pathways/metacyc_reactions.uniref
 pathways database file 2 = data/pathways/metacyc_pathways
 
@@ -837,7 +837,7 @@ This will save compute time as this database will only be created once. Please s
 2. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann2_temp/)
 
     * for $SAMPLE.fastq in samples
-        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --chocophlan $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ --bypass-nucleotide-index ``
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --nucleotide-database $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ --bypass-nucleotide-index ``
 
 ### Custom taxonomic profile ###
 
@@ -864,7 +864,7 @@ This custom database must be formatted as a bowtie2 index.
 
 Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN2 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
 
-To run HUMAnN2 with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--chocophlan $DIR". If you would like to bypass the translated alignment portion of HUMAnN2, add the option "--bypass-translated-search". 
+To run HUMAnN2 with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--nucleotide-database $DIR". If you would like to bypass the translated alignment portion of HUMAnN2, add the option "--bypass-translated-search". 
 
 ### Custom protein reference database ###
 
@@ -874,7 +874,7 @@ This custom database must be formatted to be used by the translated alignment so
 
 Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN2 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
 
-To run HUMAnN2 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--uniref $DIR". Please note, HUMAnN2 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN2, add the option "--bypass-nucleotide-search".  
+To run HUMAnN2 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN2 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN2, add the option "--bypass-nucleotide-search".  
 
 ### Custom reference database annotations ###
 
@@ -953,9 +953,9 @@ HUMAnN2 frequently asked questions:
 3.  How do I remove the intermediate temp output files?
     *   Add the ``--remove-temp-output`` flag
 4.  Can I provide an alternative location for the ChocoPhlAn database?
-    *   Yes, use the ``--chocophlan $DIR`` option
+    *   Yes, use the ``--nucleotide-database $DIR`` option
 5.  Can I provide an alternative location for the UniRef database?
-    *   Yes, use the ``--uniref $DIR`` option
+    *   Yes, use the ``--protein-database $DIR`` option
 6.  I already have MetaPhlAn2 output. Can I start HUMAnN2 with the MetaPhlAn2 output?
     *   Yes, use the ``--taxonomic-profile bugs_list.tsv`` option
 7.  Is there a way to change $SAMPLENAME in the output file names?
@@ -975,7 +975,9 @@ HUMAnN2 frequently asked questions:
 usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--bypass-nucleotide-index] [--bypass-translated-search]
                [--bypass-nucleotide-search] -i <input.fastq> -o <output>
-               [-c <chocophlan>] [--chocophlan-gene-index <-1>] [-u <uniref>]
+               [--nucleotide-database <nucleotide_database>]
+               [--annotation-gene-index <8>]
+               [--protein-database <protein_database>]
                [--average-read-length <1>] [--evalue <1.0>]
                [--metaphlan <metaphlan>] [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
@@ -1014,15 +1016,15 @@ optional arguments:
   -o <output>, --output <output>
                         directory to write output files
                         [REQUIRED]
-  -c <chocophlan>, --chocophlan <chocophlan>
-                        directory containing the ChocoPhlAn database
-                        [DEFAULT: data/chocophlan_DEMO]
-  --chocophlan-gene-index <-1>
+  --nucleotide-database <nucleotide_database>
+                        directory containing the nucleotide database
+                        [DEFAULT: humann2/data/chocophlan_DEMO]
+  --annotation-gene-index <8>
                         the index of the gene in the sequence annotation
-                        [DEFAULT: -1]
-  -u <uniref>, --uniref <uniref>
-                        directory containing the UniRef database
-                        [DEFAULT: data/uniref_DEMO]
+                        [DEFAULT: 8]
+  --protein-database <protein_database>
+                        directory containing the protein database
+                        [DEFAULT: humann2/data/uniref_DEMO]
   --average-read-length <1>
                         the average length of the reads
                         [DEFAULT: 1]
@@ -1046,7 +1048,7 @@ optional arguments:
                         minimum percentage of reads matching a species
                         [DEFAULT: 0.01]
   --identity-threshold <40.0>
-                        identity threshold for alignments 
+                        identity threshold for alignments
                         [DEFAULT: 40.0]
   --usearch <usearch>   directory containing the usearch executable
                         [DEFAULT: $PATH]
