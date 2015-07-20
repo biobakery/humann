@@ -3,7 +3,7 @@
 Filter the structured pathways file by reactions
 
 To Run: 
-$ ./filter_pathways.py --input-pathways metacyc_structured_pathways --input-reactions reactions.dat --output metacyc_structured_pathways_filtered
+$ ./filter_pathways.py --input-pathways metacyc_structured_pathways --input-reactions metacyc_reactions.uniref --output metacyc_structured_pathways_filtered
 
 """
 
@@ -17,15 +17,13 @@ except ImportError:
 import re
 import os
 
-DELIMITER="\t"
-COMMENT_LINE="#"
-METACYC_ID="UNIQUE-ID"
-METACYC_ID_DELIMITER=" - "
-METACYC_EC_ID="EC-NUMBER"
+COLUMN_DELIMITER="\t"
+ITEM_DELIMITER=","
+OPTIONAL_TAG="-"
 
-def read_metacyc_reactions(reaction_file):
+def read_reactions(reaction_file):
     """
-    Reaction the MetaCyc reactions file to get EC numbers for reactions
+    Read the reactions file to get EC numbers for reactions
     """
     
     try:
@@ -37,20 +35,12 @@ def read_metacyc_reactions(reaction_file):
     
     line=file_handle.readline()
     reaction=""
-    while line:
-        if not re.match(COMMENT_LINE, line):
-            # store the reaction id
-            if re.match(METACYC_ID, line):
-                # store the latest set of reaction information
-                if reaction and ec:
-                    ec_numbers[reaction]=ec
-                ec=[]
-                reaction=line.rstrip().split(METACYC_ID_DELIMITER)[-1].strip()
-            
-            # find the ec
-            elif re.match(METACYC_EC_ID,line):
-                ec.append(line.rstrip().split(METACYC_ID_DELIMITER)[-1].strip())
-        line=file_handle.readline()
+    for line in file_handle.readlines():
+        data=line.rstrip().split(COLUMN_DELIMITER)
+        if len(data) >= 3:
+            reaction=data[0]
+            ecs=data[1].split(ITEM_DELIMITER)
+            ec_numbers[reaction]=ecs
         
     file_handle.close()
         
@@ -75,36 +65,36 @@ def filter_pathways(pathways_file, reactions_to_ec, output_file):
         
     line=file_handle.readline()
     while line:
-        data=line.rstrip().split(DELIMITER)
+        data=line.rstrip().split(COLUMN_DELIMITER)
         total_well_specified_ecs=0
         distinct_ecs=set()
         reactions=set()
+        reactions_without_mappings=set()
 
         for item in data[1].split(" "):
             if not item in ["(","+",",",")",""]:
-
-                # count the number of ECs that are well specified
-                ec_numbers=reactions_to_ec.get(item,[])
-                reaction=item
-                if not ec_numbers:
-                    ec_numbers=reactions_to_ec.get(item[1:],[])
-                    reaction=item[1:]
-                    
-                reactions.add(reaction)
-                    
-                for ec in ec_numbers:
-                    ec_level=len(ec.split("."))
-                    # check if well specified (ie level >=4)
-                    # only add one ec per reaction
-                    if ec_level >= 4:
-                        total_well_specified_ecs+=1
-                        break
-                # count the number of ECs that are distinct
-                for ec in ec_numbers:
-                    # add at most 1 EC for reaction
-                    if not ec in distinct_ecs:
-                        distinct_ecs.add(ec)
-                        break
+                
+                # get the ec numbers for the reaction
+                reactions.add(item)
+                ec_numbers=reactions_to_ec.get(item,None)
+                if ec_numbers is None:
+                    # store those reactions without mappings to uniref50/90
+                    reactions_without_mappings.add(item)
+                else:
+                    # count the number of ECs that are well specified
+                    for ec in ec_numbers:
+                        ec_level=len(ec.split("."))
+                        # check if well specified (ie level >=4)
+                        # only add one ec per reaction
+                        if ec_level >= 4:
+                            total_well_specified_ecs+=1
+                            break
+                    # count the number of ECs that are distinct
+                    for ec in ec_numbers:
+                        # add at most 1 EC for reaction
+                        if not ec in distinct_ecs:
+                            distinct_ecs.add(ec)
+                            break
                     
         # check for any ECs that are of the same group with different numbers of levels
         total_distinct_ecs=0
@@ -129,7 +119,13 @@ def filter_pathways(pathways_file, reactions_to_ec, output_file):
                 total_distinct_ecs+=1   
                     
         # check if this pathway should be filtered
-        if total_well_specified_ecs/(len(reactions)*1.0) >= 0.10 and total_distinct_ecs >= 4:
+        total_mappable_reactions=len(reactions)-len(reactions_without_mappings)
+        if ( total_mappable_reactions >=4 and total_well_specified_ecs/(total_mappable_reactions*1.0) >= 0.10 and
+            ( total_distinct_ecs >= 4 or total_distinct_ecs/(total_mappable_reactions*1.0) >= 0.75)):
+            # if the pathway is not filtered then make those unmappable reactions optional
+            for reaction in reactions_without_mappings:
+                line=line.replace(" "+reaction+" "," "+OPTIONAL_TAG+reaction+" ")
+                
             file_handle_out.write(line)
             
         line=file_handle.readline()    
@@ -177,7 +173,7 @@ def main():
     if args.verbose:
         print("Reading MetaCyc reactions file")
     
-    reactions_to_ec=read_metacyc_reactions(input_file_reactions)
+    reactions_to_ec=read_reactions(input_file_reactions)
     
     if args.verbose:
         print("Total reactions with EC numbers: " + str(len(reactions_to_ec)))
