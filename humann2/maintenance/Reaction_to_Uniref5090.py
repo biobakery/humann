@@ -318,6 +318,7 @@ def GenerateExtract(CommonArea, OutputFileName):
 	OutputFile = open(OutputFileName,'w')		#Open the Output file
 	for Reaction, lACs  in CommonArea["dReactionsToACs"].iteritems():
 		bFlagUnirefFound = False
+		bFlagECFound = True    #Modification by GW  DT20150721: If no EC - don't select the record
 		lBuiltRecord = [Reaction]
 
 		try:
@@ -330,8 +331,10 @@ def GenerateExtract(CommonArea, OutputFileName):
 					lPostedECList.append(ECToCheck)  # Modification by George Weingart 20150710
 			if len(lPostedECList) == 0:		# Modification by George Weingart 20150710 - If no ECs because we eliminated levels 1 and 2 - Set empty list
 				lPostedECList.append(" ")
+				bFlagECFound = False    #Modification by GW  DT20150721: If no EC - don't select the record
 			lBuiltRecord.append(strComma.join(lPostedECList))  #Post the list of ECs
 		except:
+			bFlagECFound = False    #Modification by GW  DT20150721: If no EC - don't select the record
 			lBuiltRecord.append(" ")    # Note that there is no EC for this reaction - so we are posing an empty list
 			CntrReactionsWithNoEc =  CntrReactionsWithNoEc  # No EC for this Reaction
 			
@@ -357,7 +360,7 @@ def GenerateExtract(CommonArea, OutputFileName):
 		strBuiltRecord = "\t".join(lBuiltRecord) + 	strNewLine
 		lBuiltRecord = list()
 			
-		if Reaction not in sReactionsWritten  and bFlagUnirefFound == True:
+		if Reaction not in sReactionsWritten  and bFlagUnirefFound == True  and bFlagECFound == True:    #Modification by GW  DT20150721: If no EC - don't select the record 
 			sReactionsWritten = sReactionsWritten | {Reaction}
 			OutputFile.write(strBuiltRecord )
 			ReactionToUnirefCntr = ReactionToUnirefCntr + 1
