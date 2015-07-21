@@ -1,25 +1,4 @@
 # Pathway	HUMAnN2_test_Abundance
-CALVIN-PWY: Calvin-Benson-Bassham cycle	25.4965691
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_caccae	6.8291024
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	4.9297671
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Parabacteroides.s__Parabacteroides_distasonis	3.8500500
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_uniformis	2.8938816
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Alistipes.s__Alistipes_shahii	1.9476716
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Parabacteroides.s__Parabacteroides_merdae	1.9452881
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Eubacterium.s__Eubacterium_rectale	1.6103060
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_stercoris	1.1074197
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_cellulosilyticus	0.9950249
-PWY-1042: glycolysis IV (plant cytosol)	14.3255314
-PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	3.9833493
-PWY-1042: glycolysis IV (plant cytosol)|g__Parabacteroides.s__Parabacteroides_distasonis	2.9624724
-PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_caccae	2.0333026
-PWY-1042: glycolysis IV (plant cytosol)|g__Bacteroides.s__Bacteroides_cellulosilyticus	1.6806723
-PWY-1042: glycolysis IV (plant cytosol)|g__Eubacterium.s__Eubacterium_rectale	1.2882448
-PWY-1042: glycolysis IV (plant cytosol)|g__Ruminococcus.s__Ruminococcus_bromii	1.2662235
-PWY-6531: mannitol cycle	10.9300697
-PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	4.2501518
-PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_cellulosilyticus	2.4286582
-PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_caccae	1.2143291
-PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_stercoris	1.2143291
-PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_uniformis	1.2143291
-PWY-6531: mannitol cycle|g__Parabacteroides.s__Parabacteroides_distasonis	0.6082725
+PWY-3841: folate transformations II	1.6354901
+PWY-6531: mannitol cycle	1.1994722
+PWY-6531: mannitol cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0598834
