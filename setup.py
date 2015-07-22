@@ -55,13 +55,14 @@ def install_tar(url,download_file,folder):
         file, headers = urllib.urlretrieve(url,download_file)
         tarfile_handle=tarfile.open(download_file)
         tarfile_handle.extractall(path=folder)
+        tarfile_handle.close()
     except EnvironmentError:
         sys.exit("ERROR: Unable to install minpath.")
         
     try:
         os.unlink(download_file)
     except EnvironmentError:
-        print("warning: unable to remove the temp minpath download: " + downloaded_file)
+        print("warning: unable to remove the temp minpath download: " + download_file)
         
 def install_glpk(minpath_folder):
     """
