@@ -65,7 +65,7 @@ from .quantify import modules
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-VERSION="0.2.0"
+VERSION="0.2.1"
 
 def parse_arguments(args):
     """ 
