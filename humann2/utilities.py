@@ -144,7 +144,7 @@ def determine_file_format(file):
             # check for gene table for a single sample
             elif len(data)==config.gene_table_total_columns:
                 # check that the data column is numerical
-                if re.search("^[0-9.]+$",data[config.gene_table_value_index]):
+                if re.search("^[0-9E\-.]+$",data[config.gene_table_value_index]):
                     format="genetable"
     if not format:
         format="unknown"
