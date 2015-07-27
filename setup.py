@@ -31,6 +31,20 @@ try:
 except ImportError:
     sys.exit("Please install setuptools.")
     
+# check setuptools version    
+required_setuptools_version_major = 1
+try:
+    setuptools_version = setuptools.__version__
+    setuptools_version_major = int(setuptools_version.split(".")[0])
+    if setuptools_version_major < required_setuptools_version_major:
+        sys.exit("CRITICAL ERROR: The setuptools version found (version "+
+                 setuptools_version+") does not match the version required "+
+                 "(version "+str(required_setuptools_version_major) +"+)."
+                 " Please upgrade your setuptools version.")
+except (ValueError, IndexError, NameError):
+    sys.exit("CRITICAL ERROR: Unable to call setuptools version. Please upgrade setuptools.")
+    
+from setuptools.command.install import install as _install
     
 import distutils
 import os
@@ -143,6 +157,47 @@ class InstallMinpath(distutils.cmd.Command):
     
     def run(self):
         install_minpath(replace_install=True,update_glpk=self.update_glpk)
+        
+class Install(_install):
+    """
+    Custom setuptools install command, set executable permissions for glpk
+    """
+    
+    def initialize_options(self):
+        _install.initialize_options(self)
+    
+    def finalize_options(self):
+        _install.finalize_options(self)
+    
+    def run(self):
+        _install.do_egg_install(self)
+        
+        # find the current install folder
+        current_install_folder=None
+        for item in os.listdir(self.install_lib):
+            full_path_item=os.path.join(self.install_lib, item)
+            if os.path.isdir(full_path_item):
+                if "humann2-"+VERSION+"-" in item:
+                    current_install_folder=full_path_item
+        
+        # find all glpsol executables
+        if current_install_folder is None:
+            print("Unable to find install folder at: " + self.install_lib)
+        else:
+            glpsols=[]
+            minpath_folder=os.path.join(current_install_folder,"humann2","quantify","MinPath")
+            for root, directories, files in os.walk(minpath_folder):
+                for filename in files:
+                    if filename == "glpsol":
+                        glpsols.append(os.path.join(root,filename))
+            # change the permissions of the glpk modules to make sure
+            # they are executable
+            for file in glpsols:
+                try:
+                    os.chmod(file,0o755)
+                except EnvironmentError:
+                    print("Unable to add execute permissions for file: " + file)
+        
     
 setuptools.setup(
     name="humann2",
@@ -167,7 +222,9 @@ setuptools.setup(
         ],
     long_description=open('readme.md').read(),
     packages=setuptools.find_packages(),
-    cmdclass={'minpath': InstallMinpath},
+    cmdclass={
+              'minpath': InstallMinpath,
+              'install': Install},
     package_data={
         'humann2' : [
             'humann2.cfg',
