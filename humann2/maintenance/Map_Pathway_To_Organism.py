@@ -13,7 +13,8 @@ import tempfile
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:                                                                    *
 #  ---------------------                                                                    *
-#   python ReadSwissprot.py  --ic  /n/huttenhower_lab_nobackup/downloads/metacyc/18.1/data/classes.dat
+#   python ReadSwissprot.py  --ic  /n/huttenhower_lab_nobackup/downloads/metacyc/18.1/data/classes.dat \
+#    --ip /n/huttenhower_lab_nobackup/downloads/metacyc/18.1/data//pathways.dat \ 
 #   --o mapping_patwhays_to_organisms                          
 #                                                                                           *
 #                                                                                           *
