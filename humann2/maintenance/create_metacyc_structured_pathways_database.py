@@ -66,6 +66,37 @@ def find_list(input_list, structure):
                     match=find_list(input_list,structure[i])
     return match
 
+def find_node_names(structure):
+    """ Return the names of the nodes for the structure """
+    
+    # Look through all of the items in the structure for names
+    # Check through each of the lists and sub-lists
+    names=set()
+    for i in xrange(len(structure)):
+        if isinstance(structure[i],basestring):
+            # do not return joins
+            if not structure[i] in [AND_DELIMITER, OR_DELIMITER, " "]:
+                names.add(structure[i])
+        elif isinstance(structure[i], list):
+            names.update(find_node_names(structure[i]))
+            
+    return names
+
+def find_name(name, structure):
+    """ Find the list and index which contains the name in the structure """
+            
+    # Check through each of the lists and sub-lists to see if the name is included
+    match=None,None
+    for i in xrange(len(structure)):
+        if isinstance(structure[i],basestring):
+            if structure[i] == name:
+                return structure, i
+        elif isinstance(structure[i], list):
+            if match[0] is None:
+                match = find_name(name, structure[i])
+                
+    return match
+
 class PathwayStructure():
     def __init__(self):
         self.nodes=[]
@@ -296,19 +327,45 @@ class PathwayStructure():
                 
         self.structure=structure
         
-    def replace_subpathway(self, subpathway, subpathway_structure, structure=None):
-        """ Replace the subpathway id with the subpathway structure """
+    def replace_subpathway(self, subpathway, structure=None):
+        """ Remove the subpathway id from the structure and return the location """
         
         if structure is None:
             structure=self.structure
         
         # For each instance of the subpathway in the structure, replace with the subpathway structure
+        index=None
+        found_structure=None
         for i in xrange(len(structure)):
             if isinstance(structure[i],list):
-                self.replace_subpathway(subpathway, subpathway_structure, structure[i])
+                if index is None:
+                    index, found_structure=self.replace_subpathway(subpathway, structure[i])
             elif isinstance(structure[i],basestring):
                 if structure[i] == subpathway:
-                    structure[i]=subpathway_structure
+                    # remove the subpathway marker
+                    structure[i]=""
+                    index=i
+                    found_structure=structure
+        return index, found_structure
+                
+                        
+    def insert_subpathway(self, subpathway_structure, structure=None):
+        """ Find where to join the subpathway in the pathway structure """
+        
+        if structure is None:
+            structure=self.structure
+        
+        # find where to join the subpathway with the superpathway
+        # look for each of the nodes in the subpathway in the structure
+        join_index=None
+        join_structure=None
+        for name in find_node_names(subpathway_structure):
+            join_structure, join_index=find_name(name,structure)
+            if not join_index is None:
+                break
+            
+        return join_index, join_structure
+        
                     
     def find_reaction(self, reaction, structure=None):
         """ Check if the reaction is included in the structure """
@@ -365,14 +422,30 @@ class PathwayStructure():
                 
         # Get the structure for the subpathway
         # Then replace the subpathway name with the structure for the subpathway
+        subpathway_joins=[]
         for subpathway in self.subpathways:
             if subpathway in metacyc_pathway_structures:
                 subpathway_structure=metacyc_pathway_structures[subpathway].get_structure()
             else:
                 print("WARNING: Missing subpathway from database: " + subpathway)
                 subpathway_structure=[""]
-            # replace the pathway id with the structure for the pathway
-            self.replace_subpathway(subpathway,subpathway_structure)
+            # replace the pathway id
+            original_join_location=self.replace_subpathway(subpathway)
+            # find where to join the subpathway
+            join_location=self.insert_subpathway(subpathway_structure)
+            # use the original join location if one can not be found
+            # using the structure of the super-pathway
+            if join_location[0] is None:
+                join_location=original_join_location
+            subpathway_joins.append((subpathway, subpathway_structure, join_location))
+            
+        # Join all of the subpathways to the structure
+        # This is done after finding the join locations to handle superpathways
+        # or pathways which have recursive subpathways
+        for subpathway, subpathway_structure, join_location in subpathway_joins:
+            join_index, join_structure = join_location
+            if not join_index is None:
+                join_structure[join_index] = subpathway_structure
         
         # Check all reactions are included in structure (excluding subpathways)
         for reaction in self.reactions:
