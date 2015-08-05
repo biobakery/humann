@@ -88,7 +88,7 @@ def split_table_sample_rows(file_handle, line, output_dir, verbose):
         
         sample=data[PICRUST_METAGENOME_SAMPLE_COLUMN]
         try:
-            bug="g__"+data[PICURST_METAGENOME_GENUS_COLUMN]+".s__"+data[PICURST_METAGENOME_SPECIES_COLUMN]
+            bug=data[PICURST_METAGENOME_GENUS_COLUMN]+"."+data[PICURST_METAGENOME_SPECIES_COLUMN]
         except IndexError:
             bug=""
         
