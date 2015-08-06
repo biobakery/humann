@@ -155,18 +155,24 @@ def main():
     
     # filter out files which do not meet the name requirement if set
     biom_flag=False
+    reduced_file_list=[]
     if args.file_name:
-        reduced_file_list=[]
         for file in file_list:
             if re.search(args.file_name,file):
                 reduced_file_list.append(file)
                 if file.endswith(BIOM_FILE_EXTENSION):
                     biom_flag=True
-        file_list=reduced_file_list
     else: 
         for file in file_list:
-            if file.endswith(BIOM_FILE_EXTENSION):
-                biom_flag=True
+            # ignore dot files, like ".DS_Store" on Apple OS X
+            if file[0] == ".":
+                if args.verbose:
+                    print("Not including file in input folder: " + file)
+            else:
+                reduced_file_list.append(file)
+                if file.endswith(BIOM_FILE_EXTENSION):
+                    biom_flag=True
+    file_list=reduced_file_list
             
     # Check for the biom software if running with a biom input file
     if biom_flag:
