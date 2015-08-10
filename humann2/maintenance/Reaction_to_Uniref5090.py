@@ -22,7 +22,7 @@ import tempfile
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:                                                                    *
 #  ---------------------                                                                    *
-#  python Reaction_to_Uniref5090.py --i_reactions /n/huttenhower_lab_nobackup/downloads/metacyc/18.1/data/reactions.dat  --i_sprot /n/huttenhower_lab/data/uniprot/2015-06/uniprot_sprot.dat  --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz  --o mapping_reactions_to_uniref5090
+#  python Reaction_to_Uniref5090.py --i_reactions /n/huttenhower_lab_nobackup/downloads/metacyc/19.1/data/reactions.dat  --i_sprot /n/huttenhower_lab/data/uniprot/2015-06/uniprot_sprot.dat  --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz  --o mapping_reactions_to_uniref5090
 #                                                                                           *
 #   Where:                                                                                  *
 #    --i_reactions, is the reactions file, which is currently located at                    *
