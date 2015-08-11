@@ -18,15 +18,16 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 
 * [Features](#markdown-header-features)
 * [Workflow](#markdown-header-workflow)
-* [Requirements](#markdown-header-requirements)
-* [Installation](#markdown-header-installation)
-* [How to run](#markdown-header-how-to-run)
-    * [Basic usage](#markdown-header-basic-usage)
-    * [Demo runs](#markdown-header-demo-runs)
-* [Output files](#markdown-header-output-files)
-    * [Gene families](#markdown-header-gene-families)
-    * [Pathway coverage](#markdown-header-pathway-coverage)
-    * [Pathway abundance](#markdown-header-pathway-abundance)
+* [Getting Started with HUMAnN2](#markdown-header-getting-started-with-humann2)
+    * [Requirements](#markdown-header-requirements)
+    * [Installation](#markdown-header-installation)
+    * [How to run](#markdown-header-how-to-run)
+        * [Basic usage](#markdown-header-basic-usage)
+        * [Demo runs](#markdown-header-demo-runs)
+    * [Output files](#markdown-header-output-files)
+        * [Gene families](#markdown-header-gene-families)
+        * [Pathway coverage](#markdown-header-pathway-coverage)
+        * [Pathway abundance](#markdown-header-pathway-abundance)
 
 ## Features ##
 
@@ -57,7 +58,9 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann2_diamond_500x500.jpg)
 
 
-## Requirements ##
+## Getting Started with HUMAnN2 ##
+
+### Requirements ###
 
 1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
 2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1)
@@ -68,7 +71,7 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 7.  Operating system (Linux or Mac)
 
 
-## Installation ##
+### Installation ###
 
 Before installing HUMAnN2, please download the software listed in the [Requirements](#markdown-header-requirements) section. You can place the software in your $PATH or provide the locations of the software with optional arguments when running HUMAnN2. For example, the location of the Bowtie2 software ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
 
@@ -110,9 +113,9 @@ Before installing HUMAnN2, please download the software listed in the [Requireme
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
 
 
-## How to Run ##
+### How to Run ###
 
-### Basic usage ###
+#### Basic usage ####
 
 `` $ humann2 --input $SAMPLE --output $OUTPUT_DIR``
 
@@ -163,7 +166,7 @@ where $SAMPLENAME is the basename of $SAMPLE
 
 NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NEWNAME>". 
 
-### Demo runs ###
+#### Demo runs ####
 
 The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
@@ -188,11 +191,11 @@ $OUTPUT_DIR is the output directory
 
 Since sam and blastm8 are mapping results, using these files as input to HUMAnN2 will bypass both the nucleotide and translated mapping portions of the flow.
 
-## Output files ##
+### Output files ###
 
 HUMAnN2 produces three output files which by default are tab-delimited text. There is an option to print out files in biom format. 
 
-### Gene Families ###
+#### Gene Families ####
 
 ```
 # Gene Family	$SAMPLENAME_Abundance
@@ -210,7 +213,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 * This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
 * HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
 
-### Pathway Coverage ###
+#### Pathway Coverage ####
 
 ```
 # Pathway	$SAMPLENAME_Coverage
@@ -229,7 +232,7 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
-### Pathway Abundance ###
+#### Pathway Abundance ####
 
 ```
 # Pathway	$SAMPLENAME_Abundance
