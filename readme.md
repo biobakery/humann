@@ -1,8 +1,12 @@
 # HUMAnN2 #
 
-Download the HUMAnN2 software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
+----
 
-**If you use the HUMAnN2 software, please cite our manuscript: TBD**
+ * Download the HUMAnN2 software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
+
+ * If you use the HUMAnN2 software, please cite our manuscript: TBD
+
+----
 
 HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
