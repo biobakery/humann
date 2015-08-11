@@ -1,10 +1,10 @@
 # HUMAnN2 #
 
-HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
-
+Download the HUMAnN2 software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
 
 **If you use the HUMAnN2 software, please cite our manuscript: TBD**
 
+HUMAnN2 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
 
@@ -67,7 +67,7 @@ Please install the required software in a location in your $PATH or provide the 
 
 ## Installation ##
 
-1. Download and unpack the [HUMAnN2 software](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
+1. Download and unpack the HUMAnN2 software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
 2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
  
     `` $ python setup.py minpath ``
