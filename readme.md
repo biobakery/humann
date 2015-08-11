@@ -2,7 +2,7 @@
 
 ----
 
- * Download the HUMAnN2 software [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz) then follow the [steps to install and run HUMAnN2](#markdown-header-getting-started-with-humann2)
+ * Download the HUMAnN2 software ( [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz) ) then follow the [steps to install and run](#markdown-header-getting-started-with-humann2).
 
  * If you use the HUMAnN2 software, please cite our manuscript: TBD
 
