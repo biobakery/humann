@@ -29,26 +29,19 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
         * [Pathway coverage](#markdown-header-pathway-coverage)
         * [Pathway abundance](#markdown-header-pathway-abundance)
 
+
 ## Features ##
 
-
 1. Community functional profiles stratified by known and unclassified organisms
-
     * [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2) and [ChocoPhlAn pangenome database](http://huttenhower.sph.harvard.edu/humann2_data/chocophlan/chocophlan.tar.gz) are used to facilitate fast, accurate, and organism-specific functional profiling
     * Organisms included are Archaea, Bacteria, Eukaryotes, and Viruses
-
 2. Considerably expanded databases of genomes, genes, and pathways
-
     * [UniRef](http://www.uniprot.org/help/uniref) database provides gene family definitions
     * [MetaCyc](http://metacyc.org/) provides pathway definitions by gene family
     * [MinPath](http://omics.informatics.indiana.edu/MinPath/) is run to identify the set of minimum pathways
-
 3. A simple user interface (single command driven flow)
-
     * The user only needs to provide a quality-controlled metagenome or metatranscriptome
-
 4. Accelerated mapping of reads to reference databases (including run-time generated databases tailored to the input)
-
     * [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) is run for accelerated nucleotide-level searches
     * [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) is run for accelerated translated searches
 
@@ -80,35 +73,20 @@ Before installing HUMAnN2, please download the software listed in the [Requireme
     * `` $ tar zxvf humann2_v0.2.2.tar.gz ``
     * `` $ cd humann2_v0.2.2 ``
 2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
- 
     * `` $ python setup.py minpath ``
     * If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
-
 3. Install the HUMAnN2 software
-
     * `` $ python setup.py install ``
     * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
-
-    
 4. Test the HUMAnN2 install (Optional)
- 
      * `` $ python setup.py test``
-
-
 5. Try out a HUMAnN2 demo run (Optional)
-
     * `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
     * When running this command, $OUTPUT_DIR should be replaced with the full path to the directory you have selected to write the output from the HUMAnN2 demo run.
-
-
 6. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB)
-
     * ``$ humann2_databases --download chocophlan full $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
-
-
 7. Download the UniRef database to $DIR (approx. size = 2.8 GB)
-
     * ``$ humann2_databases --download uniref diamond $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
 
