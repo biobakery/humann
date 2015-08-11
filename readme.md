@@ -63,9 +63,10 @@ For additional information, please see the [HUMAnN2 User Manual](http://huttenho
 6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
 7.  Operating system (Linux or Mac)
 
-Please install the required software in a location in your $PATH or provide the location with an optional argument to HUMAnN2. For example, the location of the Bowtie2 install ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
 
 ## Installation ##
+
+Before installing HUMAnN2, please download the software listed in the [Requirements](#markdown-header-requirements) section. You can place the software in your $PATH or provide the locations of the software with optional arguments when running HUMAnN2. For example, the location of the Bowtie2 software ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
 
 1. Download and unpack the HUMAnN2 software
     * Download the software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
