@@ -93,13 +93,13 @@ Please install the required software in a location in your $PATH or provide the 
     * When running this command, $OUTPUT_DIR should be replaced with the full path to the directory you have selected to write the output from the HUMAnN2 demo run.
 
 
-6. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB) (see NOTE 1)
+6. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB)
 
     * ``$ humann2_databases --download chocophlan full $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
 
 
-7. Download the UniRef database to $DIR (approx. size = 2.8 GB) (see NOTE 1)
+7. Download the UniRef database to $DIR (approx. size = 2.8 GB)
 
     * ``$ humann2_databases --download uniref diamond $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
