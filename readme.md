@@ -67,40 +67,42 @@ Please install the required software in a location in your $PATH or provide the 
 
 ## Installation ##
 
-1. Download and unpack the HUMAnN2 software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
-2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE 1)
+1. Download and unpack the HUMAnN2 software
+    * Download the software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
+    * `` $ tar zxvf humann2_v0.2.2.tar.gz ``
+    * `` $ cd humann2_v0.2.2 ``
+2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
  
-    `` $ python setup.py minpath ``
-    
+    * `` $ python setup.py minpath ``
+    * If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
 
-3. Install the HUMAnN2 software (see NOTE 2)
+3. Install the HUMAnN2 software
 
-    `` $ python setup.py install ``
+    * `` $ python setup.py install ``
+    * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 
     
 4. Test the HUMAnN2 install (Optional)
  
-     `` $ python setup.py test``
+     * `` $ python setup.py test``
 
 
 5. Try out a HUMAnN2 demo run (Optional)
 
-    `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
+    * `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
+    * When running this command, $OUTPUT_DIR should be replaced with the full path to the directory you have selected to write the output from the HUMAnN2 demo run.
 
 
-6. Download the ChocoPhlAn database to $INSTALL_LOCATION (approx. size = 5.6 GB)
+6. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB) (see NOTE 1)
 
-    ``$ humann2_databases --download chocophlan full $INSTALL_LOCATION``
-    
-
-7. Download the UniRef database to $INSTALL_LOCATION (approx. size = 2.8 GB)
-
-    ``$ humann2_databases --download uniref diamond $INSTALL_LOCATION``
+    * ``$ humann2_databases --download chocophlan full $DIR``
+    * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
 
 
-NOTE 1: If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
+7. Download the UniRef database to $DIR (approx. size = 2.8 GB) (see NOTE 1)
 
-NOTE 2: If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
+    * ``$ humann2_databases --download uniref diamond $DIR``
+    * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
 
 
 ## How to Run ##
