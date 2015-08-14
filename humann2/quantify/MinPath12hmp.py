@@ -23,7 +23,13 @@ minpath=os.path.join(os.path.dirname(os.path.abspath(__file__)),"MinPath")
 
 # LJM Add search for latest glpk install
 glpk_versions=[]
-for file in os.listdir(minpath):
+
+try:
+	files=os.listdir(minpath)
+except EnvironmentError:
+	sys.exit("ERROR: Unable to find the MinPath install.")
+
+for file in files:
 	if os.path.isdir(os.path.join(minpath,file)) and re.match("glpk-4.",file):
 		glpk_version=int(file.replace("glpk-4.",""))
 		glpk_versions.append(glpk_version)
@@ -209,8 +215,8 @@ class MinPath:
 		try:
 			file = open(pathfile, "r")	
 		except IOError:
-			print "open file %s error" % pathfile
-			raise
+			sys.exit("open file error " + pathfile)
+			
 
 		for aline in file:
 			aline = aline[:-1]
@@ -556,9 +562,11 @@ class MinPath:
 		#os.system(command)
 		try:
 			subprocess_output=subprocess.check_output(command)
-		except EnvironmentError:
-			print ("Error when running glpsol command in MinPath")
-			raise
+		except (EnvironmentError, subprocess.CalledProcessError) as e:
+			message="Error when running glpsol from MinPath.\n"
+			if hasattr(e, 'output') and e.output:
+				message+="\nError message returned from glpsol :\n" + e.output+"\n"
+			sys.exit(message)
 		# check the result
 		self.GetLPOut(lpout)
 
@@ -569,8 +577,8 @@ class MinPath:
 		try:
 			file = open(mpsfile, "w")
 		except IOError:
-			print "open file %s error" % mpsfile
-			raise
+			sys.exit("open file error " + mpsfile)
+			
 	        str = "%-14s%s\n" % ("NAME", "PATH")
        	 	file.write(str)
 	
@@ -630,8 +638,8 @@ class MinPath:
 		try:
 			file = open(lpoutfile, "r")
 		except IOError:
-			print "open file %s error" % lpoutfile 
-			raise
+			sys.exit("open file error " + lpoutfile)
+			
 
 		keeppath = []
 		for aline in file:
@@ -852,8 +860,8 @@ def Orth2Path(infile = "demo.ko", whichdb = "KEGG", mpsfile = "test.mps", report
 	try:
 		file = open(infile, "r")
 	except IOError:
-		print( "open file error " + infile)
-		raise
+		sys.exit("open file error " + infile)
+		
 
 	orthlist, orthcount = [], []
 	add = 0

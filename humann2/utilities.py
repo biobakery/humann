@@ -553,11 +553,11 @@ def command_threading(threads,commands):
     error_commands=[]
     for id in exit_codes:
         if exit_codes[id] != 0:
-            error_commands.append("Error message returned from command for threading task " 
-                + str(id) + ": " + commands_by_id[id])
+            error_commands.append("Error message returned from command for thread task " 
+                + str(id) + ": " + commands_by_id[id]+"\n")
             
     if error_commands:
-        message="CRITICAL ERROR: Unable to process all threading commands.\n"
+        message="\nCRITICAL ERROR: Unable to process all thread commands.\n\n"
         message+="\n".join(error_commands)
         logger.critical(message)
         sys.exit(message)
@@ -666,19 +666,20 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
 	
         try:
             if stdin_file or stdout_file or stderr_file:
-                p = subprocess.call(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
+                # run command, raise CalledProcessError if return code is non-zero
+                p = subprocess.check_call(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
             else:
                 p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 logger.debug(p_out)            
         except (EnvironmentError, subprocess.CalledProcessError) as e:
             message="Error executing: " + " ".join(cmd) + "\n"
-            if hasattr(e, 'output'):
+            if hasattr(e, 'output') and e.output:
                 message+="\nError message returned from " + os.path.basename(exe) + " :\n" + e.output
             logger.critical(message)
             logger.critical("TRACEBACK: \n" + traceback.format_exc())
             log_system_status()
             if raise_error:
-                raise subprocess.CalledProcessError
+                raise
             else:
                 sys.exit("CRITICAL ERROR: " + message)
 
