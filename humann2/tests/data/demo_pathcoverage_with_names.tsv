@@ -1,4 +1,8 @@
 # Pathway	HUMAnN2_test_Coverage
 PWY-3841: folate transformations II	0.7646405
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	0.6924914
+PWY-7221: guanosine ribonucleotides de novo biosynthesis	0.6430227
+PWY-7221: guanosine ribonucleotides de novo biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5341471
+RHAMCAT-PWY: L-rhamnose degradation I	0.6334595
 CODH-PWY: reductive acetyl coenzyme A pathway	0.4980480
 CODH-PWY: reductive acetyl coenzyme A pathway|g__Bacteroides.s__Bacteroides_stercoris	0.5303917

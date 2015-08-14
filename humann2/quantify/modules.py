@@ -222,6 +222,8 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
             if pathways_database.is_structured():
                 structure=pathways_database.get_structure_for_pathway(pathway)
                 key_reactions=pathways_database.get_key_reactions_for_pathway(pathway)
+                # Apply gap fill
+                reaction_scores=gap_fill(key_reactions, reaction_scores)
                 # Compute the structured pathway coverage
                 coverage=compute_structured_pathway_abundance_or_coverage(structure,
                     key_reactions,reaction_scores,True,median_score_value)
@@ -358,6 +360,30 @@ def compute_structured_pathway_abundance_or_coverage(structure, key_reactions, r
         
     return abundance
 
+def gap_fill(key_reactions, reaction_scores):
+    """
+    If >=75% of the key reactions have abundance scores, then fill gaps
+    """
+    
+    # get the scores for all of the key reactions
+    key_reactions_scores=[]
+    for reaction in key_reactions:
+        score=reaction_scores.get(reaction,0)
+        if score > 0:
+            key_reactions_scores.append(score)
+    
+    if len(key_reactions_scores)/(len(key_reactions)*1.0) >= 0.75:
+        # fill gaps
+        min_score=min(key_reactions_scores)
+        for reaction in key_reactions:
+            score=reaction_scores.get(reaction,0)
+            if score == 0:
+                reaction_scores[reaction]=min_score
+        
+    return reaction_scores
+    
+    
+
 def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     """
     Compute the abundance of pathways for each bug
@@ -377,6 +403,8 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
             if pathways_database.is_structured():
                 structure=pathways_database.get_structure_for_pathway(pathway)
                 key_reactions=pathways_database.get_key_reactions_for_pathway(pathway)
+                # Apply gap fill
+                reaction_scores=gap_fill(key_reactions, reaction_scores)
                 # Compute the structured pathway abundance
                 abundance=compute_structured_pathway_abundance_or_coverage(structure,
                     key_reactions,reaction_scores,False,0)
