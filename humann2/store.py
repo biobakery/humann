@@ -839,8 +839,11 @@ class ReactionsDatabase:
         if not database is None:
             # Check the database file exists and is readable
             utilities.file_exists_readable(database)
-             
-            file_handle=open(database,"r")
+            
+            if database.endswith(".gz"):
+                file_handle = gzip.open(database, "r")
+            else:
+                file_handle=open(database,"r")
              
             line=file_handle.readline()
              
