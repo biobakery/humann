@@ -66,6 +66,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Custom protein reference database](#markdown-header-custom-protein-reference-database)
     * [Custom reference database annotations](#markdown-header-custom-reference-database-annotations)
     * [Custom pathways database](#markdown-header-custom-pathways-database)
+    * [Regroup table features](#markdown-header-regroup-table-features)
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
 * [FAQs](#markdown-header-faqs)
@@ -297,7 +298,6 @@ For more information on the HUMAnN2 configuration file, please see the [Configur
 $ humann2 --input $SAMPLE --output $OUTPUT_DIR
 ```
 
-
 $SAMPLE = a single file that is one of the following types:
 
 1.  filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format)
@@ -388,10 +388,11 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_vu
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	22.0
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_stercoris	7.0
 ```
-
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
-*   This file quantifies the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that typically perform similar functions. Abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community.
-*   In addition to community-wide gene family abundance totals (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
+*   This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
+*   Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance.
+*   HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef50 for this computation.
+*   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
 *   Please note the gene families file will not be created if the input file type is a gene table.
         
 ### 2. Pathway coverage file ###
@@ -410,8 +411,10 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides
 ```
 
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
-*   This file details the presence/absence of each pathway in the community. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more gene families.
-*   In addition to community-wide pathway coverage (as reported by HUMAnN), this file is stratified to indicate the coverage of the pathway by genomes of known and unclassified organisms represented in the sample.
+*   This file details the presence/absence of each pathway in the community grouped by species. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes.
+*   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not necessarily the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the pathway has coverage=1.0 in species 1, species 2, and at the community level.
+*   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
+*   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
 ### 3. Pathway abundance file ###
 
@@ -429,8 +432,10 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	
 ```
          
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
-*   This file quantifies the abundance of each pathway in the community as a function of the abundance of its member gene families.
-*   In addition to community-wide pathway abundance (as reported by HUMAnN), this file is stratified to indicate abundance contributions of known and unclassified organisms represented in the sample.
+*   This file details the abundance of each pathway in the community as a function of the abundances of the pathway's member genes. Pathway abundance is proportional to the number of complete "copies" of the pathway in the community.
+*   Pathway abundance at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level abundance is not necessarily the sum of its stratified abundance values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=10} and species 2 contributes abundances {A=10, B=5}, species 1 and 2 each contribute 5 complete copies of the pathway, but at the community level there are 15 complete copies.
+*   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
+*   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 
 ### 4. Intermediate temp output files ###
 
@@ -925,6 +930,18 @@ An example of an unstructured pathways file follows:
 PWY-3	A	B	C	D
 PWY-4	A	B	C	D	E
 ```
+
+### Collapsing gene families ###
+
+HUMAnN2 gene families output can contain a very large number of features depending on the complexity of your underlying sample. One way to explore this information in a simplified manner is via HUMAnN2's own pathway coverage and abundance, which summarize the values of their member genes. However, this approach does not apply to gene families that are not associated with metabolic pathways.
+
+To further simplify the exploration of gene family abundance data, users can regroup gene families into other functional categories using the included ``regroup_table`` utility script. This script takes as arguments a gene family abundance table and a mapping (groups) file that indicates which gene families belong to which groups. Several example files are included in the HUMAnN2 data/misc directory:
+
+*   ``map_ec_uniref50.txt.gz``: Maps from enzyme commission (EC) categories to UniRef50 gene families. These associations are inferred from UniProt's protein annotation data. Note: HUMAnN2 uses EC annotations to map gene families to individual MetaCyc reactions (which are then further mapped to pathways). Examining gene family abundance grouped by EC annotation thus provides an intermediate level of resolution between gene families and pathways.
+*   ``map_ko_uniref50.txt.gz``: Maps from KEGG Orthogroups (KOs) to UniRef50 gene families. These associations are inferred from UniProts ID mapping resources.
+*   ``map_infogo100_uniref50.txt.gz``: Maps from a subset of Gene Ontology (GO) categories to UniRef50 gene families. These associations are inferred from UniProt.
+
+Users are free to create and use additional mapping files. Note that, by default, gene family abundances are summed to produce group abundances, consistent with gene families following "is_a" relationships with their groups. Users can also request to average over gene family abundances, consistent with gene families following "part_of" relationships with their groups.
 
 ### Analyzing Metatranscriptomes ###
 
