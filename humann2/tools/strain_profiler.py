@@ -1,9 +1,5 @@
 #! /usr/bin/env python
 
-"""
-HUMAnN2 utility for making strain profiles
-Run ./strain_profiles.py -h for usage help
-"""
 
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
@@ -11,15 +7,33 @@ import sys
 import csv
 import util
 
+description = """
+HUMAnN2 utility for making strain profiles
+==========================================
+Based on the principle of detecting variable 
+presence and absence of gene families within a species
+that is otherwise well-covered in multiple samples.
+"""
+
+# ---------------------------------------------------------------
 # constants
+# ---------------------------------------------------------------
+
 c_strain_profile_extension = "-strain_profile.tsv"
 c_tax_delim = "."
 c_epsilon = 1e-10
 c_forbidden = ["unclassified"]
 
+# ---------------------------------------------------------------
+# utilities 
+# ---------------------------------------------------------------
+
 def get_args ():
     """ Get args from Argparse """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=description,
+        argparse.RawTextHelpFormatter,
+        )
     parser.add_argument( 
         "-i", "--input", 
         default=None,
@@ -118,6 +132,10 @@ def write_partition ( table, partition, outfile ):
         writer = csv.writer( fh, dialect='excel-tab' )
         for row in matrix:
             writer.writerow( row )
+
+# ---------------------------------------------------------------
+# main
+# ---------------------------------------------------------------
 
 def main ( ):
     args = get_args()
