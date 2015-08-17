@@ -1,18 +1,29 @@
 #! /usr/bin/env python
 
-"""
-HUMAnN2 utility for regrouping TSV files
-Run ./regroup_table.py -h for usage help
-"""
-
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
 import sys
 import util
 
+description = """
+HUMAnN2 utility for regrouping table features
+=============================================
+Given a table of feature values and a mapping
+of groups to component features, produce a 
+new table with group values in place of 
+feature values.
+"""
+
+# ---------------------------------------------------------------
+# utilities
+# ---------------------------------------------------------------
+
 def get_args ():
     """ Get args from Argparse """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=description, 
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     parser.add_argument( 
         "-i", "--input", 
         default=None,
@@ -20,12 +31,12 @@ def get_args ():
         )
     parser.add_argument( 
         "-g", "--groups", 
-        help="Mapping of features to superfeatures (.tsv or .tsv.gz format)",
+        help="Mapping of groups to features (.tsv or .tsv.gz format)",
         )
     parser.add_argument( 
-        "-r", "--reverse",
+        "-r", "--reversed",
         action="store_true",
-        help="Mapping file is reversed: mapping from superfeatures to features",
+        help="Mapping file is reversed: mapping from features to groups",
     )
     parser.add_argument( 
         "-f", "--function", 
@@ -44,7 +55,7 @@ def get_args ():
 def mean( vector ):
     return sum( vector ) / float( len( vector ) )
 
-def regroup( table, groups, function ):
+def regroup( table, map_feature_groups, function ):
     feature_counts = {}
     function = {"sum":sum, "mean":mean}[function]
     mapping = {}
@@ -54,27 +65,27 @@ def regroup( table, groups, function ):
             feature_counts[items[0]] = 0
         # account for previously renamed features
         feature = items[0].split( util.c_name_delim )[0]
-        if feature in groups:
-            for superfeature in groups[feature]:
+        if feature in map_feature_groups:
+            for group in map_feature_groups[feature]:
                 if len( items ) == 1:
                     feature_counts[items[0]] += 1
                 # account for stratified feature
-                superrowhead = superfeature if len( items ) == 1 \
-                                  else util.c_strat_delim.join( [superfeature, items[1]] ) 
-                mapping.setdefault( superrowhead, [] ).append( i )
+                groupname = group if len( items ) == 1 \
+                                  else util.c_strat_delim.join( [group, items[1]] ) 
+                mapping.setdefault( groupname, [] ).append( i )
     # rebuild table
-    superrowheads = sorted( mapping.keys() )
-    superdata = []
-    for superrowhead in superrowheads:
-        oldrow_index = mapping[superrowhead]
+    groupnames = sorted( mapping.keys() )
+    groupdata = []
+    for groupname in groupnames:
+        oldrow_index = mapping[groupname]
         newrow = [[] for j in range( len( table.colheads ) )]
         for i in oldrow_index:
             for j in range( len( table.colheads ) ):
                 newrow[j].append( float( table.data[i][j] ) )
         # collapse groups
-        superdata.append( [function( block ) for block in newrow] )
-    table.rowheads = superrowheads
-    table.data = superdata
+        groupdata.append( [function( block ) for block in newrow] )
+    table.rowheads = groupnames
+    table.data = groupdata
     # report
     n = len( feature_counts )
     ungrouped = feature_counts.values().count( 0 )
@@ -88,17 +99,22 @@ def regroup( table, groups, function ):
              100 * grouped_multi / float( n ),
          ), file=sys.stderr )
 
+# ---------------------------------------------------------------
+# main
+# ---------------------------------------------------------------
+
 def main ( ):
     args = get_args()
     table = util.Table( args.input )
-    groups = util.load_polymap( args.groups )
-    if args.reverse:
-        groups2 = {}
-        for superfeature in groups:
-            for feature in groups[superfeature]:
-                groups2.setdefault( feature, {} )[superfeature] = 1
-        groups = groups2
-    regroup( table, groups, args.function )
+    if not args.reversed:
+        map_group_features = util.load_polymap( args.groups )
+        map_feature_groups = {}
+        for group, fdict in map_group_features.items():
+            for feature in fdict:
+                map_feature_groups.setdefault( feature, {} )[group] = 1
+    else:
+        map_feature_groups = util.load_polymap( args.groups )
+    regroup( table, map_feature_groups, args.function )
     table.write( args.output )
 
 if __name__ == "__main__":

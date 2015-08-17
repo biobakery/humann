@@ -1,18 +1,27 @@
 #! /usr/bin/env python
 
-"""
-HUMAnN2 utility for renormalizing TSV files
-Run ./renorn_table.py -h for usage help
-"""
-
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
 import sys
 import util
 
+description = """
+HUMAnN2 utility for renormalizing TSV files
+===========================================
+Each level of a stratified table will be 
+normalized using the desired scheme.
+"""
+
+# ---------------------------------------------------------------
+# utilities
+# ---------------------------------------------------------------
+
 def get_args ():
     """ Get args from Argparse """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser( 
+        description=description, 
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     parser.add_argument( 
         "-i", "--input", 
         default=None,
@@ -33,17 +42,24 @@ def get_args ():
     return args
 
 def normalize ( table, cpm=False ):
-    divisor = 1 
-    if table.is_stratified:
-        divisor /= 2.0
-    if cpm:
-        divisor /= 1e6
-    totals = [0 for k in range( len( table.colheads ) )]
+    divisor = 1e-6 if cpm else 1.0
+    # compute totals by delim level (e.g. community vs species)
+    totals_by_level = {}
     for i, row in enumerate( table.data ):
+        level = len( table.rowheads[i].split( util.c_strat_delim ) )
+        if level not in totals_by_level:
+            totals_by_level[level] = [0 for k in range( len( table.colheads ) )]
         table.data[i] = [float( k ) for k in row]
-        totals = [k1 + k2 for k1, k2 in zip( totals, table.data[i] )]
+        totals_by_level[level] = [k1 + k2 for k1, k2 in zip( totals_by_level[level], table.data[i] )]
+    # normalize
     for i, row in enumerate( table.data ):
+        level = len( table.rowheads[i].split( util.c_strat_delim ) )
+        totals = totals_by_level[level]
         table.data[i] = ["%.6g" % ( row[j] / totals[j] / divisor ) for j in range( len( totals ) )] 
+
+# ---------------------------------------------------------------
+# main
+# ---------------------------------------------------------------
 
 def main ( ):
     args = get_args()

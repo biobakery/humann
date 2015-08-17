@@ -1,17 +1,24 @@
 #! /usr/bin/env python
 
-"""
-HUMAnN2 utility for renaming TSV files
-Run ./rename_table.py -h for usage help
-"""
-
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import sys
 import util
 import argparse
+
+description = """
+HUMAnN2 utility for renaming table features
+===========================================
+"""
+
+# ---------------------------------------------------------------
+# utilities 
+# ---------------------------------------------------------------
     
 def get_args ():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=description, 
+        formatter_class=argparse.RawTextHelpFormatter,
+        )
     parser.add_argument( 
         "-i", "--input", 
         default=None,
@@ -47,6 +54,10 @@ def rename ( table, polymap ):
     print( "Renamed %d of %d entries (%.2f%%)" \
            % ( tcount, len( seen ), 100 * tcount / float( len( seen ) ) ), 
            file=sys.stderr )
+
+# ---------------------------------------------------------------
+# main
+# ---------------------------------------------------------------
 
 def main ( ):
     args = get_args()

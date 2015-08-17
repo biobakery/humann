@@ -1,24 +1,45 @@
 #! /usr/bin/env python
 
-"""
-HUMAnN2 utility for normalizing combined meta'omic seq data
-Run ./rna_dna_norm.py -h for usage help
-"""
-
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 from math import log
 import argparse
 import sys
 import util
 
+description = """
+HUMAnN2 utility for normalizing combined meta'omic sequencing data
+==================================================================
+Given a DNA table and a RNA table, produce smoothed RNA and DNA 
+values as well as relative expression values. "Smoothing" means
+substituting a small value in place of a zero or missing value.
+The Witten-Bell smoothing procedure is used here.
+
+If working with stratified data, smoothing is carried out on the
+stratified values and then community totals are recomputed.
+
+The DNA and RNA columns must be 1:1 and in the same order.
+The units of the table should be count-like (for example,
+HUMAnN2 gene family abundance files).
+"""
+
+# ---------------------------------------------------------------
 # constants
+# ---------------------------------------------------------------
+
 c_new_dna_extension = "-smoothed_dna.tsv"
 c_new_rna_extension = "-smoothed_rna.tsv"
 c_norm_rna_extension = "-relative_expression.tsv"
 
+# ---------------------------------------------------------------
+# utilities 
+# ---------------------------------------------------------------
+
 def get_args ():
     """ Get args from Argparse """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(      
+        description=description, 
+        formatter_class=argparse.RawTextHelpFormatter,
+        )
     parser.add_argument( 
         "-d", "--input_dna", 
         help="Original DNA output table (.tsv format)",
@@ -35,7 +56,13 @@ def get_args ():
     parser.add_argument( 
         "-l", "--log_transform", 
         action="store_true",
-        help="Report log2 relative expression values",
+        help="Report log-transformed relative expression values",
+        )
+    parser.add_argument( 
+        "-b", "--log_base", 
+        type=float,
+        default=2.0,
+        help="Base for log transformation (if specified); DEFAULT=2."
         )
     args = parser.parse_args()
     return args
@@ -110,12 +137,11 @@ def hsum( table ):
             data2.append( table.data[i] )
     table.rowheads, table.data = rowheads2, data2
 
+# ---------------------------------------------------------------
+# maine
+# ---------------------------------------------------------------
+
 def main ( ):
-    # warning
-    print( "\nThis script assumes:\n",
-           "(1) That DNA and RNA columns have the same order.\n",
-           "(2) That units are count-like (including default RPKs).\n",
-           file=sys.stderr )
     args = get_args()
     dna = util.Table( args.input_dna )
     rna = util.Table( args.input_rna )
@@ -138,7 +164,8 @@ def main ( ):
     for i in range( len( dna.data ) ):
         rna.data[i] = [s * r / d for s, r, d in zip( scale, rna.data[i], dna.data[i] )]
         if args.log_transform:
-            rna.data[i] = map( lambda x: log( x ) / log( 2 ), rna.data[i] )
+            divisor = log( args.log_base )
+            rna.data[i] = map( lambda x: log( x ) / divisor, rna.data[i] )
     rna.write( args.output_basename+c_norm_rna_extension, unfloat=True )
 
 if __name__ == "__main__":
