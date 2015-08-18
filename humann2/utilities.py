@@ -881,25 +881,38 @@ def fastq_to_fasta(file, apply_pick_frames=None):
     new_file=unnamed_temp_file()
     file_out=open(new_file,"w")
 
+    sequence=""
+    sequence_id=""
     while line:
         if re.search("^@",line):
-            sequence_id=line.replace("@",">",1)
-            line=file_handle_read.readline()
-            sequence=""
-            while line:
-                if re.search("^\\+",line):
-                    sequences=[sequence]
-                    if apply_pick_frames:
-                        sequences=pick_frames.pick_frames(sequence)
-                    for sequence in sequences:
-                        file_out.write(sequence_id)
-                        file_out.write(sequence+"\n")
-                    break
+            # write previous sequence
+            if sequence:
+                if apply_pick_frames:
+                    sequences=pick_frames.pick_frames(sequence)
                 else:
-                    sequence+=line.rstrip()
-                line=file_handle_read.readline()
+                    sequences=[sequence]
+                    
+                for sequence in sequences:
+                    file_out.write(sequence_id)
+                    file_out.write(sequence+"\n")
+            
+            sequence_id=line.replace("@",">",1)
+            sequence=""
+        elif re.search("^[A-Z|a-z]+$", line):
+            sequence+=line.rstrip()
         line=file_handle_read.readline()
-  	
+        
+    # write out the last sequence
+    if sequence:
+        if apply_pick_frames:
+            sequences=pick_frames.pick_frames(sequence)
+        else:
+            sequences=[sequence]
+                    
+        for sequence in sequences:
+            file_out.write(sequence_id)
+            file_out.write(sequence+"\n")    
+
     file_out.close()	
     file_handle_read.close()
 

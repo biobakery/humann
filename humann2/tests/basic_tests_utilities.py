@@ -114,7 +114,22 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
             cfg.convert_fastq_file)
         self.assertTrue(filecmp.cmp(new_fasta_file,
             cfg.convert_fasta_file, shallow=False))
-        utils.remove_temp_file(new_fasta_file)                    
+        utils.remove_temp_file(new_fasta_file)     
+        
+    def test_fastq_to_fasta(self):
+        """
+        Test the fastq_to_fasta function with a set of sequences
+        which have the @ quality score as the first score
+        This tests that the sequence id and sequence are selected correctly
+        even though the @ starts a sequence id line and a quality score line
+        """
+        
+        new_fasta_file=utilities.fastq_to_fasta(
+            cfg.convert_fastq_at_character_file)
+        self.assertTrue(filecmp.cmp(new_fasta_file,
+            cfg.convert_fasta_file, shallow=False))
+        utils.remove_temp_file(new_fasta_file)  
+                       
 
     def test_double_sort(self):
         """
