@@ -66,6 +66,7 @@ from .quantify import modules
 logger=logging.getLogger(__name__)
 
 VERSION="0.2.2"
+MAX_SIZE_DEMO_INPUT_FILE=10
 
 def parse_arguments(args):
     """ 
@@ -609,6 +610,24 @@ def check_requirements(args):
                 sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
                     + "contain files of the expected format (ie \'^[g__][s__]\').")
                 
+        # Check if running with the demo database
+        if not config.bypass_nucleotide_index:
+            if os.path.basename(config.nucleotide_database) == "chocophlan_DEMO":
+                # Check the input file is a demo input if running with demo database
+                try:
+                    input_file_size=os.path.getsize(args.input)/1024**2
+                except EnvironmentError:
+                    input_file_size=0
+                if input_file_size > MAX_SIZE_DEMO_INPUT_FILE:
+                    sys.exit("ERROR: You are using the demo ChocoPhlAn database with "
+                        + "a non-demo input file. If you have not already done so, please "
+                        + "run humann2_databases to download the full ChocoPhlAn database. "
+                        + "If you have downloaded the full database, use the option "
+                        + "--nucleotide-database to provide the location. "
+                        + "You can also run humann2_config to update the default "
+                        + "database location. For additional information, please "
+                        + "see the HUMAnN2 User Manual.")
+                
         # Check that the metaphlan2 executable can be found
         if not config.bypass_prescreen and not config.bypass_nucleotide_index:
             if not utilities.find_exe_in_path("metaphlan2.py"): 
@@ -662,6 +681,24 @@ def check_requirements(args):
                     " the translated alignment software selected ( " +
                     config.translated_alignment_selected + " ). Please format these files so"
                     + " they are of the expected extension ( " + expected_database_extension +" ).")
+                
+        # Check if running with the demo database
+        if not config.bypass_translated_search:
+            if os.path.basename(config.protein_database) == "uniref_DEMO":
+                # Check the input file is a demo input if running with demo database
+                try:
+                    input_file_size=os.path.getsize(args.input)/1024**2
+                except EnvironmentError:
+                    input_file_size=0
+                if input_file_size > MAX_SIZE_DEMO_INPUT_FILE:
+                    sys.exit("ERROR: You are using the demo UniRef database with "
+                        + "a non-demo input file. If you have not already done so, please "
+                        + "run humann2_databases to download the full UniRef database. "
+                        + "If you have downloaded the full database, use the option "
+                        + "--protein-database to provide the location. "
+                        + "You can also run humann2_config to update the default "
+                        + "database location. For additional information, please "
+                        + "see the HUMAnN2 User Manual.")
 
             # Check that the translated alignment executable can be found
             if not utilities.find_exe_in_path(config.translated_alignment_selected):
