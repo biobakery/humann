@@ -32,7 +32,7 @@ def get_args ():
     """ Get args from Argparse """
     parser = argparse.ArgumentParser(
         description=description,
-        argparse.RawTextHelpFormatter,
+        formatter_class=argparse.RawTextHelpFormatter
         )
     parser.add_argument( 
         "-i", "--input", 
