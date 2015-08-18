@@ -15,13 +15,12 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         # set up nullhandler for logger
         logging.getLogger('humann2.quantify.modules').addHandler(logging.NullHandler())
         
-    def test_gap_fill_less_than_threshold(self):
+    def test_gap_fill_zero_gaps(self):
         """
-        Test the gap fill function, with a set of scores that are less than the
-        threshold of 75% to apply gap filling
+        Test the gap fill function, with a set of scores that do not have gaps
         """
         
-        key_reactions=["A","B","C"]
+        key_reactions=["A","B"]
         reaction_scores={ "A": 1, "B": 2 }
         
         gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
@@ -30,8 +29,21 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         
     def test_gap_fill_greater_than_threshold(self):
         """
-        Test the gap fill function, with a set of scores that are greater than the
-        threshold of 75% to apply gap filling
+        Test the gap fill function, with a set of scores where the gaps are
+        greater than threshold to apply gap filling
+        """
+        
+        key_reactions=["A","B","C","D","E","G"]
+        reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 1}
+        
+        gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        
+        self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
+        
+    def test_gap_fill_equal_threshold(self):
+        """
+        Test the gap fill function, with a set of scores where the gaps equal the
+        threshold to apply gap filling
         """
         
         key_reactions=["A","B","C","D","E"]
@@ -42,40 +54,24 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
         
         self.assertDictEqual(gap_filled_reaction_scores, expected_result)
-
-    def test_gap_fill_equal_threshold(self):
-        """
-        Test the gap fill function, with a set of scores that are equal to the
-        threshold of 75% to apply gap filling
-        """
         
-        key_reactions=["A","B","C","D"]
-        reaction_scores={ "A": 1, "B": 2 , "C": 2}
-        
-        expected_result={ "A": 1, "B": 2 , "C": 2, "D": 1}
-        
-        gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
-        
-        self.assertDictEqual(gap_filled_reaction_scores, expected_result)
-        
-    def test_gap_fill_optional_reactions_less_than_threshold(self):
+    def test_gap_fill_optional_reactions_zero_gaps(self):
         """
         Test the gap fill function, with a set of scores that include optional reactions
-        where just considering the required reactions it is less than the threshold
-        for gap filling
+        where just considering the required reactions it does not require gap filling
         """
         
-        key_reactions=["A","B","C","D"]
+        key_reactions=["A","B"]
         reaction_scores={ "A": 1, "B": 2 , "E": 0.1}
         
         gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
         
         self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
         
-    def test_gap_fill_optional_reactions_greater_than_threshold(self):
+    def test_gap_fill_optional_reactions_equal_threshold(self):
         """
         Test the gap fill function, with a set of scores that include optional reactions
-        where just considering the required reactions it is greater than the threshold
+        where just considering the required reactions the gaps equal the threshold
         for gap filling
         Test with a minimum score lower for all reactions that the required reactions
         """
@@ -88,6 +84,21 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
         
         self.assertDictEqual(gap_filled_reaction_scores, expected_result)
+        
+    def test_gap_fill_optional_reactions_greater_than_threshold(self):
+        """
+        Test the gap fill function, with a set of scores that include optional reactions
+        where just considering the required reactions the gaps are greater than the threshold
+        for gap filling
+        Test with a minimum score lower for all reactions that the required reactions
+        """
+        
+        key_reactions=["A","B","C","D","E","G"]
+        reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 1, "F": 0.1}
+        
+        gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        
+        self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
         
         
     def test_harmonic_mean(self):
