@@ -154,15 +154,18 @@ def try_zip_open( path, *args ):
         print( "Problem opening", path, file=sys.stderr )
     return fh
 
-def load_polymap ( path ):
+def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """ 
     load a tsv file mapping one name to another (e.g. uniref50 id to english name)
     """
     polymap = {}
     with try_zip_open( path ) as fh:
         for row in csv.reader( fh, dialect="excel-tab" ):
-            old_name = row[0]
-            for new_name in row[1:]:
-                polymap.setdefault( old_name, {} )[new_name] = 1
+            key = row[start]
+            if allowed_keys is None or key in allowed_keys:
+                for i, value in enumerate( row ):
+                    if i != start and (skip is None or i not in skip):
+                        if allowed_values is None or value in allowed_values:
+                            polymap.setdefault( key, {} )[value] = 1
     print( "Loaded polymap from", path, file=sys.stderr )
     return polymap
