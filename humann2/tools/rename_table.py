@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
+from collections import namedtuple
 import sys
+import os
 import util
 import argparse
 
@@ -9,6 +11,21 @@ description = """
 HUMAnN2 utility for renaming table features
 ===========================================
 """
+
+# ---------------------------------------------------------------
+# constants
+# ---------------------------------------------------------------
+
+p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
+Names = namedtuple( "Names", ["path"] )
+c_default_names = {
+    "uniref50": Names(
+        os.path.join( p_root, "data", "misc", "map_uniref50_name.txt.gz" ) ),
+    "ko": Names(
+        os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
+    "metacyc-pwy": Names(
+        os.path.join( p_root, "data", "misc", "map_metacyc-pwy_name.txt.gz" ) ),
+    }
 
 # ---------------------------------------------------------------
 # utilities 
@@ -26,7 +43,14 @@ def get_args ():
         )
     parser.add_argument( 
         "-n", "--names", 
-        help="Mapping of feature IDs to full names (.tsv or .tsv.gz)",
+        choices=c_default_names.keys(),
+        default=None,
+        help="Table features that can be renamed with included data files",
+        )
+    parser.add_argument( 
+        "-c", "--custom", 
+        default=None,
+        help="Custom mapping of feature IDs to full names (.tsv or .tsv.gz)",
         )
     parser.add_argument( 
         "-o", "--output", 
@@ -62,7 +86,13 @@ def rename ( table, polymap ):
 def main ( ):
     args = get_args()
     table = util.Table( args.input )
-    polymap = util.load_polymap( args.names )
+    allowed_keys = {k.split( util.c_strat_delim )[0]:1 for k in table.rowheads}
+    if args.custom is not None:
+        polymap = util.load_polymap( args.custom, allowed_keys=allowed_keys )
+    elif args.names is not None:
+        polymap = util.load_polymap( c_default_names[args.names].path, allowed_keys=allowed_keys )
+    else:
+        sys.exit( "Must (i) choose names option or (ii) provide names file" )
     rename( table, polymap )
     table.write( args.output )
 
