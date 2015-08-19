@@ -92,7 +92,7 @@ def main ( ):
     elif args.names is not None:
         polymap = util.load_polymap( c_default_names[args.names].path, allowed_keys=allowed_keys )
     else:
-        sys.exit( "Must specify one of the default names options or a custom file." )
+        sys.exit( "Must (i) choose names option or (ii) provide names file" )
     rename( table, polymap )
     table.write( args.output )
 

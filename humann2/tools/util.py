@@ -100,6 +100,7 @@ c_strat_delim = "|"
 c_name_delim = ": "
 c_multiname_delim = ";"
 c_str_unknown = "NO_NAME"
+c_many_bytes = 1e7
 
 class Table ( ):
 
@@ -119,6 +120,8 @@ class Table ( ):
             print( "Loading table from STDIN", file=sys.stderr )
         else:
             fh = try_zip_open( path )
+            print( "Loading table from:", path, file=sys.stderr )
+            size_warn( path )
         for row in csv.reader( fh, dialect='excel-tab' ):
             if self.anchor is None:
                 self.anchor = row[0]
@@ -143,6 +146,10 @@ class Table ( ):
                 values = map( lambda x: "%.6g" % ( x ), values )
             writer.writerow( [self.rowheads[i]] + values )
 
+def size_warn( path ):
+    if os.path.getsize( path ) > c_many_bytes:
+        print( "This is a large file, one moment please...", file=sys.stderr )
+
 def try_zip_open( path, *args ):
     """ 
     open an uncompressed or gzipped file; fail gracefully 
@@ -155,11 +162,20 @@ def try_zip_open( path, *args ):
     return fh
 
 def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
-    """ 
-    load a tsv file mapping one name to another (e.g. uniref50 id to english name)
+    """
+    Load a file like:
+    A 1 2
+    B 1
+    B 3
+    C 1 2 4
+    To a nested dict structure:
+    {A:{1:1, 2:1}, B:{1:1, 3:1}, C:{1:1, 2:2, 4:1}
+    Inner values are not important (set to 1)
     """
     polymap = {}
     with try_zip_open( path ) as fh:
+        print( "Loading mapping file from:", path, file=sys.stderr )
+        size_warn( path )
         for row in csv.reader( fh, dialect="excel-tab" ):
             key = row[start]
             if allowed_keys is None or key in allowed_keys:
@@ -167,5 +183,4 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
                     if i != start and (skip is None or i not in skip):
                         if allowed_values is None or value in allowed_values:
                             polymap.setdefault( key, {} )[value] = 1
-    print( "Loaded polymap from", path, file=sys.stderr )
     return polymap
