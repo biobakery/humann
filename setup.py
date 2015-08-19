@@ -52,31 +52,83 @@ import urllib
 import tarfile
 import subprocess
 import shutil
+import zipfile
+import tempfile
+import re
 
 VERSION = "0.2.2"
 
-def install_tar(url,download_file,folder):
+def download(url, download_file):
+    """
+    Download a file from a url
+    """
+
+    try:
+        print("Downloading "+url)
+        file, headers = urllib.urlretrieve(url,download_file)
+    except EnvironmentError:
+        print("Warning: Unable to download "+url)
+    
+
+def download_unpack_tar(url,download_file_name,folder,software_name):
     """
     Download the url to the file and decompress into the folder
     """
     
     # Check for write permission to the target folder
     if not os.access(folder, os.W_OK):
-        sys.exit("ERROR: The directory set to install is not writeable: "+
+        print("Warning: The directory is not writeable: "+
             folder + " . Please modify the permissions.")
     
+    download_file=os.path.join(folder, download_file_name)
+    
+    download(url, download_file)
+    
+    error_during_extract=False
+    
     try:
-        file, headers = urllib.urlretrieve(url,download_file)
         tarfile_handle=tarfile.open(download_file)
         tarfile_handle.extractall(path=folder)
         tarfile_handle.close()
     except EnvironmentError:
-        sys.exit("ERROR: Unable to install minpath.")
+        print("Warning: Unable to extract "+software_name+".")
+        error_during_extract=True
         
+    if not error_during_extract:
+        try:
+            os.unlink(download_file)
+        except EnvironmentError:
+            print("Warning: Unable to remove the temp download: " + download_file)
+        
+def download_unpack_zip(url,download_file_name,folder,software_name):
+    """
+    Download the url to the file and decompress into the folder
+    """
+    
+    # Check for write permission to the target folder
+    if not os.access(folder, os.W_OK):
+        print("Warning: The directory is not writeable: "+
+            folder + " . Please modify the permissions.")
+    
+    download_file=os.path.join(folder, download_file_name)
+    
+    download(url, download_file)
+    
+    error_during_extract=False
+    
     try:
-        os.unlink(download_file)
+        zipfile_handle=zipfile.ZipFile(download_file)
+        zipfile_handle.extractall(path=folder)
+        zipfile_handle.close()
     except EnvironmentError:
-        print("warning: unable to remove the temp minpath download: " + download_file)
+        print("Warning: Unable to extract "+software_name+".")
+        error_during_extract=True
+        
+    if not error_during_extract:
+        try:
+            os.unlink(download_file)
+        except EnvironmentError:
+            print("Warning: Unable to remove the temp download: " + download_file)
         
 def install_glpk(minpath_folder):
     """
@@ -89,13 +141,29 @@ def install_glpk(minpath_folder):
  
     # install the most recent gplk software
     glpk_download=os.path.join(minpath_folder,glpk_url.split('/')[-1])
-    print("installing latest glpk")
-    install_tar(glpk_url,glpk_download,minpath_folder)
+    print("Installing latest glpk.")
+    download_unpack_tar(glpk_url,glpk_download,minpath_folder,"glpk")
         
     # move to the glpk directory
     current_working_directory=os.getcwd()
     glpk_install_folder=os.path.join(minpath_folder,glpk_folder)
-    os.chdir(glpk_install_folder)
+    
+    try:
+        os.chdir(glpk_install_folder)
+    except EnvironmentError:
+        print("Warning: glpk was not downloaded.")
+    
+    # test for gcc
+    try:
+        subprocess_output=subprocess.check_output(["gcc","--version"])
+    except (EnvironmentError,subprocess.CalledProcessError):
+        print("Warning: Please install gcc.")
+        
+    # test for make
+    try:
+        subprocess_output=subprocess.check_output(["make","--version"])
+    except (EnvironmentError,subprocess.CalledProcessError):
+        print("Warning: Please install make.")
         
     glpk_install_error=False
     try:
@@ -103,8 +171,8 @@ def install_glpk(minpath_folder):
         subprocess.call(["./configure"])
         # run make
         subprocess.call(["make"])
-        
     except (EnvironmentError,subprocess.CalledProcessError):
+        print("Warning: Errors installing new glpk version.")
         glpk_install_error=True
             
     # return to original working directory
@@ -112,7 +180,10 @@ def install_glpk(minpath_folder):
         
     # remove the latest install if needed
     if glpk_install_error:
-        shutil.rmtree(glpk_install_folder,ignore_errors=True)    
+        try:
+            shutil.rmtree(glpk_install_folder,ignore_errors=True)
+        except (EnvironmentError, shutil.Error):
+            print("Warning: Unable to remove partial glpk install.")    
         
 def install_minpath(replace_install=None,update_glpk=None):
     """ 
@@ -133,12 +204,14 @@ def install_minpath(replace_install=None,update_glpk=None):
     minpath_exe=os.path.join(fullpath_scripts,minpath_install_folder,"MinPath1.2.py")
     if not os.path.isfile(minpath_exe) or replace_install:
         download_file=os.path.join(fullpath_scripts, minpath_file)
-        print("installing minpath")
-        install_tar(minpath_url,download_file,fullpath_scripts)
+        print("Installing minpath.")
+        download_unpack_tar(minpath_url,download_file,fullpath_scripts,"minpath")
         
         if update_glpk:
             minpath_folder=os.path.join(fullpath_scripts,minpath_install_folder)
             install_glpk(minpath_folder)
+    else:
+        print("Found minpath install.")
         
 class InstallMinpath(distutils.cmd.Command):
     """
@@ -158,18 +231,146 @@ class InstallMinpath(distutils.cmd.Command):
     def run(self):
         install_minpath(replace_install=True,update_glpk=self.update_glpk)
         
+def find_exe_in_path(exe):
+    """
+    Check that an executable exists in $PATH
+    """
+    
+    paths = os.environ["PATH"].split(os.pathsep)
+    for path in paths:
+        fullexe = os.path.join(path,exe)
+        if os.path.exists(fullexe):
+            if os.access(fullexe,os.X_OK):
+                return True
+    return False
+        
+def install_diamond(final_install_folder, replace_install=None):
+    """ 
+    Download and install the diamond software if not already installed
+    """
+    
+    # Check if diamond is already installed
+    diamond_installed=find_exe_in_path("diamond")
+    
+    if not diamond_installed or replace_install:
+        diamond_exe="diamond"
+        diamond_file="diamond-linux64.tar.gz"
+        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v0.7.9/diamond-linux64.tar.gz"
+
+        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))
+        tempfolder=tempfile.mkdtemp(prefix="diamond_download_",dir=humann2_source_folder)
+        
+        # install the diamond software
+        print("Installing diamond.")
+        error_during_install=False
+        download_unpack_tar(diamond_url, diamond_file, tempfolder, diamond_exe)
+        
+        # copy the installed software to the final bin location
+        try:
+            # copy to the install folder
+            shutil.copy(os.path.join(tempfolder, diamond_exe), final_install_folder)
+            # add executable permissions
+            os.chmod(os.path.join(final_install_folder,diamond_exe), 0o755)
+        except (EnvironmentError, shutil.Error):
+            error_during_install=True
+            
+        # remove the local diamond install
+        try:
+            shutil.rmtree(tempfolder)
+        except EnvironmentError:
+            print("Warning: Unable to remove temp install folder.")
+        
+        if error_during_install:
+            print("Warning: Unable to install diamond. Please install diamond.")
+        else:
+            print("Installed diamond at "+final_install_folder)
+    else:
+        print("Found diamond install.")
+        
+        
+def install_bowtie2(final_install_folder, replace_install=None):
+    """ 
+    Download and install the bowtie2 software if not already installed
+    """
+    
+    # Check if bowtie2 is already installed
+    bowtie2_installed=find_exe_in_path("bowtie2")
+    
+    if not bowtie2_installed or replace_install:
+        bowtie2_exe="bowtie2"
+        bowtie2_file="bowtie2-2.2.3-linux-x86_64.zip"
+        bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip"
+
+        # if this is a MAC OS, select a different binary download
+        if sys.platform in ["darwin","os2","os2emx"]:
+            bowtie2_file="bowtie2-2.2.3-macos-x86_64.zip"
+            bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip"
+            
+        bowtie2_folder="bowtie2-2.2.3"
+    
+        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))
+        tempfolder=tempfile.mkdtemp(prefix="bowtie2_download_",dir=humann2_source_folder)
+
+        # install the bowtie2 software
+        print("Installing bowtie2.")
+        error_during_install=False
+        download_unpack_zip(bowtie2_url, bowtie2_file, tempfolder, bowtie2_exe)
+        
+        # copy the installed software to the final bin location
+        # copy all bowtie2* executables
+        fullpath_bowtie2_exe=os.path.join(tempfolder, bowtie2_folder)
+        
+        files=[]
+        try:
+            files=os.listdir(fullpath_bowtie2_exe)
+        except EnvironmentError:
+            print("Warning: Bowtie2 files not found.")
+            error_during_install=True
+        
+        for file in files:  
+            # check if this file is one of the bowtie2* executables      
+            if re.match(bowtie2_exe,file):  
+                try:   
+                    # copy to the install folder
+                    shutil.copy(os.path.join(fullpath_bowtie2_exe,file), final_install_folder)
+                    # add executable permissions
+                    os.chmod(os.path.join(final_install_folder,file), 0o755)
+                except (EnvironmentError, shutil.Error):
+                    error_during_install=True
+            
+        # remove the local bowtie2 install
+        try:
+            shutil.rmtree(tempfolder)
+        except EnvironmentError:
+            print("Warning: Unable to remove temp install folder.")
+        
+        if error_during_install:
+            print("Warning: Unable to install bowtie2. Please install bowtie2.")
+        else:
+            print("Installed bowtie2 at "+final_install_folder)
+    else:
+        print("Found bowtie2 install.")
+
+        
 class Install(_install):
     """
     Custom setuptools install command, set executable permissions for glpk
     """
     
+    _install.user_options=_install.user_options+[('bypass-dependencies-install', 
+        None, 'bypass install of dependencies')]
+    
     def initialize_options(self):
+        self.bypass_dependencies_install=False
         _install.initialize_options(self)
     
     def finalize_options(self):
         _install.finalize_options(self)
     
     def run(self):
+        # install minpath if not already installed
+        install_minpath(replace_install=False,update_glpk=True)
+        
         _install.do_egg_install(self)
         
         # find the current install folder
@@ -197,6 +398,13 @@ class Install(_install):
                     os.chmod(file,0o755)
                 except EnvironmentError:
                     print("Unable to add execute permissions for file: " + file)
+        
+        # install dependencies if not already installed
+        if not self.bypass_dependencies_install:
+            install_diamond(self.install_scripts,replace_install=False)
+            install_bowtie2(self.install_scripts,replace_install=False)
+        else:
+            print("Bypass install of dependencies")
         
     
 setuptools.setup(
