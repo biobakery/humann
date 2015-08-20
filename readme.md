@@ -2,7 +2,7 @@
 
 ----
 
- * Download the HUMAnN2 software ( [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz) ) then follow the [steps to install and run](#markdown-header-getting-started-with-humann2).
+ * Download the HUMAnN2 software ( [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz) ) then follow the [steps to install and run](#markdown-header-getting-started-with-humann2).
 
  * For additional information, please see the [HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual).
 
@@ -56,9 +56,9 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 Before installing HUMAnN2, please download the software listed in the [Requirements](#markdown-header-requirements) section. You can place the software in your $PATH or provide the locations of the software with optional arguments when running HUMAnN2. For example, the location of the Bowtie2 software ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
 
 1. Download and unpack the HUMAnN2 software
-    * Download the software: [humann2_v0.2.2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
-    * `` $ tar zxvf humann2_v0.2.2.tar.gz ``
-    * `` $ cd humann2_v0.2.2 ``
+    * Download the software: [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
+    * `` $ tar zxvf humann2.tar.gz ``
+    * `` $ cd humann2 ``
 2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
     * `` $ python setup.py minpath ``
     * If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
@@ -73,9 +73,11 @@ Before installing HUMAnN2, please download the software listed in the [Requireme
 6. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB)
     * ``$ humann2_databases --download chocophlan full $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
+    * This command will update the HUMAnN2 configuration file, storing the location you have selected for the ChocoPhlAn database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--nucleotide-database $DIR" when running HUMAnN2.
 7. Download the UniRef database to $DIR (approx. size = 2.8 GB)
     * ``$ humann2_databases --download uniref diamond $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
+    * This command will update the HUMAnN2 configuration file, storing the location you have selected for the UniRef database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--protein-database $DIR" when running HUMAnN2.
 
 
 ### How to Run ###
