@@ -10,7 +10,15 @@
 * Added gap filling
 * Added automated install of dependencies (bowtie2 and diamond)
 * Added alert for user when running with demo databases and non-demo input file
+* Added new option "--names {ko,metacyc-pwy,uniref50}" to humann2_rename_table
+* Added new option "--groups {uniref50_ko,uniref50_go,uniref50_ec,uniref50_rxn}" to humann2_regroup_table
 * Added new option "--output-max-decimals" to set the number of decimals written to the output files
+
+### Interface Changes ###
+
+* The default mapping file format for humann2_regroup_table has been reversed (it is now features to groups)
+* The humann2_rename_table option for a custom mapping file was changed from "--names" to "--custom"
+* The humann2_regroup_table option for a custom mapping file was changed from "--groups" to "--custom" 
 
 ### Bug Fixes ###
 
