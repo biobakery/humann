@@ -56,7 +56,7 @@ import zipfile
 import tempfile
 import re
 
-VERSION = "0.2.2"
+VERSION = "0.3.0"
 
 def download(url, download_file):
     """
