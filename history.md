@@ -10,6 +10,7 @@
 * Added gap filling
 * Added automated install of dependencies (bowtie2 and diamond)
 * Added alert for user when running with demo databases and non-demo input file
+* Added new option "--output-max-decimals" to set the number of decimals written to the output files
 
 ### Bug Fixes ###
 

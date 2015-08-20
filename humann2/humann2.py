@@ -248,6 +248,13 @@ def parse_arguments(args):
         default=config.output_format,
         choices=config.output_format_choices)
     parser.add_argument(
+        "--output-max-decimals",
+        help="the number of decimals to output\n[DEFAULT: " +
+        str(config.output_max_decimals) + "]",
+        metavar="<" + str(config.output_max_decimals) + ">", 
+        type=int,
+        default=config.output_max_decimals)
+    parser.add_argument(
         "--output-basename",
         help="the basename for the output files\n[DEFAULT: " +
         "input file basename]",
@@ -378,6 +385,9 @@ def update_configuration(args):
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.identity_threshold=args.identity_threshold
+    
+    # Update the max decimals output
+    config.output_max_decimals=args.output_max_decimals
     
     # Update memory use
     config.memory_use=args.memory_use

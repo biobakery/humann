@@ -1014,8 +1014,8 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--id-mapping <id_mapping.tsv>]
                [--translated-alignment {usearch,rapsearch,diamond}]
                [--xipe {on,off}] [--minpath {on,off}] [--pick-frames {on,off}]
-               [--output-format {tsv,biom}] [--output-basename <sample_name>]
-               [--remove-stratified-output]
+               [--output-format {tsv,biom}] [--output-max-decimals <10>]
+               [--output-basename <sample_name>] [--remove-stratified-output]
                [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
                [--pathways-database <pathways_database.tsv>]
                [--pathways {metacyc,unipathway}]
@@ -1104,6 +1104,9 @@ optional arguments:
   --output-format {tsv,biom}
                         the format of the output files
                         [DEFAULT: tsv]
+  --output-max-decimals <10>
+                        the number of decimals to output
+                        [DEFAULT: 10]
   --output-basename <sample_name>
                         the basename for the output files
                         [DEFAULT: input file basename]
