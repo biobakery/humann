@@ -64,7 +64,7 @@ Before installing HUMAnN2, please download and install [MetaPhlAn2](http://hutte
     * `` $ cd humann2 ``
 3. Install the HUMAnN2 software
     * `` $ python setup.py install ``
-    * This command will automatically install MinPath (and new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
+    * This command will automatically install MinPath (and a new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
     * To bypass the install of Bowtie2 and Diamond, add the option "--bypass-dependencies-install" to the install command.
     * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 4. Test the HUMAnN2 install (Optional)
