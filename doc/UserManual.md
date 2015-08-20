@@ -701,9 +701,9 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 `` $ humann2_rename_table --input $TABLE --names $NAMES --output $TABLE2 ``
 
 *   $TABLE = gene/pathway table (tsv format)
-*   $NAMES = mapping of feature IDs to english names (tsv format)
+*   $NAMES = feature type to be renamed (run with "-h" to see included options)
 *   $TABLE2 = gene/pathway table with new names attached
-*   Note: A mapping of UniRef50 IDs to english names is provided with HUMAnN2
+*   Run with "-h" to see additional command line options
 
 #### 4.  Renormalize table ####
 
@@ -718,8 +718,9 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 `` $ humann2_regroup_table --input $TABLE --groups $GROUPS --output $TABLE2 ``
 
 *   $TABLE = gene/pathway table (tsv format)
-*   $GROUPS = mapping of features to superfeatures (.tsv or .tsv.gz format)
+*   $GROUPS = options for regrouping table features (ex. uniref50 to metacyc reaction)
 *   $TABLE2 = regrouped gene/pathway table
+*   Run with "-h" to see additional command line options
 
 #### 6.  Combine metagenomic and metatranscriptomic sequencing data ####
 
@@ -935,13 +936,18 @@ PWY-4	A	B	C	D	E
 
 HUMAnN2 gene families output can contain a very large number of features depending on the complexity of your underlying sample. One way to explore this information in a simplified manner is via HUMAnN2's own pathway coverage and abundance, which summarize the values of their member genes. However, this approach does not apply to gene families that are not associated with metabolic pathways.
 
-To further simplify the exploration of gene family abundance data, users can regroup gene families into other functional categories using the included ``regroup_table`` utility script. This script takes as arguments a gene family abundance table and a mapping (groups) file that indicates which gene families belong to which groups. Several example files are included in the HUMAnN2 data/misc directory:
+To further simplify the exploration of gene family abundance data, users can regroup gene families into other functional categories using the included ``regroup_table`` utility script. This script takes as arguments a gene family abundance table and a mapping (groups) file that indicates which gene families belong to which groups. Several grouping systems are included by default with HUMAnN2 and can be selected using the ``--groups`` flag:
 
-*   ``map_ec_uniref50.txt.gz``: Maps from enzyme commission (EC) categories to UniRef50 gene families. These associations are inferred from UniProt's protein annotation data. Note: HUMAnN2 uses EC annotations to map gene families to individual MetaCyc reactions (which are then further mapped to pathways). Examining gene family abundance grouped by EC annotation thus provides an intermediate level of resolution between gene families and pathways.
-*   ``map_ko_uniref50.txt.gz``: Maps from KEGG Orthogroups (KOs) to UniRef50 gene families. These associations are inferred from UniProts ID mapping resources.
-*   ``map_infogo100_uniref50.txt.gz``: Maps from a subset of Gene Ontology (GO) categories to UniRef50 gene families. These associations are inferred from UniProt.
+*   ``uniref50_ec``: Collapses UniRef50 gene families into top level enzyme commission (EC) categories. These associations are inferred from UniProt. 
+*   ``uniref50_rxn``: Collapses UniRef50 gene families into metacyc reactions. Note: HUMAnN2 uses reaction abundances to compute the abundance and coverage of broader metabolic pathways. Reactions thus provide an intermediate level of resolution between gene families and pathways.
+*   ``uniref50_ko``: Collapses UniRef50 gene fammilies into KEGG Orthogroups (KOs). These associations are inferred from UniProt.
+*   ``uniref50_go``: Collapses UniRef50 gene families into a subset of non-redundant, high-level Gene Ontology (GO) categories. These associations are inferred from UniProt and a HUMAnN2-specific parsing of the GO hierarchy.
 
-Users are free to create and use additional mapping files. Note that, by default, gene family abundances are summed to produce group abundances, consistent with gene families following "is_a" relationships with their groups. Users can also request to average over gene family abundances, consistent with gene families following "part_of" relationships with their groups.
+Users are free to create and use additional mapping files. By default, feature abundances (such as gene families) are summed to produce group abundances. This is based on the logic that features are instances of particular groups (for example, "Apples" and "Oranges" are instances of the group "Fruits"; 1 Apple and 1 Orange represent 2 Fruits). It is also possible to compute the mean feature abundance over groups, which may be more appropriate in cases where an instance of a group contributes instances of its member features (for example, a pathway that is defined by the presence of a set of reactions).
+
+After regrouping features, users may wish to renormalize the resulting table using the ``humann2_renorm_table`` script. This allows users to investigate the relative abundance of their groups of interest, discounting the abundance of features that did not map to a group.
+
+Some groups are not associated by default with human-readable names. To attach names to a regrouped table, use the ``humann2_rename_table`` script. Built-in options are included for renaming tables of UniRef50 gene families, MetaCyc reactions and pathways, KEGG Orthogroups, and top-level EC categories.
 
 ### Analyzing Metatranscriptomes ###
 
