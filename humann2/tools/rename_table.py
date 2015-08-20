@@ -23,6 +23,10 @@ c_default_names = {
         os.path.join( p_root, "data", "misc", "map_uniref50_name.txt.gz" ) ),
     "ko": Names(
         os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
+    "ec": Names(
+        os.path.join( p_root, "data", "misc", "map_ec_name.txt.gz" ) ),
+    "metacyc-rxn": Names(
+        os.path.join( p_root, "data", "misc", "map_metacyc-rxn_name.txt.gz" ) ),    
     "metacyc-pwy": Names(
         os.path.join( p_root, "data", "misc", "map_metacyc-pwy_name.txt.gz" ) ),
     }

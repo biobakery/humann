@@ -100,7 +100,8 @@ c_strat_delim = "|"
 c_name_delim = ": "
 c_multiname_delim = ";"
 c_str_unknown = "NO_NAME"
-c_many_bytes = 1e7
+c_many_bytes = 1e8
+c_zip_multiplier = 10
 
 class Table ( ):
 
@@ -147,7 +148,8 @@ class Table ( ):
             writer.writerow( [self.rowheads[i]] + values )
 
 def size_warn( path ):
-    if os.path.getsize( path ) > c_many_bytes:
+    m = 1 if ".gz" not in path else c_zip_multiplier
+    if m * os.path.getsize( path ) > c_many_bytes:
         print( "This is a large file, one moment please...", file=sys.stderr )
 
 def try_zip_open( path, *args ):
