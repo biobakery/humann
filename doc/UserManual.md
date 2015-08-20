@@ -164,10 +164,10 @@ When using the "--resume" option, the following steps will be bypassed if they h
 ### Software ###
 
 1. [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
-2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2)
-3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
+2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2) (automatically installed)
+3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 2.7)
-5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically downloaded/installed)
+5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically installed)
 6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
 7. [Rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (only required if using rapsearch2 for translated search)
 8. [Usearch](http://www.drive5.com/usearch/) (version >= 7.0) (only required if using usearch for translated search)
@@ -214,15 +214,11 @@ Option 2: Development Version
 
     * ``$ cd $HUMAnN2_PATH `` 
 
-2. Install MinPath
-
-    * ``$ python setup.py minpath ``
-    * If you would like to update the glpk required by MinPath, add the option ``--update-glpk`` to the MinPath install command.
-    * The glpk update is required if you are running on Mac OS and it will require gcc and make.
-    
-3. Install HUMAnN2
+2. Install HUMAnN2
 
     * ``$ python setup.py install ``
+    * This command will automatically install MinPath (and new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
+    * To bypass the install of Bowtie2 and Diamond, add the option "--bypass-dependencies-install" to the install command. 
     * If you do not have write permissions to '/usr/lib/', then add the option ``--user`` to the install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 
 

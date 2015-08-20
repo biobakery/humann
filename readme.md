@@ -43,27 +43,29 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 ### Requirements ###
 
 1.  [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2)
-2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1)
-3.  [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3)
-4.  [Python](http://www.python.org/) (version >= 2.7)
-5.  Memory (>= 16 GB)
-6.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
-7.  Operating system (Linux or Mac)
+2.  [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (version >= 2.1) (see NOTE)
+3.  [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.7.3) (see NOTE)
+4.  [MinPath](http://omics.informatics.indiana.edu/MinPath/) (see NOTE)
+5.  [Python](http://www.python.org/) (version >= 2.7)
+6.  Memory (>= 16 GB)
+7.  Disk space (>= 10 GB [to accommodate comprehensive sequence databases])
+8.  Operating system (Linux or Mac)
+
+NOTE: Bowtie2, Diamond, and MinPath are automatically installed when installing HUMAnN2. 
 
 
 ### Installation ###
 
-Before installing HUMAnN2, please download the software listed in the [Requirements](#markdown-header-requirements) section. You can place the software in your $PATH or provide the locations of the software with optional arguments when running HUMAnN2. For example, the location of the Bowtie2 software ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
+Before installing HUMAnN2, please download and install [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2). You can then add the MetaPhlAn2 folder to your $PATH or you can provide its location when running HUMAnN2 with the option "--metaphlan $DIR" (replacing $DIR with the full path to the MetaPhlAn2 folder). Bowtie2, Diamond, and Minpath will be automatically installed when you install HUMAnN2. 
 
 1. Download and unpack the HUMAnN2 software
     * Download the software: [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.2.2.tar.gz)
     * `` $ tar zxvf humann2.tar.gz ``
     * `` $ cd humann2 ``
-2. From the HUMAnN2 directory, install [MinPath](http://omics.informatics.indiana.edu/MinPath/)
-    * `` $ python setup.py minpath ``
-    * If you are running on Mac OS, please provide the option "--update-glpk" to update glpk required by MinPath. This update is required on Mac OS but optional on Linux. Please note this option requires gcc and make.
 3. Install the HUMAnN2 software
     * `` $ python setup.py install ``
+    * This command will automatically install MinPath (and new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
+    * To bypass the install of Bowtie2 and Diamond, add the option "--bypass-dependencies-install" to the install command.
     * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 4. Test the HUMAnN2 install (Optional)
      * `` $ python setup.py test``
