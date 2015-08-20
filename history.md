@@ -3,7 +3,7 @@
 
 ## v0.3.0 08-20-2015 ##
 
-## New Features ##
+### New Features ###
 
 * Updated databases to MetaCyc v19.1
 * Added UniProt TrEMBL data to reactions mappings
@@ -11,11 +11,11 @@
 * Added automated install of dependencies (bowtie2 and diamond)
 * Added alert for user when running with demo databases and non-demo input file
 
-## Bug Fixes ##
+### Bug Fixes ###
 
 * Updated fastq to fasta function to allow for "@" (special fastq character) at beginning of quality score lines
 
-## Cross Platform Compatibility Updates ##
+### Cross Platform Compatibility Updates ###
 
 * Updated humann2_join_table to ignore dot files (ie .DS_Store on Apple OS X)
 
@@ -75,7 +75,7 @@
 * Updated download script to pull new ChocoPhlAn version
 * Added humann2_reduce_table script
 
-## Performance Updates ###
+### Performance Updates ###
 
 * Reduced memory and increased speed for humann2_join_tables script
 
