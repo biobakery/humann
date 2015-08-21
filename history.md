@@ -5,9 +5,10 @@
 
 ### New Features ###
 
-* Updated databases to MetaCyc v19.1
-* Added UniProt TrEMBL data to reactions mappings
-* Added gap filling
+* Improvements to structured pathway quantification identify more pathways  
+    * Updated databases to MetaCyc v19.1
+    * Added UniProt TrEMBL data to reactions mappings
+    * Added gap filling
 * Added automated install of dependencies (bowtie2 and diamond)
 * Added alert for user when running with demo databases and non-demo input file
 * Added new option "--names {ko,metacyc-pwy,uniref50}" to humann2_rename_table
@@ -16,7 +17,7 @@
 
 ### Interface Changes ###
 
-* The default mapping file format for humann2_regroup_table has been reversed (it is now features to groups)
+* The default mapping file format for humann2_regroup_table has been reversed (it is now groups to features)
 * The humann2_rename_table option for a custom mapping file was changed from "--names" to "--custom"
 * The humann2_regroup_table option for a custom mapping file was changed from "--groups" to "--custom" 
 
