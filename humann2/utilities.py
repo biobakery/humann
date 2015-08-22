@@ -898,7 +898,7 @@ def fastq_to_fasta(file, apply_pick_frames=None):
             
             sequence_id=line.replace("@",">",1)
             sequence=""
-        elif re.search("^[A-Z|a-z]+$", line):
+        elif re.search("^[A|a|T|t|G|g|C|c|N|n]+$", line):
             sequence+=line.rstrip()
         line=file_handle_read.readline()
         
