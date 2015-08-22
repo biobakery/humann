@@ -55,8 +55,47 @@ import shutil
 import zipfile
 import tempfile
 import re
+import time
 
 VERSION = "0.3.0"
+
+def byte_to_megabyte(byte):
+    """
+    Convert byte value to megabyte
+    """
+    
+    return byte / (1024.0**2)
+
+class ReportHook():
+    def __init__(self):
+        self.start_time=time.time()
+        
+    def report(self, blocknum, block_size, total_size):
+        """
+        Print download progress message
+        """
+        
+        if blocknum == 0:
+            self.start_time=time.time()
+            if total_size > 0:
+                print("Downloading file of size: " + "{:.2f}".format(byte_to_megabyte(total_size)) + " MB\n")
+        else:
+            total_downloaded=blocknum*block_size
+            status = "{:3.2f} MB ".format(byte_to_megabyte(total_downloaded))
+                    
+            if total_size > 0:
+                percent_downloaded=total_downloaded * 100.0 / total_size
+                # use carriage return plus sys.stdout to overwrite stdout
+                download_rate=total_downloaded/(time.time()-self.start_time)
+                estimated_time=(total_size-total_downloaded)/download_rate
+                estimated_minutes=int(estimated_time/60.0)
+                estimated_seconds=estimated_time-estimated_minutes*60.0
+                status +="{:3.2f}".format(percent_downloaded) + " %  " + \
+                    "{:5.2f}".format(byte_to_megabyte(download_rate)) + " MB/sec " + \
+                    "{:2.0f}".format(estimated_minutes) + " min " + \
+                    "{:2.0f}".format(estimated_seconds) + " sec "
+            status+="        \r"
+            sys.stdout.write(status)
 
 def download(url, download_file):
     """
@@ -65,7 +104,7 @@ def download(url, download_file):
 
     try:
         print("Downloading "+url)
-        file, headers = urllib.urlretrieve(url,download_file)
+        file, headers = urllib.urlretrieve(url,download_file,reporthook=ReportHook().report)
     except EnvironmentError:
         print("Warning: Unable to download "+url)
     
@@ -241,10 +280,39 @@ def find_exe_in_path(exe):
         fullexe = os.path.join(path,exe)
         if os.path.exists(fullexe):
             if os.access(fullexe,os.X_OK):
-                return True
-    return False
+                return path
+    return None
+
+def install_boost(folder):
+    """ Install boost locally in folder indicated
+    """
+
+    boost_file="boost_1_57_0.tar.gz"
+    boost_url="http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz"
+
+    print("Installing boost.")
+    download_unpack_tar(boost_url, boost_file, folder, "boost")
+
+    # get current working directory
+    current_working_directory=os.getcwd()
+    boost_build_dir=os.path.join(folder,"boost_1_57_0")
+
+    try:
+        os.chdir(boost_build_dir)
+    except EnvironmentError:
+        print("Warning: boost directory does not exist")
+
+    try:
+        subprocess.call(["./bootstrap.sh","--with-libraries=timer,chrono,system,program_options,thread,iostreams","--prefix=../boost"])
+        subprocess.call(["./b2","install"])
+    except (EnvironmentError,subprocess.CalledProcessError):
+        print("Warning: Errors installing boost.")
+
+    # return to original working directory
+    os.chdir(current_working_directory)
+
         
-def install_diamond(final_install_folder, replace_install=None):
+def install_diamond(final_install_folder, build, replace_install=None):
     """ 
     Download and install the diamond software if not already installed
     """
@@ -256,8 +324,13 @@ def install_diamond(final_install_folder, replace_install=None):
         diamond_exe="diamond"
         diamond_file="diamond-linux64.tar.gz"
         diamond_url="http://github.com/bbuchfink/diamond/releases/download/v0.7.9/diamond-linux64.tar.gz"
+        
+        # download source if build selected
+        if build:
+            diamond_file="v0.7.9.tar.gz"
+            diamond_url="http://github.com/bbuchfink/diamond/archive/v0.7.9.tar.gz"
 
-        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))
+        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
         tempfolder=tempfile.mkdtemp(prefix="diamond_download_",dir=humann2_source_folder)
         
         # install the diamond software
@@ -265,10 +338,50 @@ def install_diamond(final_install_folder, replace_install=None):
         error_during_install=False
         download_unpack_tar(diamond_url, diamond_file, tempfolder, diamond_exe)
         
+        # compile diamond if build selected
+        if build:
+            # get the current directory
+            current_working_directory=os.getcwd()
+            diamond_build_dir=os.path.join(tempfolder,"diamond-0.7.9","src")
+            
+            try:
+                os.chdir(diamond_build_dir)
+            except EnvironmentError:
+                print("Warning: diamond directory does not exist")
+                
+            # test for gcc
+            try:
+                subprocess_output=subprocess.check_output(["gcc","--version"])
+            except (EnvironmentError,subprocess.CalledProcessError):
+                print("Warning: Please install gcc.")
+                
+            # test for make
+            try:
+                subprocess_output=subprocess.check_output(["make","--version"])
+            except (EnvironmentError,subprocess.CalledProcessError):
+                print("Warning: Please install make.")
+                
+            # install boost
+            install_boost(diamond_build_dir)
+                
+            try:
+                # run make
+                subprocess.call(["make"])
+            except (EnvironmentError,subprocess.CalledProcessError):
+                print("Warning: Errors installing diamond.")
+                error_during_install=True
+            
+            # return to original working directory
+            os.chdir(current_working_directory)
+            
+            diamond_exe_full_path=os.path.join(tempfolder,"diamond-0.7.9","bin",diamond_exe)
+        else:
+            diamond_exe_full_path=os.path.join(tempfolder, diamond_exe)
+            
         # copy the installed software to the final bin location
         try:
             # copy to the install folder
-            shutil.copy(os.path.join(tempfolder, diamond_exe), final_install_folder)
+            shutil.copy(diamond_exe_full_path, final_install_folder)
             # add executable permissions
             os.chmod(os.path.join(final_install_folder,diamond_exe), 0o755)
         except (EnvironmentError, shutil.Error):
@@ -285,10 +398,10 @@ def install_diamond(final_install_folder, replace_install=None):
         else:
             print("Installed diamond at "+final_install_folder)
     else:
-        print("Found diamond install.")
+        print("Found diamond install at "+diamond_installed)
         
         
-def install_bowtie2(final_install_folder, replace_install=None):
+def install_bowtie2(final_install_folder, mac_os, replace_install=None):
     """ 
     Download and install the bowtie2 software if not already installed
     """
@@ -302,7 +415,7 @@ def install_bowtie2(final_install_folder, replace_install=None):
         bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip"
 
         # if this is a MAC OS, select a different binary download
-        if sys.platform in ["darwin","os2","os2emx"]:
+        if mac_os:
             bowtie2_file="bowtie2-2.2.3-macos-x86_64.zip"
             bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip"
             
@@ -349,7 +462,7 @@ def install_bowtie2(final_install_folder, replace_install=None):
         else:
             print("Installed bowtie2 at "+final_install_folder)
     else:
-        print("Found bowtie2 install.")
+        print("Found bowtie2 install at "+bowtie2_installed)
 
         
 class Install(_install):
@@ -358,10 +471,11 @@ class Install(_install):
     """
     
     _install.user_options=_install.user_options+[('bypass-dependencies-install', 
-        None, 'bypass install of dependencies')]
+        None, 'bypass install of dependencies'),('build-diamond',None,'build diamond')]
     
     def initialize_options(self):
         self.bypass_dependencies_install=False
+        self.build_diamond=False
         _install.initialize_options(self)
     
     def finalize_options(self):
@@ -398,11 +512,21 @@ class Install(_install):
                     os.chmod(file,0o755)
                 except EnvironmentError:
                     print("Unable to add execute permissions for file: " + file)
+                    
+        # find out the platform
+        mac_os=False
+        if sys.platform in ["darwin","os2","os2emx"]:
+            mac_os=True
         
         # install dependencies if not already installed
         if not self.bypass_dependencies_install:
-            install_diamond(self.install_scripts,replace_install=False)
-            install_bowtie2(self.install_scripts,replace_install=False)
+            # build diamond if set, or if on a Mac
+            build_diamond=self.build_diamond
+            if mac_os:
+                build_diamond=True
+                
+            install_diamond(self.install_scripts,build_diamond,replace_install=False)
+            install_bowtie2(self.install_scripts,mac_os,replace_install=False)
         else:
             print("Bypass install of dependencies")
         
