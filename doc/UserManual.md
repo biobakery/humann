@@ -269,18 +269,18 @@ If you have already installed HUMAnN2, using the [Initial Installation](#markdow
 1. [Download HUMAnN2](#markdown-header-1-download-humann2)
 2. [Install HUMAnN2](#markdown-header-2-install-humann2)
 
-Since you have already downloaded the databases in the initial installation, you do not need to download the databases again unless there are new versions available.
-However, you will want to update your latest HUMAnN2 install to point to the databases you have downloaded as by default the new install configuration will point to the demo databases.
+Since you have already downloaded the databases in the initial installation, you do not need to download the databases again unless there are new versions available. However, you will want to update your latest HUMAnN2 install to point to the databases you have downloaded as by default the new install configuration will point to the demo databases.
+
 
 To update your HUMAnN2 configuration file to include the locations of your downloaded databases, please use the following steps.
 
-1. Update the location of the ChocoPhlAn database ($INSTALL_LOCATION)
+1. Update the location of the ChocoPhlAn database (replacing $DIR with the full path to the directory containing the ChocoPhlAn database)
 
-    ``$ humann2_config --update database_folders nucleotide $INSTALL_LOCATION ``
+    ``$ humann2_config --update database_folders nucleotide $DIR ``
 
-2. Update the location of the UniRef database ($INSTALL_LOCATION)
+2. Update the location of the UniRef database (replacing $DIR with the full path to the directory containing the UniRef database)
 
-    ``$ humann2_config --update database_folders protein $INSTALL_LOCATION ``
+    ``$ humann2_config --update database_folders protein $DIR ``
 
 Please note, after a new installation, all of the settings in the configuration file, like the database folders, will be reset to the defaults. If you have any additional settings that differ from the defaults, please update them at this time.
 
