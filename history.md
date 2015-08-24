@@ -1,6 +1,16 @@
 
 # HUMAnN2 History #
 
+## v0.3.1 08-24-2015 ##
+
+### Cross Platform Compatibility Updates ###
+
+* Added new option "--build-diamond" to the install (the default for Mac OS is to build diamond)
+
+### Bug Fixes ###
+
+* Updated the fastq to fasta function to allow for quality score lines that are similar to sequence lines (ie all alphabetical characters)
+
 ## v0.3.0 08-20-2015 ##
 
 ### New Features ###
