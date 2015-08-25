@@ -203,6 +203,9 @@ def main():
             gene_tables.append(new_file)
         else:
             gene_tables.append(os.path.join(input_dir,file))
+            
+    # sort the gene tables so they are in the same order on all platforms
+    gene_tables.sort()
         
     # split the gene table
     if gene_tables:
