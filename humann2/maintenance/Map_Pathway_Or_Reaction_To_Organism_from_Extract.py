@@ -10,12 +10,26 @@ import tempfile
 #********************************************************************************************
 #   Map pathway to Organism                                                                 *
 #                                                                                           *
+#   This program creates extracts of the form: Pathway-->[Organism,Organism]                *
+#   OR                                                                                      *
+#   Reaction --> [Organism, Organism]                                                       *
+#                                                                                           *
+#   Depending whether the input extract is from patwhays.dat or reactions.dat               *
+#   (See details below) -  but the important item is that the program is the SAME, and      *
+#   no need to change a parm,  just point it to the reactions or pathways extract           *
+#                                                                                           *
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:                                                                    *
 #  ---------------------                                                                    *
-#   python Map_Pathway_TO_Organism_from_Extract.py                                                       *
+#   python Map_Pathway_Or_Reaction_To_Organism_from_Extract.py                              *
 #    --i  organisms_pathways_extract \                                                      *                                                    
 #   --o mapping_patwhays_to_organisms                                                       *
+#                                                                                           *
+#   OR,  for the reactions file                                                             *
+#                                                                                           *
+# python Map_Pathway_Or_Reaction_To_Organism_from_Extract.py                                *
+#    --i  organisms_reactions_extract \                                                     *                                                    
+#   --o mapping_reactions_to_organisms                                                      *
 #  NOTES and EXPLANATIONS                                                                   *
 #  ----------------------                                                                   *
 #  The program runs against the entire download of the metacyc database which is 58Gb in    *
@@ -26,7 +40,7 @@ import tempfile
 #                                                                                           *
 #  Therefore, before this program is run,  one must extract these entries and that is done  *
 #      via the command (Ran in the root directory of the metacyc directories)               *
-#   egrep -r --include "pathways.dat" '# Species:|UNIQUE-ID'  .>output_extract              *
+#   egrep -r --include "pathways.dat" '# Species:|UNIQUE-ID'  .>pathways_output_extract     *
 #  The file output_extract  is going to be the input of this program                        *
 #                                                                                           *
 #  Sample entries of that input file look as follows                                        *
@@ -34,12 +48,24 @@ import tempfile
 #./bbro1208658cyc/pathways.dat:UNIQUE-ID - PWY-7411                                         *
 #./bbro1208658cyc/pathways.dat:UNIQUE-ID - PWY-6118                                         *
 #                                                                                           *
-#  Note - We could have suppressed the file name at the beginning with the -h flag of egrep *
-#      but left it for easier QC in the future                                              *                      
+# <<<<<<<<<<<<<<   NOTE   >>>>>>>>>>>>>>>>>>>>>>>                                           *
+#  For the REACTIONS to Organisms file,  one must create the extract as follows             *
+#                                                                                           *
+#   egrep -r --include "reactions.dat" '# Species:|UNIQUE-ID'  .>reactions_output_extract   *
+#                                                                                           *
+#  and use the output of that command (reactions_output_extract) as input to this program   *
+#  as follows:                                                                              *
+#                                                                                           *
+# python Map_Pathway_Or_Reaction_To_Organism_from_Extract.py                                *
+#    --i  organisms_reactions_extract \                                                     *                                                    
+#   --o mapping_reactions_to_organisms                                                      *                   
 #                                                                                           *
 #                                                                                           *
+# <<<<<<<<<<<<<<   NOTE   >>>>>>>>>>>>>>>>>>>>>>>                                           *
 #                                                                                           *
-#   Written by George Weingart - george.weingart@gmail.com   8/5/2015                       *  
+#   Written by George Weingart - george.weingart@gmail.com   8/5/2015                       * 
+#   Modified on 8/24/15 to use the same program to creat the reactions ->Organisms          *
+#   (The program did not change - just the documentation                                    * 
 #                                                                                           *
 #********************************************************************************************
 

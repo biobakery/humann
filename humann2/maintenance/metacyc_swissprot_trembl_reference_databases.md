@@ -1,7 +1,7 @@
 ---
 title: "humann2 hutlab MetaCyc, UniProtKB/Swissprot and UniProtKB/TrEMBL reference databases "
 author: "George_Weingart"
-date: "Monday, August 17, 2015"
+date: " August 25, 2015"
 output: pdf_document
 ---
 This document defines the hutlab Metacyc, Swissprot and TrEMBL reference databases,  their current location and the jobs to built them.
@@ -9,16 +9,21 @@ This document defines the hutlab Metacyc, Swissprot and TrEMBL reference databas
 
 # Summary of the reference databases
 
-We have generated two reference databases:
+We have generated a few reference databases:
 
 1. Reaction  --> [Uniref50/90,Uniref50/90, ..... , Uniref50/90] 
 2. Pathway  --> [Organism, Organism, ....., Organism]
+3. Reaction --> [Organism, Organism, ....., Organism]
+
+# Location of reference databases
+
+  /n/huttenhower_lab_nobackup/downloads/metacyc/19.1_metacyc_swissprot_trembl_reference_files
  
 In order to generate these reference databases, we use data both from MetCyc and from UniprotKB.
-Once the data from MetaCyc and UniprotKB is downloaded,  we use two programs to generate the reference databases:
+Once the data from MetaCyc and UniprotKB is downloaded,  we use the following programs to generate the reference databases:
 
 1. Reaction_to_Uniref5090.py
-2. Map_Pathway_To_Organism.py
+2. Map_Pathway_Or_Reaction_To_Organism_from_Extract.py
  
 # Download of the databses 
 
@@ -128,7 +133,7 @@ Please note that this dataset of files is **huge** (502 Gb)
     
      /n/huttenhower_lab_nobackup/downloads/metacyc/19.1_metacyc_swissprot_trembl_reference_files
     
-    ** Please Note **
+#  **Please Note **
     
     In order not to include Uniref90 references, please comment out the following 3 lines in the program Reaction_to_Uniref5090.py:
     
@@ -149,3 +154,83 @@ Please note that this dataset of files is **huge** (502 Gb)
       --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz 
        --o mapping_reactions_to_uniref50ONLY_swissprot_and_trembl
     ```
+
+
+
+# Generating the Pathways --> Organisms and the Reactions --> Organisms references
+
+## Procedure
+
+We use the Tier 1,2,3 metacyc data
+It consists of a very large directory (~5,000 subdirectories) where each sub-directory pertains to a different organism.
+In each organism,  there is a reactions.dat and a pathways.dat
+We use a grep command to extract,  for each organism,  the Organism name and the reactions or pathways name.
+We run the process separately, one time for reactions and one time for pathways
+
+
+  
+# Details
+                                                                                  
+The program Map_Pathway_Or_Reaction_To_Organism_from_Extract.py creates extracts of the form:
+
+  **Pathway-->[Organism,Organism]** 
+  
+ OR 
+ 
+ **Reaction --> [Organism, Organism]**   
+                                                                                    
+Depending whether the input extract is from patwhays.dat or reactions.dat            
+(See details below) -  but the important item is that the program is the SAME, and  
+no need to change a parm,  just point it to the reactions or pathways extract     
+
+#  Invoking the program:                                                              
+ 
+
+  python Map_Pathway_Or_Reaction_To_Organism_from_Extract.py                             
+  --i  organisms_pathways_extract \                                                                                                     
+ --o mapping_patwhays_to_organisms                                                      
+                                                                                      
+  OR,  **for the reactions file**                                                            
+                                                                                         
+
+python Map_Pathway_Or_Reaction_To_Organism_from_Extract.py      
+ --i  organisms_reactions_extract \                                               
+--o mapping_reactions_to_organisms
+
+Using the egrep extract for the reactions
+
+#  NOTES and EXPLANATIONS                                                      
+     
+
+The program **Map_Pathway_Or_Reaction_To_Organism_from_Extract.py** runs against the entire download of the metacyc database which is 58Gb in   
+its zipped version and 402Gb unzipped                                               
+That directory contains 5,000 directories                                                
+We look in each directory and extract from the pathways.dat member in each directory     
+the organism name and the pathways associated for that organism                      
+                                                                                          
+Therefore, before this program is run,  one must extract these entries and that is done  
+via the command (Ran in the root directory of the metacyc directories) 
+
+  **egrep -r --include "pathways.dat" '# Species:|UNIQUE-ID'  .>pathways_output_extract **    
+  
+  
+ The file output_extract  is going to be the input of this program                
+Sample entries of that input file look as follows                                      
+ ./bbro1208658cyc/pathways.dat:# Species: Bordetella bronchiseptica MO149                  
+ ./bbro1208658cyc/pathways.dat:UNIQUE-ID - PWY-7411                                        
+ ./bbro1208658cyc/pathways.dat:UNIQUE-ID - PWY-6118                                        
+                                                                                           
+#  <<<<<<<<<<<<<<   NOTE   >>>>>>>>>>>>>>>>>>>>>>>      
+
+For the REACTIONS to Organisms file,  one must create the extract as follows        
+                                                                                           
+   **egrep -r --include "reactions.dat" '# Species:|UNIQUE-ID'  .>reactions_output_extract  ** 
+                                                                                            
+  and use the output of that command (reactions_output_extract) as input to this program   
+   as follows:                                                                              
+                                                                                            
+ python Map_Pathway_Or_Reaction_To_Organism_from_Extract.py                                
+    --i  organisms_reactions_extract \                                                                                                         
+   --o mapping_reactions_to_organisms                                                                         
+                                                                                           
+ 
