@@ -90,3 +90,7 @@ genetable_file_bug_scores_id_mapping={
         "UniRef50_B0NLN0" : 5.26315789474 }
     }
 
+multi_sample_genefamilies = os.path.join(data_folder, "multi_sample_genefamilies.tsv")
+multi_sample_genefamilies_split1=os.path.join(data_folder, "multi_sample_genefamilies_sample1.tsv")
+multi_sample_genefamilies_split2=os.path.join(data_folder, "multi_sample_genefamilies_sample2.tsv")
+multi_sample_genefamilies_split_basename="multi_sample_genefamilies_"

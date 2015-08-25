@@ -1,12 +1,22 @@
 
 import os
-
-import cfg
+import shutil
 
 def remove_temp_file(file):
-    #if cfg.verbose:
-    #    print "\nRemove temp file: " + file
-    os.remove(file)
+    """ Remove a temp file """
+    
+    try:
+        os.remove(file)
+    except EnvironmentError:
+        print("Warning: Unable to remove temp file: " +file)
+        
+def remove_temp_folder(folder):
+    """ Remove a temp folder """
+    
+    try:
+        shutil.rmtree(folder)
+    except EnvironmentError:
+        print("Warning: Unable to remove temp folder: " +folder)
 
 def return_exe_path(exe):
     """

@@ -205,25 +205,28 @@ def main():
             gene_tables.append(os.path.join(input_dir,file))
         
     # split the gene table
-    if args.verbose:
-        print("Joining gene table")
-        
-    if biom_flag:
-        # create a new temp file
-        file_out, new_file=tempfile.mkstemp(dir=temp_dir)
-        os.close(file_out)
-        join_gene_tables(gene_tables,new_file)
-        util.tsv_to_biom(new_file, args.output)
-    else:
-        join_gene_tables(gene_tables,args.output,verbose=args.verbose)
-            
-    # deleting temp folder with all files
-    if biom_flag:
+    if gene_tables:
         if args.verbose:
-            print("Deleting temp files in temp folder: " + temp_dir)
-        shutil.rmtree(temp_dir)
-    
-    print("Gene table created: " + args.output)
+            print("Joining gene table")
+            
+        if biom_flag:
+            # create a new temp file
+            file_out, new_file=tempfile.mkstemp(dir=temp_dir)
+            os.close(file_out)
+            join_gene_tables(gene_tables,new_file)
+            util.tsv_to_biom(new_file, args.output)
+        else:
+            join_gene_tables(gene_tables,args.output,verbose=args.verbose)
+                
+        # deleting temp folder with all files
+        if biom_flag:
+            if args.verbose:
+                print("Deleting temp files in temp folder: " + temp_dir)
+            shutil.rmtree(temp_dir)
+        
+        print("Gene table created: " + args.output)
+    else:
+        print("Zero gene tables were found to join.")
 
 if __name__ == "__main__":
     main()
