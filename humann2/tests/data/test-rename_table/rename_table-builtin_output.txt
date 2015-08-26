@@ -1,0 +1,10 @@
+#HEADERS	Sample1	Sample2
+UniRef50_B3WCX9: Beta-phospho-glucomutase 	10	30
+UniRef50_B3WCX9: Beta-phospho-glucomutase |bug1	5	15
+UniRef50_B3WCX9: Beta-phospho-glucomutase |bug2	5	15
+UniRef50_D0KH52: Beta-phosphoglucomutase 	20	20
+UniRef50_D0KH52: Beta-phosphoglucomutase |bug1	10	10
+UniRef50_D0KH52: Beta-phosphoglucomutase |bug2	10	10
+UniRef50_HUMANN: NO_NAME	20	20
+UniRef50_HUMANN: NO_NAME|bug1	10	10
+UniRef50_HUMANN: NO_NAME|bug2	10	10
