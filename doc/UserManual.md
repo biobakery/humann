@@ -759,9 +759,7 @@ Penalizing such cases would be overly strict: in the absence of a the gene's gen
 
 ### PICRUSt output ###
 
-You can run HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output from predict_metagenomes.py or metagenome_contributions.py as input. Output from 
-metagenome_contributions.py can include taxonomy information which will be used by HUMAnN2. The steps that follow are the same for output files from either
-PICRUSt script.
+You can run HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output from predict_metagenomes.py or metagenome_contributions.py as input. Output from metagenome_contributions.py can include taxonomy information which will be used by HUMAnN2. The steps that follow are the same for output files from either PICRUSt script.
 
 If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
 
@@ -810,8 +808,7 @@ The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases
 
 ### Joint taxonomic profile ###
 
-A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN2 runs, 
-please use the steps that follow.
+A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN2 runs, please use the steps that follow.
 
 1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
 2. Join all of the taxonomic profiles, located in directory $DIR, into a table of taxonomic profiles for all samples (joined_taxonomic_profile.tsv)
@@ -827,9 +824,7 @@ please use the steps that follow.
     * for $SAMPLE.fastq in samples
         * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
 
-An alterative to step #4, which will save computing time, is to first run a single sample with the taxonomic profile. The HUMAnN2 temp output
-folder for this sample will contain the bowtie2 indexed custom ChocoPhlAn database that can be provided when running your remaining samples. 
-This will save compute time as this database will only be created once. Please see the steps below for the alternative to step #4.
+An alterative to step #4, which will save computing time, is to first run a single sample with the taxonomic profile. The HUMAnN2 temp output folder for this sample will contain the bowtie2 indexed custom ChocoPhlAn database that can be provided when running your remaining samples. This will save compute time as this database will only be created once. Please see the steps below for the alternative to step #4.
     
 1. Run HUMAnN2 on one of your samples ($SAMPLE_1.fastq) providing the max taxonomic profile to create the custom indexed ChocoPhlAn database
 
@@ -896,15 +891,13 @@ Option #4 should be used along with a custom reference database annotation file.
 423220654	UniRef50_I8UUJ6	1218	g__Bacteroides.s__Bacteroides_caccae
 ```
 
-The first line of the example will use the gene family UniRef50_C9LQU5, gene length 147, and taxon ``g__Dialister.s__Dialister_invisus`` for any sequences in your
-reference databases with the identifier 256402719.
+The first line of the example will use the gene family UniRef50_C9LQU5, gene length 147, and taxon ``g__Dialister.s__Dialister_invisus`` for any sequences in your reference databases with the identifier 256402719.
 
 To run HUMAnN2 with the custom reference database annotations ($FILE), use the option "--id-mapping $FILE". 
 
 ### Custom pathways database ###
 
-The pathways databases included with HUMAnN2 (from MetaCyc and UniProt) have been created to be used with alignments to UniRef gene families. A custom pathways
-database can be provided to HUMAnN2, specifically made to work with your custom reference database(s).
+The pathways databases included with HUMAnN2 (from MetaCyc and UniProt) have been created to be used with alignments to UniRef gene families. A custom pathways database can be provided to HUMAnN2, specifically made to work with your custom reference database(s).
 
 One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN2 with the option "--pathways-database $FILE". If two files are provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of gene families to reactions while the second file maps reactions to pathways. 
 
