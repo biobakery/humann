@@ -87,12 +87,16 @@ def ReadReactions(iFileReactions):
 			#*  End Modification: GW 20150710 - Get the direct reaction--> AC relations*
 			#***************************************************************************
   
-  
-			if iLine.startswith("EC-NUMBER"):
-				EC = iLine.split("-")[3].replace("\n","")
-				bFlagEC = True  	# GW 20150709
-				lECs.append(EC)   	# GW 20150709
-				
+			try:                       #Modification GW 20150825 - Allow for secondary syntax in the dat file for the EC
+				if iLine.startswith("EC-NUMBER"):
+					EC = iLine.split("-")[3].replace("\n","").lstrip()
+					bFlagEC = True  	# GW 20150709
+					lECs.append(EC)   	# GW 20150709
+			except:
+				EC = iLine.split("-")[2].replace("\n","").lstrip() #Modification GW 20150825 - Allow for secondary syntax in the dat file for the EC
+				bFlagEC = True  	#Modification GW 20150825 - Allow for secondary syntax in the dat file for the EC
+				lECs.append(EC)   	#Modification GW 20150825 - Allow for secondary syntax in the dat file for the EC
+
 				
  
 			if  bFlagEC == True and iLine.startswith("//"):
@@ -324,6 +328,7 @@ def GenerateExtract(CommonArea, OutputFileName):
 		try:
 			lListOfECsToCheckECLevel = CommonArea["dReactionsToECs"][Reaction]  # Modification by George Weingart 20150710  We are checking the EC Level of all ECs
 			lPostedECList = list()	# Modification by George Weingart 20150710
+			lListOfECsToCheckECLevel = list(set(lListOfECsToCheckECLevel)) #Modification by George Weingart 20150825 - Select only unique EC
 			for ECToCheck in lListOfECsToCheckECLevel:   	# Modification by George Weingart 20150710 
 				ECToCheck = ECToCheck.replace(".-","")  	# Modification by George Weingart 20150710 
 				iECLevel = ECToCheck.count(".") + 1			# Modification by George Weingart 20150710 
