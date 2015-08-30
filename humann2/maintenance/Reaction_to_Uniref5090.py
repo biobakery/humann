@@ -36,13 +36,26 @@ import tempfile
 #    uniref50gz and uniref90gz are the uniref mappings (Uniref50 --> Uniprot AC)            * 
 #     currently located at                                                                  *
 #     /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz                         *
-
+#                                                                                           *
 #   Written by George Weingart - george.weingart@gmail.com   10/08/2014                     *  
 #********************************************************************************************
 
 
-
-
+#********************************************************************************************
+#                                                                                           *
+#  Modification by George Weingart - george.weingart@gmail.com   29/08/2014                 *  
+#                                                                                           *
+#  Added an option to expand EC Level 3's to all its subclasses, for example                *
+#  if EC=6.1.1 is detected,  we will post 6.1.1.1, 6.1.1.2,.....,6.1.1.n                    *
+#  This will based on a parm passed by the User --ECLevel3Expand                            *
+#  If this parm is received,  we will read the enzymes.dat file, build the table that       *
+#  contains the expansion ECLevel3 -> [ECLevel4(1), ECLevel4(2)....] and post it            *
+#  The location of the enzymes.dat is specified via the parm --EnzymesFile filename         *
+#  << Please note >> That file can be downloaded from:                                      *
+#   ftp://ftp.expasy.org/databases/enzyme/                                                  * 
+#  and  more particularly from                                                              *                         
+#  ftp://ftp.expasy.org/databases/enzyme/enzyme.dat                                         *                     
+#********************************************************************************************
 
 
 
@@ -183,6 +196,8 @@ def read_params(x):
 	parser.add_argument('--uniref50gz', action="store", dest='Uniref50gz',nargs='?')
 	parser.add_argument('--uniref90gz', action="store", dest='Uniref90gz',nargs='?')
 	parser.add_argument('--o', action="store", dest='o',nargs='?' )
+	parser.add_argument('--ECLevel3Expand', action="store", dest='ECLevel3Expand',nargs='?')
+	parser.add_argument('--EnzymesFile', action="store", dest='EnzymesFile',nargs='?')
 	CommonArea['parser'] = parser
 	return  CommonArea
 
@@ -332,11 +347,16 @@ def GenerateExtract(CommonArea, OutputFileName):
 			for ECToCheck in lListOfECsToCheckECLevel:   	# Modification by George Weingart 20150710 
 				ECToCheck = ECToCheck.replace(".-","")  	# Modification by George Weingart 20150710 
 				iECLevel = ECToCheck.count(".") + 1			# Modification by George Weingart 20150710 
-				if iECLevel > 2:  # Modification by George Weingart 20150710
+				if iECLevel == 4 or (CommonArea['ECLevel3Expand']  == False and iECLevel == 3):  # Modification by George Weingart 20150829
 					lPostedECList.append(ECToCheck)  # Modification by George Weingart 20150710
+				if iECLevel == 3 and  CommonArea['ECLevel3Expand']  == True:  # Modification by George Weingart 20150829
+					for ECLevel4Entry in CommonArea['dECLevel3ToLevel4'][ECToCheck]:    # Review the ECLevel4 entry and if needed, post it
+						if ECLevel4Entry not in lPostedECList:
+							lPostedECList.append(ECLevel4Entry)  # Modification by George Weingart 20150710
 			if len(lPostedECList) == 0:		# Modification by George Weingart 20150710 - If no ECs because we eliminated levels 1 and 2 - Set empty list
 				lPostedECList.append(" ")
 				bFlagECFound = False    #Modification by GW  DT20150721: If no EC - don't select the record
+			lPostedECList = sorted(list(set(lPostedECList)))     #Modification by GW  DT20150728 - Remove duplicate entries from the EC list 			
 			lBuiltRecord.append(strComma.join(lPostedECList))  #Post the list of ECs
 		except:
 			bFlagECFound = False    #Modification by GW  DT20150721: If no EC - don't select the record
@@ -374,6 +394,32 @@ def GenerateExtract(CommonArea, OutputFileName):
 	print "Total REACTION -> Uniref(50) Uniref(90) relations generated in the file " + OutputFileName + " = " + str(ReactionToUnirefCntr)
 	return CommonArea  
 
+#********************************************************************************************
+#*   Read the enzymes.dat file and create a dictionary that for each EClevel3 contains      *
+#*   all the EClevel4 subclases, for example:                                               *
+#*   6.1.1 --> [6.1.1.1, 6.1.1.2 ....... 6.1.1.x]                                           *
+#********************************************************************************************
+def 	ReadEnzymesFile(strEnzymesFile):	
+	CommonArea['EnzymesFile'] = strEnzymesFile
+	CommonArea['ECLevel3Expand'] = True
+	InputFile = open(CommonArea['EnzymesFile'])
+	dECLevel3ToLevel4 = dict()
+ 
+	for iLine in InputFile: 
+		iLine = iLine.rstrip('\n')
+		if iLine.startswith("ID   "):
+			EC = iLine.split()[1]
+			ECLevel = EC.count(".") +1
+			ECNodes = EC.split('.')
+			if ECLevel == 4:
+			    ECLevel3 = ECNodes[0] + '.' + ECNodes[1] + '.' + ECNodes[2]
+			    if ECLevel3 not in dECLevel3ToLevel4:
+			       dECLevel3ToLevel4[ECLevel3] = list()
+			    dECLevel3ToLevel4[ECLevel3].append(EC)
+				
+	CommonArea['dECLevel3ToLevel4']	 =  dECLevel3ToLevel4
+	return CommonArea
+	
 
 #********************************************************************************************
 #* Main                                                                                     *
@@ -383,6 +429,19 @@ CommonArea = read_params( sys.argv )  # Parse command
 parser = CommonArea['parser'] 
 results = parser.parse_args()
 
+################################################################################
+# Modification by George Weingart 20150829                                     *
+# If User requested Expansion of EC level 3 to 4, load the table               *
+################################################################################
+CommonArea['ECLevel3Expand']  = False   # Set default flag to False
+if results.ECLevel3Expand  == "YES":    # If user requested 
+	CommonArea['ECLevel3Expand']  = True   # Set default flag to True
+	strEnzymesFile = results.EnzymesFile
+	CommonArea = ReadEnzymesFile(strEnzymesFile)
+################################################################################
+# End Modification by George Weingart 20150829                                 *
+# If User requested Expansion of EC level 3 to 4, load the table               *
+################################################################################
 
 iFileReactions = results.i_reactions
 iFileSProt = results.i_sprot
