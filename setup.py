@@ -129,7 +129,7 @@ def download_unpack_tar(url,download_file_name,folder,software_name):
         tarfile_handle=tarfile.open(download_file)
         tarfile_handle.extractall(path=folder)
         tarfile_handle.close()
-    except EnvironmentError:
+    except (EnvironmentError,tarfile.ReadError):
         print("Warning: Unable to extract "+software_name+".")
         error_during_extract=True
         
@@ -169,7 +169,7 @@ def download_unpack_zip(url,download_file_name,folder,software_name):
         except EnvironmentError:
             print("Warning: Unable to remove the temp download: " + download_file)
         
-def install_glpk(minpath_folder):
+def install_glpk(install_directory, replace_install=None):
     """
     Download and install the most recent glpk for minpath
     """
@@ -177,54 +177,67 @@ def install_glpk(minpath_folder):
     glpk_url="http://ftp.gnu.org/gnu/glpk/glpk-4.55.tar.gz"
     glpk_folder="glpk-4.55"
     
+    # Check if glpk is already installed
+    glpk_installed=find_exe_in_path("glpsol")
+    
+    if not glpk_installed or replace_install:
+        
+        # get the prefix for the install directory
+        prefix=os.path.dirname(install_directory)
+        
+        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
+        tempfolder=tempfile.mkdtemp(prefix="glpk_download_",dir=humann2_source_folder)
  
-    # install the most recent gplk software
-    glpk_download=os.path.join(minpath_folder,glpk_url.split('/')[-1])
-    print("Installing latest glpk.")
-    download_unpack_tar(glpk_url,glpk_download,minpath_folder,"glpk")
-        
-    # move to the glpk directory
-    current_working_directory=os.getcwd()
-    glpk_install_folder=os.path.join(minpath_folder,glpk_folder)
-    
-    try:
-        os.chdir(glpk_install_folder)
-    except EnvironmentError:
-        print("Warning: glpk was not downloaded.")
-    
-    # test for gcc
-    try:
-        subprocess_output=subprocess.check_output(["gcc","--version"])
-    except (EnvironmentError,subprocess.CalledProcessError):
-        print("Warning: Please install gcc.")
-        
-    # test for make
-    try:
-        subprocess_output=subprocess.check_output(["make","--version"])
-    except (EnvironmentError,subprocess.CalledProcessError):
-        print("Warning: Please install make.")
-        
-    glpk_install_error=False
-    try:
-        # run configure
-        subprocess.call(["./configure"])
-        # run make
-        subprocess.call(["make"])
-    except (EnvironmentError,subprocess.CalledProcessError):
-        print("Warning: Errors installing new glpk version.")
-        glpk_install_error=True
+        # install the most recent gplk software
+        glpk_download=os.path.join(tempfolder,glpk_url.split('/')[-1])
+        print("Installing latest glpk.")
+        download_unpack_tar(glpk_url,glpk_download,tempfolder,"glpk")
             
-    # return to original working directory
-    os.chdir(current_working_directory)
+        # move to the glpk directory
+        current_working_directory=os.getcwd()
+        glpk_install_folder=os.path.join(tempfolder,glpk_folder)
         
-    # remove the latest install if needed
-    if glpk_install_error:
         try:
-            shutil.rmtree(glpk_install_folder,ignore_errors=True)
-        except (EnvironmentError, shutil.Error):
-            print("Warning: Unable to remove partial glpk install.")    
+            os.chdir(glpk_install_folder)
+        except EnvironmentError:
+            print("Warning: glpk was not downloaded.")
         
-def install_minpath(replace_install=None,update_glpk=None):
+        # test for gcc
+        try:
+            subprocess_output=subprocess.check_output(["gcc","--version"])
+        except (EnvironmentError,subprocess.CalledProcessError):
+            print("Warning: Please install gcc.")
+            
+        # test for make
+        try:
+            subprocess_output=subprocess.check_output(["make","--version"])
+        except (EnvironmentError,subprocess.CalledProcessError):
+            print("Warning: Please install make.")
+            
+        try:
+            # run configure
+            subprocess.call(["./configure","--prefix",prefix])
+            # run make
+            subprocess.call(["make"])
+            # run make install
+            subprocess.call(["make","install"])
+        except (EnvironmentError,subprocess.CalledProcessError):
+            print("Warning: Errors installing new glpk version.")
+                
+        # return to original working directory
+        os.chdir(current_working_directory)  
+                
+        # remove the temp download folder
+        try:
+            shutil.rmtree(tempfolder)
+        except EnvironmentError:
+            print("Warning: Unable to remove temp install folder.")
+
+    else:
+        print("Found glpk install at "+glpk_installed)
+        
+        
+def install_minpath(replace_install=None):
     """ 
     Download and install the minpath software if not already installed
     """
@@ -245,30 +258,8 @@ def install_minpath(replace_install=None,update_glpk=None):
         download_file=os.path.join(fullpath_scripts, minpath_file)
         print("Installing minpath.")
         download_unpack_tar(minpath_url,download_file,fullpath_scripts,"minpath")
-        
-        if update_glpk:
-            minpath_folder=os.path.join(fullpath_scripts,minpath_install_folder)
-            install_glpk(minpath_folder)
     else:
         print("Found minpath install.")
-        
-class InstallMinpath(distutils.cmd.Command):
-    """
-    Custom distutils command to install minpath
-    """
-    
-    description = "install minpath"
-    
-    user_options = [('update-glpk', None, 'option to update glpk')]
-    
-    def initialize_options(self):
-        self.update_glpk=False
-        
-    def finalize_options(self):
-        pass
-    
-    def run(self):
-        install_minpath(replace_install=True,update_glpk=self.update_glpk)
         
 def find_exe_in_path(exe):
     """
@@ -471,11 +462,13 @@ class Install(_install):
     """
     
     _install.user_options=_install.user_options+[('bypass-dependencies-install', 
-        None, 'bypass install of dependencies'),('build-diamond',None,'build diamond')]
+        None, 'bypass install of dependencies'),('build-diamond',None,'build diamond'),
+        ('replace-dependencies-install',None,'replace dependencies already installed')]
     
     def initialize_options(self):
         self.bypass_dependencies_install=False
         self.build_diamond=False
+        self.replace_dependencies_install=False
         _install.initialize_options(self)
     
     def finalize_options(self):
@@ -483,7 +476,7 @@ class Install(_install):
     
     def run(self):
         # install minpath if not already installed
-        install_minpath(replace_install=False,update_glpk=True)
+        install_minpath(replace_install=self.replace_dependencies_install)
         
         _install.do_egg_install(self)
         
@@ -525,8 +518,9 @@ class Install(_install):
             if mac_os:
                 build_diamond=True
                 
-            install_diamond(self.install_scripts,build_diamond,replace_install=False)
-            install_bowtie2(self.install_scripts,mac_os,replace_install=False)
+            install_glpk(self.install_scripts,replace_install=self.replace_dependencies_install)
+            install_diamond(self.install_scripts,build_diamond,replace_install=self.replace_dependencies_install)
+            install_bowtie2(self.install_scripts,mac_os,replace_install=self.replace_dependencies_install)
         else:
             print("Bypass install of dependencies")
         
@@ -554,9 +548,7 @@ setuptools.setup(
         ],
     long_description=open('readme.md').read(),
     packages=setuptools.find_packages(),
-    cmdclass={
-              'minpath': InstallMinpath,
-              'install': Install},
+    cmdclass={'install': Install},
     package_data={
         'humann2' : [
             'humann2.cfg',
@@ -564,7 +556,6 @@ setuptools.setup(
             'data/misc/*',
             'data/uniref_DEMO/*',
             'data/chocophlan_DEMO/*',
-            # 'tests/data/*',
             'tests/data/*/*',
             'quantify/MinPath/data/*',
             'quantify/MinPath/glpk-*/examples/glp*',

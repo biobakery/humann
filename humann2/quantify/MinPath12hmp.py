@@ -21,25 +21,6 @@ import math
 import subprocess
 minpath=os.path.join(os.path.dirname(os.path.abspath(__file__)),"MinPath")
 
-# LJM Add search for latest glpk install
-glpk_versions=[]
-
-try:
-	files=os.listdir(minpath)
-except EnvironmentError:
-	sys.exit("ERROR: Unable to find the MinPath install.")
-
-for file in files:
-	if os.path.isdir(os.path.join(minpath,file)) and re.match("glpk-4.",file):
-		glpk_version=int(file.replace("glpk-4.",""))
-		glpk_versions.append(glpk_version)
-		
-if glpk_versions:
-	glpk_versions.sort()
-	latest_glpk_version=str(glpk_versions[-1])
-else:
-	latest_glpk_version="6"
-
 # LJM Remove search for minpath directory
 #minpath = os.environ.get('MinPath')
 #path0 = "/home/yye/Pathways/MinPath"
@@ -49,8 +30,28 @@ else:
 #else:
 #        sys.exit("Environment variable MinPath not set")
 
-#keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4.6/examples/glpsol"
-keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4." + latest_glpk_version + "/examples/glpsol"
+keggPath0, seedPath0, mapPath0, glpsol0 = minpath + "/data", minpath + "/data", minpath + "/data", minpath + "/glpk-4.6/examples/glpsol"
+
+# LJM Check if glpsol is installed globally, if so use this version instead
+glpsol_global=None
+paths = os.environ["PATH"].split(os.pathsep)
+for path in paths:
+    fullexe = os.path.join(path,"glpsol")
+    if os.path.exists(fullexe):
+        if os.access(fullexe,os.X_OK):
+            glpsol_global=fullexe
+            break
+
+if not glpsol_global is None:
+	# check if the global install is working properly
+	try:
+		stdout=subprocess.check_output([glpsol_global,"--help"])
+	except (EnvironmentError,subprocess.CalledProcessError):
+		glpsol_global=None
+		
+# if the global install is operating as expected, then use this version
+if not glpsol_global is None:
+	glpsol0=glpsol_global
 
 def intmatrix(dim1, dim2):
 	mat = []
