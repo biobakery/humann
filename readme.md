@@ -2,7 +2,7 @@
 
 ----
 
- * Download the HUMAnN2 software ( [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.3.1.tar.gz) ) then follow the [steps to install and run](#markdown-header-getting-started-with-humann2).
+ * Download the HUMAnN2 software ( [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.4.0.tar.gz) ) then follow the [steps to install and run](#markdown-header-getting-started-with-humann2).
 
  * For additional information, please see the [HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual).
 
@@ -59,7 +59,7 @@ NOTE: Bowtie2, Diamond, and MinPath are automatically installed when installing 
 Before installing HUMAnN2, please download and install [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2). You can then add the MetaPhlAn2 folder to your $PATH or you can provide its location when running HUMAnN2 with the option "--metaphlan $DIR" (replacing $DIR with the full path to the MetaPhlAn2 folder). Bowtie2, Diamond, and Minpath will be automatically installed when you install HUMAnN2. 
 
 1. Download and unpack the HUMAnN2 software
-    * Download the software: [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.3.1.tar.gz)
+    * Download the software: [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.4.0.tar.gz)
     * `` $ tar zxvf humann2.tar.gz ``
     * `` $ cd humann2 ``
 3. Install the HUMAnN2 software

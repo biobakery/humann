@@ -198,7 +198,7 @@ You can download the latest HUMAnN2 release or the development version.
 
 Option 1: Latest Release (Recommended)
 
-* [Download](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.3.1.tar.gz) and unpack the latest release of HUMAnN2.
+* [Download](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.4.0.tar.gz) and unpack the latest release of HUMAnN2.
 
 Option 2: Development Version
 

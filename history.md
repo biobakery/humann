@@ -1,6 +1,17 @@
 
 # HUMAnN2 History #
 
+## v0.4.0 09-16-2015 ##
+
+### New Features ###
+
+* Improvements to MetaCyc pathway quantification
+    * Refined gene families to MetaCyc reactions mapping (update ignores ECs with less than 4 levels of classification)
+
+### Cross Platform Compatibility Updates ###
+
+* Modification to glpk/glpsol update version (resolves glpsol write permission errors and glpsol links to build directory)
+
 ## v0.3.1 08-24-2015 ##
 
 ### Cross Platform Compatibility Updates ###
@@ -15,7 +26,7 @@
 
 ### New Features ###
 
-* Improvements to structured pathway quantification identify more pathways  
+* Improvements to structured pathway quantification identify more pathways
     * Updated databases to MetaCyc v19.1
     * Added UniProt TrEMBL data to reactions mappings
     * Added gap filling
