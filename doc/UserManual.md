@@ -765,23 +765,19 @@ You can run HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output fro
 If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
-
     * The databases will be referred to in steps that follow with the path "humann1/data/*".
 
 2. Split the picrust output file (picrust.biom) into a single file per sample (written to $OUTPUT_DIR)
-
     * `` $ humann2_split_table --input picrust.biom --output $OUTPUT_DIR ``
     * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom file with column -1 associated with K0s.
 
 3. Run HUMAnN2 on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
-
     * for $SAMPLE.biom in $OUTPUT_DIR
         * `` $ humann2 --input $SAMPLE.biom --output $OUTPUT_DIR2 --pathways-database humann1/data/keggc ``
     * The option ``--remove-stratified-output`` can be added if you do not want the data stratified by bug.
     * The option ``--output-format biom`` can be added if you want the output to be in biom format.
     
 4. Join the pathways data (coverage and abundance) files from the HUMAnN2 runs from all samples into two files
-
     * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathcoverage.tsv --file_name pathcoverage ``
     * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathabundance.tsv --file_name pathabundance ``
     * The resulting files from these commands are named humann2_pathcoverage.tsv and humann2_pathabundance.tsv .
@@ -794,15 +790,12 @@ Please note the flag ``--verbose`` can be added to all commands.
 The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases. You can run with the legacy Kegg databases following these steps:
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
-
     * The databases will be referred to in steps that follow with the path "humann1/data/*".
     
 2. Create an idmapping file formatted for HUMAnN2 using the legacy kegg databases and adding full names for the Kegg organisms
-
     * `` $ humann2_humann1_kegg --ikoc humann1/data/koc --igenels humann1/data/genels --o legacy_kegg_idmapping.tsv ``
     
 3. Run HUMAnN2 on your kegg alignment file, $SAMPLE, with results written to $OUTPUT_DIR
-
     * `` $ humann2 --input $SAMPLE --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc ``
     * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
     * For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv``.
@@ -813,27 +806,22 @@ A joint taxonomic profile can be created from all of the samples in your set. To
 
 1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn2](https://bitbucket.org/biobakery/metaphlan2/)
 2. Join all of the taxonomic profiles, located in directory $DIR, into a table of taxonomic profiles for all samples (joined_taxonomic_profile.tsv)
-
     * `` $ humann2_join_tables --input $DIR --output joined_taxonomic_profile.tsv ``
 
 3. Reduce this file into a taxonomic profile that represents the maximum abundances from all of the samples in your set
-
     * `` $ humann2_reduce_table --input joined_taxonomic_profile.tsv --output max_taxonomic_profile.tsv --function max --sort-by level ``
 
 4. Run HUMAnN2 on all of the samples in your set, providing the max taxonomic profile
-
     * for $SAMPLE.fastq in samples
         * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
 
 An alterative to step #4, which will save computing time, is to first run a single sample with the taxonomic profile. The HUMAnN2 temp output folder for this sample will contain the bowtie2 indexed custom ChocoPhlAn database that can be provided when running your remaining samples. This will save compute time as this database will only be created once. Please see the steps below for the alternative to step #4.
     
 1. Run HUMAnN2 on one of your samples ($SAMPLE_1.fastq) providing the max taxonomic profile to create the custom indexed ChocoPhlAn database
-
     * `` $ humann2 --input $SAMPLE_1.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
     * The folder $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ will contain the custom indexed ChocoPhlAn database files
     
 2. Run HUMAnN2 on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann2_temp/)
-
     * for $SAMPLE.fastq in samples
         * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --nucleotide-database $OUTPUT_DIR/$SAMPLE_1_humann2_temp/ --bypass-nucleotide-index ``
 
@@ -960,26 +948,22 @@ Strain profiles can be additionally restricted to a subset of species (e.g. thos
 HUMAnN2 output files can be provided to [QIIME](http://qiime.org/) as input to run core diversity analysis. To run this analysis, run the following steps:
 
 1. Run HUMAnN2 on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
-
     * For each $SAMPLE.fastq in the set of all samples
         * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --output-format biom --remove-stratified-output --output-max-decimals 0 ``
         * Each sample will have three main output files ($SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv, and $SAMPLE_pathcoverage.tsv) in biom format.
 
 2. Merge the three output files for each sample into three output files for all samples using [QIIME's merge_otu_tables.py](http://qiime.org/scripts/merge_otu_tables.html)
-
     * For this example, assume there are 3 samples named $SAMPLE1.fastq, $SAMPLE2.fastq, and $SAMPLE3.fastq
         * `` $ merge_otu_tables.py -i $SAMPLE1_genefamilies.biom,$SAMPLE2_genefamilies.biom,$SAMPLE3_genefamilies.biom -o genefamilies_all.biom ``
         * `` $ merge_otu_tables.py -i $SAMPLE1_pathabundance.biom,$SAMPLE2_pathabundance.biom,$SAMPLE3_pathabundance.biom -o pathabundance_all.biom ``
         * `` $ merge_otu_tables.py -i $SAMPLE1_pathcoverage.biom,$SAMPLE2_pathcoverage.biom,$SAMPLE3_pathcoverage.biom -o pathcoverage_all.biom ``
 
 3. For each of the three merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
-
     * `` $ biom summarize-table -i genefamilies_all.biom -o genefamilies_summary.txt ``
     * `` $ biom summarize-table -i pathabundance_all.biom -o pathabundance_summary.txt ``
     * `` $ biom summarize-table -i pathcoverage_all.biom -o pathcoverage_summary.txt ``
 
 4. Next run each merged biom file through [QIIME's core_diversity_analysis.py](http://qiime.org/scripts/core_diversity_analyses.html), providing the e-value from the prior step (replacing $EVALUE for each input file) and the [QIIME mapping file](http://qiime.org/documentation/file_formats.html#mapping-file-overview) you created (replacing $MAPPING_FILE with the full path to the mapping file).
-
     * `` $ core_diversity_analysis.py -i genefamilies_all.biom -o core_diversity_genefamilies -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
     * `` $ core_diversity_analysis.py -i pathabundance_all.biom -o core_diversity_pathabundance -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
     * `` $ core_diversity_analysis.py -i pathcoverage_all.biom -o core_diversity_pathcoverage -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
