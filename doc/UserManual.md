@@ -69,6 +69,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Regroup table features](#markdown-header-regroup-table-features)
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
+    * [Core diversity analysis with QIIME](#markdown-header-core-diversity-analysis-with-qiime)
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
@@ -953,6 +954,45 @@ The HUMAnN2 script ``humann2_strain_profiler`` can help explore strain-level var
 ``humann2_strain_profiler`` first looks for (species, sample) pairs where (i) a large number of gene families within the species were identified (default: 500) and (ii) the mean abundance of detected genes was high (default: mean > 10 RPK). For species that meet these criteria, we can infer that absent gene families are likely to be truly absent, as opposed to undersampled. Simulations suggest that the cutoff of 10 RPK results in a false negative rate below 0.001 (i.e. for every 1000 genes identified as absent, at most one would be present but missed due to undersampling). For a given species, if at least two samples pass these criteria, the species and passing samples are sliced from the merged table and saved as a strain profile.
 
 Strain profiles can be additionally restricted to a subset of species (e.g. those from a particular genus) or to gene families with a high level of variability in the population (e.g. present in fewer than 80% of samples but more than 20% of samples). Additional thresholds (e.g. the minimum non-zero mean) can be configured with command line parameters.
+
+### Core diversity analysis with QIIME ###
+
+HUMAnN2 output files can be provided to [QIIME](http://qiime.org/) as input to run core diversity analysis. To run this analysis, run the following steps:
+
+1. Run HUMAnN2 on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
+
+    * For each $SAMPLE.fastq in the set of all samples
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --output-format biom --remove-stratified-output --output-max-decimals 0 ``
+        * Each sample will have three main output files ($SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv, and $SAMPLE_pathcoverage.tsv) in biom format.
+
+2. Merge the three output files for each sample into three output files for all samples using [QIIME's merge_otu_tables.py](http://qiime.org/scripts/merge_otu_tables.html)
+
+    * For this example, assume there are 3 samples named $SAMPLE1.fastq, $SAMPLE2.fastq, and $SAMPLE3.fastq
+        * `` $ merge_otu_tables.py -i $SAMPLE1_genefamilies.biom,$SAMPLE2_genefamilies.biom,$SAMPLE3_genefamilies.biom -o genefamilies_all.biom ``
+        * `` $ merge_otu_tables.py -i $SAMPLE1_pathabundance.biom,$SAMPLE2_pathabundance.biom,$SAMPLE3_pathabundance.biom -o pathabundance_all.biom ``
+        * `` $ merge_otu_tables.py -i $SAMPLE1_pathcoverage.biom,$SAMPLE2_pathcoverage.biom,$SAMPLE3_pathcoverage.biom -o pathcoverage_all.biom ``
+
+3. For each of the three merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
+
+    * `` $ biom summarize-table -i genefamilies_all.biom -o genefamilies_summary.txt ``
+    * `` $ biom summarize-table -i pathabundance_all.biom -o pathabundance_summary.txt ``
+    * `` $ biom summarize-table -i pathcoverage_all.biom -o pathcoverage_summary.txt ``
+
+4. Next run each merged biom file through [QIIME's core_diversity_analysis.py](http://qiime.org/scripts/core_diversity_analyses.html), providing the e-value from the prior step (replacing $EVALUE for each input file) and the [QIIME mapping file](http://qiime.org/documentation/file_formats.html#mapping-file-overview) you created (replacing $MAPPING_FILE with the full path to the mapping file).
+
+    * `` $ core_diversity_analysis.py -i genefamilies_all.biom -o core_diversity_genefamilies -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
+    * `` $ core_diversity_analysis.py -i pathabundance_all.biom -o core_diversity_pathabundance -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
+    * `` $ core_diversity_analysis.py -i pathcoverage_all.biom -o core_diversity_pathcoverage -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
+
+The output of [QIIME's core_diversity_analysis.py](http://qiime.org/scripts/core_diversity_analyses.html) will include PCoA plots of beta diversity analyses which can be viewed in the beta diversity folder, in the bray_curtis_emperor_pcoa_plot folder. Click on “index.html”, which will open a web browser with the plot. Using the tools on the right side, it is possible to change the colors by which the samples are labeled. 
+
+Under the “color” tab, there are two variables that can be changed: 
+
+1. the actual colors (“Classic QIIME Colors” is the default)
+2. the mapping file category by which the samples are labeled. 
+
+The more categories in your mapping file, the more options you have to see if your samples are separating based on that feature.
+
 
 ## FAQs ##
 
