@@ -44,8 +44,7 @@ def find_index(directory):
     """
     
     index=""
-    bowtie2_extensions=config.bowtie2_index_ext_list
-    bowtie2_extensions.append(config.bowtie2_large_index_ext)
+    bowtie2_extensions=config.bowtie2_index_ext_list+[config.bowtie2_large_index_ext]
     
     if not os.path.isdir(directory):
         # check if this is the bowtie2 index file
@@ -65,7 +64,7 @@ def find_index(directory):
         # Search through the files to find one with the bowtie2 extension
         for file in os.listdir(directory):
             # Look for an extension for a standard and large bowtie2 indexed database
-            for ext in [config.bowtie2_index_ext_list[0],config.bowtie2_large_index_ext]:
+            for ext in [config.bowtie2_index_ext_list[-1],config.bowtie2_large_index_ext]:
                 if re.search(ext+"$",file):
                     index=os.path.join(directory,file.replace(ext,""))
                     break
