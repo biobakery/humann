@@ -183,7 +183,7 @@ def install_glpk(install_directory, replace_install=None):
     if not glpk_installed or replace_install:
         
         # get the prefix for the install directory
-        prefix=os.path.dirname(install_directory)
+        prefix=os.path.abspath(os.path.dirname(install_directory))
         
         humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
         tempfolder=tempfile.mkdtemp(prefix="glpk_download_",dir=humann2_source_folder)
