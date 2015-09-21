@@ -762,6 +762,8 @@ Penalizing such cases would be overly strict: in the absence of a the gene's gen
 
 You can run HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output from predict_metagenomes.py or metagenome_contributions.py as input. Output from metagenome_contributions.py can include taxonomy information which will be used by HUMAnN2. The steps that follow are the same for output files from either PICRUSt script.
 
+For information on the PICRUSt software, please see the [project website](http://picrust.github.io/picrust/). For questions about PICRUSt, please contact the [PICRUSt user group](https://groups.google.com/forum/#!forum/picrust). The instructions that follow are for PICRUSt version 1.0.0-dev.
+
 If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
 
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
@@ -945,7 +947,10 @@ Strain profiles can be additionally restricted to a subset of species (e.g. thos
 
 ### Core diversity analysis with QIIME ###
 
-HUMAnN2 output files can be provided to [QIIME](http://qiime.org/) as input to run core diversity analysis. To run this analysis, run the following steps:
+HUMAnN2 output files can be provided to [QIIME](http://qiime.org/) as input to run core diversity analysis. For information on the QIIME software, please see the [project website](http://qiime.org/). For questions about QIIME, please contact the [QIIME user group](https://groups.google.com/forum/#!forum/qiime-forum). The instructions that follow are for QIIME version 1.9.1.
+
+
+To run this analysis, run the following steps:
 
 1. Run HUMAnN2 on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
     * For each $SAMPLE.fastq in the set of all samples
