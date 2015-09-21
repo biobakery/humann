@@ -20,6 +20,7 @@ TABLE_DELIMITER="\t"
 LEVEL_DELIMITER="|"
 
 FUNCTION_OPTIONS={
+    "sum":sum,
     "min":min,
     "max":max,
     "mean": lambda scores: sum(scores)/float(len(scores)) if scores else 0
@@ -81,13 +82,14 @@ def reduce_table(function,input,output,verbose,sort_by):
                 
             float_data.append(float_point)
             
-        reduced_data=FUNCTION_OPTIONS[function](float_data)
+        if float_data:
+            reduced_data=FUNCTION_OPTIONS[function](float_data)
             
-        if sort_by:
-            store_data[item]=reduced_data
-        else:
-            file_handle_out.write(item+TABLE_DELIMITER+str(reduced_data)+"\n")
-        
+            if sort_by:
+                store_data[item]=reduced_data
+            else:
+                file_handle_out.write(item+TABLE_DELIMITER+str(reduced_data)+"\n")
+            
         line=file_handle.readline()
         read_line+=1
         
