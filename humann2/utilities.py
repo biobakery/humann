@@ -92,10 +92,10 @@ def determine_file_format(file):
         else:
             file_handle = open(file, "r")
         
-        first_line = file_handle.readline()
+        first_line = file_handle.readline().rstrip()
         while re.search("^#",first_line):
-            first_line = file_handle.readline()
-        second_line = file_handle.readline()
+            first_line = file_handle.readline().rstrip()
+        second_line = file_handle.readline().rstrip()
     except EnvironmentError:
         # if unable to open and read the file, return unknown
         return "unknown"   
