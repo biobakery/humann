@@ -6,6 +6,7 @@ import sys
 import os
 import util
 import argparse
+import re
 
 description = """
 HUMAnN2 utility for renaming table features
@@ -57,6 +58,11 @@ def get_args ():
         help="Custom mapping of feature IDs to full names (.tsv or .tsv.gz)",
         )
     parser.add_argument( 
+        "-s", "--simplify", 
+        action="store_true",
+        help="Remove non-alphanumeric characters from names",
+        )
+    parser.add_argument( 
         "-o", "--output", 
         default=None,
         help="Path for modified output table; default=[STDOUT]",
@@ -97,6 +103,10 @@ def main ( ):
         polymap = util.load_polymap( c_default_names[args.names].path, allowed_keys=allowed_keys )
     else:
         sys.exit( "Must (i) choose names option or (ii) provide names file" )
+    if args.simplify:
+        for c, ndict in polymap.items():
+            ndict = {re.sub( "[^A-Za-z0-9]+", "_", n ):1 for n in ndict}
+            polymap[c] = ndict
     rename( table, polymap )
     table.write( args.output )
 

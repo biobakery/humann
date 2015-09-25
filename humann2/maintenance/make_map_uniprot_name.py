@@ -14,6 +14,7 @@ import os, sys, re, argparse, collections
 # constants
 # ---------------------------------------------------------------
 
+# uninformative names to skip
 c_disallow = """
 MULTISPECIES: hypothetical protein
 hypothetical protein, partial
@@ -25,6 +26,9 @@ hypothetical protein
 Uncharacterized protein
 """
 c_disallow = {n:1 for n in c_disallow.split( "\n" ) if n != ""}
+
+# characters not allowed to appear in names (used elsewhere in humann2)
+c_bad_strings = ["|", ": ", ";"]
 
 # ---------------------------------------------------------------
 # main
@@ -45,6 +49,8 @@ with open( args.fasta ) as fhin, open( outfile, "w" ) as fhout:
             if match:
                 code, name = match.groups()
                 if name not in c_disallow:
+                    for s in c_bad_strings:
+                        name = name.replace( s, "_" )
                     print >>fhout, "\t".join( [code, name] )
                     report["Saved"] += 1
                 else:
