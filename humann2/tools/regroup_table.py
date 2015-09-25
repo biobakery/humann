@@ -153,7 +153,7 @@ def main ( ):
             for feature in fdict:
                 map_feature_groups.setdefault( feature, {} )[group] = 1
     else:
-        map_feature_groups = map_groups_features
+        map_feature_groups = map_group_features
     # perform the table regrouping
     regroup( table, map_feature_groups, args.function )
     table.write( args.output )
