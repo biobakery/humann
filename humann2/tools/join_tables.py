@@ -97,7 +97,7 @@ def join_gene_tables(gene_tables,output,verbose=None):
         file_handle=open(output,"w")
         file_handle.write(GENE_TABLE_DELIMITER.join(sample_header)+"\n")
     except EnvironmentError:
-        sys.exit("Unable to write file: " + file)  
+        sys.exit("Unable to write file: " + output)  
         
     for gene in sorted_gene_list:
         # extend gene data for any gene that is not included in all samples
