@@ -576,6 +576,7 @@ setuptools.setup(
             'humann2_rna_dna_norm = humann2.tools.rna_dna_norm:main',
             'humann2_strain_profiler = humann2.tools.strain_profiler:main',
             'humann2_reduce_table = humann2.tools.reduce_table:main',
+            'humann2_merge_abundance_tables = humann2.tools.merge_abundance:main',
             'humann2_test = humann2.tests.humann2_test:main'
         ]},
     test_suite= 'humann2.tests.humann2_test.unittests_suite_only',
