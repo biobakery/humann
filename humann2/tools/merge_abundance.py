@@ -44,31 +44,56 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     if header:
         write_file_handle.write(header)
         
-    # read through the pathways mapping file, merging in the gene families information
+    # read through the pathways mapping file, then merge in the gene families information
+    # read thorugh the file first to allow for unordered input files
+    pathways={}
+    pathways_by_bug={}
     while line:
-        write_file_handle.write(line)
+        data=line.rstrip().split(TABLE_DELIMITER)
+        bug=""
+        pathway=data[0]
         if BUG_DELIMITER in line:
-            data=line.rstrip().split(TABLE_DELIMITER)
-            try:
-                pathway,bug=data[0].split(BUG_DELIMITER)
-            except IndexError:
-                bug=""
-            # check for gene families for this pathway for this bug
+            pathway,bug=data[0].split(BUG_DELIMITER)
+        
+        # remove pathway name if present
+        if GENE_NAME_DELIMITER in pathway:
+            pathway=pathway.split(GENE_NAME_DELIMITER)[0]
+       
+        try:
+            data_point=float(data[-1])
+        except ValueError:
+            data_point=0
+ 
+        if data_point > 0:
             if bug:
-                for gene in pathways_to_genes.get(pathway,[]):
-                    if gene in gene_table:
-                        if bug in gene_table[gene]:
-                            # check if additional information should be added to the gene
-                            gene_with_info=gene
-                            if additional_gene_info:
-                                if gene in additional_gene_info:
-                                    gene_with_info+=GENE_NAME_DELIMITER+additional_gene_info[gene]
-                            # print out the gene for this bug
-                            output_line=TABLE_DELIMITER.join([BUG_DELIMITER.join([pathway,bug,gene_with_info]),gene_table[gene][bug]])
-                            write_file_handle.write(output_line+"\n")
+                if not pathway in pathways_by_bug:
+                    pathways_by_bug[pathway]=[]
+                pathways_by_bug[pathway].append([bug,data[-1]])
+            else:
+                pathways[pathway]=data[-1]
+
         line=file_handle.readline()
                         
     file_handle.close()
+
+    for pathway in sorted(pathways):
+        write_file_handle.write(TABLE_DELIMITER.join([pathway,pathways[pathway]])+"\n")
+        for item in pathways_by_bug.get(pathway,[]):
+            bug, data = item
+            output_line=TABLE_DELIMITER.join([BUG_DELIMITER.join([pathway,bug]), data])
+            write_file_handle.write(output_line+"\n")
+            # check for gene families for this pathway for this bug
+            for gene in pathways_to_genes.get(pathway,[]):
+                if gene in gene_table:
+                    if bug in gene_table[gene]:
+                        # check if additional information should be added to the gene
+                        gene_with_info=gene
+                        if additional_gene_info:
+                            if gene in additional_gene_info:
+                                gene_with_info+=GENE_NAME_DELIMITER+additional_gene_info[gene]
+                        # print out the gene for this bug
+                        output_line=TABLE_DELIMITER.join([BUG_DELIMITER.join([pathway,bug,gene_with_info]),gene_table[gene][bug]])
+                        write_file_handle.write(output_line+"\n")
     write_file_handle.close()
     
 def read_mapping(gene_mapping_file,pathway_mapping_file):
@@ -143,8 +168,10 @@ def read_gene_table(gene_table):
                 gene,bug=data[0].split(BUG_DELIMITER)
                 # remove the gene name if present and store
                 if GENE_NAME_DELIMITER in gene:
-                    gene,name=gene.split(GENE_NAME_DELIMITER)
-                    gene_names[gene]=name
+                    info=gene.split(GENE_NAME_DELIMITER)
+                    if len(info) > 1 :
+                        gene = info[0]
+                        gene_names[gene]=" ".join(info[1:])
                 data_point=data[1]
             except IndexError:
                 gene=""
