@@ -34,7 +34,8 @@ def join_gene_tables(gene_tables,output,verbose=None):
     start_column_id=""
     samples=[]
     file_basenames=[]
-    for index,gene_table in enumerate(gene_tables):
+    index=0
+    for gene_table in gene_tables:
         
         if verbose:
             print("Reading file: " + gene_table)
@@ -49,17 +50,20 @@ def join_gene_tables(gene_tables,output,verbose=None):
             header_info=header.rstrip().split(GENE_TABLE_DELIMITER)
             if not start_column_id:
                 start_column_id=header_info[0]
-            sample_name=header_info[1]
+            # allow for multiple samples
+            sample_names=header_info[1:]
         else:
             # if there is no header in the file then use the file name as the sample name
-            sample_name=file_basename
+            sample_names=[file_basename]
         
-        samples.append(sample_name)
         while line:
             data=line.rstrip().split(GENE_TABLE_DELIMITER)
             try:
                 gene=data[0]
-                data_point=data[1]
+                # if the header names multiple samples, merge all samples
+                # this prevents extra columns from being included in some rows
+                # this requires files containing multiple samples to include a header
+                data_points=data[1:len(sample_names)+1]
             except IndexError:
                 gene=""
 
@@ -68,20 +72,23 @@ def join_gene_tables(gene_tables,output,verbose=None):
                 fill = index - current_data.count(GENE_TABLE_DELIMITER)
                 if fill > 0:
                     # fill in zeros for samples without data then add data point
-                    gene_table_data[gene]=current_data + GENE_TABLE_DELIMITER.join(["0"]*fill) + GENE_TABLE_DELIMITER + data_point + GENE_TABLE_DELIMITER
+                    gene_table_data[gene]=current_data + GENE_TABLE_DELIMITER.join(["0"]*fill) + GENE_TABLE_DELIMITER + GENE_TABLE_DELIMITER.join(data_points) + GENE_TABLE_DELIMITER
                 elif fill < 0:
                     # add data point to other data point from the same sample
                     current_data_points=current_data.split(GENE_TABLE_DELIMITER)
-                    current_data_points[-2]=str(float(current_data_points[-2])+float(data_point))
+                    for i,point in enumerate(data_points):
+                        store_index=len(data_points)*-1-1+i
+                        current_data_points[store_index]=str(float(current_data_points[store_index])+float(point))
                     gene_table_data[gene] = GENE_TABLE_DELIMITER.join(current_data_points)
                 else:
                     # add data point to end of list
-                    gene_table_data[gene] = current_data + data_point + GENE_TABLE_DELIMITER
+                    gene_table_data[gene] = current_data + GENE_TABLE_DELIMITER.join(data_points) + GENE_TABLE_DELIMITER
 
             line=file_handle.readline()
             
         file_handle.close()
-        
+        samples+=sample_names
+        index+=len(sample_names)
     # if all of the header names for the files are the same
     # then use the file names as headers
     if samples.count(samples[0]) == len(samples):
