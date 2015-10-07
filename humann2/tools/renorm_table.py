@@ -51,6 +51,14 @@ def normalize ( table, cpm=False ):
             totals_by_level[level] = [0 for k in range( len( table.colheads ) )]
         table.data[i] = [float( k ) for k in row]
         totals_by_level[level] = [k1 + k2 for k1, k2 in zip( totals_by_level[level], table.data[i] )]
+    # check for sample / level combinations with zero sum
+    for level in sorted( totals_by_level ):
+        totals = totals_by_level[level]
+        for j, total in enumerate( totals ):
+            if total == 0:
+                totals[j] = 1
+                print( "WARNING: Column {} ({}) has zero sum at level {}".format( \
+                        j+1, table.colheads[j], level ), file=sys.stderr )               
     # normalize
     for i, row in enumerate( table.data ):
         level = len( table.rowheads[i].split( util.c_strat_delim ) )
