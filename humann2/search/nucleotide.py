@@ -271,7 +271,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 if identity > config.identity_threshold:
                     matches=identity/100.0*alignment_length
                     alignments.add_annotated(query,matches,info[config.sam_reference_index],
-                        normalize_by_read_length=True)
+                        alignment_length)
                 else:
                     small_identity_count+=1
                     unaligned_read=True

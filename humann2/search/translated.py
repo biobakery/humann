@@ -360,7 +360,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 if evalue<config.evalue_threshold:
                     matches=identity/100.0*alignment_length
                     alignments.add_annotated(queryid, matches, 
-                        alignment_info[config.blast_reference_index], normalize_by_read_length=False)
+                        alignment_info[config.blast_reference_index],
+                        alignment_length)
                     
                     # remove the id of the alignment from the unaligned reads store
                     unaligned_reads_store.remove_id(queryid) 

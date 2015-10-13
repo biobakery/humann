@@ -228,6 +228,7 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         Test the unaligned reads and the store alignments
         Test with a bowtie2/sam output file
         Test the different annotation formats are recognized for gene length
+        Test the gene length uses the read length from the sam file
         """
         
         # create a set of alignments
@@ -247,12 +248,16 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         self.assertEqual(len(all_hits),4)
         
         # check for set and default gene lengths
+        read_length = 151
+        expected_length_uniref50 = (abs(2000 - read_length)+1)/1000.0
+        expected_length_other = (abs(1000 - read_length)+1)/1000.0
+        
         for hit in all_hits:
             query, bug, reference, score, length = hit
             if reference == "UniRef50":
-                self.assertEqual(length,2000/1000.0)
+                self.assertEqual(length,expected_length_uniref50)
             else:
-                self.assertEqual(length,1000/1000.0)
+                self.assertEqual(length,expected_length_other)
                 
     def test_nucleotide_search_unaligned_reads_scores(self):
         """

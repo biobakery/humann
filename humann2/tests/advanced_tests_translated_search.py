@@ -44,7 +44,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 identity=float(data[config.blast_identity_index])
                 alignment_length=float(data[config.blast_aligned_length_index])
             
-                alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
+                alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified",alignment_length)
             
         file_handle.close()
         
@@ -93,7 +93,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 
                 # only store those alignments with log evalues that meet threshold
                 if math.pow(10.0, evalue) < config.evalue_threshold:
-                    alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
+                    alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified",alignment_length)
             
         file_handle.close()
         
@@ -142,7 +142,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 
                 # only store those alignments with identities that meet threshold
                 if identity > config.identity_threshold:
-                    alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
+                    alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified",alignment_length)
             
         file_handle.close()
         
@@ -184,7 +184,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 identity=float(data[config.blast_identity_index])
                 alignment_length=float(data[config.blast_aligned_length_index])
             
-                alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified")
+                alignments.add(referenceid, 0, queryid, identity/100.0*alignment_length,"unclassified",alignment_length)
             
         file_handle.close()
         
@@ -270,11 +270,16 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         self.assertEqual(len(all_hits),4)
         
         # check for set and default gene lengths
+        read_length = 50
+        expected_length_uniref50 = (abs(2000 - read_length)+1)/1000.0
+        expected_length_other = (abs(1000 - read_length)+1)/1000.0
+        
+        # check for set and default gene lengths
         for hit in all_hits:
             query, bug, reference, score, length = hit
             if reference == "UniRef50":
-                self.assertEqual(length,2000/1000.0)
+                self.assertEqual(length,expected_length_uniref50)
             else:
-                self.assertEqual(length,1000/1000.0)
+                self.assertEqual(length,expected_length_other)
 
 

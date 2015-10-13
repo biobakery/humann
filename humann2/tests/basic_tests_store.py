@@ -784,10 +784,11 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments()
         
-        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1")
+        
+        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2",1)
+        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1",1)
         
         # check the total bugs
         self.assertEqual(alignments_store.count_bugs(),3)
@@ -800,10 +801,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments()
         
-        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1")
+        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2",1)
+        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1",1)
         
         # check the total genes
         self.assertEqual(alignments_store.count_genes(),3)
@@ -816,10 +817,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments()
         
-        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1")
+        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2",1)
+        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1",1)
         
         # check bug list
         self.assertEqual(sorted(alignments_store.bug_list()),["bug1","bug2","bug3"])
@@ -832,10 +833,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments()
         
-        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1")
+        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug2",1)
+        alignments_store.add("gene3", 1, "Q2", 0.01, "bug3",1)
+        alignments_store.add("gene1", 1, "Q1", 0.01, "bug1",1)
         
         # check gene list
         self.assertEqual(sorted(alignments_store.gene_list()),["gene1","gene2","gene3"])     
@@ -848,10 +849,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments()
         
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1")
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",1)
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",1)
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",1)
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",1)
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
@@ -861,22 +862,22 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         """
         Alignments class: Test add function
         Test the gene lengths with read length normalization
+        Test setting the average read length
         """             
         
         alignments_store=store.Alignments()
         
-        current_average_read_length=config.average_read_length
-        
         # set the average read length
+        current_length = config.average_read_length
         config.average_read_length=100
         
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",normalize_by_read_length=True)
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",normalize_by_read_length=True)
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",normalize_by_read_length=True)
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",normalize_by_read_length=True)
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1")
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2")
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3")
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1")
         
-        # reset the average read length to the default
-        config.average_read_length=current_average_read_length
+        # reset the average read length
+        config.average_read_length = current_length
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
@@ -891,10 +892,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments(minimize_memory_use=True)
         
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1")
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",1)
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",1)
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",1)
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",1)
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
@@ -912,18 +913,13 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         alignments_store=store.Alignments(minimize_memory_use=True)
         
-        current_average_read_length=config.average_read_length
-        
         # set the average read length
-        config.average_read_length=100
+        average_read_length=100
         
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",normalize_by_read_length=True)
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",normalize_by_read_length=True)
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",normalize_by_read_length=True)
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",normalize_by_read_length=True)
-        
-        # reset the average read length to the default
-        config.average_read_length=current_average_read_length
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",average_read_length)
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",average_read_length)
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",average_read_length)
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",average_read_length)
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]

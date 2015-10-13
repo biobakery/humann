@@ -85,18 +85,21 @@ def store_id_mapping(file):
     
     return id_mapping 
 
-def normalized_gene_length(gene_length, normalize_by_read_length=None):
+def normalized_gene_length(gene_length, read_length):
     """
     Compute the normalized gene length with the average read length if set
     Report in reads per kilobase
     """
+    
+    # if no read length is provided, default to 1
+    if read_length < 1:
+        read_length = 1
+        
+    # if an average read length is provided, use this instead
+    if config.average_read_length > 1:
+        read_length = config.average_read_length
 
-    if normalize_by_read_length:
-        adjusted_gene_length=(abs(gene_length - config.average_read_length)+1)/1000.0
-    else:
-        adjusted_gene_length=gene_length/1000.0 
-
-    return adjusted_gene_length
+    return (abs(gene_length - read_length)+1)/1000.0
 
 class Alignments:
     """
@@ -286,7 +289,7 @@ class Alignments:
 
         return [gene,length,bug]
 
-    def add_annotated(self, query, matches, annotated_reference, normalize_by_read_length=None):
+    def add_annotated(self, query, matches, annotated_reference, read_length=None):
         """
         Add an alignment with an annotated reference
         """
@@ -294,13 +297,17 @@ class Alignments:
         # Obtain the reference id length and bug
         [referenceid,length,bug]=self.process_reference_annotation(annotated_reference)
         
-        self.add(referenceid, length, query, matches, bug, normalize_by_read_length)
+        self.add(referenceid, length, query, matches, bug, read_length)
 
-    def add(self, reference, reference_length, query, matches, bug, normalize_by_read_length=None): 
+    def add(self, reference, reference_length, query, matches, bug, read_length=None): 
         """ 
         Add the hit to the list
         Add the index of the hit to the bugs list and gene list
         """
+        
+        # set default read length
+        if read_length is None:
+            read_length = config.average_read_length
         
         if reference_length==0:
             reference_length=config.default_reference_length
@@ -330,7 +337,7 @@ class Alignments:
             self.__total_scores_by_query[query]=score
         
         # Store the scores by bug and gene
-        normalized_reference_length=normalized_gene_length(reference_length, normalize_by_read_length)
+        normalized_reference_length=normalized_gene_length(reference_length, read_length)
         normalized_score=1/normalized_reference_length
         if bug in self.__scores_by_bug_gene:
             self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_score
