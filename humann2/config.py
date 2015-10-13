@@ -61,7 +61,6 @@ def log_settings():
     
     lines.append("ALIGNMENT SETTINGS")
     lines.append("evalue threshold = " + str(evalue_threshold))
-    lines.append("average read length = " + str(average_read_length))
     lines.append("prescreen threshold = " + str(prescreen_threshold))
     lines.append("identity threshold = " + str(identity_threshold))
     lines.append("")
@@ -222,9 +221,6 @@ threads=get_item(config_items, "run_modes", "threads", "int")
     
 # evalue threshold
 evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold", "float")
-    
-# average read length
-average_read_length=get_item(config_items, "alignment_settings", "average_read_length", "int")
     
 # prescreen threshold
 prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")

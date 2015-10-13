@@ -609,7 +609,6 @@ $ humann2_config --print
 HUMAnN2 Configuration ( Section : Name = Value )
 output_format : remove_stratified_output = False
 output_format : output_max_decimals = 10
-alignment_settings : average_read_length = 1
 alignment_settings : prescreen_threshold = 0.01
 alignment_settings : evalue_threshold = 1.0
 alignment_settings : identity_threshold = 40.0
@@ -654,7 +653,6 @@ threads = 4
 
 ALIGNMENT SETTINGS
 evalue threshold = 1.0
-average read length = 1
 prescreen threshold = 0.01
 identity threshold = 40.0
 
@@ -1018,8 +1016,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--bypass-nucleotide-search] -i <input.fastq> -o <output>
                [--nucleotide-database <nucleotide_database>]
                [--annotation-gene-index <8>]
-               [--protein-database <protein_database>]
-               [--average-read-length <1>] [--evalue <1.0>]
+               [--protein-database <protein_database>] [--evalue <1.0>]
                [--metaphlan <metaphlan>]
                [--metaphlan-options <metaphlan_options>]
                [--o-log <sample.log>]
@@ -1068,9 +1065,6 @@ optional arguments:
   --protein-database <protein_database>
                         directory containing the protein database
                         [DEFAULT: humann2/data/uniref_DEMO]
-  --average-read-length <1>
-                        the average length of the reads
-                        [DEFAULT: 1]
   --evalue <1.0>        the evalue threshold to use with the translated search
                         [DEFAULT: 1.0]
   --metaphlan <metaphlan>

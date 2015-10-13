@@ -137,12 +137,6 @@ def parse_arguments(args):
             + config.protein_database + "]", 
         metavar="<protein_database>")
     parser.add_argument(
-        "--average-read-length", 
-        help="the average length of the reads\n[DEFAULT: " + str(config.average_read_length) + "]", 
-        metavar="<" + str(config.average_read_length) + ">", 
-        type=int,
-        default=config.average_read_length) 
-    parser.add_argument(
         "--evalue", 
         help="the evalue threshold to use with the translated search\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
         metavar="<" + str(config.evalue_threshold) + ">", 
@@ -394,9 +388,6 @@ def update_configuration(args):
     
     # Update threads
     config.threads=args.threads
-    
-    # Update the average read length
-    config.average_read_length=args.average_read_length
     
     # Update the evalue threshold
     config.evalue_threshold=args.evalue

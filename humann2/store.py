@@ -91,13 +91,9 @@ def normalized_gene_length(gene_length, read_length):
     Report in reads per kilobase
     """
     
-    # if no read length is provided, default to 1
+    # if read length is not provided, default to 1
     if read_length < 1:
         read_length = 1
-        
-    # if an average read length is provided, use this instead
-    if config.average_read_length > 1:
-        read_length = config.average_read_length
 
     return (abs(gene_length - read_length)+1)/1000.0
 
@@ -307,7 +303,7 @@ class Alignments:
         
         # set default read length
         if read_length is None:
-            read_length = config.average_read_length
+            read_length = 1
         
         if reference_length==0:
             reference_length=config.default_reference_length

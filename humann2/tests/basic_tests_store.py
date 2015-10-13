@@ -868,16 +868,12 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         alignments_store=store.Alignments()
         
         # set the average read length
-        current_length = config.average_read_length
-        config.average_read_length=100
+        average_read_length=100
         
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1")
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2")
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3")
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1")
-        
-        # reset the average read length
-        config.average_read_length = current_length
+        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",average_read_length)
+        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",average_read_length)
+        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",average_read_length)
+        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",average_read_length)
         
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
