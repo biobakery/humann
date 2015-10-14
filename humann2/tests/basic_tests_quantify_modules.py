@@ -100,6 +100,51 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         
         self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
         
+    def test_gap_fill_all_required_reactions(self):
+        """
+        Test the gap fill function, with a set of scores of all required reactions
+        Test the lowest score is boosted
+        """
+        
+        key_reactions=["A","B","C","D","E"]
+        reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 1, "E": 0.1}
+        
+        gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        
+        expected_reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 1, "E": 1}
+        
+        self.assertDictEqual(gap_filled_reaction_scores, expected_reaction_scores)
+        
+    def test_gap_fill_all_required_reactions_one_optional(self):
+        """
+        Test the gap fill function, with a set of scores of all required reactions
+        Test the lowest score is boosted
+        Test the optional reaction is not boosted
+        """
+        
+        key_reactions=["A","B","C","D","E"]
+        reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 1, "E": 0.1, "F": 0.1}
+        
+        gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        
+        expected_reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 1, "E": 1, "F": 0.1}
+        
+        self.assertDictEqual(gap_filled_reaction_scores, expected_reaction_scores)
+        
+    def test_gap_fill_all_required_two_lowest_scores(self):
+        """
+        Test the gap fill function, with a set of scores of all required reactions
+        Test the lowest score is boosted
+        Test the two lowest scores are unchanged
+        """
+        
+        key_reactions=["A","B","C","D","E"]
+        reaction_scores={ "A": 1, "B": 2 , "C": 2, "D": 0.1, "E": 0.1}
+        
+        gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        
+        self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
+        
         
     def test_harmonic_mean(self):
         """

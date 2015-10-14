@@ -35,13 +35,13 @@ PWY-5659: GDP-mannose biosynthesis	1.0998673
 PWY-5659: GDP-mannose biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7861635
 ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis	1.0021333
 ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8734578
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II	0.9990010
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5414185
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4116921
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II	0.9990010
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5414185
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4116921
 RHAMCAT-PWY: L-rhamnose degradation I	0.9869233
 GALACTUROCAT-PWY: D-galacturonate degradation I	0.9859016
 PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II	0.9325500
 PWY-3781: aerobic respiration I (cytochrome c)	0.7824726
-PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II	0.7604563
-PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5414185
-PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4116921
-PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II	0.7604563
-PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5414185
-PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4116921

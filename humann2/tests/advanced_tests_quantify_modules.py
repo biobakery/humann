@@ -350,11 +350,12 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         pathways_and_reactions_store.add(bug, "F", "pathway2", 60)
         
         # The abundance for each pathway is the harmonic mean of the values
-        pathway1_values=[11,12,13,14]
-        pathway1_abundance=len(pathway1_values)/sum(1.0/v for v in pathway1_values)
+        # boost the lowest value in the pathway
+        pathway1_values_boosted=[12,12,13,14]
+        pathway1_abundance=len(pathway1_values_boosted)/sum(1.0/v for v in pathway1_values_boosted)
         
-        pathway2_values=[19,20,30,40,50,60]
-        pathway2_abundance=len(pathway2_values)/sum(1.0/v for v in pathway2_values)    
+        pathway2_values_boosted=[20,20,30,40,50,60]
+        pathway2_abundance=len(pathway2_values_boosted)/sum(1.0/v for v in pathway2_values_boosted)    
         
         # Find the actual result
         pathways_abundance_store_result=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
@@ -448,11 +449,12 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         # Get the coverage result
         # The median is the median of all of the reactions of all of the pathways for this bug
         median_score_value=19.5
-        pathway1_values=[11,12,13,14]
-        coverage_pathway1=len(pathway1_values)/sum(1.0/chi2cdf.chi2cdf(v,median_score_value) for v in pathway1_values)
+        # boost the pathway values
+        pathway1_values_boosted=[12,12,13,14]
+        coverage_pathway1=len(pathway1_values_boosted)/sum(1.0/chi2cdf.chi2cdf(v,median_score_value) for v in pathway1_values_boosted)
 
-        pathway2_values=[19,20,30,40,50,60]
-        coverage_pathway2=len(pathway2_values)/sum(1.0/chi2cdf.chi2cdf(v,median_score_value) for v in pathway2_values)
+        pathway2_values_boosted=[20,20,30,40,50,60]
+        coverage_pathway2=len(pathway2_values_boosted)/sum(1.0/chi2cdf.chi2cdf(v,median_score_value) for v in pathway2_values_boosted)
         
         # Find the actual result
         pathways_abundance_store_result=modules.compute_pathways_coverage(pathways_and_reactions_store, pathways_database_store)

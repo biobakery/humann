@@ -363,6 +363,7 @@ def compute_structured_pathway_abundance_or_coverage(structure, key_reactions, r
 def gap_fill(key_reactions, reaction_scores):
     """
     If all but one of the key reactions have abundance scores, then fill gap
+    Boost the lowest abundance score
     """
     
     # get the scores for all of the key reactions
@@ -379,7 +380,14 @@ def gap_fill(key_reactions, reaction_scores):
             score=reaction_scores.get(reaction,0)
             if score == 0:
                 reaction_scores[reaction]=min_score
-        
+    elif len(key_reactions)-len(key_reactions_scores) == 0:
+        # boost lowest abundance score
+        sorted_key_reactions_scores=sorted(key_reactions_scores)
+        for reaction in key_reactions:
+            score=reaction_scores.get(reaction,0)
+            if score == sorted_key_reactions_scores[0]:
+                reaction_scores[reaction]=sorted_key_reactions_scores[1]
+
     return reaction_scores
     
     
