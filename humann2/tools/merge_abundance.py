@@ -49,6 +49,7 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     # read thorugh the file first to allow for unordered input files
     pathways={}
     pathways_by_bug={}
+    pathway_names={}
     while line:
         data=line.rstrip().split(TABLE_DELIMITER)
         bug=""
@@ -58,7 +59,9 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
         
         # remove pathway name if present
         if GENE_NAME_DELIMITER in pathway:
-            pathway=pathway.split(GENE_NAME_DELIMITER)[0]
+            info=pathway.split(GENE_NAME_DELIMITER)
+            pathway = info[0]
+            pathway_names[pathway]=" ".join(info[1:])
        
         try:
             data_point=float(data[-1])
@@ -78,7 +81,12 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     file_handle.close()
 
     for pathway in sorted(pathways):
-        write_file_handle.write(TABLE_DELIMITER.join([pathway,pathways[pathway]])+"\n")
+        # check if the name should be added to the pathway
+        pathway_with_name=pathway
+        if pathway in pathway_names:
+            pathway_with_name+=GENE_NAME_DELIMITER+pathway_names[pathway]
+        
+        write_file_handle.write(TABLE_DELIMITER.join([pathway_with_name,pathways[pathway]])+"\n")
         
         # do not write the taxonomy if set
         if remove_taxonomy:
@@ -191,9 +199,8 @@ def read_gene_table(gene_table):
                 # remove the gene name if present and store
                 if GENE_NAME_DELIMITER in gene:
                     info=gene.split(GENE_NAME_DELIMITER)
-                    if len(info) > 1 :
-                        gene = info[0]
-                        gene_names[gene]=" ".join(info[1:])
+                    gene = info[0]
+                    gene_names[gene]=" ".join(info[1:])
                 data_point=float(data[1])
             except (IndexError,ValueError):
                 gene=""
