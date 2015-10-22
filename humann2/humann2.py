@@ -8,7 +8,7 @@ the coverage and abundance of microbial pathways in a community
 from metagenomic data. Sequencing a metagenome typically produces millions 
 of short DNA/RNA reads.
 
-Dependencies: MetaPhlAn2, ChocoPhlAn, Bowtie2, Rapsearch2 or Usearch
+Dependencies: MetaPhlAn2, ChocoPhlAn, Bowtie2, and ( Diamond or Rapsearch2 or Usearch )
 
 To Run: humann2 -i <input.fastq> -o <output_dir>
 
