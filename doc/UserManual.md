@@ -56,6 +56,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         6. [Combine metagenomic and metatranscriptomic sequencing data](#markdown-header-6-combine-metagenomic-and-metatranscriptomic-sequencing-data)        
         7. [Strain-level functional profiling](#markdown-header-7-strain-level-functional-profiling)
         8. [Reduce table](#markdown-header-8-reduce-table)
+        9. [Merge abundance tables](#markdown-header-9-merge-abundance-tables)
 * [Tutorials](#markdown-header-tutorials)
     * [Paired-end reads](#markdown-header-humann2-and-paired-end-sequencing-data)
     * [PICRUSt output](#markdown-header-picrust-output)
@@ -741,6 +742,16 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 *   $OUTPUT.tsv = the file to write the new reduced table (tsv format) 
 *   Optional: ``--function {min|max|mean}`` the function to apply (default is max)
 *   Optional: ``--sort-by {level|name|value}`` to indicate how the output should be sorted (default is original order)
+
+#### 9. Merge abundance tables ####
+
+`` $ humann2_merge_abundance_tables --input-genes $INPUT_GENES.tsv --input-pathways $INPUT_PATHWAYS.tsv --output $OUTPUT.tsv ``
+
+*   $INPUT_GENES.tsv = a file containing the gene families abundance table (tsv format)
+*   $INPUT_PATHWAYS.tsv = a file containing the pathways abundance table (tsv format)
+*   $OUTPUT.tsv = the file to write the new merged abundance table (tsv format)
+*   Optional: ``--remove-taxonomy`` remove the taxonomy from the output file
+
 
 ## Tutorials ##
 
