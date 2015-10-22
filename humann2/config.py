@@ -426,7 +426,7 @@ diamond_version={
     "flag" : "-v",
     "major" : 0,
     "minor" : 7,
-    "second minor" : 3,
+    "second minor" : 9,
     "line" : 0,
     "column" : 1}
 
