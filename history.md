@@ -1,6 +1,21 @@
 
 # HUMAnN2 History #
 
+## v0.5.0 10-22-2015 ##
+
+### New Features ###
+
+* Added default read length alignment normalization
+    * This replaces the optional read length normalization using "--average-read-length L"
+* Added new script humann2_merge_abundance_tables
+    * This script merges the tables to stratify gene families with respect to pathways
+
+### Other Changes ###
+
+* Updated gap fill method to fill single lowest score
+* Join script updated to allow for input files containing multiple samples
+* Required Diamond version updated to v0.7.9+
+
 ## v0.4.0 09-16-2015 ##
 
 ### New Features ###
