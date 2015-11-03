@@ -1018,6 +1018,9 @@ HUMAnN2 frequently asked questions:
     *   Yes, use the ``--output-format biom`` option
 11.  Can I change the identity threshold for alignments?
     *   Yes, use the ``--identity-threshold <40.0>`` option
+12.  Can I change the options provided to MetaPhlAn2?
+    *   Yes, use the ``--metaphlan-options="-t rel_ab"`` option
+    *   Please note the special formatting required for this option
 
 ## Complete option list ##
 
