@@ -376,7 +376,7 @@ def check_software_version(exe,version):
         current_minor_version=int(current_version[1])
         if "second minor" in version:
             current_second_minor_version=int(current_version[2])
-    except (NameError,KeyError,ValueError):
+    except (NameError,KeyError,ValueError,IndexError):
         message="Can not call software version for " + exe
         logger.critical(message)
         sys.exit("CRITICAL ERROR: " + message + "\n")       
