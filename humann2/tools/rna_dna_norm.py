@@ -12,14 +12,14 @@ HUMAnN2 utility for normalizing combined meta'omic sequencing data
 Given a DNA table and a RNA table, produce smoothed RNA and DNA 
 values as well as relative expression values. "Smoothing" means
 substituting a small value in place of a zero or missing value.
-The Witten-Bell smoothing procedure is used here.
+The default method used is "Laplace" (pseudocount) scaling, where
+the pseudocount is the sample-specific minimum non-zero value.
+(Witten-Bell smoothing is also implemented.)
 
-If working with stratified data, smoothing is carried out on the
+-- The DNA and RNA columns must be 1:1 and in the same order.
+
+-- If working with stratified data, smoothing is carried out on the
 stratified values and then community totals are recomputed.
-
-The DNA and RNA columns must be 1:1 and in the same order.
-The units of the table should be count-like (for example,
-HUMAnN2 gene family abundance files).
 """
 
 # ---------------------------------------------------------------
@@ -51,7 +51,13 @@ def get_args ():
     parser.add_argument( 
         "-o", "--output_basename", 
         default = "results",
-        help="Path/basename for the three output tables",
+        help="Path/basename for the three output tables; DEFAULT=results",
+        )
+    parser.add_argument( 
+        "-m", "--method",
+        choices=["laplace", "witten_bell"],
+        default = "laplace",
+        help="Choice of smoothing method; DEFAULT=laplace",
         )
     parser.add_argument( 
         "-l", "--log_transform", 
@@ -62,7 +68,7 @@ def get_args ():
         "-b", "--log_base", 
         type=float,
         default=2.0,
-        help="Base for log transformation (if specified); DEFAULT=2."
+        help="Base for log transformation (if requested); DEFAULT=2."
         )
     args = parser.parse_args()
     return args
@@ -75,7 +81,37 @@ def remove_totals( table ):
             data2.append( table.data[i] )
     table.rowheads, table.data = rowheads2, data2
 
-def wbsmooth( table, all_features ):
+def laplace( table, all_features ):
+    alphas = [None for i in table.data[0]]
+    colsums = [0 for i in table.data[0]]
+    for i, row in enumerate( table.data ):
+        # float table here
+        table.data[i] = map( float, row )
+        for j, value in enumerate( table.data[i] ):
+            colsums[j] += value
+            if value > 0:
+                if alphas[j] is None or value < alphas[j]:
+                    alphas[j] = value
+    # save colsums in table object
+    table.colsums = colsums
+    # compute quick index for table
+    rowmap = {rowhead:i for i, rowhead in enumerate( table.rowheads )}
+    # rebuild table data
+    rowheads2, data2 = [], []
+    for feature in all_features:
+        rowheads2.append( feature )
+        # feature is in the table; still adjust zero values
+        if feature in rowmap:
+            # augment all feature values by their sample alphas
+            i = rowmap[feature]
+            table.data[i] = [k1 + k2 for k1, k2 in zip( table.data[i], alphas )]
+            data2.append( table.data[i] )
+        # feature is absent from the table; use alphas for everyone
+        else:
+            data2.append( alphas )
+    table.rowheads, table.data = rowheads2, data2
+
+def witten_bell( table, all_features ):
     nonzero = [0 for i in table.data[0]]
     colsums = [0 for i in table.data[0]]
     for i, row in enumerate( table.data ):
@@ -115,7 +151,7 @@ def wbsmooth( table, all_features ):
         # feature is absent from the table; use epsilon for everyone
         else:
             data2.append( epsilons )
-    table.rowheads, table.data = rowheads2, data2      
+    table.rowheads, table.data = rowheads2, data2
 
 def hsum( table ):
     # look ahead
@@ -138,13 +174,14 @@ def hsum( table ):
     table.rowheads, table.data = rowheads2, data2
 
 # ---------------------------------------------------------------
-# maine
+# main
 # ---------------------------------------------------------------
 
 def main ( ):
     args = get_args()
     dna = util.Table( args.input_dna )
     rna = util.Table( args.input_rna )
+    method = {"laplace":laplace, "witten_bell":witten_bell}[args.method]
     assert dna.is_stratified == rna.is_stratified, \
         "FAILED: Tables have nonequal stratification status."
     strat_mode = dna.is_stratified
@@ -153,7 +190,7 @@ def main ( ):
         if strat_mode:
             remove_totals( t )
             all_features = [k for k in all_features if util.c_strat_delim in k]
-        wbsmooth( t, all_features )
+        method( t, all_features )
         if strat_mode:
             hsum( t )
     # write out dna/rna
