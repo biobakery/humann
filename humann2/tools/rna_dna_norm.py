@@ -83,17 +83,13 @@ def remove_totals( table ):
 
 def laplace( table, all_features ):
     alphas = [None for i in table.data[0]]
-    colsums = [0 for i in table.data[0]]
     for i, row in enumerate( table.data ):
         # float table here
         table.data[i] = map( float, row )
         for j, value in enumerate( table.data[i] ):
-            colsums[j] += value
             if value > 0:
                 if alphas[j] is None or value < alphas[j]:
                     alphas[j] = value
-    # save colsums in table object
-    table.colsums = colsums
     # compute quick index for table
     rowmap = {rowhead:i for i, rowhead in enumerate( table.rowheads )}
     # rebuild table data
@@ -110,6 +106,11 @@ def laplace( table, all_features ):
         else:
             data2.append( alphas )
     table.rowheads, table.data = rowheads2, data2
+    # compute and attach colsums (accounting for new mass)
+    colsums = [0 for i in table.data[0]]
+    for row in table.data:
+        colsums = [k1 + k2 for k1, k2 in zip( colsums, row )]
+    table.colsums = colsums
 
 def witten_bell( table, all_features ):
     nonzero = [0 for i in table.data[0]]
