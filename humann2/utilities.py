@@ -241,8 +241,11 @@ def unnamed_temp_file(prefix=None):
     if not prefix:
         prefix="tmp"
         
-    file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir,prefix=prefix)
-    os.close(file_out)
+    try:
+        file_out, new_file=tempfile.mkstemp(dir=config.unnamed_temp_dir,prefix=prefix)
+        os.close(file_out)
+    except EnvironmentError:
+        sys.exit("ERROR: Unable to create temp file: " + new_file)
     
     return(new_file)
     
