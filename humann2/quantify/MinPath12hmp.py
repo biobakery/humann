@@ -871,7 +871,10 @@ def Orth2Path(infile = "demo.ko", whichdb = "KEGG", mpsfile = "test.mps", report
 		#tmp = aline.split("\t")
 		tmp = aline.strip().split()
 		if len(tmp) >= 2:
-			ab = float(tmp[1])
+			try:
+				ab = float(tmp[1])
+			except (ValueError,IndexError):
+				ab = 0.0
 			add = add + ab
 			if tmp[0] not in orthlist:
 				orthlist.append(tmp[0])
