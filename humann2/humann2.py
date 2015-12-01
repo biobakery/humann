@@ -168,10 +168,6 @@ def parse_arguments(args):
             "[DEFAULT: temp files are not removed]", 
         action="store_true")
     parser.add_argument(
-        "--bowtie2",
-        help="directory of the bowtie2 executable\n[DEFAULT: $PATH]", 
-        metavar="<bowtie2>")
-    parser.add_argument(
         "--threads", 
         help="number of threads/processes\n[DEFAULT: " + str(config.threads) + "]", 
         metavar="<" + str(config.threads) + ">", 
@@ -191,6 +187,17 @@ def parse_arguments(args):
         metavar="<" + str(config.identity_threshold) + ">", 
         type=float,
         default=config.identity_threshold) 
+    parser.add_argument(
+        "--coverage-threshold", 
+        help="coverage threshold for translated alignments\n[DEFAULT: " 
+            + str(config.coverage_threshold) + "]", 
+        metavar="<" + str(config.coverage_threshold) + ">", 
+        type=float,
+        default=config.coverage_threshold)
+    parser.add_argument(
+        "--bowtie2",
+        help="directory containing the bowtie2 executable\n[DEFAULT: $PATH]", 
+        metavar="<bowtie2>") 
     parser.add_argument(
         "--usearch", 
         help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
@@ -379,6 +386,7 @@ def update_configuration(args):
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.identity_threshold=args.identity_threshold
+    config.coverage_threshold=args.coverage_threshold
     
     # Update the max decimals output
     config.output_max_decimals=args.output_max_decimals

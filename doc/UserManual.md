@@ -1035,8 +1035,9 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--metaphlan-options <metaphlan_options>]
                [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-               [--remove-temp-output] [--bowtie2 <bowtie2>] [--threads <1>]
+               [--remove-temp-output] [--threads <1>]
                [--prescreen-threshold <0.01>] [--identity-threshold <40.0>]
+               [--coverage-threshold <50.0>] [--bowtie2 <bowtie2>]
                [--usearch <usearch>] [--rapsearch <rapsearch>]
                [--diamond <diamond>]
                [--taxonomic-profile <taxonomic_profile.tsv>]
@@ -1094,8 +1095,6 @@ optional arguments:
                         [DEFAULT: DEBUG]
   --remove-temp-output  remove temp output files
                         [DEFAULT: temp files are not removed]
-  --bowtie2 <bowtie2>   directory of the bowtie2 executable
-                        [DEFAULT: $PATH]
   --threads <1>         number of threads/processes
                         [DEFAULT: 1]
   --prescreen-threshold <0.01>
@@ -1104,6 +1103,11 @@ optional arguments:
   --identity-threshold <40.0>
                         identity threshold for alignments
                         [DEFAULT: 40.0]
+  --coverage-threshold <50.0>
+                        coverage threshold for translated alignments
+                        [DEFAULT: 50.0]
+  --bowtie2 <bowtie2>   directory containing the bowtie2 executable
+                        [DEFAULT: $PATH]
   --usearch <usearch>   directory containing the usearch executable
                         [DEFAULT: $PATH]
   --rapsearch <rapsearch>

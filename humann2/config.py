@@ -63,6 +63,7 @@ def log_settings():
     lines.append("evalue threshold = " + str(evalue_threshold))
     lines.append("prescreen threshold = " + str(prescreen_threshold))
     lines.append("identity threshold = " + str(identity_threshold))
+    lines.append("coverage threshold = " + str(coverage_threshold))
     lines.append("")
     
     lines.append("PATHWAYS SETTINGS")
@@ -227,6 +228,9 @@ prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_thre
 
 # translated search identity threshold
 identity_threshold=get_item(config_items, "alignment_settings", "identity_threshold", "float")
+
+# translated search coverage threshold
+coverage_threshold=get_item(config_items, "alignment_settings", "coverage_threshold", "float")
     
 # output file decimal places
 output_max_decimals=get_item(config_items, "output_format", "output_max_decimals", "int")
@@ -372,6 +376,8 @@ blast_query_index=0
 blast_reference_index=1
 blast_identity_index=2
 blast_aligned_length_index=3
+blast_protein_start_index=8
+blast_protein_end_index=9
 blast_evalue_index=10
 blast_total_columns=12
 

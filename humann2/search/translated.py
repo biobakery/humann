@@ -33,6 +33,7 @@ import traceback
 from .. import utilities
 from .. import config
 from .. import store
+from ..search import blastx_coverage
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -290,6 +291,9 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
         print(message)
         return unaligned_file_fasta
         
+    # get the list of proteins from the alignment that meet the coverage threshold
+    allowed_proteins = blastx_coverage.blastx_coverage(alignment_file_tsv,
+        config.coverage_threshold, alignments, log_messages=True)
 
     # read through the alignment file to identify ids
     # that correspond to aligned reads
@@ -300,6 +304,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     log_evalue=False
     large_evalue_count=0
     small_identity_count=0
+    small_coverage_count=0
     while line:
         if re.search("^#",line):
             # Check for the rapsearch2 header to determine if these are log(e-value)
@@ -359,12 +364,21 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
                 # only store alignments with evalues less than threshold
                 if evalue<config.evalue_threshold:
                     matches=identity/100.0*alignment_length
-                    alignments.add_annotated(queryid, matches, 
-                        alignment_info[config.blast_reference_index],
-                        alignment_length)
                     
-                    # remove the id of the alignment from the unaligned reads store
-                    unaligned_reads_store.remove_id(queryid) 
+                    # get the protein alignment information
+                    protein_name, gene_length, bug = alignments.process_reference_annotation(
+                        alignment_info[config.blast_reference_index])
+                    
+                    # check the protein matches one allowed
+                    if protein_name in allowed_proteins:
+                        # if matches allowed, then add alignment
+                        alignments.add(protein_name, gene_length, queryid, matches, 
+                            bug, alignment_length)
+                        
+                        # remove the id of the alignment from the unaligned reads store
+                        unaligned_reads_store.remove_id(queryid)
+                    else:
+                        small_coverage_count+=1 
                 else:
                     large_evalue_count+=1
             
@@ -374,6 +388,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
         str(large_evalue_count))
     logger.debug("Total translated alignments not included based on small percent identity: " + 
         str(small_identity_count))
+    logger.debug("Total translated alignments not included based on small coverage value: " + 
+        str(small_coverage_count))
     file_handle.close()
 
     # create unaligned file using list of remaining unaligned stored data

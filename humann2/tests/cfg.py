@@ -70,7 +70,11 @@ rapsearch_file_annotations=os.path.join(data_folder,"annotations.m8")
 
 rapsearch2_output_file_with_header=os.path.join(data_folder, "rapsearch2_output_with_header.m8")
 rapsearch2_output_file_without_header=os.path.join(data_folder, "rapsearch2_output_without_header.m8")
+rapsearch2_output_file_without_header_coverage=os.path.join(data_folder,"rapsearch2_output_without_header_coverage_filter.m8")
+rapsearch2_output_file_without_header_coverage_custom_annotations=os.path.join(data_folder,"rapsearch2_output_without_header_coverage_filter_custom_annotation.m8")
+rapsearch2_output_file_without_header_coverage_chocophlan_annotations=os.path.join(data_folder,"rapsearch2_output_without_header_coverage_filter_chocophlan_annotation.m8")
 rapsearch2_output_file_with_header_no_log=os.path.join(data_folder, "rapsearch2_output_with_header_no_log.m8")
+coverage_id_mapping_file=os.path.join(data_folder,"id_mapping_coverage_filter.tsv")
 
 id_mapping_file=os.path.join(data_folder, "id_mapping.tsv")
 id_mapping_gene_table_file=os.path.join(data_folder, "id_mapping_gene_table.tsv")
