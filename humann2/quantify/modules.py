@@ -386,7 +386,10 @@ def gap_fill(key_reactions, reaction_scores):
         for reaction in key_reactions:
             score=reaction_scores.get(reaction,0)
             if score == sorted_key_reactions_scores[0]:
-                reaction_scores[reaction]=sorted_key_reactions_scores[1]
+                try:
+                    reaction_scores[reaction]=sorted_key_reactions_scores[1]
+                except IndexError:
+                    pass
 
     return reaction_scores
     
