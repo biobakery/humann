@@ -29,6 +29,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [How to run](#markdown-header-how-to-run)
     * [Basic usage](#markdown-header-basic-usage)
     * [Demo runs](#markdown-header-demo-runs)
+    * [Standard workflow](#markdown-header-standard-workflow)
 * [Output files](#markdown-header-output-files)
     1. [Gene families file](#markdown-header-1-gene-families-file)
     2. [Pathway coverage file](#markdown-header-2-pathway-coverage-file)
@@ -67,6 +68,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Custom protein reference database](#markdown-header-custom-protein-reference-database)
     * [Custom reference database annotations](#markdown-header-custom-reference-database-annotations)
     * [Custom pathways database](#markdown-header-custom-pathways-database)
+    * [Collapsing gene families](#markdown-header-collapsing-gene-families)
     * [Regroup table features](#markdown-header-regroup-table-features)
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
@@ -368,6 +370,39 @@ $OUTPUT_DIR is the output directory
 
 Since sam and blastm8 are mapping results, using these files as input to HUMAnN2 will bypass both the nucleotide and translated mapping portions of the flow.
 
+### Standard workflow ###
+
+The standard workflow involves running HUMAnN2 on each filtered shotgun sequencing metagenome file, normalizing, and then merging the output files. 
+
+Prior to running the workflow, filter your shotgun sequencing metagenome file. We recommend using [KneadData](http://huttenhower.sph.harvard.edu/kneaddata) for metagenome quality control including removal of host reads.
+
+To run the standard workflow, follow these steps:
+
+1. Run HUMAnN2 on each of your filtered fastq files in $INPUT_DIR placing the results in $OUTPUT_DIR
+    * for $SAMPLE.fastq in $INPUT_DIR
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR``
+            * Replace $SAMPLE.fastq with the name of the fastq input file
+            * Replace $OUTPUT_DIR with the full path to the folder to write output
+        * If you have paired-end reads, please see the tutorial [Paired-end reads](#markdown-header-humann2-and-paired-end-sequencing-data)
+    * The results will be three main output files for each input file named $SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv, and $SAMPLE_pathcoverage.tsv . 
+
+2. Normalize the abundance output files
+    * We recommend normalizing the abundance data based on the statistical tests you will perform.
+    * Prior to nomalization, select the scheme to use (copies per million or relative abundance). For example, if using [MaAsLin](http://huttenhower.sph.harvard.edu/maaslin), select relative abundance.
+    * Use the HUMAnN2 tool renorm table, to compute the normalized abundances (relative abundance is selected in the example command below)
+        * for $SAMPLE_genefamilies.tsv in $OUTPUT_DIR
+            * `` $ humann2_renorm_table --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_relab.tsv --norm relab ``
+    * Please note, gene family abundance is reported in RPK (reads per kilobase). This is computed as the sum of the scores for all alignments for a gene family. An alignment score is based on the number of matches to the reference gene for a specific sequence. It is divided by the length of the reference gene in kilobases to normalize for gene length. Each alignment score is also normalized to account for alignments for a single sequence to multiple reference genes. Alignments are not considered if they do not pass the e-value, identity, and coverage thresholds.
+    * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#markdown-header-10-log).
+    * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the tutorial [Collapsing gene families](#markdown-header-collapsing-gene-families) for detailed information. 
+    
+3. Join the output files (gene families, coverage, and abundance) from the HUMAnN2 runs from all samples into three files
+    * `` $ humann2_join_tables --input $OUTPUT_DIR --output humann2_genefamilies.tsv --file_name genefamilies_relab ``
+    * `` $ humann2_join_tables --input $OUTPUT_DIR --output humann2_pathcoverage.tsv --file_name pathcoverage ``
+    * `` $ humann2_join_tables --input $OUTPUT_DIR --output humann2_pathabundance.tsv --file_name pathabundance_relab ``
+    * For each command, replace $OUTPUT_DIR with the full path to the folder containing the HUMAnN2 output files.
+    * The resulting files from these commands are named humann2_genefamilies.tsv, humann2_pathabundance.tsv, and humann2_pathcoverage.tsv .
+
 ## Output files ##
 
 When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
@@ -576,6 +611,9 @@ protein database folder = data/uniref_DEM
 
 *   File name: `` $DIR/$SAMPLENAME.log ``
 *   This file is a log of the run.
+*   Timestamps for each step in the flow are benchmarked in the log. Look for these as lines containing "TIMESTAMP".
+*   The percent unaligned reads after each alignment step is included in the log. Look for these as lines containing the phrase "Unaligned reads after". 
+*   The total number of reads for the input file is contained in the alignment statistics output from the nucleotide alignment step recorded in the log.
 
 
 ## Databases ##
