@@ -24,9 +24,9 @@ p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
 Groups = namedtuple( "Groups", ["path", "start", "skip"] )
 c_default_groups = {
     "uniref50_rxn": Groups( 
-        os.path.join( p_root, "data", "pathways", "metacyc_reactions.uniref.gz" ), 0, [] ),
+        os.path.join( p_root, "data", "pathways", "metacyc_reactions.uniref.gz" ), 0, [1] ),
     "uniref50_ec":  Groups( 
-        os.path.join( p_root, "data", "pathways", "metacyc_reactions.uniref.gz" ), 1, [0] ),
+        os.path.join( p_root, "data", "misc", "map_ec_uniref50.txt.gz" ), 0, [] ),
     "uniref50_go":  Groups( 
         os.path.join( p_root, "data", "misc", "map_infogo1000_uniref50.txt.gz" ), 0, [] ),
     "uniref50_ko":  Groups( 
