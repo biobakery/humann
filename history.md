@@ -1,6 +1,17 @@
 
 # HUMAnN2 History #
 
+## v0.6.0 TBD ##
+
+### New Features ###
+
+* Translated search results are now subjected to an initial protein coverage filter (default >50%). A read's weight is only divided over proteins that meet this coverage threshold, which provides a substantial reduction in 1) spurious hits and 2) the size of the genefamilies.tsv output file.
+
+### Other Changes ###
+
+* The included mapping from level-4 EC groups to UniRef50 clusters has been expanded based on annotations from TrEMBL. ~10x more UniRef50s can now be mapped to a level-4 EC group.
+* The regroup_table script has been modified to allow an "ungrouped" group, which captures the abundance of features that failed to map to another, non-trivial group.
+
 ## v0.5.0 10-22-2015 ##
 
 ### New Features ###
