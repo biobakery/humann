@@ -32,6 +32,9 @@ c_default_groups = {
     "uniref50_ko":  Groups( 
         os.path.join( p_root, "data", "misc", "map_ko_uniref50.txt.gz" ), 0, [] ),
     }
+c_ungrouped = "UNGROUPED"
+c_protected = ["UNMAPPED", "UNINTERGRATED"]
+c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
 # ---------------------------------------------------------------
 # utilities
@@ -47,8 +50,7 @@ def get_args ():
         "-i", "--input", 
         default=None,
         help="Original output table (.tsv format); default=[STDIN]",
-        )
-    
+        )  
     parser.add_argument( 
         "-g", "--groups", 
         choices=c_default_groups.keys(),
@@ -67,9 +69,19 @@ def get_args ():
     )
     parser.add_argument( 
         "-f", "--function", 
-        choices=["sum", "mean"],
+        choices=c_funcmap.keys(),
         default="sum",
         help="How to combine grouped features; default=[sum]",
+        )
+    parser.add_argument( 
+        "-u", "--ungrouped",
+        action="store_true",
+        help="Include an 'UNGROUPED' group to capture features that did not belong to other groups",
+        )
+    parser.add_argument( 
+        "-p", "--protected",
+        action="store_true",
+        help="Carry through protected features, such as 'UNMAPPED'"
         )
     parser.add_argument( 
         "-o", "--output", 
@@ -79,12 +91,10 @@ def get_args ():
     args = parser.parse_args()
     return args
 
-def mean( vector ):
-    return sum( vector ) / float( len( vector ) )
-
-def regroup( table, map_feature_groups, function ):
+def regroup( table, map_feature_groups, function, ungrouped=False ):
     feature_counts = {}
-    function = {"sum":sum, "mean":mean}[function]
+    function = c_funcmap[function]
+    # index of new group names to old table rows
     mapping = {}
     for i, rowhead in enumerate( table.rowheads ):
         items = rowhead.split( util.c_strat_delim )
@@ -93,13 +103,18 @@ def regroup( table, map_feature_groups, function ):
         # account for previously renamed features
         feature = items[0].split( util.c_name_delim )[0]
         if feature in map_feature_groups:
-            for group in map_feature_groups[feature]:
-                if len( items ) == 1:
-                    feature_counts[items[0]] += 1
-                # account for stratified feature
-                groupname = group if len( items ) == 1 \
-                                  else util.c_strat_delim.join( [group, items[1]] ) 
-                mapping.setdefault( groupname, [] ).append( i )
+            groups = map_feature_groups[feature]
+        elif ungrouped:
+            groups = [c_ungrouped]
+        else:
+            groups = []
+        for group in groups:
+            if len( items ) == 1 and group != c_ungrouped:
+                feature_counts[items[0]] += 1
+            # account for stratified feature
+            groupname = group if len( items ) == 1 \
+                        else util.c_strat_delim.join( [group, items[1]] ) 
+            mapping.setdefault( groupname, [] ).append( i )
     # rebuild table
     groupnames = sorted( mapping.keys() )
     groupdata = []
@@ -154,8 +169,12 @@ def main ( ):
                 map_feature_groups.setdefault( feature, {} )[group] = 1
     else:
         map_feature_groups = map_group_features
+    # add protected cases to mapping?
+    if args.protected:
+        for feature in c_protected:
+            map_feature_groups.setdefault( feature, {} )[feature] = 1
     # perform the table regrouping
-    regroup( table, map_feature_groups, args.function )
+    regroup( table, map_feature_groups, args.function, ungrouped=args.ungrouped )
     table.write( args.output )
 
 if __name__ == "__main__":
