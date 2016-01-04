@@ -32,8 +32,8 @@ c_default_groups = {
     "uniref50_ko":  Groups( 
         os.path.join( p_root, "data", "misc", "map_ko_uniref50.txt.gz" ), 0, [] ),
     }
-c_ungrouped = "UNGROUPED"
-c_protected = ["UNMAPPED", "UNINTERGRATED"]
+
+c_protected = [util.c_unmapped, util.c_unintegrated]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
 # ---------------------------------------------------------------
@@ -105,11 +105,11 @@ def regroup( table, map_feature_groups, function, ungrouped=False ):
         if feature in map_feature_groups:
             groups = map_feature_groups[feature]
         elif ungrouped:
-            groups = [c_ungrouped]
+            groups = [util.c_ungrouped]
         else:
             groups = []
         for group in groups:
-            if len( items ) == 1 and group != c_ungrouped:
+            if len( items ) == 1 and group != util.c_ungrouped:
                 feature_counts[items[0]] += 1
             # account for stratified feature
             groupname = group if len( items ) == 1 \

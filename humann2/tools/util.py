@@ -96,12 +96,15 @@ def process_gene_table_header(gene_table, allow_for_missing_header=None):
 # ---------------------------------------------------------------
 
 # constants
-c_strat_delim = "|"
-c_name_delim = ": "
+c_strat_delim     = "|"
+c_name_delim      = ": "
 c_multiname_delim = ";"
-c_str_unknown = "NO_NAME"
-c_many_bytes = 1e8
-c_zip_multiplier = 10
+c_str_unknown     = "NO_NAME"
+c_ungrouped       = "UNGROUPED"
+c_unmapped        = "UNMAPPED"
+c_unintegrated    = "UNINTEGRATED"
+c_many_bytes      = 1e8
+c_zip_multiplier  = 10
 
 class Table ( ):
 
