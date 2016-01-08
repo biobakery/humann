@@ -440,7 +440,7 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     return pathways_abundance_store
     
     
-def print_pathways(pathways, file, header, pathway_names):
+def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, all_bugs_sorted):
     """
     Print the pathways data to a file organized by pathway
     """
@@ -453,21 +453,19 @@ def print_pathways(pathways, file, header, pathway_names):
     # Create the header
     tsv_output=["# Pathway"+ delimiter + config.file_basename + header]       
             
-    # Print out the pathways with those with the highest scores first
-    for pathway in pathways.get_pathways_double_sorted():
+    # Print out all pathways sorted
+    for pathway in all_pathways_sorted:
         all_score=pathways.get_score(pathway)
-        if all_score>0:
-            pathway_name=pathway_names.get_name(pathway)
-            # Print the computation of all bugs for pathway
-            tsv_output.append(pathway_name+delimiter+utilities.format_float_to_string(all_score))
-            # Process and print per bug if selected
-            if not config.remove_stratified_output:
-                # Print scores per bug for pathway ordered with those with the highest values first
-                for bug in pathways.get_bugs_double_sorted(pathway):
-                    score=pathways.get_score_for_bug(bug,pathway)
-                    if score>0:
-                        tsv_output.append(pathway_name+category_delimiter+bug+delimiter
-                            +utilities.format_float_to_string(score))
+        pathway_name=pathway_names.get_name(pathway)
+        # Print the computation of all bugs for pathway
+        tsv_output.append(pathway_name+delimiter+utilities.format_float_to_string(all_score))
+        # Process and print per bug if selected
+        if not config.remove_stratified_output:
+            # Print scores for all bugs sorted
+            for bug in all_bugs_sorted:
+                score=pathways.get_score_for_bug(bug,pathway)
+                tsv_output.append(pathway_name+category_delimiter+bug+delimiter
+                                  +utilities.format_float_to_string(score))
  
     if config.output_format == "biom":
         # Open a temp file if a conversion to biom is selected
@@ -496,15 +494,29 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     # Compute abundance for all pathways
     pathways_abundance=compute_pathways_abundance(pathways_and_reactions_store,
         pathways_database)
-
-    # Print the pathways abundance data to file
-    print_pathways(pathways_abundance, config.pathabundance_file, "_Abundance", pathway_names)
     
     # Compute coverage for all pathways
     pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
         pathways_database)
+
+    # Get the sorted list of all pathways with coverage or abundance values
+    all_pathways=set()
+    all_pathways.update(pathways_abundance.get_pathways_list())
+    all_pathways.update(pathways_coverage.get_pathways_list())
+    all_pathways_sorted=sorted(all_pathways)
+    
+    # Get the sorted list of all bugs with pathways coverage or abundance values
+    all_bugs=set()
+    all_bugs.update(pathways_abundance.get_bugs_list())
+    all_bugs.update(pathways_coverage.get_bugs_list())
+    all_bugs_sorted=sorted(all_bugs)
+
+    # Print the pathways abundance data to file
+    print_pathways(pathways_abundance, config.pathabundance_file, "_Abundance", 
+                   pathway_names, all_pathways_sorted, all_bugs_sorted)
     
     # Print the pathways abundance data to file
-    print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", pathway_names)
+    print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", 
+                   pathway_names, all_pathways_sorted, all_bugs_sorted)
 
     return config.pathabundance_file, config.pathcoverage_file

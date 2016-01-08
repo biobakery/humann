@@ -819,12 +819,30 @@ class Pathways:
         
         return utilities.double_sort(self.__pathways)
     
+    def get_pathways_list(self):
+        """
+        Return the pathways list
+        """
+        
+        return self.__pathways.keys()
+    
     def get_bugs_double_sorted(self,pathway):
         """
         Return the bugs sorted by score for pathway
         """
         
         return utilities.double_sort(self.__pathways_per_bug.get(pathway,{}))
+
+    def get_bugs_list(self):
+        """
+        Return the list of all of the bugs for all pathways
+        """
+        
+        all_bugs=set()
+        for pathway in self.__pathways_per_bug:
+            all_bugs.update(self.__pathways_per_bug[pathway])
+        
+        return list(all_bugs)
         
     
 class ReactionsDatabase:
