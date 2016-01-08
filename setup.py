@@ -557,7 +557,8 @@ setuptools.setup(
             'data/misc/*',
             'data/uniref_DEMO/*',
             'data/chocophlan_DEMO/*',
-            'tests/data/*/*',
+            'tests/data/*.*',
+            'tests/data/tooltest*/*',
             'quantify/MinPath/data/*',
             'quantify/MinPath/glpk-*/examples/glp*',
             'quantify/MinPath/glpk-*/examples/.libs/*'
