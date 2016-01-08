@@ -920,6 +920,9 @@ def main():
         
         start_time=timestamp_message("alignment post-processing",start_time)
         
+    # Get the number of remaining unaligned reads
+    unaligned_reads_count=unaligned_reads_store.count_reads()
+    
     # Clear all of the unaligned reads as they are no longer needed
     unaligned_reads_store.clear()
         
@@ -931,7 +934,7 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        families_file=families.gene_families(alignments,gene_scores)
+        families_file=families.gene_families(alignments,gene_scores,unaligned_reads_count)
         output_files.append(families_file)
     
         start_time=timestamp_message("computing gene families",start_time)
@@ -942,7 +945,7 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        gene_scores.add_from_file(args.input,id_mapping_file=args.id_mapping) 
+        unaligned_reads_count=gene_scores.add_from_file(args.input,id_mapping_file=args.id_mapping) 
         
         start_time=timestamp_message("processing gene table",start_time)
 

@@ -122,7 +122,7 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
         gene_scores=store.GeneScores()
         
         # obtain the gene families
-        gene_families_file=families.gene_families(alignments,gene_scores)
+        gene_families_file=families.gene_families(alignments,gene_scores,0)
         
         # check the gene families output is as expected
         self.assertTrue(filecmp.cmp(gene_families_file,
@@ -140,6 +140,7 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
         Test UniRef50_unknown is read in and used for gene scores but not printed
         Test the tsv output
         Test that gene families have names applied to them
+        Test unmapped reads total is written with the same precision as other lines
         """
         
         # update the max decimals to allow for rounding
@@ -179,7 +180,7 @@ class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
         gene_scores=store.GeneScores()
         
         # obtain the gene families
-        gene_families_file=families.gene_families(alignments,gene_scores)
+        gene_families_file=families.gene_families(alignments,gene_scores,1)
         
         # check the gene families output is as expected
         self.assertTrue(filecmp.cmp(gene_families_file,

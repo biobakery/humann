@@ -34,7 +34,7 @@ from .. import store
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def gene_families(alignments,gene_scores):
+def gene_families(alignments,gene_scores,unaligned_reads_count):
     """
     Compute the gene families from the alignments
     """
@@ -47,11 +47,14 @@ def gene_families(alignments,gene_scores):
     # Process the gene id to names mappings
     gene_names=store.Names(config.gene_family_name_mapping_file)
      
-    # Write the scores ordered with the top first
-    tsv_output=["# Gene Family"+config.output_file_column_delimiter+config.file_basename+"_Abundance"]
-    
     delimiter=config.output_file_column_delimiter
-    category_delimiter=config.output_file_category_delimiter
+    category_delimiter=config.output_file_category_delimiter     
+
+    # Write the scores ordered with the top first
+    tsv_output=["# Gene Family"+delimiter+config.file_basename+"_Abundance"]
+    
+    # Add the unaligned reads count
+    tsv_output.append(config.unmapped_gene_name+delimiter+utilities.format_float_to_string(unaligned_reads_count))  
 
     # Print out the gene families with those with the highest scores first
     for gene in gene_scores.gene_list_sorted_by_score("all"):

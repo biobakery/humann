@@ -602,6 +602,8 @@ class GeneScores:
         id_mapping={}
         if id_mapping_file:
             id_mapping=store_id_mapping(id_mapping_file)
+            
+        unaligned_reads_count=0
         
         # Check the file exists and is readable
         utilities.file_exists_readable(file)
@@ -642,10 +644,15 @@ class GeneScores:
                     if line.rstrip():
                         logger.debug("Unable to convert gene table value to float: %s",
                             line.rstrip())
-                self.add_single_score(bug,gene,value)
+                if gene == config.unmapped_gene_name:
+                    unaligned_reads_count = value
+                else:
+                    self.add_single_score(bug,gene,value)
             line=file_handle.readline()
 
         file_handle.close()
+        
+        return unaligned_reads_count
     
 class PathwaysAndReactions:
     """

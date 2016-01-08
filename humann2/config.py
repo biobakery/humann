@@ -453,3 +453,7 @@ xipe_bin=1
 # Alignment Score defaults
 default_reference_length=1000
 match_power=2
+
+# Output file tags
+unmapped_gene_name = "UNMAPPED"
+
