@@ -313,12 +313,114 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         pathway2_abundance_set=pathway2_values[(len(pathway2_values)/2):]
         pathway2_abundance=sum(pathway2_abundance_set)/len(pathway2_abundance_set)      
         
-        pathways_abundance_store_result=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
+        pathways_abundance_store_result, reactions_in_pathways_present=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
         
         # Test the pathways abundance match those expected
         self.assertEqual(pathways_abundance_store_result.get_score_for_bug(bug,"pathway1"), pathway1_abundance)
         self.assertEqual(pathways_abundance_store_result.get_score_for_bug(bug,"pathway2"), pathway2_abundance)
         
+    def test_compute_pathways_abundance_unstructured_reactions_list(self):
+        """
+        Test the compute_pathways_abundance function
+        Test PathwaysDatabase add
+        Test PathwaysAndReactions store
+        Test Pathways store
+        Test with unstructured pathways
+        Test the resulting list of reactions included in pathways
+        """
+      
+        # Create the database structure
+        pathways_database_store=store.PathwaysDatabase()
+        pathways_database_store.add_pathway("pathway1",["A","B","C","D"])
+        pathways_database_store.add_pathway("pathway2",["A","B","C","D","E","F"])
+        pathways_database_store.add_pathway("pathway3",["A","B","G"])
+        
+        # Have all test data be from two bugs
+        bug="bug1"
+        pathways_and_reactions_store=store.PathwaysAndReactions()
+        pathways_and_reactions_store.add(bug, "A", "pathway1", 1)
+        pathways_and_reactions_store.add(bug, "B", "pathway1", 2)
+        pathways_and_reactions_store.add(bug, "B", "pathway2", 2)
+        pathways_and_reactions_store.add(bug, "C", "pathway2", 3)
+
+        expected_reactions_in_pathways_present={}
+        expected_reactions_in_pathways_present[bug]=["A","B","C"]
+       
+        bug="bug2"
+        pathways_and_reactions_store.add(bug, "A", "pathway1", 1)
+        pathways_and_reactions_store.add(bug, "D", "pathway1", 3)
+        pathways_and_reactions_store.add(bug, "B", "pathway1", 2)
+        pathways_and_reactions_store.add(bug, "B", "pathway2", 2)
+       
+        expected_reactions_in_pathways_present[bug]=["A","B","D"]
+        
+        pathways_abundance_store_result, reactions_in_pathways_present=modules.compute_pathways_abundance(
+            pathways_and_reactions_store, pathways_database_store)
+        
+        # Test the reactions match those expected
+        self.assertEqual(sorted(expected_reactions_in_pathways_present["bug1"]),
+                         sorted(list(reactions_in_pathways_present["bug1"])))
+        self.assertEqual(sorted(expected_reactions_in_pathways_present["bug2"]),
+                         sorted(list(reactions_in_pathways_present["bug2"])))
+        
+    def test_compute_pathways_abundance_structured_reactions_list(self):
+        """
+        Test the compute_pathways_abundance function
+        Test PathwaysDatabase add
+        Test PathwaysAndReactions store
+        Test Pathways store
+        Test with structured pathways
+        Test gap fill
+        Test the resulting list of reactions included in pathways
+        """
+      
+        # Create the database structure
+        pathways_database_store=store.PathwaysDatabase()
+        pathways_database_store.add_pathway_structure("pathway1"," A B C D ")
+        pathways_database_store.add_pathway_structure("pathway2"," A B C D E F ")
+        pathways_database_store.add_pathway_structure("pathway3"," A B G")
+        
+        # Have all test data be from three bugs
+        bug="bug1"
+        pathways_and_reactions_store=store.PathwaysAndReactions()
+        pathways_and_reactions_store.add(bug, "A", "pathway1", 1)
+        pathways_and_reactions_store.add(bug, "B", "pathway1", 2)
+        pathways_and_reactions_store.add(bug, "C", "pathway1", 3)
+
+        expected_reactions_in_pathways_present={}
+        # This pathway is present because D is filled in
+        # Though D does not have abundance so it is not included in the list
+        expected_reactions_in_pathways_present[bug]=["A","B","C"]
+       
+        bug="bug2"
+        pathways_and_reactions_store.add(bug, "A", "pathway1", 1)
+        pathways_and_reactions_store.add(bug, "B", "pathway1", 3)
+        pathways_and_reactions_store.add(bug, "D", "pathway2", 2)
+        pathways_and_reactions_store.add(bug, "B", "pathway2", 2)
+       
+        # The pathways for this bug are missing too many reactions to have abundance
+        expected_reactions_in_pathways_present[bug]=[]
+        
+        bug="bug3"
+        pathways_and_reactions_store.add(bug, "A", "pathway3", 1)
+        pathways_and_reactions_store.add(bug, "B", "pathway3", 3)
+        pathways_and_reactions_store.add(bug, "G", "pathway3", 2)
+        pathways_and_reactions_store.add(bug, "B", "pathway2", 2)
+       
+        # One pathway for this bug includes all reactions
+        expected_reactions_in_pathways_present[bug]=["A","B","G"]
+        
+        pathways_abundance_store_result, reactions_in_pathways_present=modules.compute_pathways_abundance(
+            pathways_and_reactions_store, pathways_database_store)
+        
+        # Test the reactions match those expected
+        self.assertEqual(sorted(expected_reactions_in_pathways_present["bug1"]),
+                         sorted(list(reactions_in_pathways_present["bug1"])))
+        self.assertEqual(sorted(expected_reactions_in_pathways_present["bug2"]),
+                         sorted(list(reactions_in_pathways_present["bug2"])))
+        self.assertEqual(sorted(expected_reactions_in_pathways_present["bug3"]),
+                         sorted(list(reactions_in_pathways_present["bug3"])))
+                
     def test_compute_pathways_abundance_structured(self):
         """
         Test the compute_pathways_abundance function
@@ -358,7 +460,7 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         pathway2_abundance=len(pathway2_values_boosted)/sum(1.0/v for v in pathway2_values_boosted)    
         
         # Find the actual result
-        pathways_abundance_store_result=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
+        pathways_abundance_store_result, reactions_in_pathways_present=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
         
         # Test the pathways abundance match those expected
         self.assertEqual(pathways_abundance_store_result.get_score_for_bug(bug,"pathway1"), pathway1_abundance)
@@ -468,6 +570,7 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         Test the pathways coverage computation (xipe and minpath are off)
         Test the pathways print function
         Test the pathways mapping to names
+        Test the unmapped and unintegrated values are printed
         """
         
         # update the max decimals to allow for rounding
@@ -500,8 +603,10 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         os.close(file_out)
         config.pathcoverage_file=coverage_file
         
+        unaligned_reads_count=10
         abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
-        pathways_and_reactions_store, pathways_database)
+        gene_scores, reactions_database, pathways_and_reactions_store, pathways_database,
+        unaligned_reads_count)
         
         # Reset xipe and minpath
         config.minpath_toggle=minpath_toggle_original
@@ -519,6 +624,7 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         Test the pathways abundance computation (xipe and minpath are off)
         Test the pathways print function
         Test the pathways mapping to names
+        Test the unmapped and unintegrated values are printed
         """
         
         # update the max decimals to allow for rounding
@@ -551,8 +657,10 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         os.close(file_out)
         config.pathcoverage_file=coverage_file
         
+        unaligned_reads_count=10
         abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
-        pathways_and_reactions_store, pathways_database)
+        gene_scores, reactions_database, pathways_and_reactions_store, pathways_database,
+        unaligned_reads_count)
         
         # Reset xipe and minpath
         config.minpath_toggle=minpath_toggle_original
@@ -564,4 +672,136 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         
         utils.remove_temp_file(abundance_file)
         utils.remove_temp_file(coverage_file)
+        
+    def test_compute_gene_abundance_in_pathways_without_reactions_database(self):
+        """
+        Test the compute gene abundance function
+        Test the GeneScores add function
+        Test without a reactions database (the pathways database is composed of genes)
+        """
+        
+        gene_scores=store.GeneScores()
+        # Add gene scores for two bugs
+        reactions_in_pathways_present={}
+        bug="bug1"
+        gene_scores.add_single_score(bug, "gene1", 1)
+        gene_scores.add_single_score(bug, "gene2", 2)
+        gene_scores.add_single_score(bug, "gene4", 4)
+        reactions_in_pathways_present[bug]=["gene1","gene2"]
+        
+        bug="bug2"
+        # Test with different values of gene1 for each bug
+        gene_scores.add_single_score(bug, "gene1", 1.1)
+        gene_scores.add_single_score(bug, "gene7", 7)
+        gene_scores.add_single_score(bug, "gene6", 6)
+        reactions_in_pathways_present[bug]=["gene6"]
+        
+        reactions_database=None
+        gene_abundance_in_pathways, remaining_gene_abundance=modules.compute_gene_abundance_in_pathways(
+            gene_scores, reactions_database, reactions_in_pathways_present)
+        
+        # Check the gene abundances in pathways are correct
+        self.assertEqual(gene_abundance_in_pathways["bug1"], 3)
+        self.assertEqual(gene_abundance_in_pathways["bug2"], 6)
+        
+        # Check the gene abundances not in pathways are correct
+        self.assertEqual(remaining_gene_abundance["bug1"], 4)
+        self.assertAlmostEqual(remaining_gene_abundance["bug2"], 8.1)
+        
+    def test_compute_gene_abundance_in_pathways_with_reactions_database(self):
+        """
+        Test the compute gene abundance function
+        Test the GeneScores add function
+        Test the ReactionsDatabase add function
+        Test with a reactions database (the pathways database is composed of reactions
+        and these reactions map to genes, with some genes mapping to multiple reactions)
+        """
+        
+        gene_scores=store.GeneScores()
+        # Add gene scores for two bugs
+        reactions_in_pathways_present={}
+        bug="bug1"
+        gene_scores.add_single_score(bug, "gene1", 1)
+        gene_scores.add_single_score(bug, "gene2", 2)
+        gene_scores.add_single_score(bug, "gene4", 4)
+        
+        bug="bug2"
+        # Test with different values of gene1 for each bug
+        gene_scores.add_single_score(bug, "gene1", 1.1)
+        gene_scores.add_single_score(bug, "gene7", 7)
+        gene_scores.add_single_score(bug, "gene6", 6)
+        gene_scores.add_single_score(bug, "gene8", 0.2)
+        
+        reactions_database=store.ReactionsDatabase()
+        reactions={"reaction1":["gene1","gene6"], "reaction2":["gene1","gene2"],
+                   "reaction3":["gene4","gene7"],"reaction4":["gene8"]}
+        reactions_database.add_reactions(reactions)
+        
+        # Test one bug with two reactions and one bug with a single reaction
+        # For the bug with two reactions, test with both reactions including
+        # The same gene (to test this value is not added twice in the abundance result)
+        reactions_in_pathways_present["bug1"]=["reaction1","reaction2"]
+        reactions_in_pathways_present["bug2"]=["reaction1"]
+        
+        gene_abundance_in_pathways, remaining_gene_abundance=modules.compute_gene_abundance_in_pathways(
+            gene_scores, reactions_database, reactions_in_pathways_present)
+        
+        # Check the gene abundances in pathways are correct
+        self.assertEqual(gene_abundance_in_pathways["bug1"], 3)
+        self.assertAlmostEqual(gene_abundance_in_pathways["bug2"], 7.1)
+        
+        # Check the gene abundances not in pathways are correct
+        self.assertEqual(remaining_gene_abundance["bug1"], 4)
+        self.assertAlmostEqual(remaining_gene_abundance["bug2"], 7.2)
+        
+    def test_compute_unmapped_and_unintegrated(self):
+        """
+        Test the unmapped and unintegrated function
+        Test Pathways add
+        """
+        
+        # Add pathways for two bugs
+        pathways_abundance=store.Pathways()
+        pathways_abundance.add("bug1","pathway1",1)
+        pathways_abundance.add("bug1","pathway2",2)
+        pathways_abundance.add("bug1","pathway3",3)
+        
+        pathways_abundance.add("bug2","pathway1",10)
+        pathways_abundance.add("bug2","pathway2",20)
+        pathways_abundance.add("bug2","pathway4",4)
+        
+        pathways_abundance.add("all","pathway1",100)
+        pathways_abundance.add("all","pathway2",200)
+        pathways_abundance.add("all","pathway3",300)
+        pathways_abundance.add("all","pathway4",40)
+        
+        gene_abundance_in_pathways={}
+        gene_abundance_in_pathways["bug1"]=5
+        gene_abundance_in_pathways["bug2"]=15
+        gene_abundance_in_pathways["all"]=155
+        
+        remaining_gene_abundance={}
+        remaining_gene_abundance["bug1"]=0.1
+        remaining_gene_abundance["bug2"]=0.5
+        remaining_gene_abundance["all"]=0.15
+
+        unaligned_reads_count=100
+        
+        unmapped_all, unintegrated_all, unintegrated_per_bug=modules.compute_unmapped_and_unintegrated(
+            gene_abundance_in_pathways, remaining_gene_abundance, unaligned_reads_count, pathways_abundance)
+        
+        # Compression constant = total abundance of all pathways / total abundance of genes in pathways 
+        # Unmapped = Compression constant * number of unmapped reads
+        expected_unmapped_all=((100+200+300+40)/(155*1.0)) * unaligned_reads_count
+        
+        # Unintegrated = Compression constant * total abundance of genes NOT in pathways
+        expected_unintegrated_all=((100+200+300+40)/(155*1.0)) * 0.15
+        expected_unintegrated_bug1=((1+2+3)/(5*1.0)) * 0.1
+        expected_unintegrated_bug2=((10+20+4)/(15*1.0)) * 0.5
+        
+        # Test the computed values are almost equal to the expected
+        self.assertAlmostEqual(unmapped_all, expected_unmapped_all)
+        self.assertAlmostEqual(unintegrated_all, expected_unintegrated_all)   
+        self.assertAlmostEqual(unintegrated_per_bug["bug1"], expected_unintegrated_bug1)
+        self.assertAlmostEqual(unintegrated_per_bug["bug2"], expected_unintegrated_bug2)
         

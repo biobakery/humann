@@ -965,7 +965,7 @@ def main():
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
-        pathways_and_reactions_store, pathways_database)
+        gene_scores, reactions_database, pathways_and_reactions_store, pathways_database, unaligned_reads_count)
     output_files.append(abundance_file)
     output_files.append(coverage_file)
 

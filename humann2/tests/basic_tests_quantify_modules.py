@@ -18,14 +18,16 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
     def test_gap_fill_zero_gaps(self):
         """
         Test the gap fill function, with a set of scores that do not have gaps
+        Test for boost of lowest score
         """
         
         key_reactions=["A","B"]
         reaction_scores={ "A": 1, "B": 2 }
         
         gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        expected_gap_filled_reaction_scores={ "A": 2, "B": 2 }
         
-        self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
+        self.assertDictEqual(gap_filled_reaction_scores, expected_gap_filled_reaction_scores)
         
     def test_gap_fill_greater_than_threshold(self):
         """
@@ -59,14 +61,16 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         """
         Test the gap fill function, with a set of scores that include optional reactions
         where just considering the required reactions it does not require gap filling
+        Test boost lowest abundance score of key reactions
         """
         
         key_reactions=["A","B"]
         reaction_scores={ "A": 1, "B": 2 , "E": 0.1}
         
         gap_filled_reaction_scores=modules.gap_fill(key_reactions, reaction_scores)
+        expected_gap_filled_reaction_scores={ "A": 2, "B": 2 , "E": 0.1}
         
-        self.assertDictEqual(gap_filled_reaction_scores, reaction_scores)
+        self.assertDictEqual(gap_filled_reaction_scores, expected_gap_filled_reaction_scores)
         
     def test_gap_fill_optional_reactions_equal_threshold(self):
         """

@@ -366,39 +366,44 @@ def gap_fill(key_reactions, reaction_scores):
     Boost the lowest abundance score
     """
     
+    reaction_scores_gap_filled=reaction_scores.copy()
+    
     # get the scores for all of the key reactions
-    key_reactions_scores=[]
+    key_reactions_nonzero_scores=[]
     for reaction in key_reactions:
         score=reaction_scores.get(reaction,0)
         if score > 0:
-            key_reactions_scores.append(score)
+            key_reactions_nonzero_scores.append(score)
 
-    if len(key_reactions)-len(key_reactions_scores) == 1:
-        # fill gaps
-        min_score=min(key_reactions_scores)
+    if len(key_reactions)-len(key_reactions_nonzero_scores) == 1:
+        # fill single zero gap with lowest key reaction score
+        min_score=min(key_reactions_nonzero_scores)
         for reaction in key_reactions:
             score=reaction_scores.get(reaction,0)
             if score == 0:
-                reaction_scores[reaction]=min_score
-    elif len(key_reactions)-len(key_reactions_scores) == 0:
+                reaction_scores_gap_filled[reaction]=min_score
+    elif len(key_reactions)-len(key_reactions_nonzero_scores) == 0:
         # boost lowest abundance score
-        sorted_key_reactions_scores=sorted(key_reactions_scores)
+        sorted_key_reactions_nonzero_scores=sorted(key_reactions_nonzero_scores)
         for reaction in key_reactions:
             score=reaction_scores.get(reaction,0)
-            if score == sorted_key_reactions_scores[0]:
+            if score == sorted_key_reactions_nonzero_scores[0]:
                 try:
-                    reaction_scores[reaction]=sorted_key_reactions_scores[1]
+                    reaction_scores_gap_filled[reaction]=sorted_key_reactions_nonzero_scores[1]
                 except IndexError:
                     pass
 
-    return reaction_scores
-    
+    return reaction_scores_gap_filled
     
 
 def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     """
     Compute the abundance of pathways for each bug
+    Also find the set of the reactions with abundance in all pathways present
     """
+    
+    # Store the reactions which have abundance in the pathways with abundance
+    reactions_in_pathways_present={}
     
     # Process through each pathway for each bug to compute abundance
     pathways_abundance_store=store.Pathways()
@@ -406,6 +411,7 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
         
         logger.debug("Compute pathway abundance for bug: " + bug)
         
+        reactions_in_pathways_present[bug]=set()
         for pathway in pathways_and_reactions_store.pathway_list(bug):
             
             reaction_scores=pathways_and_reactions_store.reaction_scores(bug,pathway)
@@ -415,10 +421,10 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
                 structure=pathways_database.get_structure_for_pathway(pathway)
                 key_reactions=pathways_database.get_key_reactions_for_pathway(pathway)
                 # Apply gap fill
-                reaction_scores=gap_fill(key_reactions, reaction_scores)
+                reaction_scores_gap_filled=gap_fill(key_reactions, reaction_scores)
                 # Compute the structured pathway abundance
                 abundance=compute_structured_pathway_abundance_or_coverage(structure,
-                    key_reactions,reaction_scores,False,0)
+                    key_reactions,reaction_scores_gap_filled,False,0)
             
             else:
                 # Initialize any reactions in the pathway not found to 0
@@ -433,14 +439,21 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
                 
                 # Compute abundance
                 abundance=sum(abundance_set)/len(abundance_set)
+                
+            # If this pathway is present, store those reactions with abundance
+            if abundance > 0:
+                for reaction,score in reaction_scores.items():
+                    if score > 0:
+                        reactions_in_pathways_present[bug].add(reaction)
             
             # Store the abundance
             pathways_abundance_store.add(bug, pathway, abundance)
     
-    return pathways_abundance_store
+    return pathways_abundance_store, reactions_in_pathways_present
     
     
-def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, all_bugs_sorted):
+def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, all_bugs_sorted,
+                   unmapped_all, unintegrated_all, unintegrated_per_bug):
     """
     Print the pathways data to a file organized by pathway
     """
@@ -451,7 +464,14 @@ def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, a
     category_delimiter=config.output_file_category_delimiter            
  
     # Create the header
-    tsv_output=["# Pathway"+ delimiter + config.file_basename + header]       
+    tsv_output=["# Pathway"+ delimiter + config.file_basename + header]
+    
+    # Add the unmapped and unintegrated values
+    tsv_output.append(config.unmapped_pathway_name+delimiter+utilities.format_float_to_string(unmapped_all))
+    tsv_output.append(config.unintegrated_pathway_name+delimiter+utilities.format_float_to_string(unintegrated_all))
+    for bug in unintegrated_per_bug:
+        tsv_output.append(config.unintegrated_pathway_name+category_delimiter+bug
+                          +delimiter+utilities.format_float_to_string(unintegrated_per_bug[bug]))
             
     # Print out all pathways sorted
     for pathway in all_pathways_sorted:
@@ -482,8 +502,74 @@ def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, a
         file_handle.write("\n".join(tsv_output))                  
         file_handle.close()
     
+def compute_gene_abundance_in_pathways(gene_scores, reactions_database, reactions_in_pathways_present):
+    """
+    Compute the abundance of genes present in pathways found
+    Also compute the remaining gene abundance that did not contribute to any pathways present
+    """
+    
+    # From each of the reactions present in pathways, find the list of all genes
+    # that contributed to the pathway abundance (for each bug found in community)
+    genes_in_pathways_present={}
+    for bug in reactions_in_pathways_present:
+        genes_in_pathways_present[bug]=set()
+        for reaction in reactions_in_pathways_present[bug]:
+            if reactions_database:
+                # Find the list of genes for this reaction
+                gene_list=reactions_database.find_genes(reaction)
+                genes_in_pathways_present[bug].update(gene_list)
+            else:
+                # If the reactions database is not provided, then the pathway is defined
+                # in terms of genes
+                genes_in_pathways_present[bug].add(reaction)
+        
+    # Compute the abundance for the genes present
+    gene_abundance_in_pathways={}
+    remaining_gene_abundance={}
+    for bug in genes_in_pathways_present:
+        for gene in genes_in_pathways_present[bug]:
+            gene_abundance_in_pathways[bug]=gene_abundance_in_pathways.get(bug,0)+gene_scores.get_score(bug,gene)
+            
+        # Compute the remaining gene abundance
+        total_gene_abundance=sum(gene_scores.scores_for_bug(bug).values())
+        remaining_gene_abundance[bug]=total_gene_abundance-gene_abundance_in_pathways.get(bug,0)
+        
+    return gene_abundance_in_pathways, remaining_gene_abundance
 
-def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathways_database):
+def compute_unmapped_and_unintegrated(gene_abundance_in_pathways, remaining_gene_abundance, unaligned_reads_count, pathways_abundance):
+    """
+    Compute the unmapped and unintegrated pathway values
+    The compression constant is defined as the total abundance of all pathways divided by the total abundance of genes in pathways
+    """
+    
+    # Compute the overall compression constant
+    pathways_list=pathways_abundance.get_pathways_list()
+    total_abundance_all_pathways=sum([pathways_abundance.get_score(pathway) for pathway in pathways_list])
+    try:
+        compression_all=total_abundance_all_pathways / ( gene_abundance_in_pathways.get("all",0) * 1.0 )
+    except ZeroDivisionError:
+        compression_all=0
+    
+    # Compute unmapped
+    unmapped_all=compression_all * unaligned_reads_count
+    
+    # Compute unintegrated
+    unintegrated_all=compression_all * remaining_gene_abundance.get("all",0)
+    unintegrated_per_bug={}
+    for bug in pathways_abundance.get_bugs_list():
+        total_abundance_all_pathways=sum([pathways_abundance.get_score_for_bug(bug,pathway) for pathway in pathways_list])
+        try:
+            compression = total_abundance_all_pathways / ( gene_abundance_in_pathways.get(bug,0) * 1.0 )
+        except ZeroDivisionError:
+            compression=0 
+        
+        unintegrated_per_bug[bug]=compression * remaining_gene_abundance.get(bug,0)
+    
+    return unmapped_all, unintegrated_all, unintegrated_per_bug
+    
+
+def compute_pathways_abundance_and_coverage(gene_scores, reactions_database, 
+                                            pathways_and_reactions_store, pathways_database, unaligned_reads_count):
     """
     Compute the abundance and coverage of the pathways
     """
@@ -492,8 +578,16 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
     pathway_names=store.Names(config.pathway_name_mapping_file)
     
     # Compute abundance for all pathways
-    pathways_abundance=compute_pathways_abundance(pathways_and_reactions_store,
-        pathways_database)
+    pathways_abundance, reactions_in_pathways_present=compute_pathways_abundance(
+        pathways_and_reactions_store, pathways_database)
+    
+    # Compute the abundance of genes in pathways and not in pathways
+    gene_abundance_in_pathways, remaining_gene_abundance=compute_gene_abundance_in_pathways(
+        gene_scores, reactions_database, reactions_in_pathways_present)
+    
+    # Compute the unmapped and unintegrated values
+    unmapped_all, unintegrated_all, unintegrated_per_bug=compute_unmapped_and_unintegrated(
+        gene_abundance_in_pathways, remaining_gene_abundance, unaligned_reads_count, pathways_abundance)
     
     # Compute coverage for all pathways
     pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
@@ -513,10 +607,17 @@ def compute_pathways_abundance_and_coverage(pathways_and_reactions_store, pathwa
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "_Abundance", 
-                   pathway_names, all_pathways_sorted, all_bugs_sorted)
+                   pathway_names, all_pathways_sorted, all_bugs_sorted, unmapped_all,
+                   unintegrated_all, unintegrated_per_bug)
     
-    # Print the pathways abundance data to file
+    # Set the unmapped and unintegrated to one for coverage output
+    unmapped_all=1
+    unintegrated_all=1
+    unintegrated_per_bug={bug:1 for bug in unintegrated_per_bug.keys()}
+    
+    # Print the pathways coverage data to file
     print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", 
-                   pathway_names, all_pathways_sorted, all_bugs_sorted)
+                   pathway_names, all_pathways_sorted, all_bugs_sorted, unmapped_all,
+                   unintegrated_all, unintegrated_per_bug)
 
     return config.pathabundance_file, config.pathcoverage_file

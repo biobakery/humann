@@ -456,4 +456,6 @@ match_power=2
 
 # Output file tags
 unmapped_gene_name = "UNMAPPED"
+unmapped_pathway_name = "UNMAPPED"
+unintegrated_pathway_name = "UNINTEGRATED"
 

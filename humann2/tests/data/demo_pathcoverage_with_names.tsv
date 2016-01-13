@@ -1,4 +1,8 @@
 # Pathway	HUMAnN2_test_Coverage
+UNMAPPED	1.0000000
+UNINTEGRATED	1.0000000
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0000000
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_stercoris	1.0000000
 1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis	0.7217876
 1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
 1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
