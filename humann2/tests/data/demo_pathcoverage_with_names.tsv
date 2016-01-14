@@ -3,87 +3,49 @@ UNMAPPED	1.0000000
 UNINTEGRATED	1.0000000
 UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0000000
 UNINTEGRATED|g__Bacteroides.s__Bacteroides_stercoris	1.0000000
-1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis	0.7217876
-1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis	0.5159938
-ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5719989
-CALVIN-PWY: Calvin-Benson-Bassham cycle	0.5548942
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-CALVIN-PWY: Calvin-Benson-Bassham cycle|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-DTDPRHAMSYN-PWY: dTDP-L-rhamnose biosynthesis I	0.6285319
-DTDPRHAMSYN-PWY: dTDP-L-rhamnose biosynthesis I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-DTDPRHAMSYN-PWY: dTDP-L-rhamnose biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-GALACTUROCAT-PWY: D-galacturonate degradation I	0.5106365
-GALACTUROCAT-PWY: D-galacturonate degradation I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-GALACTUROCAT-PWY: D-galacturonate degradation I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-GLUCUROCAT-PWY: superpathway of &beta;-D-glucuronide and D-glucuronate degradation	0.5807064
-GLUCUROCAT-PWY: superpathway of &beta;-D-glucuronide and D-glucuronate degradation|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-GLUCUROCAT-PWY: superpathway of &beta;-D-glucuronide and D-glucuronate degradation|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-HOMOSER-METSYN-PWY: L-methionine biosynthesis I	0.6361470
-HOMOSER-METSYN-PWY: L-methionine biosynthesis I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-HOMOSER-METSYN-PWY: L-methionine biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6422366
-HSERMETANA-PWY: L-methionine biosynthesis III	0.6821488
-HSERMETANA-PWY: L-methionine biosynthesis III|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-HSERMETANA-PWY: L-methionine biosynthesis III|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6071906
-ILEUSYN-PWY: L-isoleucine biosynthesis I (from threonine)	0.5734231
-ILEUSYN-PWY: L-isoleucine biosynthesis I (from threonine)|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-ILEUSYN-PWY: L-isoleucine biosynthesis I (from threonine)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5437995
-PWY-3781: aerobic respiration I (cytochrome c)	0.4438817
-PWY-3781: aerobic respiration I (cytochrome c)|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-3781: aerobic respiration I (cytochrome c)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
+PWY-7208: superpathway of pyrimidine nucleobases salvage	0.7840295
+PWY-7208: superpathway of pyrimidine nucleobases salvage|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7767994
 PWY-3841: folate transformations II	0.7738167
-PWY-3841: folate transformations II|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-3841: folate transformations II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-PWY-5030: L-histidine degradation III	0.5962599
-PWY-5030: L-histidine degradation III|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-5030: L-histidine degradation III|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
+PWY-7221: guanosine ribonucleotides de novo biosynthesis	0.7533389
+PWY-7221: guanosine ribonucleotides de novo biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6259581
 PWY-5100: pyruvate fermentation to acetate and lactate II	0.7375846
 PWY-5100: pyruvate fermentation to acetate and lactate II|g__Bacteroides.s__Bacteroides_stercoris	0.7660096
-PWY-5100: pyruvate fermentation to acetate and lactate II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
+1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis	0.7217876
 PWY-5505: L-glutamate and L-glutamine biosynthesis	0.6921628
-PWY-5505: L-glutamate and L-glutamine biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
 PWY-5505: L-glutamate and L-glutamine biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7431419
-PWY-5659: GDP-mannose biosynthesis	0.5428067
-PWY-5659: GDP-mannose biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-5659: GDP-mannose biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5413375
-PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II	0.4999535
-PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-PWY-6507: 4-deoxy-L-threo-hex-4-enopyranuronate degradation	0.6088055
-PWY-6507: 4-deoxy-L-threo-hex-4-enopyranuronate degradation|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-6507: 4-deoxy-L-threo-hex-4-enopyranuronate degradation|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-PWY-7208: superpathway of pyrimidine nucleobases salvage	0.7840295
-PWY-7208: superpathway of pyrimidine nucleobases salvage|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-7208: superpathway of pyrimidine nucleobases salvage|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7767994
-PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II	0.5140779
-PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4798866
-PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4593528
-PWY-7221: guanosine ribonucleotides de novo biosynthesis	0.7533389
-PWY-7221: guanosine ribonucleotides de novo biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-7221: guanosine ribonucleotides de novo biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6259581
-PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II	0.5140779
-PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4798866
-PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4593528
-PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I	0.6134022
-PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5490150
-PWY-7242: D-fructuronate degradation	0.5943885
-PWY-7242: D-fructuronate degradation|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PWY-7242: D-fructuronate degradation|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	0.6803859
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6877829
+HSERMETANA-PWY: L-methionine biosynthesis III	0.6821488
+HSERMETANA-PWY: L-methionine biosynthesis III|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6071906
+HOMOSER-METSYN-PWY: L-methionine biosynthesis I	0.6361470
+HOMOSER-METSYN-PWY: L-methionine biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6422366
+DTDPRHAMSYN-PWY: dTDP-L-rhamnose biosynthesis I	0.6285319
+SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I	0.6266739
+SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5708439
 PWY66-422: D-galactose degradation V (Leloir pathway)	0.6163899
 PWY66-422: D-galactose degradation V (Leloir pathway)|g__Bacteroides.s__Bacteroides_stercoris	0.6771292
-PWY66-422: D-galactose degradation V (Leloir pathway)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	0.6803859
-PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.6877829
-RHAMCAT-PWY: L-rhamnose degradation I	0.5094141
-RHAMCAT-PWY: L-rhamnose degradation I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-RHAMCAT-PWY: L-rhamnose degradation I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.0000000
-SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I	0.6266739
-SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
-SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5708439
+PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I	0.6134022
+PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5490150
+PWY-6507: 4-deoxy-L-threo-hex-4-enopyranuronate degradation	0.6088055
+PWY-5030: L-histidine degradation III	0.5962599
+PWY-7242: D-fructuronate degradation	0.5943885
+GLUCUROCAT-PWY: superpathway of &beta;-D-glucuronide and D-glucuronate degradation	0.5807064
+ILEUSYN-PWY: L-isoleucine biosynthesis I (from threonine)	0.5734231
+ILEUSYN-PWY: L-isoleucine biosynthesis I (from threonine)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5437995
 VALSYN-PWY: L-valine biosynthesis	0.5734231
-VALSYN-PWY: L-valine biosynthesis|g__Bacteroides.s__Bacteroides_stercoris	0.0000000
 VALSYN-PWY: L-valine biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5437995
+CALVIN-PWY: Calvin-Benson-Bassham cycle	0.5548942
+PWY-5659: GDP-mannose biosynthesis	0.5428067
+PWY-5659: GDP-mannose biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5413375
+ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis	0.5159938
+ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5719989
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II	0.5140779
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4593528
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4798866
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II	0.5140779
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.4593528
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II|g__Bacteroides.s__Bacteroides_stercoris	0.4798866
+RHAMCAT-PWY: L-rhamnose degradation I	0.5094141
+GALACTUROCAT-PWY: D-galacturonate degradation I	0.5106365
+PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II	0.4999535
+PWY-3781: aerobic respiration I (cytochrome c)	0.4438817

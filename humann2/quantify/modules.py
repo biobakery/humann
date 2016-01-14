@@ -452,7 +452,7 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     return pathways_abundance_store, reactions_in_pathways_present
     
     
-def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, all_bugs_sorted,
+def print_pathways(pathways, file, header, pathway_names, sorted_pathways_and_bugs,
                    unmapped_all, unintegrated_all, unintegrated_per_bug):
     """
     Print the pathways data to a file organized by pathway
@@ -474,7 +474,7 @@ def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, a
                           +delimiter+utilities.format_float_to_string(unintegrated_per_bug[bug]))
             
     # Print out all pathways sorted
-    for pathway in all_pathways_sorted:
+    for pathway, bugs_list in sorted_pathways_and_bugs:
         all_score=pathways.get_score(pathway)
         pathway_name=pathway_names.get_name(pathway)
         # Print the computation of all bugs for pathway
@@ -482,7 +482,7 @@ def print_pathways(pathways, file, header, pathway_names, all_pathways_sorted, a
         # Process and print per bug if selected
         if not config.remove_stratified_output:
             # Print scores for all bugs sorted
-            for bug in all_bugs_sorted:
+            for bug in bugs_list:
                 score=pathways.get_score_for_bug(bug,pathway)
                 tsv_output.append(pathway_name+category_delimiter+bug+delimiter
                                   +utilities.format_float_to_string(score))
@@ -593,21 +593,13 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
         pathways_database)
 
-    # Get the sorted list of all pathways with coverage or abundance values
-    all_pathways=set()
-    all_pathways.update(pathways_abundance.get_pathways_list())
-    all_pathways.update(pathways_coverage.get_pathways_list())
-    all_pathways_sorted=sorted(all_pathways)
-    
-    # Get the sorted list of all bugs with pathways coverage or abundance values
-    all_bugs=set()
-    all_bugs.update(pathways_abundance.get_bugs_list())
-    all_bugs.update(pathways_coverage.get_bugs_list())
-    all_bugs_sorted=sorted(all_bugs)
+    # Get the sorted list of pathways and bugs from the abundance values
+    # This same sorting will be used for both the abundance and coverage output files
+    sorted_pathways_and_bugs=pathways_abundance.get_pathways_and_bugs_nonzero_sorted()
 
     # Print the pathways abundance data to file
     print_pathways(pathways_abundance, config.pathabundance_file, "_Abundance", 
-                   pathway_names, all_pathways_sorted, all_bugs_sorted, unmapped_all,
+                   pathway_names, sorted_pathways_and_bugs, unmapped_all,
                    unintegrated_all, unintegrated_per_bug)
     
     # Set the unmapped and unintegrated to one for coverage output
@@ -617,7 +609,7 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     
     # Print the pathways coverage data to file
     print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", 
-                   pathway_names, all_pathways_sorted, all_bugs_sorted, unmapped_all,
+                   pathway_names, sorted_pathways_and_bugs, unmapped_all,
                    unintegrated_all, unintegrated_per_bug)
 
     return config.pathabundance_file, config.pathcoverage_file
