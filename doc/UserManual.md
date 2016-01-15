@@ -411,6 +411,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
 
 ``` 
 # Gene Family	$SAMPLENAME_Abundance
+UNMAPPED        187.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon	67.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_finegoldii	5.0
@@ -427,20 +428,25 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 *   HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef50 for this computation.
 *   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
 *   Please note the gene families file will not be created if the input file type is a gene table.
-        
+* The unmapped value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). This value is the equivalent of all unmapped reads mapping to a single unknown gene of length 1 kilobase.
+
 ### 2. Pathway coverage file ###
 
 ``` 
 # Pathway	$SAMPLENAME_Coverage
+UNMAPPED	1.0
+UNINTEGRATED	1.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	1.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	1.0
+UNINTEGRATED|unclassified	1.0
 PWY0-1301: melibiose degradation	1.0
 PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	1.0
 PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	1.0
 PWY0-1301: melibiose degradation|unclassified	1.0
 PWY-5484: glycolysis II (from fructose-6P)	1.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_vulgatus	0.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	0.7
 PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
-PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides_merdae	0.3
 ```
 
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
@@ -448,20 +454,25 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides
 *   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not necessarily the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the pathway has coverage=1.0 in species 1, species 2, and at the community level.
 *   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
 *   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+* This file follows the same order for pathways and species as the abundance file. The values for unmapped and unintegrated are always one and they are included so that this file will match the format of the abundance file exactly.
 
 ### 3. Pathway abundance file ###
 
 ```
 # Pathway	$SAMPLENAME_Abundance
+UNMAPPED	140.0
+UNINTEGRATED	87.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	23.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	20.0
+UNINTEGRATED|unclassified	12.0
 PWY0-1301: melibiose degradation	57.5
-PWY0-1301: melibiose degradation|unclassified	32.5
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_ovatus	4.5
-PWY0-1301: melibiose degradation|g__Alistipes.s__Alistipes_putredinis	3.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	2.5
+PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	32.5
+PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	4.5
+PWY0-1301: melibiose degradation|unclassified	3.0
 PWY-5484: glycolysis II (from fructose-6P)	54.7
-PWY-5484: glycolysis II (from fructose-6P)|unclassified	16.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides_merdae	8.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	6.0
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	16.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	8.0
+PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 ```
          
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
@@ -469,6 +480,8 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	
 *   Pathway abundance at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level abundance is not necessarily the sum of its stratified abundance values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=10} and species 2 contributes abundances {A=10, B=5}, species 1 and 2 each contribute 5 complete copies of the pathway, but at the community level there are 15 complete copies.
 *   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
 *   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+* The unmapped value is the compression constant multiplied by the total unmapped reads. The unintgrated values, presented for all pathways and also per species, are the compression constant multiplied by the sum of the gene families abundance for those gene families which do not contribute to pathway abundances. The compression constant is the sum of all pathway abundances dividied by the sum of all gene family abundances only considering those gene families which contribute to pathway abundance.
+* The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
 
 ### 4. Intermediate temp output files ###
 

@@ -174,6 +174,7 @@ HUMAnN2 produces three output files which by default are tab-delimited text. The
 
 ```
 # Gene Family	$SAMPLENAME_Abundance
+UNMAPPED        187.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon	67.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_fragilis	8.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_finegoldii	5.0
@@ -185,44 +186,59 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_th
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_stercoris	7.0
 ```
 
-* This file includes the abundance of each orthologous gene family in the community organized by bug. Orthologous families are groups of genes that perform roughly the same biological roles. 
+* This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
+* Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance. 
 * HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
 * Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples. For more information on these units and normalization, please see the [HUMAnN2 User Manual Standard Workflow Section](http://huttenhower.sph.harvard.edu/humann2/manual/#markdown-header-standard-workflow)
+* The unmapped value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). This value is the equivalent of all unmapped reads mapping to a single unknown gene of length 1 kilobase.
 
 #### Pathway Coverage ####
 
 ```
 # Pathway	$SAMPLENAME_Coverage
+UNMAPPED	1.0
+UNINTEGRATED	1.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	1.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	1.0
+UNINTEGRATED|unclassified	1.0
 PWY0-1301: melibiose degradation	1.0
 PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	1.0
 PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	1.0
 PWY0-1301: melibiose degradation|unclassified	1.0
 PWY-5484: glycolysis II (from fructose-6P)	1.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_vulgatus	0.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	0.7
 PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
-PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides_merdae	0.3
 ```
 
-* This file includes the presence/absence of each pathway in the community grouped by bug. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes. 
+* This file includes the presence/absence of each pathway in the community grouped by species. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes.
+*   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not necessarily the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the pathway has coverage=1.0 in species 1, species 2, and at the community level.
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+* This file follows the same order for pathways and species as the abundance file. The values for unmapped and unintegrated are always one and they are included so that this file will match the format of the abundance file exactly.
 
 #### Pathway Abundance ####
 
 ```
 # Pathway	$SAMPLENAME_Abundance
+UNMAPPED	140.0
+UNINTEGRATED	87.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	23.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	20.0
+UNINTEGRATED|unclassified	12.0
 PWY0-1301: melibiose degradation	57.5
-PWY0-1301: melibiose degradation|unclassified	32.5
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_ovatus	4.5
-PWY0-1301: melibiose degradation|g__Alistipes.s__Alistipes_putredinis	3.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	2.5
+PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	32.5
+PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	4.5
+PWY0-1301: melibiose degradation|unclassified	3.0
 PWY-5484: glycolysis II (from fructose-6P)	54.7
-PWY-5484: glycolysis II (from fructose-6P)|unclassified	16.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Parabacteroides.s__Parabacteroides_merdae	8.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	6.0
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	16.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	8.0
+PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 ```
 
-* This file includes the abundance of each pathway in the community grouped by bug. This is the total number of “copies” of the pathways present. 
+* This file includes the abundance of each pathway in the community as a function of the abundances of the pathway's member genes. Pathway abundance is proportional to the total number of “copies” of the pathways present. 
+*   Pathway abundance at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level abundance is not necessarily the sum of its stratified abundance values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=10} and species 2 contributes abundances {A=10, B=5}, species 1 and 2 each contribute 5 complete copies of the pathway, but at the community level there are 15 complete copies.
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+* The unmapped value is the compression constant multiplied by the total unmapped reads. The unintgrated values, presented for all pathways and also per species, are the compression constant multiplied by the sum of the gene families abundance for those gene families which do not contribute to pathway abundances. The compression constant is the sum of all pathway abundances dividied by the sum of all gene family abundances only considering those gene families which contribute to pathway abundance.
+* The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
