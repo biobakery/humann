@@ -57,7 +57,7 @@ import tempfile
 import re
 import time
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 
 def byte_to_megabyte(byte):
     """
