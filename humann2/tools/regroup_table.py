@@ -32,7 +32,6 @@ c_default_groups = {
     "uniref50_ko":  Groups( 
         os.path.join( p_root, "data", "misc", "map_ko_uniref50.txt.gz" ), 0, [] ),
     }
-
 c_protected = [util.c_unmapped, util.c_unintegrated]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
@@ -75,13 +74,15 @@ def get_args ():
         )
     parser.add_argument( 
         "-u", "--ungrouped",
-        action="store_true",
-        help="Include an 'UNGROUPED' group to capture features that did not belong to other groups",
+        default="Y",
+        choices=["Y", "N"],
+        help="Include an 'UNGROUPED' group to capture features that did not belong to other groups? default=Y",
         )
     parser.add_argument( 
         "-p", "--protected",
-        action="store_true",
-        help="Carry through protected features, such as 'UNMAPPED'"
+        default="Y",
+        choices=["Y", "N"],
+        help="Carry through protected features, such as 'UNMAPPED'? default=Y",
         )
     parser.add_argument( 
         "-o", "--output", 
@@ -170,11 +171,11 @@ def main ( ):
     else:
         map_feature_groups = map_group_features
     # add protected cases to mapping?
-    if args.protected:
+    if args.protected == "Y":
         for feature in c_protected:
             map_feature_groups.setdefault( feature, {} )[feature] = 1
     # perform the table regrouping
-    regroup( table, map_feature_groups, args.function, ungrouped=args.ungrouped )
+    regroup( table, map_feature_groups, args.function, ungrouped=args.ungrouped=="Y" )
     table.write( args.output )
 
 if __name__ == "__main__":
