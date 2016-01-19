@@ -190,7 +190,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 * Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance. 
 * HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef for this computation.
 * Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples. For more information on these units and normalization, please see the [HUMAnN2 User Manual Standard Workflow Section](http://huttenhower.sph.harvard.edu/humann2/manual/#markdown-header-standard-workflow)
-* The unmapped value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). This value is the equivalent of all unmapped reads mapping to a single unknown gene of length 1 kilobase.
+* The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 
 #### Pathway Coverage ####
 
@@ -215,7 +215,7 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
 *   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not necessarily the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the pathway has coverage=1.0 in species 1, species 2, and at the community level.
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-* This file follows the same order for pathways and species as the abundance file. The values for unmapped and unintegrated are always one and they are included so that this file will match the format of the abundance file exactly.
+*   This file follows the same order for pathways and species as the abundance file. The values for UNMAPPED and UNINTEGRATED are set to 1.0 included so that this file will match the format of the abundance file exactly.
 
 #### Pathway Abundance ####
 
@@ -240,5 +240,5 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 *   Pathway abundance at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level abundance is not necessarily the sum of its stratified abundance values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=10} and species 2 contributes abundances {A=10, B=5}, species 1 and 2 each contribute 5 complete copies of the pathway, but at the community level there are 15 complete copies.
 * HUMAnN2 uses MetaCyc pathways along with MinPath for this computation. 
 * The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-* The unmapped value is the compression constant multiplied by the total unmapped reads. The unintgrated values, presented for all pathways and also per species, are the compression constant multiplied by the sum of the gene families abundance for those gene families which do not contribute to pathway abundances. The compression constant is the sum of all pathway abundances dividied by the sum of all gene family abundances only considering those gene families which contribute to pathway abundance.
+* To account for non-linearity in the conversion of gene copy number to pathway copy number, we define a “compression constant” (*k*) equal to the total pathway abundance divided by the total abundance of genes that contributed to pathways. The "UNMAPPED" value reported in the pathway abundance table is equal to the total number of unmapped reads scaled by *k* (making it more comparable with pathway abundance values). Similarly, we define an "UNINTEGRATED" abundance for 1) the community, 2) each identified species, and 3) unclassified species equal to the total abundance of genes in that level that did not contribute to pathways scaled by *k*.
 * The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.

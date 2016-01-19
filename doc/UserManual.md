@@ -428,7 +428,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 *   HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef50 for this computation.
 *   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
 *   Please note the gene families file will not be created if the input file type is a gene table.
-* The unmapped value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). This value is the equivalent of all unmapped reads mapping to a single unknown gene of length 1 kilobase.
+*   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 
 ### 2. Pathway coverage file ###
 
@@ -454,7 +454,7 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
 *   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not necessarily the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the pathway has coverage=1.0 in species 1, species 2, and at the community level.
 *   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
 *   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-* This file follows the same order for pathways and species as the abundance file. The values for unmapped and unintegrated are always one and they are included so that this file will match the format of the abundance file exactly.
+*   This file follows the same order for pathways and species as the abundance file. The values for UNMAPPED and UNINTEGRATED are set to 1.0 included so that this file will match the format of the abundance file exactly.
 
 ### 3. Pathway abundance file ###
 
@@ -480,7 +480,7 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 *   Pathway abundance at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level abundance is not necessarily the sum of its stratified abundance values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=10} and species 2 contributes abundances {A=10, B=5}, species 1 and 2 each contribute 5 complete copies of the pathway, but at the community level there are 15 complete copies.
 *   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
 *   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-* The unmapped value is the compression constant multiplied by the total unmapped reads. The unintgrated values, presented for all pathways and also per species, are the compression constant multiplied by the sum of the gene families abundance for those gene families which do not contribute to pathway abundances. The compression constant is the sum of all pathway abundances dividied by the sum of all gene family abundances only considering those gene families which contribute to pathway abundance.
+*   To account for non-linearity in the conversion of gene copy number to pathway copy number, we define a “compression constant” (*k*) equal to the total pathway abundance divided by the total abundance of genes that contributed to pathways. The "UNMAPPED" value reported in the pathway abundance table is equal to the total number of unmapped reads scaled by *k* (making it more comparable with pathway abundance values). Similarly, we define an "UNINTEGRATED" abundance for 1) the community, 2) each identified species, and 3) unclassified species equal to the total abundance of genes in that level that did not contribute to pathways scaled by *k*.
 * The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
 
 ### 4. Intermediate temp output files ###
@@ -984,6 +984,8 @@ To further simplify the exploration of gene family abundance data, users can reg
 *   ``uniref50_go``: Collapses UniRef50 gene families into a subset of non-redundant, high-level Gene Ontology (GO) categories. These associations are inferred from UniProt and a HUMAnN2-specific parsing of the GO hierarchy.
 
 Users are free to create and use additional mapping files. By default, feature abundances (such as gene families) are summed to produce group abundances. This is based on the logic that features are instances of particular groups (for example, "Apples" and "Oranges" are instances of the group "Fruits"; 1 Apple and 1 Orange represent 2 Fruits). It is also possible to compute the mean feature abundance over groups, which may be more appropriate in cases where an instance of a group contributes instances of its member features (for example, a pathway that is defined by the presence of a set of reactions).
+
+If the "UNMAPPED" gene abundance feature is included in a user's input to ``regroup_table``, it will automatically be carried forward to the final output. In addition, genes that do not group with a non-trivial feature are combined as an "UNGROUPED" group. By default, UNGROUPED reflects the total abundance of genes that did not belong to another group (similar in spirit to the "UNINTEGRATED" value reported in the pathway abundance file).
 
 After regrouping features, users may wish to renormalize the resulting table using the ``humann2_renorm_table`` script. This allows users to investigate the relative abundance of their groups of interest, discounting the abundance of features that did not map to a group.
 

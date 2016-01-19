@@ -5,14 +5,14 @@
 
 ### New Features ###
 
-* Translated search results are now subjected to an initial protein coverage filter (default >50%). To change the default value, use the option "--coverage-threshold <50.0>". A read's weight is only divided over proteins that meet this coverage threshold, which provides a substantial reduction in 1) spurious hits and 2) the size of the genefamilies.tsv output file.
-* Unmapped counts are now included in the gene families abundance output file. This value represents the total unmapped reads after both searches, nucleotide and translated. For more information on this computation, see the documentation section about the gene families abundance file. 
-* Unmapped and unintegrated values are now included in the pathway abundance and coverage output files. For information on how these values are calculated, see the documentation section for each file. 
+* To reduce the influence of spurious hits in the translated search step, raw translated search results are now subjected to an initial protein coverage filter (default >50%). A read's weight is only divided over proteins that meet this coverage threshold, which (in addition to removing spurious hits) has the added benefit of substantially reducing the size of the genefamilies.tsv output file. To change the default coverage threshold, use the option "--coverage-threshold <50.0>".
+* Unmapped reads are now included in the gene families abundance output file as a new "UNMAPPED" feature. This value represents the total unmapped reads after both searches, nucleotide and translated. For more information on this computation, see the documentation section about the gene families abundance file. 
+* Unmapped read abundance is similarly carried through to the pathway abundance file, along with a new stratified feature, "UNINTEGRATED," which reflects the total abundance of genes that did not contribute to a metabolic pathway. These features are included in the pathway coverage file to maintain pathway abundance/coverage concordance (see below). For information on how these values are calculated, see the documentation section for each file. 
 
 ### Other Changes ###
 
 * The included mapping from level-4 EC groups to UniRef50 clusters has been expanded based on annotations from TrEMBL. ~10x more UniRef50s can now be mapped to a level-4 EC group.
-* The regroup_table script has been modified to allow an "ungrouped" group, which captures the abundance of features that failed to map to another, non-trivial group.
+* The regroup_table script has been modified to include an "UNGROUPED" group, which captures the abundance of features that failed to map to another, non-trivial group. The "UNMAPPED" feature (see above) will always carry through to a regrouped table.
 * The format of the pathway abundance and coverage output files has been updated so both files include the same order of pathways and species. The pathways are ordered by decreasing abundance. Pathways with zero abundance are not included.
 
 ## v0.5.0 10-22-2015 ##
