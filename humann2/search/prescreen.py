@@ -116,13 +116,20 @@ def create_custom_database(chocophlan_dir, bug_file):
                     total_reads_covered += read_percent
                     organism_info=line.split("\t")[0]
                     # use the genus and species
-                    species=organism_info.split("|")[-1]
-                    genus=organism_info.split("|")[-2]
-                    message=("Found " + genus + "." + species + " : " +
-                        "{:.2f}".format(read_percent) + "% of mapped reads")
-                    logger.info(message)
-                    print(message)
-                    species_found.append(genus + "." + species)
+                    try:
+                        species=organism_info.split("|")[-1]
+                        genus=organism_info.split("|")[-2]
+                    except IndexError:
+                        species=""
+                        genus=""
+                        logger.debug("Unable to process species: " + line)
+                        
+                    if species and genus:
+                        message=("Found " + genus + "." + species + " : " +
+                            "{:.2f}".format(read_percent) + "% of mapped reads")
+                        logger.info(message)
+                        print(message)
+                        species_found.append(genus + "." + species)
 
             line = file_handle.readline()
     
