@@ -150,7 +150,17 @@ def create_custom_database(chocophlan_dir, bug_file):
 
     # create new fasta file containing only those species found
     if not species_file_list:
-        logger.debug("The custom ChocoPhlAn database is empty")   
+        message="\n\n"
+        if len(species_found) > 0:
+            message+="None of the species selected from the prescreen were found in the ChocoPhlAn database.\n"
+        elif config.bypass_prescreen:
+            message+="The ChocoPhlAn database is empty.\n"
+        else:
+            message+="No species were selected from the prescreen.\n"
+        message+="Because of this the custom ChocoPhlAn database is empty.\n"
+        message+="This will result in zero species-specific gene families and pathways.\n\n"
+        logger.debug(message)
+        print(message)
         return "Empty"
     else:
         message="Creating custom ChocoPhlAn database ........"
