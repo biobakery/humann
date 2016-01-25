@@ -5,6 +5,16 @@ verbose=False
 
 data_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
 
+demo_fastq=os.path.join(data_folder,"demo.fastq")
+demo_fasta=os.path.join(data_folder, "demo.fasta")
+demo_sam=os.path.join(data_folder, "demo.sam")
+demo_m8=os.path.join(data_folder,"demo.m8")
+demo_gene_families=os.path.join(data_folder,"demo_genefamilies.tsv")
+demo_bugs_list=os.path.join(data_folder, "demo_metaphlan_bugs_list.tsv")
+
+expected_demo_output_files=["demo_genefamilies.tsv","demo_pathabundance.tsv","demo_pathcoverage.tsv"]
+expected_demo_output_files_genefamilies_input=["demo_genefamilies_pathabundance.tsv","demo_genefamilies_pathcoverage.tsv"]
+
 small_fasta_file=os.path.join(data_folder,"file.fasta")
 small_fasta_file_total_sequences=3
 small_fastq_file=os.path.join(data_folder,"file.fastq")

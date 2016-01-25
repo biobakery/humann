@@ -39,12 +39,17 @@ def parse_arguments(args):
         formatter_class=argparse.RawTextHelpFormatter,
         prog="humann2_test")
     parser.add_argument(
-        "-r","--run-functional-tests", 
-        help="also run the functional tests\n", 
+        "--bypass-functional-tests-tools", 
+        help="do not run the functional tests for tools\n", 
         action="store_true",
         default=False)
     parser.add_argument(
-        "-b","--bypass-unit-tests", 
+        "--bypass-functional-tests-end-to-end", 
+        help="do not run the humann2 end to end functional tests\n", 
+        action="store_true",
+        default=False)
+    parser.add_argument(
+        "--bypass-unit-tests", 
         help="do not run the unit tests\n", 
         action="store_true",
         default=False)
@@ -56,12 +61,21 @@ def get_testdirectory():
     
     return os.path.dirname(os.path.abspath(__file__))
 
-def get_funtionaltests():
-    """ Return all of the functional tests """
+def get_funtionaltests_tools():
+    """ Return all of the functional tests for tools"""
     
     directory_of_tests=get_testdirectory()
     
-    functional_suite = unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_*.py')
+    functional_suite = unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_tools*.py')
+    
+    return functional_suite
+
+def get_funtionaltests_other():
+    """ Return all of the other functional tests """
+    
+    directory_of_tests=get_testdirectory()
+    
+    functional_suite = unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_humann2*.py')
     
     return functional_suite
 
@@ -90,8 +104,12 @@ def main():
         test_suites=get_unittests()
     
     # Get the functional tests if requested
-    if args.run_functional_tests:
-        test_suites+=get_funtionaltests()
+    if not args.bypass_functional_tests_tools:
+        test_suites+=get_funtionaltests_tools()
+    if not args.bypass_functional_tests_end_to_end:
+        print("Please note running functional end to end tests requires all dependencies of HUMAnN2.\n"+
+              "To bypass this set of tests, add the option '--bypass-functional-tests-end-to-end'.\n")
+        test_suites+=get_funtionaltests_other()
 
     unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(test_suites))
 
