@@ -162,8 +162,8 @@ def try_zip_open( path, *args ):
     fh = None
     try:
         fh = open( path, *args ) if not re.search( r".gz$", path ) else gzip.GzipFile( path, *args )
-    except:
-        print( "Problem opening", path, file=sys.stderr )
+    except EnvironmentError:
+        sys.exit( "Problem opening file: " + path)
     return fh
 
 def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
