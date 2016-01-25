@@ -41,10 +41,13 @@ def return_exe_path(exe):
 def run_command(command):
     """ Run the humann2 command """
     
+    print("\nTesting command: ")
+    print(" ".join(command))
+    
     try:
         subprocess.check_call(command)
     except (EnvironmentError, subprocess.CalledProcessError):
-        print("Warning: Unable to execute humamn2 in test.\n"+" ".join(command))    
+        print("Warning: Unable to execute humann2 in test.\n"+" ".join(command))    
         
 def remove_temp_folder(tempdir):
     """ Remove the temp folder """

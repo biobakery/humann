@@ -66,5 +66,122 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
 
         # remove the temp folder
         utils.remove_temp_folder(temp_directory)
+        
+
+    def test_humann2_regroup_table_uniref50_rxn_tsv(self):
+        """
+        Test regrouping the tsv file with humann2_regroup_table
+        Test with uniref50 to reactions mappings
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+                           new_file,"--groups","uniref50_rxn"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_rxn_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_regroup_table_uniref50_rxn_tsv(self):
+        """
+        Test regrouping the tsv file with humann2_regroup_table
+        Test with uniref50 to reactions mappings
+        Test with the mean instead of sum output
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+                           new_file,"--groups","uniref50_rxn","--function","mean"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_rxn_mean_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_regroup_table_uniref50_ec_tsv(self):
+        """
+        Test regrouping the tsv file with humann2_regroup_table
+        Test with uniref50 to ec mappings
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+                           new_file,"--groups","uniref50_ec"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_ec_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_regroup_table_uniref50_go_tsv(self):
+        """
+        Test regrouping the tsv file with humann2_regroup_table
+        Test with uniref50 to go mappings
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+                           new_file,"--groups","uniref50_go"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_go_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_regroup_table_uniref50_ko_tsv(self):
+        """
+        Test regrouping the tsv file with humann2_regroup_table
+        Test with uniref50 to ko mappings
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+                           new_file,"--groups","uniref50_ko"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_ko_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_regroup_table_custom_grouping_tsv(self):
+        """
+        Test regrouping the tsv file with humann2_regroup_table
+        Test with custom mappings
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_custom_input,"--output",
+                           new_file,"--custom",cfg.regroup_custom_groups])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_custom_groups_output,
+                                    shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
        
             

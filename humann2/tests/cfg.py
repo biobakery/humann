@@ -108,3 +108,15 @@ multi_sample_genefamilies = os.path.join(data_folder, "multi_sample_genefamilies
 multi_sample_genefamilies_split1=os.path.join(data_folder, "multi_sample_genefamilies_sample1.tsv")
 multi_sample_genefamilies_split2=os.path.join(data_folder, "multi_sample_genefamilies_sample2.tsv")
 multi_sample_genefamilies_split_basename="multi_sample_genefamilies_"
+
+
+regroup_input=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_input.txt")
+regroup_rxn_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_rxn_output.txt")
+regroup_rxn_mean_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_rxn_mean_output.txt")
+regroup_ec_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_ec_output.txt")
+regroup_go_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_go_output.txt")
+regroup_ko_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_ko_output.txt")
+
+regroup_custom_input=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-custom_input.txt")
+regroup_custom_groups=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-custom_groups.txt")
+regroup_custom_groups_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-custom_output.txt")
