@@ -141,3 +141,10 @@ rename_rxn_output=os.path.join(data_folder, rename_folder, "rename_table-builtin
 
 rename_custom_output=os.path.join(data_folder, rename_folder, "rename_table-custom_output.txt")
 rename_custom_mapping=os.path.join(data_folder, rename_folder, "rename_table-custom.txt.gz")
+
+# Files to test the renorm script
+# Output files of cpm and relab were manually verified
+renorm_folder="tooltest-renorm_table"
+renorm_input=os.path.join(data_folder, renorm_folder, "renorm_table-input.txt")
+renorm_relab_output=os.path.join(data_folder, renorm_folder, "renorm_table-relab_output.txt")
+renorm_cpm_output=os.path.join(data_folder, renorm_folder, "renorm_table-cpm_output.txt")

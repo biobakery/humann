@@ -298,3 +298,41 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
             
+            
+    def test_humann2_renorm_table_cpm_tsv(self):
+        """
+        Test renorm the tsv file entries with humann2_renorm_table
+        Test with cpm
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input,"--output",
+                           new_file,"--norm","cpm"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.renorm_cpm_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_renorm_table_relab_tsv(self):
+        """
+        Test renorm the tsv file entries with humann2_renorm_table
+        Test with relab
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input,"--output",
+                           new_file,"--norm","relab"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.renorm_relab_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
