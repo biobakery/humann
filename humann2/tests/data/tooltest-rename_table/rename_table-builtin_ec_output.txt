@@ -1,0 +1,7 @@
+#HEADERS	Sample1	Sample2
+2.7.1.41: Glucose-1-phosphate phosphodismutase	30.0	50.0
+2.7.1.41: Glucose-1-phosphate phosphodismutase|bug1	15.0	25.0
+2.7.1.41: Glucose-1-phosphate phosphodismutase|bug2	15.0	25.0
+5.4.2.6: Beta-phosphoglucomutase	30.0	50.0
+5.4.2.6: Beta-phosphoglucomutase|bug1	15.0	25.0
+5.4.2.6: Beta-phosphoglucomutase|bug2	15.0	25.0

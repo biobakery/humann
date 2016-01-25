@@ -1,0 +1,4 @@
+#HEADERS	Sample1	Sample2
+K01838	30.0	50.0
+K01838|bug1	15.0	25.0
+K01838|bug2	15.0	25.0

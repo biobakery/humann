@@ -109,14 +109,35 @@ multi_sample_genefamilies_split1=os.path.join(data_folder, "multi_sample_genefam
 multi_sample_genefamilies_split2=os.path.join(data_folder, "multi_sample_genefamilies_sample2.tsv")
 multi_sample_genefamilies_split_basename="multi_sample_genefamilies_"
 
+# Files to test the regroup script
+regroup_folder="tooltest-regroup_table"
+regroup_input=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_input.txt")
+regroup_rxn_output=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_uniref50_rxn_output.txt")
+regroup_rxn_mean_output=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_uniref50_rxn_mean_output.txt")
+regroup_ec_output=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_uniref50_ec_output.txt")
+regroup_go_output=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_uniref50_go_output.txt")
+regroup_ko_output=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_uniref50_ko_output.txt")
 
-regroup_input=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_input.txt")
-regroup_rxn_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_rxn_output.txt")
-regroup_rxn_mean_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_rxn_mean_output.txt")
-regroup_ec_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_ec_output.txt")
-regroup_go_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_go_output.txt")
-regroup_ko_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-builtin_uniref50_ko_output.txt")
+regroup_custom_input=os.path.join(data_folder, regroup_folder, "regroup_table-custom_input.txt")
+regroup_custom_groups=os.path.join(data_folder, regroup_folder, "regroup_table-custom_groups.txt")
+regroup_custom_groups_output=os.path.join(data_folder, regroup_folder, "regroup_table-custom_output.txt")
 
-regroup_custom_input=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-custom_input.txt")
-regroup_custom_groups=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-custom_groups.txt")
-regroup_custom_groups_output=os.path.join(data_folder, "tooltest-regroup_table","regroup_table-custom_output.txt")
+# Files to test the rename script
+rename_folder="tooltest-rename_table"
+rename_input=os.path.join(data_folder, rename_folder, "rename_table-input.txt")
+rename_uniref50_output=os.path.join(data_folder, rename_folder, "rename_table-builtin_output.txt")
+
+rename_pathway_input=os.path.join(data_folder, rename_folder, "pathabundance_without_names.txt")
+rename_pathway_output=os.path.join(data_folder, rename_folder, "rename_table-builtin_pathways_output.txt")
+
+rename_ec_input=os.path.join(data_folder, rename_folder, "rename_table-input_ec.txt")
+rename_ec_output=os.path.join(data_folder, rename_folder, "rename_table-builtin_ec_output.txt")
+
+rename_ko_input=os.path.join(data_folder, rename_folder, "rename_table-input_ko.txt")
+rename_ko_output=os.path.join(data_folder, rename_folder, "rename_table-builtin_ko_output.txt")
+
+rename_rxn_input=os.path.join(data_folder, rename_folder, "rename_table-input_rxn.txt")
+rename_rxn_output=os.path.join(data_folder, rename_folder, "rename_table-builtin_rxn_output.txt")
+
+rename_custom_output=os.path.join(data_folder, rename_folder, "rename_table-custom_output.txt")
+rename_custom_mapping=os.path.join(data_folder, rename_folder, "rename_table-custom.txt.gz")

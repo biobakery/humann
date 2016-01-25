@@ -184,4 +184,117 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
        
+    def test_humann2_rename_table_uniref50_tsv(self):
+        """
+        Test renaming the tsv file entries with humann2_rename_table
+        Test with uniref50 names
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_rename_table","--input",cfg.rename_input,"--output",
+                           new_file,"--names","uniref50"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.rename_uniref50_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_rename_table_ko_tsv(self):
+        """
+        Test renaming the tsv file entries with humann2_rename_table
+        Test with ko names
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_rename_table","--input",cfg.rename_ko_input,"--output",
+                           new_file,"--names","ko"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.rename_ko_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_rename_table_ec_tsv(self):
+        """
+        Test renaming the tsv file entries with humann2_rename_table
+        Test with ec names
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_rename_table","--input",cfg.rename_ec_input,"--output",
+                           new_file,"--names","ec"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.rename_ec_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_rename_table_rxn_tsv(self):
+        """
+        Test renaming the tsv file entries with humann2_rename_table
+        Test with rxn names
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_rename_table","--input",cfg.rename_rxn_input,"--output",
+                           new_file,"--names","metacyc-rxn"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.rename_rxn_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_rename_table_pathways_tsv(self):
+        """
+        Test renaming the tsv file entries with humann2_rename_table
+        Test with pathways names
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_rename_table","--input",cfg.rename_pathway_input,"--output",
+                           new_file,"--names","metacyc-pwy"])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.rename_pathway_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_rename_table_custom_tsv(self):
+        """
+        Test renaming the tsv file entries with humann2_rename_table
+        Test with custom names file
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_rename_table","--input",cfg.rename_input,"--output",
+                           new_file,"--custom",cfg.rename_custom_mapping])
+        
+        # check the output is as expected
+        self.assertTrue(filecmp.cmp(new_file, cfg.rename_custom_output, shallow=False))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
             
