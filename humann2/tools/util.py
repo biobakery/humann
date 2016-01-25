@@ -127,12 +127,16 @@ class Table ( ):
             print( "Loading table from:", path, file=sys.stderr )
             size_warn( path )
         for row in csv.reader( fh, dialect='excel-tab' ):
-            if self.anchor is None:
-                self.anchor = row[0]
-                self.colheads = row[1:]
-            else:
-                self.rowheads.append( row[0] )
-                self.data.append( row[1:] )
+            try:
+                if self.anchor is None:
+                    self.anchor = row[0]
+                    self.colheads = row[1:]
+                else:
+                    self.rowheads.append( row[0] )
+                    self.data.append( row[1:] )
+            except IndexError:
+                # ignore empty lines in input file
+                pass
         for rowhead in self.rowheads:
             if c_strat_delim in rowhead:
                 print( "Treating", path, "as stratified output, e.g.", 
