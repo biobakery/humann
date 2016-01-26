@@ -420,3 +420,34 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
 
         # remove the temp file
         utils.remove_temp_folder(tempdir)
+        
+    def test_humann2_strain_profile_tsv(self):
+        """
+        Test the tsv file entries running humann2_strain_profile
+        Test with critical mean and critical count values
+        """
+        
+        # create a temp folder
+        tempdir=utils.create_temp_folder("strain_profile")
+        
+        # move to this folder as the output files will be created in the current working folder
+        current_working_directory=os.getcwd()
+        try:
+            os.chdir(tempdir)
+        except EnvironmentError:
+            print("Warning: Unable to move to temp directory: " + tempdir)
+        
+        # run the command
+        utils.run_command(["humann2_strain_profiler","--input",cfg.strain_profile_input,
+                           "--critical_mean","1","--critical_count","2"])
+        
+        # check the output files are as expected
+        # allow for varying precision in the calculations with almost equal
+        for file, expected_output_file in zip(cfg.strain_profile_file_names, cfg.strain_profile_m1_n2_output_files):
+            self.assertTrue(utils.files_almost_equal(os.path.join(tempdir,file), expected_output_file))
+
+        # return to original working directory
+        os.chdir(current_working_directory)
+
+        # remove the temp file
+        utils.remove_temp_folder(tempdir)

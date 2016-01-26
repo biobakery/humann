@@ -168,3 +168,10 @@ rna_dna_norm_log_output_files=[os.path.join(data_folder, rna_dna_norm_folder, "r
 rna_dna_norm_log_10_output_files=[os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-log-10"+file)
                                    for file in rna_dna_norm_file_names]
 
+# Files to test the strain profile script
+strain_profile_folder="tooltest-strain_profiler"
+strain_profile_input=os.path.join(data_folder, strain_profile_folder, "strain_profiler-input.txt")
+strain_profile_file_names=["s1-strain_profile.tsv","s2-strain_profile.tsv"]
+strain_profile_m1_n2_output_files=[os.path.join(data_folder, strain_profile_folder, file) for file in strain_profile_file_names]
+
+
