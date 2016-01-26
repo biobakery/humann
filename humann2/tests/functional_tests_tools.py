@@ -451,3 +451,45 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
 
         # remove the temp file
         utils.remove_temp_folder(tempdir)
+        
+    def test_humann2_merge_abundance_tsv(self):
+        """
+        Test the tsv gene families and pathway abundance file entries with humann2_merge_abundance_tables
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_merge_abundance_tables","--input-genes",cfg.merge_abundance_genefamilies_input,
+                           "--input-pathways",cfg.merge_abundance_pathways_input,"--output",
+                           new_file])
+        
+        # check the output file is as expected
+        # allow for varying precision in the calculations with almost equal
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.merge_abundance_output))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+    def test_humann2_merge_abundance_remove_taxonomy_tsv(self):
+        """
+        Test the tsv gene families and pathway abundance file entries with humann2_merge_abundance_tables
+        Test with the remove taxonomy option which stratifies by pathway then gene instead of
+        stratifying by pathway, taxonomy, then gene
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        
+        # run the command
+        utils.run_command(["humann2_merge_abundance_tables","--input-genes",cfg.merge_abundance_genefamilies_input,
+                           "--input-pathways",cfg.merge_abundance_pathways_input,"--output",
+                           new_file,"--remove-taxonomy"])
+        
+        # check the output file is as expected
+        # allow for varying precision in the calculations with almost equal
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.merge_abundance_remove_taxonomy_output))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)

@@ -1,0 +1,160 @@
+# Pathway	demo_Abundance
+1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis	2.4612648808
+1CMET2-PWY|UniRef50_B5Y9A7: Glutamate formiminotransferase	2.6773761714
+1CMET2-PWY|UniRef50_R6AC71: Formiminotransferase-cyclodeaminase	2.024291498
+1CMET2-PWY|UniRef50_R5JC25: 5-formyltetrahydrofolate cyclo-ligase	4.2735042735
+1CMET2-PWY|UniRef50_R5S1C6: 5-methyltetrahydrofolate-homocysteine methyltransferase	2.6560424967
+1CMET2-PWY|UniRef50_A0M554: Bifunctional protein FolD	1.3661202186
+1CMET2-PWY|UniRef50_R5ND35	2.7100271003
+1CMET2-PWY|UniRef50_Q7UID0: Thymidylate synthase	1.5503875969
+1CMET2-PWY|UniRef50_Q73WG1: Serine hydroxymethyltransferase	3.5366931919
+ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis	1.1294704465
+ASPASN-PWY|UniRef50_Q9HTD7: Aspartate ammonia-lyase	0.7788161994
+ASPASN-PWY|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+ASPASN-PWY|UniRef50_R7NRS3: Aminotransferase	0.9689922481
+ASPASN-PWY|UniRef50_R5K7V2: Aminotransferase class I and II	0.9578544061
+CALVIN-PWY: Calvin-Benson-Bassham cycle	1.3078911428
+CALVIN-PWY|UniRef50_R5CWL9: Phosphoribulokinase	0.656167979
+CALVIN-PWY|UniRef50_Q7MW52: Fructose-1,6-bisphosphatase class 3	0.5420054201
+CALVIN-PWY|UniRef50_P0A992: Fructose-bisphosphate aldolase class 1	2.2222222222
+CALVIN-PWY|UniRef50_R6Y770: Ribulose-phosphate 3-epimerase	1.996007984
+CALVIN-PWY|UniRef50_R6M7Y6: Transketolase thiamine diphosphate binding domain protein	1.6129032258
+CALVIN-PWY|UniRef50_O83668: Fructose-bisphosphate aldolase	1.1614401858
+CALVIN-PWY|UniRef50_Q7MU77: Phosphoglycerate kinase	0.9009009009
+CALVIN-PWY|UniRef50_R6RT73: Triosephosphate isomerase	1.6420361248
+DTDPRHAMSYN-PWY: dTDP-L-rhamnose biosynthesis I	1.7397022780
+DTDPRHAMSYN-PWY|UniRef50_A0A024GWJ3: Uridine diphosphate galacturonate 4-epimerase	1.1074197121
+DTDPRHAMSYN-PWY|UniRef50_R6SEZ6: dTDP-glucose 4,6-dehydratase	1.0101010101
+DTDPRHAMSYN-PWY|UniRef50_P55253: Glucose-1-phosphate thymidylyltransferase	1.3550135501
+DTDPRHAMSYN-PWY|UniRef50_U5Q7A5: Spore coat polysaccharide biosynthesis protein spsK	2.8490548808
+GALACTUROCAT-PWY: D-galacturonate degradation I	1.1181930001
+GALACTUROCAT-PWY|UniRef50_R6AFI7: Kinase PfkB family	1.0822510823
+GALACTUROCAT-PWY|UniRef50_A6L4U5: Altronate oxidoreductase	0.7524454477
+GALACTUROCAT-PWY|UniRef50_R7NYP7: KDPG and KHG aldolase	3.8314176245
+GALACTUROCAT-PWY|UniRef50_B5F623: Uronate isomerase	1.5910898966
+GLUCUROCAT-PWY: superpathway of &beta;-D-glucuronide and D-glucuronate degradation	1.3972479991
+GLUCUROCAT-PWY|UniRef50_E6SR52: Glycoside hydrolase family 2 TIM barrel	1.0148907969
+GLUCUROCAT-PWY|UniRef50_B5F621: Mannonate dehydratase	1.9607843137
+GLUCUROCAT-PWY|UniRef50_R7NYP7: KDPG and KHG aldolase	3.8314176245
+GLUCUROCAT-PWY|UniRef50_R6AFI7: Kinase PfkB family	1.0822510823
+GLUCUROCAT-PWY|UniRef50_B5F623: Uronate isomerase	1.5910898966
+HOMOSER-METSYN-PWY: L-methionine biosynthesis I	1.7513134851
+HOMOSER-METSYN-PWY|UniRef50_B2GKX1: O-acetylhomoserine (Thiol)-lyase	0.8795074758
+HOMOSER-METSYN-PWY|UniRef50_D3R5Q5: O-acetyl-L-homoserine sulfhydrolase	0.8795074758
+HOMOSER-METSYN-PWY|UniRef50_A3QG19: Homoserine O-succinyltransferase	1.3020833333
+HOMOSER-METSYN-PWY|UniRef50_R5S1C6: 5-methyltetrahydrofolate-homocysteine methyltransferase	2.6560424967
+HSERMETANA-PWY: L-methionine biosynthesis III	1.9821605550
+HSERMETANA-PWY|UniRef50_R5S1C6: 5-methyltetrahydrofolate-homocysteine methyltransferase	2.6560424967
+HSERMETANA-PWY|UniRef50_D3R5Q5: O-acetyl-L-homoserine sulfhydrolase	0.8795074758
+HSERMETANA-PWY|UniRef50_B2GKX1: O-acetylhomoserine (Thiol)-lyase	0.8795074758
+PWY-3781: aerobic respiration I (cytochrome c)	0.8865248227
+PWY-3781|UniRef50_R5AUC0: Succinate dehydrogenase cytochrome B subunit b558 family	1.8018018018
+PWY-3781|UniRef50_Q9TMM9: Elongation factor Tu, apicoplast	0.9661835749
+PWY-3781|UniRef50_Q8A0F6: NADH-quinone oxidoreductase subunit C/D	0.6844626968
+PWY-3841: folate transformations II	2.9270446651
+PWY-3841|UniRef50_B5Y9A7: Glutamate formiminotransferase	2.6773761714
+PWY-3841|UniRef50_R6AC71: Formiminotransferase-cyclodeaminase	2.024291498
+PWY-3841|UniRef50_R5S1C6: 5-methyltetrahydrofolate-homocysteine methyltransferase	2.6560424967
+PWY-3841|UniRef50_R5ND35	2.7100271003
+PWY-3841|UniRef50_R5JC25: 5-formyltetrahydrofolate cyclo-ligase	4.2735042735
+PWY-3841|UniRef50_A0M554: Bifunctional protein FolD	1.3661202186
+PWY-3841|UniRef50_Q7UID0: Thymidylate synthase	1.5503875969
+PWY-3841|UniRef50_Q73WG1: Serine hydroxymethyltransferase	3.5366931919
+PWY-3841|UniRef50_Q73RR6: Formate--tetrahydrofolate ligase	0.6361323155
+PWY-5030: L-histidine degradation III	1.4962071452
+PWY-5030|UniRef50_R6AC71: Formiminotransferase-cyclodeaminase	2.024291498
+PWY-5030|UniRef50_A0M554: Bifunctional protein FolD	1.3661202186
+PWY-5030|UniRef50_B2RLA8: Imidazolonepropionase	0.9057971014
+PWY-5030|UniRef50_B5Y9A7: Glutamate formiminotransferase	2.6773761714
+PWY-5030|UniRef50_H0UKG1: Urocanate hydratase	1.0857763301
+PWY-5100: pyruvate fermentation to acetate and lactate II	2.4191007832
+PWY-5100|UniRef50_Q5LI41: Acetate kinase	1.9102196753
+PWY-5100|UniRef50_R6BST1: 2-oxoglutarate oxidoreductase gamma subunit	2.4875621891
+PWY-5100|UniRef50_C7N794: 2-oxoacid:ferredoxin oxidoreductase, beta subunit	1.6260162602
+PWY-5100|UniRef50_F5YJJ6: 2-oxoglutarate oxidoreductase, alpha subunit	1.3550135501
+PWY-5100|UniRef50_P71103: Phosphate acetyltransferase	1.1534025375
+PWY-5100|UniRef50_Q8A1G8: Acetate kinase	1.9047619048
+PWY-5100|UniRef50_R7ESL0	0.4675081814
+PWY-5100|UniRef50_R7J412: Pyruvate-flavodoxin oxidoreductase	0.8802816901
+PWY-5505: L-glutamate and L-glutamine biosynthesis	2.0179030384
+PWY-5505|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-5505|UniRef50_R5NVH9	1.4781966001
+PWY-5505|UniRef50_P15623: Glutamine synthetase	0.4901960784
+PWY-5505|UniRef50_B2RKJ1: NAD-specific glutamate dehydrogenase	1.6856326983
+PWY-5505|UniRef50_R5JJP2	0.4411317895
+PWY-5659: GDP-mannose biosynthesis	1.2407272550
+PWY-5659|UniRef50_Q04IA2: Glucose-6-phosphate isomerase	0.8417508418
+PWY-5659|UniRef50_R5BYQ9: Mannose-6-phosphate isomerase class I	1.2165450122
+PWY-5659|UniRef50_R6U2U2: Mannose-6-phosphate isomerase type 1	1.2121212121
+PWY-5659|UniRef50_A6LG36: Renin-binding protein-related protein	1.9493177388
+PWY-5659|UniRef50_I0K5J6: Phosphomannomutase	1.614205004
+PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II	1.0399014143
+PWY-6125|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-6125|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-6125|UniRef50_Q4FMW8: GMP synthase [glutamine-hydrolyzing]	0.7278020378
+PWY-6125|UniRef50_R6LK37: Inosine-5'-monophosphate dehydrogenase	2.2528619174
+PWY-6125|UniRef50_F9D614: Anaerobic ribonucleoside-triphosphate reductase	0.4852013586
+PWY-6125|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.837520938
+PWY-6507: 4-deoxy-L-threo-hex-4-enopyranuronate degradation	1.6117113393
+PWY-6507|UniRef50_R7NYP7: KDPG and KHG aldolase	3.8314176245
+PWY-6507|UniRef50_Q650K4: 4-deoxy-L-threo-5-hexosulose-uronate ketol-isomerase	1.443001443
+PWY-6507|UniRef50_R6AFI7: Kinase PfkB family	1.0822510823
+PWY-6507|UniRef50_Q8A0B5: 4-deoxy-L-threo-5-hexosulose-uronate ketol-isomerase 2	1.239157373
+PWY-7208: superpathway of pyrimidine nucleobases salvage	3.1634460239
+PWY-7208|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7208|UniRef50_Q5L9K4: Cytidylate kinase	1.8518518519
+PWY-7208|UniRef50_R6Z2N6	2.0576131687
+PWY-7208|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-7208|UniRef50_Q8UEY5: CTP synthase	0.6830601093
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II	1.1098779134
+PWY-7220|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7220|UniRef50_F9D614: Anaerobic ribonucleoside-triphosphate reductase	0.4852013586
+PWY-7220|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.837520938
+PWY-7221: guanosine ribonucleotides de novo biosynthesis	2.5901918184
+PWY-7221|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7221|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-7221|UniRef50_Q4FMW8: GMP synthase [glutamine-hydrolyzing]	0.7278020378
+PWY-7221|UniRef50_R6LK37: Inosine-5'-monophosphate dehydrogenase	2.2528619174
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II	1.1098779134
+PWY-7222|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7222|UniRef50_F9D614: Anaerobic ribonucleoside-triphosphate reductase	0.4852013586
+PWY-7222|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.837520938
+PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I	1.5775328499
+PWY-7228|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7228|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-7228|UniRef50_Q4FMW8: GMP synthase [glutamine-hydrolyzing]	0.7278020378
+PWY-7228|UniRef50_R6LK37: Inosine-5'-monophosphate dehydrogenase	2.2528619174
+PWY-7228|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.837520938
+PWY-7242: D-fructuronate degradation	1.5273004964
+PWY-7242|UniRef50_R7NYP7: KDPG and KHG aldolase	3.8314176245
+PWY-7242|UniRef50_R6AFI7: Kinase PfkB family	1.0822510823
+PWY-7242|UniRef50_B5F621: Mannonate dehydratase	1.9607843137
+PWY66-422: D-galactose degradation V (Leloir pathway)	1.6096242991
+PWY66-422|UniRef50_A0A024GWJ3: Uridine diphosphate galacturonate 4-epimerase	1.1074197121
+PWY66-422|UniRef50_A6KYD5: Aldose 1-epimerase	1.1574074074
+PWY66-422|UniRef50_R6LJY6: Aldose 1-epimerase	1.0162601626
+PWY66-422|UniRef50_A6LCK4: Galactokinase	1.9900497512
+PWY66-422|UniRef50_I0K5J6: Phosphomannomutase	1.614205004
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	2.0882763520
+PYRIDOXSYN-PWY|UniRef50_Q5LH44: 1-deoxy-D-xylulose-5-phosphate synthase	0.5688282139
+PYRIDOXSYN-PWY|UniRef50_G4QII0: D-isomer specific 2-hydroxyacid dehydrogenase, NAD-binding protein	2.3474178404
+PYRIDOXSYN-PWY|UniRef50_B2GCF9: 1-deoxy-D-xylulose-5-phosphate synthase	0.6218905473
+PYRIDOXSYN-PWY|UniRef50_Q8A2E4: Erythronate-4-phosphate dehydrogenase	1.1111111111
+PYRIDOXSYN-PWY|UniRef50_Q5LFJ5: Pyridoxine/pyridoxamine 5'-phosphate oxidase	2.0325203252
+PYRIDOXSYN-PWY|UniRef50_R7JJL0: 4-phosphoerythronate dehydrogenase	3.8910505837
+PYRIDOXSYN-PWY|UniRef50_Q8A0V3: Pyridoxine 5'-phosphate synthase	5.1020408163
+PYRIDOXSYN-PWY|UniRef50_B2RID6: Phosphoserine aminotransferase	1.0893246187
+RHAMCAT-PWY: L-rhamnose degradation I	1.1337868481
+RHAMCAT-PWY|UniRef50_Q8A1A0: Rhamnulose-1-phosphate aldolase	1.5151515152
+RHAMCAT-PWY|UniRef50_Q8A1A3: Rhamnulokinase	1.5290519878
+RHAMCAT-PWY|UniRef50_Q838L2: L-rhamnose isomerase	0.9033423668
+SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I	1.6836788383
+SER-GLYSYN-PWY|UniRef50_R7JJL0: 4-phosphoerythronate dehydrogenase	3.8910505837
+SER-GLYSYN-PWY|UniRef50_B2RID6: Phosphoserine aminotransferase	1.0893246187
+SER-GLYSYN-PWY|UniRef50_Q73WG1: Serine hydroxymethyltransferase	3.5366931919
+UNINTEGRATED	778.4041770541
+UNMAPPED	34.9620985021
+VALSYN-PWY: L-valine biosynthesis	1.4019863838
+VALSYN-PWY|UniRef50_P38674: Ketol-acid reductoisomerase, mitochondrial	3.355704698
+VALSYN-PWY|UniRef50_F4KN33: Branched-chain amino acid aminotransferase	1.1494252874
+VALSYN-PWY|UniRef50_Q9JS61: Dihydroxy-acid dehydratase	1.2268512248

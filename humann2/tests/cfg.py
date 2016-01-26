@@ -174,4 +174,10 @@ strain_profile_input=os.path.join(data_folder, strain_profile_folder, "strain_pr
 strain_profile_file_names=["s1-strain_profile.tsv","s2-strain_profile.tsv"]
 strain_profile_m1_n2_output_files=[os.path.join(data_folder, strain_profile_folder, file) for file in strain_profile_file_names]
 
+# Files to test the merge abundance script
+merge_abundance_folder="tooltest-merge_abundance_tables"
+merge_abundance_genefamilies_input=os.path.join(data_folder, merge_abundance_folder, "demo_genefamilies.tsv")
+merge_abundance_pathways_input=os.path.join(data_folder, merge_abundance_folder, "demo_pathabundance.tsv")
+merge_abundance_output=os.path.join(data_folder, merge_abundance_folder, "merge_output.tsv")
+merge_abundance_remove_taxonomy_output=os.path.join(data_folder, merge_abundance_folder, "merge_output_remove_taxonomy.tsv")
 
