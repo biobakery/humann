@@ -181,3 +181,8 @@ merge_abundance_pathways_input=os.path.join(data_folder, merge_abundance_folder,
 merge_abundance_output=os.path.join(data_folder, merge_abundance_folder, "merge_output.tsv")
 merge_abundance_remove_taxonomy_output=os.path.join(data_folder, merge_abundance_folder, "merge_output_remove_taxonomy.tsv")
 
+# Get the locations of the demo chocophlan and uniref databases
+example_demo_data_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir,"data")
+chocophlan_example_demo_folder=os.path.join(example_demo_data_folder, "chocophlan_DEMO")
+uniref_example_demo_folder=os.path.join(example_demo_data_folder, "uniref_DEMO")
+

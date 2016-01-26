@@ -4,6 +4,8 @@ import shutil
 import subprocess
 import tempfile
 
+import cfg
+
 def create_temp_folder(suffix):
     """ Create a temp folder """
     
@@ -38,8 +40,17 @@ def return_exe_path(exe):
                 full_path=path
     return full_path
 
+def run_humann2(command):
+    """
+    Run the humann2 command 
+    Use the demo chocophlan and uniref databases """
+    
+    command+=["--nucleotide-database",cfg.chocophlan_example_demo_folder,
+              "--protein-database", cfg.uniref_example_demo_folder]
+    run_command(command)
+
 def run_command(command):
-    """ Run the humann2 command """
+    """ Run the command """
     
     print("\nTesting command: ")
     print(" ".join(command))
@@ -47,7 +58,7 @@ def run_command(command):
     try:
         subprocess.check_call(command)
     except (EnvironmentError, subprocess.CalledProcessError):
-        print("Warning: Unable to execute humann2 in test.\n"+" ".join(command))    
+        print("Warning: Unable to execute command in test.\n"+" ".join(command))    
         
 def remove_temp_folder(tempdir):
     """ Remove the temp folder """
