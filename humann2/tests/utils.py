@@ -68,6 +68,50 @@ def check_output(output_files_expected,output_folder):
         # check the file is not empty
         yield (os.stat(expected_file).st_size > 0, "File is empty: " + file)
         
+def read_table_rows(file):
+    """ Read in the table from a file, storing by rows """
+    
+    # The first line of the file is the header of column ids
+    data=[]
+    rows=[]
+    with open(file) as file_handle:
+        columns=file_handle.readline().rstrip()
+        for line in file_handle:
+            line_info=line.rstrip().split("\t")
+            rows.append(line_info[0])
+            data.append(line_info[1:])
+    
+    # reduce rows to string so it will be the same format as columns
+    rows="\t".join(rows)   
+      
+    return columns, rows, data
+
+def files_almost_equal(file1, file2, precision=None):
+    """ Check that the files have data that is almost equal to allow for rounding """
+    
+    if not precision:
+        precision=7
+        
+    # read the files
+    columns1, rows1, data1 = read_table_rows(file1)
+    columns2, rows2, data2 = read_table_rows(file2)    
+    
+    # check the headers are the same
+    if not columns1 == columns2:
+        return False, "Column names in files differ"
+    
+    # check the row names are the same
+    if not rows1 == rows2:
+        return False, "Row names in files differ"
+    
+    # check the data is almost the same to allow for rounding
+    for row1_data, row2_data in zip(data1, data2):
+        for data1_point, data2_point in zip(row1_data, row2_data):
+            if not round(float(data1_point),precision) == round(float(data2_point),precision):
+                return False, "Data points in files differ"
+    
+    return True, "NA"
+        
 def file_basename(file):
     """ Get the basename for the file without the extension """
     

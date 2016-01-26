@@ -16,4 +16,4 @@ PWY-5505: L-glutamate and L-glutamine biosynthesis|g__Bacteroides.s__Bacteroides
 PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	1.7357698
 PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3083903
 HSERMETANA-PWY: L-methionine biosynthesis III	1.7256255
-HSERMETANA-PWY: L-methionine biosynthesis III	|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9915716
+HSERMETANA-PWY: L-methionine biosynthesis III|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9915716

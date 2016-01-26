@@ -1,9 +1,6 @@
 import unittest
-import subprocess
 import tempfile
 import os
-import filecmp
-import shutil
 
 import cfg
 import utils
@@ -27,8 +24,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            cfg.multi_sample_genefamilies_split_basename,"--verbose"])
         
         # check the joined file is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.multi_sample_genefamilies, 
-            shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.multi_sample_genefamilies))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -62,7 +58,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                 file_pairs.append([file,cfg.multi_sample_genefamilies_split2])
 
         for temp_file, file in file_pairs:
-            self.assertTrue(filecmp.cmp(temp_file, file, shallow=False))
+            self.assertTrue(utils.files_almost_equal(temp_file, file))
 
         # remove the temp folder
         utils.remove_temp_folder(temp_directory)
@@ -82,7 +78,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--groups","uniref50_rxn"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_rxn_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_rxn_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -102,7 +98,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--groups","uniref50_rxn","--function","mean"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_rxn_mean_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_rxn_mean_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -121,7 +117,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--groups","uniref50_ec"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_ec_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_ec_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -140,7 +136,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--groups","uniref50_go"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_go_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_go_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -159,7 +155,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--groups","uniref50_ko"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_ko_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_ko_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -178,8 +174,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--custom",cfg.regroup_custom_groups])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.regroup_custom_groups_output,
-                                    shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_custom_groups_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -198,7 +193,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--names","uniref50"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.rename_uniref50_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_uniref50_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -217,7 +212,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--names","ko"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.rename_ko_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_ko_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -236,7 +231,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--names","ec"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.rename_ec_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_ec_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -255,7 +250,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--names","metacyc-rxn"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.rename_rxn_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_rxn_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -274,7 +269,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--names","metacyc-pwy"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.rename_pathway_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_pathway_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -293,7 +288,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--custom",cfg.rename_custom_mapping])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.rename_custom_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_custom_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -313,7 +308,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--norm","cpm"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.renorm_cpm_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.renorm_cpm_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
@@ -332,7 +327,96 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
                            new_file,"--norm","relab"])
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(new_file, cfg.renorm_relab_output, shallow=False))
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.renorm_relab_output))
 
         # remove the temp file
         utils.remove_temp_file(new_file)
+        
+    def test_humann2_rna_dna_norm_laplace_tsv(self):
+        """
+        Test norm the tsv file entries from dna and rna input files with humann2_rna_dna_norm_table
+        Test with laplace
+        """
+        
+        # create a temp folder
+        tempdir=utils.create_temp_folder("rna_dna_norm_laplace")
+        output_basename=os.path.join(tempdir,"rna_dna_norm")
+        
+        # run the command
+        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+                           "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
+                           output_basename,"--method","laplace"])
+        
+        # check the output files are as expected
+        for file_extension, expected_output_file in zip(cfg.rna_dna_norm_file_names, cfg.rna_dna_norm_laplace_output_files):
+            self.assertTrue(utils.files_almost_equal(output_basename+file_extension, expected_output_file))
+
+        # remove the temp file
+        utils.remove_temp_folder(tempdir)
+        
+    def test_humann2_rna_dna_norm_witten_bell_tsv(self):
+        """
+        Test norm the tsv file entries from dna and rna input files with humann2_rna_dna_norm_table
+        Test with witten bell
+        """
+        
+        # create a temp folder
+        tempdir=utils.create_temp_folder("rna_dna_norm_witten_bell")
+        output_basename=os.path.join(tempdir,"rna_dna_norm")
+        
+        # run the command
+        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+                           "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
+                           output_basename,"--method","witten_bell"])
+        
+        # check the output files are as expected
+        for file_extension, expected_output_file in zip(cfg.rna_dna_norm_file_names, cfg.rna_dna_norm_witten_bell_output_files):
+            self.assertTrue(utils.files_almost_equal(output_basename+file_extension, expected_output_file))
+
+        # remove the temp file
+        utils.remove_temp_folder(tempdir)
+        
+    def test_humann2_rna_dna_norm_log_tsv(self):
+        """
+        Test norm the tsv file entries from dna and rna input files with humann2_rna_dna_norm_table
+        Test with log transform
+        """
+        
+        # create a temp folder
+        tempdir=utils.create_temp_folder("rna_dna_norm_log")
+        output_basename=os.path.join(tempdir,"rna_dna_norm")
+        
+        # run the command
+        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+                           "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
+                           output_basename,"--log_transform"])
+        
+        # check the output files are as expected
+        for file_extension, expected_output_file in zip(cfg.rna_dna_norm_file_names, cfg.rna_dna_norm_log_output_files):
+            self.assertTrue(utils.files_almost_equal(output_basename+file_extension, expected_output_file))
+
+        # remove the temp file
+        utils.remove_temp_folder(tempdir)
+        
+    def test_humann2_rna_dna_norm_log_10_tsv(self):
+        """
+        Test norm the tsv file entries from dna and rna input files with humann2_rna_dna_norm_table
+        Test with log transform with base 10
+        """
+        
+        # create a temp folder
+        tempdir=utils.create_temp_folder("rna_dna_norm_log_10")
+        output_basename=os.path.join(tempdir,"rna_dna_norm")
+        
+        # run the command
+        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+                           "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
+                           output_basename,"--log_transform", "--log_base","10"])
+        
+        # check the output files are as expected
+        # allow for varying precision in the calculations with almost equal
+        for file_extension, expected_output_file in zip(cfg.rna_dna_norm_file_names, cfg.rna_dna_norm_log_10_output_files):
+            self.assertTrue(utils.files_almost_equal(output_basename+file_extension, expected_output_file))
+
+        # remove the temp file
+        utils.remove_temp_folder(tempdir)

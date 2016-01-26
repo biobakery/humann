@@ -148,3 +148,23 @@ renorm_folder="tooltest-renorm_table"
 renorm_input=os.path.join(data_folder, renorm_folder, "renorm_table-input.txt")
 renorm_relab_output=os.path.join(data_folder, renorm_folder, "renorm_table-relab_output.txt")
 renorm_cpm_output=os.path.join(data_folder, renorm_folder, "renorm_table-cpm_output.txt")
+
+# Files to test the rna/dna script
+rna_dna_norm_folder="tooltest-rna_dna_norm"
+rna_dna_norm_dna_input=os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-dna.txt")
+rna_dna_norm_rna_input=os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-rna.txt")
+
+rna_dna_norm_file_names=["-relative_expression.tsv","-smoothed_dna.tsv","-smoothed_rna.tsv"]
+
+rna_dna_norm_laplace_output_files=[os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-laplace"+file)
+                                   for file in rna_dna_norm_file_names]
+
+rna_dna_norm_witten_bell_output_files=[os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-witten-bell"+file)
+                                   for file in rna_dna_norm_file_names]
+
+rna_dna_norm_log_output_files=[os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-log"+file)
+                                   for file in rna_dna_norm_file_names]
+
+rna_dna_norm_log_10_output_files=[os.path.join(data_folder, rna_dna_norm_folder, "rna_dna_norm-log-10"+file)
+                                   for file in rna_dna_norm_file_names]
+
