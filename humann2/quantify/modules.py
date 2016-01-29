@@ -469,9 +469,11 @@ def print_pathways(pathways, file, header, pathway_names, sorted_pathways_and_bu
     # Add the unmapped and unintegrated values
     tsv_output.append(config.unmapped_pathway_name+delimiter+utilities.format_float_to_string(unmapped_all))
     tsv_output.append(config.unintegrated_pathway_name+delimiter+utilities.format_float_to_string(unintegrated_all))
-    for bug in unintegrated_per_bug:
-        tsv_output.append(config.unintegrated_pathway_name+category_delimiter+bug
-                          +delimiter+utilities.format_float_to_string(unintegrated_per_bug[bug]))
+    # Process and print per bug if selected
+    if not config.remove_stratified_output:
+        for bug in unintegrated_per_bug:
+            tsv_output.append(config.unintegrated_pathway_name+category_delimiter+bug
+                              +delimiter+utilities.format_float_to_string(unintegrated_per_bug[bug]))
             
     # Print out all pathways sorted
     for pathway, bugs_list in sorted_pathways_and_bugs:
