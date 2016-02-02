@@ -176,9 +176,9 @@ HUMAnN2 produces three output files which by default are tab-delimited text. The
 # Gene Family	$SAMPLENAME_Abundance
 UNMAPPED        187.0
 UniRef50_unknown	150.0
-UniRef50_unknown|g__Bacteroides.s__Bacteroides_fragilis	100.0
+UniRef50_unknown|g__Bacteroides.s__Bacteroides_fragilis	150.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon	67.0
-UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_fragilis	8.0
+UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_fragilis	57.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_finegoldii	5.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|g__Bacteroides.s__Bacteroides_stercoris	4.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon|unclassified	1.0
