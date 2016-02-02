@@ -336,7 +336,6 @@ chocophlan_length_index=9
 uniref_delimiter="|"
 uniref_gene_index=-2
 uniref_length_index=-1
-uniref_gene_filters=["UniRef50_unknown","UniRef90_unknown"]
 
 # bowtie2 options and threshold
 bowtie2_large_index_threshold=4000000000
