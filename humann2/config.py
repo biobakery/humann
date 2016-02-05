@@ -458,3 +458,6 @@ unmapped_gene_name = "UNMAPPED"
 unmapped_pathway_name = "UNMAPPED"
 unintegrated_pathway_name = "UNINTEGRATED"
 
+# Max arguments
+max_arguments=500
+

@@ -646,10 +646,17 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
                     sys.exit("CRITICAL ERROR: " + message)
         
         if stdout_file:
+            # check for file open mode
             try:
-                stdout=open(stdout_file,"w")
+                stdout_file_name, mode = stdout_file
+            except ValueError:
+                stdout_file_name = stdout_file
+                mode = "w"
+            
+            try:
+                stdout=open(stdout_file_name,mode)
             except EnvironmentError:
-                message="Unable to open file: " + stdout_file
+                message="Unable to open file: " + stdout_file_name
                 logger.critical(message)
                 if raise_error:
                     raise EnvironmentError

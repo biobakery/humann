@@ -178,12 +178,25 @@ def create_custom_database(chocophlan_dir, bug_file):
         ext=os.path.splitext(species_file_list[0])[1]
 
         exe="cat"
-        args=species_file_list
+        args=[]
         if ext == ".gz":
             exe="gunzip"
-            args=["-c"]+species_file_list
- 
-        utilities.execute_command(exe,args,species_file_list,[custom_database],custom_database)
+            args=["-c"]
+        
+        # check if set to bypass this step
+        bypass=utilities.check_outfiles([custom_database])
+        
+        if not bypass:
+            # run the command with chunks of input files to not exceed max arguments
+            species_file_list_subsets=[species_file_list[i:i+config.max_arguments] for i in xrange(0, len(species_file_list), config.max_arguments)]
+            
+            # run the first subset to create the new custom database
+            first_subset=species_file_list_subsets.pop(0)
+            utilities.execute_command(exe,args+first_subset,first_subset,[],custom_database)
+            
+            # append the remaining subsets to the existing database
+            for subset in species_file_list_subsets:
+                utilities.execute_command(exe,args+subset,subset,[],[custom_database,"a"])
 
         return custom_database
 
