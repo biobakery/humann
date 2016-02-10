@@ -1,6 +1,25 @@
 
 # HUMAnN2 History #
 
+## v0.6.1 02-10-2016 ##
+
+### New Features ###
+
+* The UniRef50_unknown and UniRef90_unknown values are now included in the gene families file.
+    * For information on these values, please see the documentation section on the gene families file.
+* More functional tests have been added
+    * 12 functional end-to-end humann2 tests were added which run in about 19 minutes
+    * 21 functional tool tests were added
+* The tool humann2_join_tables now has the option to search sub-directories of the input folder for files to join.
+
+### Bug Fixes ###
+
+* If "--remove-stratified-output" is selected, the stratified output for the UNINTEGRATED pathways values are no longer printed
+* The name of the UniRef50 to RXN mapping file, for script humann2_regroup_table, was updated
+    * This resolves the error seen when running humann2_regroup_table with option "--groups uniref50_rxn"
+* The step to build the fasta file for the custom ChocoPhlAn database has been split into multiple steps
+    * This resolves the max arguments error seen when running on a MacOS with "--bypass-prescreen"
+
 ## v0.6.0 01-15-2016 ##
 
 ### New Features ###
