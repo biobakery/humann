@@ -140,6 +140,11 @@ def parse_arguments(args):
     parser.add_argument(
         "--file_name",
         help="only join tables with this string included in the file name")
+    parser.add_argument(
+        "-s","--search-subdirectories", 
+        help="search sub-directories of input folder for files\n", 
+        action="store_true",
+        default=False)
 
     return parser.parse_args()
 
@@ -159,6 +164,14 @@ def main():
     
     gene_tables=[]
     file_list=os.listdir(input_dir)
+    # add in files in subdirectories, if set
+    if args.search_subdirectories:
+        for possible_folder in os.listdir(input_dir):
+            if os.path.isdir(possible_folder):
+                try:
+                    file_list+=[os.path.join(possible_folder, file) for file in os.listdir(possible_folder)]
+                except EnvironmentError:
+                    pass
     
     # filter out files which do not meet the name requirement if set
     biom_flag=False
