@@ -167,9 +167,9 @@ def main():
     # add in files in subdirectories, if set
     if args.search_subdirectories:
         for possible_folder in os.listdir(input_dir):
-            if os.path.isdir(possible_folder):
+            if os.path.isdir(os.path.join(input_dir,possible_folder)):
                 try:
-                    file_list+=[os.path.join(possible_folder, file) for file in os.listdir(possible_folder)]
+                    file_list+=[os.path.join(possible_folder, file) for file in os.listdir(os.path.join(input_dir,possible_folder))]
                 except EnvironmentError:
                     pass
     
