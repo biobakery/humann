@@ -832,9 +832,10 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
 1. Download the legacy kegg databases included in [HUMAnN](https://bitbucket.org/biobakery/humann/downloads/humann-v0.99.tar.gz)
     * The databases will be referred to in steps that follow with the path "humann1/data/*".
 
-2. Split the picrust output file (picrust.biom) into a single file per sample (written to $OUTPUT_DIR)
+2. Split the picrust output file (picrust.biom or picrust.tsv) into a single file per sample (written to $OUTPUT_DIR)
     * `` $ humann2_split_table --input picrust.biom --output $OUTPUT_DIR ``
     * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom input file with column -1 associated with K0s.
+    * If using biom input files, biom version 2.1+ must be installed.
 
 3. Run HUMAnN2 on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
     * for $SAMPLE.biom in $OUTPUT_DIR
