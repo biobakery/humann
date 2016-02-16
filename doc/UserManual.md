@@ -834,13 +834,16 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
 
 2. Split the picrust output file (picrust.biom) into a single file per sample (written to $OUTPUT_DIR)
     * `` $ humann2_split_table --input picrust.biom --output $OUTPUT_DIR ``
-    * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom file with column -1 associated with K0s.
+    * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom input file with column -1 associated with K0s.
 
 3. Run HUMAnN2 on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
     * for $SAMPLE.biom in $OUTPUT_DIR
         * `` $ humann2 --input $SAMPLE.biom --output $OUTPUT_DIR2 --pathways-database humann1/data/keggc ``
     * The option ``--remove-stratified-output`` can be added if you do not want the data stratified by bug.
     * The option ``--output-format biom`` can be added if you want the output to be in biom format.
+    * To run with the kegg modules instead of kegg pathways provide the modules file ``--pathways-database humann1/data/modulec``.
+    * The input file can be in biom or tsv format.
+
     
 4. Join the pathways data (coverage and abundance) files from the HUMAnN2 runs from all samples into two files
     * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathcoverage.tsv --file_name pathcoverage ``
