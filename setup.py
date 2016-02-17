@@ -579,7 +579,8 @@ setuptools.setup(
             'humann2_reduce_table = humann2.tools.reduce_table:main',
             'humann2_merge_abundance_tables = humann2.tools.merge_abundance:main',
             'humann2_blastx_coverage = humann2.search.blastx_coverage:main',
-            'humann2_test = humann2.tests.humann2_test:main'
+            'humann2_test = humann2.tests.humann2_test:main',
+            'humann2_build_custom_database = humann2.tools.build_custom_database:main'
         ]},
     test_suite= 'humann2.tests.humann2_test.unittests_suite_only',
     zip_safe = False
