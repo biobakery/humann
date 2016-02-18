@@ -21,6 +21,7 @@ from humann2 import store
 
 FASTA_ID_START=">"
 FASTA_ID_DELIMITER=" "
+WORD_DELIMITER=" "
 TAXONOMY_DELIMITER="|"
 GENUS_IDENTIFIER="g__"
 
@@ -64,32 +65,31 @@ def filter_fasta_file(fasta_file, output_folder, genus, id_mapping):
     
     print("Writing filtered fasta file to " + new_file)
     write_sequence=False
+    total_sequences_written=0
     for line in file_handle:
         if line[0] == FASTA_ID_START:
-            # Get the sequence id
-            sequence_id=line.split(FASTA_ID_DELIMITER)[0][1:]
-            
+            # Get the possible mapping id
+            mapping_id=line.split(FASTA_ID_DELIMITER)[0][1:]
             # Apply id mapping if included
-            if sequence_id in id_mapping:
-                sequence_id=id_mapping[sequence_id][-1].lower()
+            if mapping_id in id_mapping:
+                sequence_information=id_mapping[mapping_id][-1].lower().split(WORD_DELIMITER)
+            else:
+                sequence_information=line[1:].lower().split(WORD_DELIMITER)
                 
             # Determine if write sequence based on genus information
             write_sequence=False
             if genus:
-                # Check if the sequence_id is an included genus
-                if sequence_id in genus:
+                # Check if the sequence taxonomy is an included genus
+                # The taxonomy information is a string of words and any word
+                # can include the genus information
+                if filter(lambda x: x in genus, sequence_information):
                     write_sequence=True
-                elif not id_mapping:
-                    # Check if any other of the words in the fasta header are
-                    # an included genus
-                    for item in line.split(FASTA_ID_DELIMITER):
-                        if item.lower() in genus:
-                            write_sequence=True
             else:
                 write_sequence=True
                 
             if write_sequence:
                 file_handle_write.write(line)
+                total_sequences_written+=1
         else:
             if write_sequence:
                 file_handle_write.write(line)
@@ -98,7 +98,7 @@ def filter_fasta_file(fasta_file, output_folder, genus, id_mapping):
     file_handle_write.close()
     print("Finished writing filtered fasta file")
 
-    return new_file
+    return new_file, total_sequences_written
 
 def process_taxonomic_profile(taxonomic_profile, abundance_threshold):
     """ Store those genus which pass the threshold """
@@ -200,7 +200,12 @@ def main():
         
     # Filter the input file to only include those genus selected
     # Apply id mapping if provided
-    filtered_fasta_file=filter_fasta_file(input_file, output_dir, genus, id_mapping)
+    filtered_fasta_file, total_sequences=filter_fasta_file(input_file, output_dir, genus, id_mapping)
+    
+    if total_sequences == 0:
+        sys.exit("ERROR: When filtering fasta file zero sequences were written.")
+    elif genus:
+        print("Total sequences included after filtering: " + str(total_sequences))
     
     # If set, format as diamond database
     if args.format == "diamond":
