@@ -7,15 +7,13 @@ The typical user will not need to work with these.
 
 #### Create HUMANn2 MetaCyc pathways database files ####
 
-1. Download the meta.tar.gz of flat-files from MetaCyc.
+1. Download and decompress the meta.tar.gz of flat-files from MetaCyc.
     * A description of the files along with download instructions can be found at http://bioinformatics.ai.sri.com/ptools/flatfile-format.html
-
-2. Decompress the download.
-    * `` $ tar zxvf meta.tar.gz ``
+    * To decompress: `` $ tar zxvf meta.tar.gz ``
     * NOTE: Instructions that follow refer to the metacyc directory as ``$METACYC``.
     * If you are running on hutlab machines, ``$METACYC=/n/huttenhower_lab_nobackup/downloads/metacyc/`` .
 
-3. Create the humann2/data/metacyc_reations_level4ec_only.uniref data file using Uniprot EC mapping.
+2. Create the humann2/data/metacyc_reations_level4ec_only.uniref data file using Uniprot EC mapping.
     1. Download and decompress the UniProtKB SwissProt text file.
         * `` $ wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz ``
         * `` $ gunzip uniprot_sprot.dat.gz ``
@@ -33,14 +31,18 @@ The typical user will not need to work with these.
         * If you are running on hutlab machines, these files can be found at /n/huttenhower_lab/data/idmapping/ .
 
     4. Create the metacyc_reations_level4ec_only.uniref file (default pathways database file1).
-        * `` $ ./map_reactions_to_uniprot.py --input-reactions $METACYC/18.1/data/reactions.dat --input-enzrxn $METACYC/18.1/data/enzrxns.dat --input-proteins $METACYC/18.1/data/proteins.dat --input-gene-links $METACYC/18.1/data/gene-links.dat --output reactions_level4ec_only.dat ``
-        * `` $ python Reaction_to_Uniref5090.py --i_reactions reactions_level4ec_only.dat  --i_sprot uniprot_sprot_trembl.dat  --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz  --o metacyc_reations_level4ec_only.uniref ``
+        * Create a reactions.dat file that only includes those with level 4 ECs
+            * `` $ ./map_reactions_to_uniprot.py --input-reactions $METACYC/18.1/data/reactions.dat --input-enzrxn $METACYC/18.1/data/enzrxns.dat --input-proteins $METACYC/18.1/data/proteins.dat --input-gene-links $METACYC/18.1/data/gene-links.dat --output reactions_level4ec_only.dat ``
+        * Create the uniref to reactions file
+            * `` $ python Reaction_to_Uniref5090.py --i_reactions reactions_level4ec_only.dat  --i_sprot uniprot_sprot_trembl.dat  --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz  --o metacyc_reations_level4ec_only.uniref ``
 
-4. Create the structured, filtered humann2/data/metacyc_pathways_structured_filtered file (default pathways database file2)
-    * `` $ ./create_metacyc_structured_pathways_database.py --input $METACYC/18.1/data/pathways.dat --output metacyc_pathways_structured ``
-    * `` $ ./filter_pathways.py --input-pathways metacyc_pathways_structured --input-reactions metacyc_reactions_level4ec_only.uniref --output metacyc_structured_pathways_filtered ``
+3. Create the structured, filtered humann2/data/metacyc_pathways_structured_filtered file (default pathways database file2)
+    * Create a structured pathways file
+        * `` $ ./create_metacyc_structured_pathways_database.py --input $METACYC/18.1/data/pathways.dat --output metacyc_pathways_structured ``
+    * Filter the structured pathways file
+        * `` $ ./filter_pathways.py --input-pathways metacyc_pathways_structured --input-reactions metacyc_reactions_level4ec_only.uniref --output metacyc_structured_pathways_filtered ``
 
-5. (Optional) Create the unstructured humann2/data/metacyc_pathways data file (optional pathways database file2).
+4. (Optional) Create the unstructured humann2/data/metacyc_pathways data file (optional pathways database file2).
     * `` $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways ``
 
 #### Create a set of HUMANn2 UniPathways pathways database files ####
