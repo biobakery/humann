@@ -13,7 +13,7 @@ The typical user will not need to work with these.
     * NOTE: Instructions that follow refer to the metacyc directory as ``$METACYC``.
     * If you are running on hutlab machines, ``$METACYC=/n/huttenhower_lab_nobackup/downloads/metacyc/`` .
 
-2. Create the humann2/data/metacyc_reations_level4ec_only.uniref data file using Uniprot EC mapping.
+2. Create the humann2/data/pathways/metacyc_reactions_level4ec_only.uniref data file using Uniprot EC mapping.
     1. Download and decompress the UniProtKB SwissProt text file.
         * `` $ wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz ``
         * `` $ gunzip uniprot_sprot.dat.gz ``
@@ -30,24 +30,24 @@ The typical user will not need to work with these.
         * `` $ ./UniProt_mapping.py -i UniRef90 -o map_uniprot_UniRef90.dat.gz ``
         * If you are running on hutlab machines, these files can be found at /n/huttenhower_lab/data/idmapping/ .
 
-    4. Create the metacyc_reations_level4ec_only.uniref file (default pathways database file1).
+    4. Create the humann2/data/pathways/metacyc_reactions_level4ec_only.uniref file (default pathways database file1).
         * Create a reactions.dat file that only includes those with level 4 ECs
             * `` $ ./map_reactions_to_uniprot.py --input-reactions $METACYC/18.1/data/reactions.dat --input-enzrxn $METACYC/18.1/data/enzrxns.dat --input-proteins $METACYC/18.1/data/proteins.dat --input-gene-links $METACYC/18.1/data/gene-links.dat --output reactions_level4ec_only.dat ``
         * Create the uniref to reactions file
             * `` $ python Reaction_to_Uniref5090.py --i_reactions reactions_level4ec_only.dat  --i_sprot uniprot_sprot_trembl.dat  --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz  --o metacyc_reations_level4ec_only.uniref ``
 
-3. Create the structured, filtered humann2/data/metacyc_pathways_structured_filtered file (default pathways database file2)
+3. Create the structured, filtered humann2/data/pathways/metacyc_pathways_structured_filtered file (default pathways database file2)
     * Create a structured pathways file
         * `` $ ./create_metacyc_structured_pathways_database.py --input $METACYC/18.1/data/pathways.dat --output metacyc_pathways_structured ``
     * Filter the structured pathways file
         * `` $ ./filter_pathways.py --input-pathways metacyc_pathways_structured --input-reactions metacyc_reactions_level4ec_only.uniref --output metacyc_structured_pathways_filtered ``
 
-4. (Optional) Create the unstructured humann2/data/metacyc_pathways data file (optional pathways database file2).
+4. (Optional) Create the unstructured humann2/data/pathways/metacyc_pathways data file (optional pathways database file2).
     * `` $ ./metacyc2mcpc.py < $METACYC/18.1/data/pathways.dat > metacyc_pathways ``
 
-#### Create a set of HUMANn2 UniPathways pathways database files ####
+#### Create HUMANn2 UniPathways pathways database files ####
 
-1. Create the first file (unipathway_pathways) by running Build_mapping_Pathways_Uniprot.py
+1. Create the file humann2/data/pathways/unipathway_pathways (optional pathway database file2)
     * `` $ python Build_mapping_Pathways_Uniprot.py --i $UNIPROT/2014_10/pathway.txt --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz --oPathwaysACs  unipathway_pathways --oValidACs  list_of_ACs --oPathwaysUniref5090 PathwaysUniref5090 ``   
         * The command above, and those that follow, ``$UNIPROT`` should be replaced will the full path to the uniprot_pathways folder.
         * For detailed documentation about what this script does, please refer to the script header.
@@ -58,7 +58,7 @@ The typical user will not need to work with these.
         * ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/
     * If runnning on hutlab machines, the uniprot pathways download can be found at /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/ .
 
-2. Create the second file unipathway_uniprots.uniref by running ReadSwissprot.py
+2. Create the file humann2/data/pathways/unipathway_uniprots.uniref (optional pathway database file1)
     * `` $ python ReadSwissprot.py --i uniprot_sprot.dat --o unipathway_uniprots.uniref --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz ``
         * For detailed documentation about what this script does, please refer to the script header.
 
