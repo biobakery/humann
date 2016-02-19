@@ -845,7 +845,6 @@ If you are running HUMAnN2 with [PICRUSt](http://picrust.github.io/picrust/) out
     * To run with the kegg modules instead of kegg pathways provide the modules file ``--pathways-database humann1/data/modulec``.
     * The input file can be in biom or tsv format.
 
-    
 4. Join the pathways data (coverage and abundance) files from the HUMAnN2 runs from all samples into two files
     * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathcoverage.tsv --file_name pathcoverage ``
     * `` $ humann2_join_tables --input $OUTPUT_DIR2 --output humann2_pathabundance.tsv --file_name pathabundance ``
@@ -863,11 +862,19 @@ The original version of HUMAnN used [Kegg](http://www.genome.jp/kegg/) databases
     
 2. Create an idmapping file formatted for HUMAnN2 using the legacy kegg databases and adding full names for the Kegg organisms
     * `` $ humann2_humann1_kegg --ikoc humann1/data/koc --igenels humann1/data/genels --o legacy_kegg_idmapping.tsv ``
-    
-3. Run HUMAnN2 on your kegg alignment file, $SAMPLE, with results written to $OUTPUT_DIR
-    * `` $ humann2 --input $SAMPLE --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc ``
-    * To run with the kegg modules instead of kegg pathways provide the file ``humann1/data/modulec``.
-    * For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv``.
+   
+3.  Create a joint taxonomic profile from all of the samples in your set (see tutorial [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile))
+
+4. Create a custom Kegg database for your data set, with genus-specific taxonomic limitation, using your joint taxonomic profile
+    * `` $ humann2_build_custom_database --input genes.pep --output custom_database --id-mapping legacy_kegg_idmapping.tsv --format diamond --taxonomic-profile max_taxonomic_profile.tsv ``
+
+5. Run HUMAnN2 on your quality-controlled metagenome files using the custom database with results written to $OUTPUT_DIR
+    * for $SAMPLE.fastq in samples
+        * `` $ humann2 --input $SAMPLE.fastq --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc --protein-database custom_database --bypass-nucleotide-search``
+        * To run with the kegg modules instead of the kegg pathways provide the file ``humann1/data/modulec`` to the pathways database option.
+    * If you would like both the kegg modules and kegg pathways output files, first run all samples with the command above. Then run again providing the kegg modules file along with the gene families output file from each run (ie foreach $SAMPLE_genefamilies.tsv run "$ humann2 --input $SAMPLE_genefamilies.tsv --output $MODULES_OUTPUT_DIR --pathways-database humann1/data/modulec"). These runs will only compute the kegg modules and will not run the translated search portion again which was already done in the first set of runs. This will save compute time and disk space.
+
+Alternatively, blastx-like output, created from running translated search of your quality-controlled metagenome files against the kegg database, can be provided as input to HUMAnN2. For a demo run, provide the demo input file included with the original version of HUMAnN ``humann1/input/mock_even_lc.tsv`` using the command ``$ humann2 --input humann1/input/mock_even_lc.tsv --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc``. 
 
 ### Joint taxonomic profile ###
 
