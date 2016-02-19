@@ -9,8 +9,25 @@ import tempfile
 
 #********************************************************************************************
 #    Read Swissprot program                                                                 *
-#  
-
+#                                                                                           *
+#unipathway_uniprots.uniref is generated in the program ReadSwissprot.py by reading the     *
+#uniprot_sprot.dat to gather the AC and all ECs related to it,  and by gathering the        *
+#Uniref50 and Uniref90 cluster names associated to it from the map_uniprot_UniRef50.dat.gz  * 
+#and map_uniprot_UniRef90.dat.gz files. The logic of the program consists of building a     *
+#table of ACs where each AC entry                                                           *
+#contains all ECs related to it - this is gathered from uniprot_sprot.dat.                  *
+#Once this table is built, we proceed to process Uniref50 and 90 files as following:        *
+#   a. We create a temporary directory                                                      *
+#   b Unzip the U50 and U90 files                                                           *
+#   c. Because they contain exactly the same number of records (One record per AC,          *
+#      containing is Uniref cluster) we literally glue them together and generate a         *
+#      U50,90 singe file                                                                    *
+#   d. Because the U5090 file and the AC table that we gathered before from Swissprot are   *
+#      sorted in the same sequence (AC)  we treat the AC table as a Transaction File        *
+#      (~250,00 records) which is processed against a Master (U5090 80 million records).    *
+#      When there is a match in the keys, we build the record: AC, EC{s}, U50,U90           *
+#      where the AC, EC(s) are taken from the table and the U50,90 are taken from the       *
+#      matched U5090 rec.                                                                   *
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:  (Using the current location of the files)                         *
 #  ---------------------                                                                    *

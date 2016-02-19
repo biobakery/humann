@@ -19,10 +19,36 @@ import argparse
 #    The objective of this program is to map  Swissprot Pathways to Uniprot ACs             *
 #    and Uniref50 and 90                                                                    *
 #                                                                                           *
+# This program reads the Swissprot pathways file                                            *
+# /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt                *
+# that looks as follows:                                                                    *
+#****                                                                                       *
+# Alkaloid biosynthesis; 3alpha(S)-strictosidine biosynthesis; 3alpha(S)-strictosidine      *
+#     STS1_ARATH  (P94111)    , STS3_ARATH  (P92976)    , STSY_CATRO  (P18417)    ,         *
+#     STSY_RAUMA  (P68174)    , STSY_RAUSE  (P68175)                                        *
+#Alkaloid biosynthesis; ajmaline biosynthesis                                               *
+#     PNAE_RAUSE  (Q9SE93)                                                                  *
+#****                                                                                       *
+#And builds the relations: AC --> Reaction and Reaction --> AC                              *
+#It also builds an extract file controlled by the parameter --o ValidACs                    *
+#which contains a list of the ACs that were output                                          *
+#*This means that if all files need to be generated, the first step must be run first*      *
+#                                                                                           *
+#At this point,  it generates the unipathway_pathways file and it can complete here.        *
+#However, it has the option to generate also a file with relations: Reaction-->Uniref50and90*
+#If so,  it proceeds to read the Uniref50 and Uniref90 files in the same fashion as         * 
+#ReadSwisport.py does (Unzip the 50, 90 files, glue them) and treats, like in the case of   *
+#ReadSwissprot.py,  the AC table, as a transaction file and runs a Transaction vs.          *
+#Master process (AC Table vs. U5090 file of 80 million recs)  and this way updates the U50  *
+#and U90 for the particular AC and generates                                                *
+#the extract:  Reaction, AC{s}, U50{s},U90{s}                                               *
+#                                                                                           *
+#                                                                                           *
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:                                                                    *
 #  ---------------------                                                                    *
-#  python Build_mapping_Pathways_Uniprot.py --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
+#  python Build_mapping_Pathways_Uniprot.py 
+# --i /n/huttenhower_lab_nobackup/downloads/uniprot_pathways/2014_10/pathway.txt \
 # --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz\
 # --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz\
 # --oPathwaysACs  unipathway_pathways \
