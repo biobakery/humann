@@ -62,3 +62,16 @@ The typical user will not need to work with these.
     * `` $ python ReadSwissprot.py --i uniprot_sprot.dat --o unipathway_uniprots.uniref --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz ``
         * For detailed documentation about what this script does, please refer to the script header.
 
+### Steps to create a GO filtered UniRef database ###
+
+1. Create the file available for download named uniref50_GO_filtered_diamond.tar.gz (the default database for translated search)
+    1. Create a list of UniRef50 ids which have GO annotations
+        * `` $ ./make_map_uniref50_go.py --uniref50_fasta uniref50.fasta --output map_uniref50_go.txt ``
+        * The uniref50.fasta can be downloaded from Uniprot from the following url: http://www.uniprot.org/downloads
+        * By default this script will download the gene association data (~ 5GB) from Uniprot
+        * Alternatively this database can be downloaded from the following url ( ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/gene_association.goa_uniprot.gz ) and provided as input to the script
+
+    2. Create the UniRef50 GO filtered database formatted for diamond (the default translated search software)
+        * `` $ ./create_uniref_database.py --input uniref50.fasta --output filtered_database --list map_uniref50_go.txt --format-database diamond ``
+        * This script will also annotate the fasta ids with the gene length
+
