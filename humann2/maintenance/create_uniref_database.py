@@ -5,8 +5,6 @@ Create uniref database
 
 This module will create the uniref database used by HUMAnN2. 
 
-Dependencies: Rapsearch2 or Usearch
-
 To Run: 
 $ humann2_create_uniref_database -i <uniref50.fasta> -o <uniref50>
 
@@ -26,7 +24,7 @@ import shutil
 import os
 import subprocess
 
-from .. import config
+from humann2 import config
 
 # pathways databases with uniref ids
 PATHWAYS_DATABASE1=config.metacyc_gene_to_reactions
@@ -272,6 +270,11 @@ def parse_arguments(args):
     parser.add_argument(
         "-l","--list",
         help="file of id list to use for filtering (example: id_list.tsv)\n")
+    parser.add_argument(
+        "-d","--format-database",
+        choices=["fasta","rapsearch","diamond"],
+        default="fasta",
+        help="format of output files (default: fasta)\n")
 
     return parser.parse_args()
 
@@ -281,13 +284,28 @@ def main():
     args=parse_arguments(sys.argv)
     
     # Check for the software to create the database
-    database_software="prerapsearch"
-    if not find_exe_in_path(database_software):
-        sys.exit("Could not find the location of the software to create the" +
-            " database: " + database_software)
+    if args.format_database == "rapsearch":
+        database_software="prerapsearch"
+    elif args.format_database == "diamond":
+        database_software="diamond"
+    else:
+        database_software=None
+    
+    if database_software:
+        if not find_exe_in_path(database_software):
+            sys.exit("Could not find the location of the software to create the" +
+                " database: " + database_software)
     
     # Find the output directory
-    output_dir=os.path.dirname(os.path.abspath(args.output))
+    args.output=os.path.abspath(args.output)
+    output_dir=os.path.dirname(args.output)
+    
+    if not os.path.isdir(args.output):
+        print("Creating output directory: " + args.output)
+        try:
+            os.mkdir(args.output)
+        except EnvironmentError:
+            sys.exit("Unable to create output directory.")
     
     # Create temp folder
     temp_dir=tempfile.mkdtemp( 
@@ -306,24 +324,42 @@ def main():
     fasta=process_fasta_file(args.input,uniref_pathways,args.verbose,args.filter,args.list)
     
     # create a temp file of the fasta sequences
-    file_out, temp_fasta_file=tempfile.mkstemp(dir=temp_dir)
+    input_file_basename=os.path.splitext(os.path.basename(args.input))[0]
+    output_basename=os.path.join(args.output,input_file_basename)
+    if not args.format_database == "fasta":
+        file_out, temp_fasta_file=tempfile.mkstemp(dir=temp_dir)
+    else:
+        # if output file is formatted as fasta, then do not write as temp file
+        temp_fasta_file=os.path.join(args.output,input_file_basename+".filtered.fasta")
+    
+    try:
+        file_out=open(temp_fasta_file,"w")
+    except EnvironmentError:
+        sys.exit("ERROR: Unable to open fasta file to write: " + temp_fasta_file)
     
     if args.verbose:
-        print("Printing temp annotated fasta file: " + temp_fasta_file)
+        print("Printing annotated fasta file: " + temp_fasta_file)
     
     for name in fasta.keys():
-        os.write(file_out, ">"+name+'\n'+fasta[name]+'\n')
-    os.close(file_out)
-    
-    if args.verbose:
-        print("Creating database from temp fasta file")
+        file_out.write(">"+name+'\n'+fasta[name]+'\n')
+    file_out.close()
         
     # create the database
-    cmd=[database_software,"-d",temp_fasta_file,"-n",args.output]
-    try:
-        p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except (EnvironmentError, subprocess.CalledProcessError):
-        sys.exit("Error while running the database software command: " + " ".join(cmd))
+    cmd=[]
+    if database_software == "prerapsearch":
+        cmd=[database_software,"-d",temp_fasta_file,"-n",args.output]
+    elif database_software == "diamond":
+        cmd=[database_software,"makedb","--in",temp_fasta_file,"--db",output_basename]
+        
+    if cmd:
+        print("Formatting database from fasta file")
+        if args.verbose:
+            print(" ".join(cmd))
+        try:
+            p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        except (EnvironmentError, subprocess.CalledProcessError):
+            sys.exit("Error while running the database software command: " + " ".join(cmd))
+    
     
     if args.verbose:
         print("Deleting temp files in temp folder: " + temp_dir)
@@ -333,3 +369,6 @@ def main():
     
     print("Database created: " + args.output)
 
+if __name__ == "__main__":
+    main()
+    
