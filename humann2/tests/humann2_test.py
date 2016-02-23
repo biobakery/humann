@@ -39,13 +39,13 @@ def parse_arguments(args):
         formatter_class=argparse.RawTextHelpFormatter,
         prog="humann2_test")
     parser.add_argument(
-        "--bypass-functional-tests-tools", 
-        help="do not run the functional tests for tools\n", 
+        "--run-functional-tests-tools", 
+        help="run the functional tests for tools\n", 
         action="store_true",
         default=False)
     parser.add_argument(
-        "--bypass-functional-tests-end-to-end", 
-        help="do not run the humann2 end to end functional tests\n", 
+        "--run-functional-tests-end-to-end", 
+        help="run the humann2 end to end functional tests\n", 
         action="store_true",
         default=False)
     parser.add_argument(
@@ -104,11 +104,10 @@ def main():
         test_suites=get_unittests()
     
     # Get the functional tests if requested
-    if not args.bypass_functional_tests_tools:
+    if args.run_functional_tests_tools:
         test_suites+=get_funtionaltests_tools()
-    if not args.bypass_functional_tests_end_to_end:
-        print("Please note running functional end to end tests requires all dependencies of HUMAnN2.\n"+
-              "To bypass this set of tests, add the option '--bypass-functional-tests-end-to-end'.\n")
+    if args.run_functional_tests_end_to_end:
+        print("\n\nPlease note running functional end to end tests requires all dependencies of HUMAnN2.\n")
         test_suites+=get_funtionaltests_other()
 
     unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(test_suites))
