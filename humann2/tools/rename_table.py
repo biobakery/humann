@@ -22,8 +22,12 @@ Names = namedtuple( "Names", ["path"] )
 c_default_names = {
     "uniref50": Names(
         os.path.join( p_root, "data", "misc", "map_uniref50_name.txt.gz" ) ),
-    "ko": Names(
+    "kegg-orthology": Names(
         os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
+    "kegg-pathway": Names(
+        os.path.join( p_root, "data", "misc", "map_kegg_pathways_name.txt.gz" ) ),
+    "kegg-module": Names(
+        os.path.join( p_root, "data", "misc", "map_kegg_modules_name.txt.gz" ) ),
     "ec": Names(
         os.path.join( p_root, "data", "misc", "map_ec_name.txt.gz" ) ),
     "metacyc-rxn": Names(

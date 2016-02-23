@@ -209,7 +209,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         
         # run the command
         utils.run_command(["humann2_rename_table","--input",cfg.rename_ko_input,"--output",
-                           new_file,"--names","ko"])
+                           new_file,"--names","kegg-orthology"])
         
         # check the output is as expected
         self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_ko_output))
