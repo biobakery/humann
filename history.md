@@ -1,6 +1,14 @@
 
 # HUMAnN2 History #
 
+## v0.6.2 02-24-2016 ##
+
+### New Features ###
+
+* HUMAnN2 is now pip installable. The documentation has been updated to reflect this new feature.
+* New options were added, to add names to kegg pathways and modules, to the humann2_rename_table script.
+* A new tool was added to build a custom diamond database with taxonomic limitation. Adding this tool expands the Kegg legacy flow tutorial to start with quality controlled metagenome files and to include MetaPhlAn2 output.
+
 ## v0.6.1 02-10-2016 ##
 
 ### New Features ###
