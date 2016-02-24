@@ -33,6 +33,7 @@ import copy
 import math
 import sys
 import gzip
+import bz2
 
 from . import config
 from . import utilities
@@ -891,6 +892,8 @@ class ReactionsDatabase:
             
             if database.endswith(".gz"):
                 file_handle = gzip.open(database, "r")
+            elif database.endswith(".bz2"):
+                file_handle = bz2.BZ2File(database, "r")
             else:
                 file_handle=open(database,"r")
              
