@@ -14,6 +14,7 @@ import argparse
 import sys
 import os
 import gzip
+import bz2
 import re
 
 import util
@@ -133,6 +134,8 @@ def read_mapping(gene_mapping_file,pathway_mapping_file):
     try:
         if gene_mapping_file.endswith(".gz"):
             file_handle=gzip.open(gene_mapping_file)
+        elif gene_mapping_file.endswith(".bz2"):
+            file_handle = bz2.BZ2File(gene_mapping_file)
         else:
             file_handle=open(gene_mapping_file)
     except EnvironmentError:
