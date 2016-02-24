@@ -58,6 +58,10 @@ import re
 import time
 
 VERSION = "0.6.1"
+AUTHOR = "HUMAnN2 Development Team"
+AUTHOR_EMAIL = "humann-users@googlegroups.com"
+MAINTAINER = "Lauren McIver"
+MAINTAINER_EMAIL = "lauren.j.mciver@gmail.com"
 
 def byte_to_megabyte(byte):
     """
@@ -528,26 +532,31 @@ class Install(_install):
     
 setuptools.setup(
     name="humann2",
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
     version=VERSION,
     license="MIT",
-    description="HUMAnN2 is a pipeline for efficiently and accurately determining " + \
+    description="HUMAnN2: The HMP Unified Metabolic Analysis Network 2",
+    long_description="HUMAnN2 is a pipeline for efficiently and accurately determining " + \
         "the coverage and abundance of microbial pathways in a community " + \
         "from metagenomic data. Sequencing a metagenome typically produces millions " + \
-        "of short DNA/RNA reads.",
-    maintainer="Lauren McIver",
-    maintainer_email="lauren.j.mciver@gmail.com",
+        "of short DNA/RNA reads. This process, referred to as functional profiling, " + \
+        "aims to describe the metabolic potential of a microbial community and its " + \
+        "members. More generally, functional profiling answers the question: What " + \
+        "are the microbes in my community-of-interest doing (or capable of doing)?",
     url="http://huttenhower.sph.harvard.edu/humann2",
-    keywords=["microbial","pathways","metabolic","analysis","metagenomic","metatranscriptomic"],
+    keywords=['microbial','microbiome','bioinformatics','microbiology','metagenomic','metatranscriptomic','humann','humann2'],
+    platforms=['Linux','MacOS'],
     classifiers=[
         "Programming Language :: Python",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
-        "License :: MIT License",
         "Operating System :: MacOS",
         "Operating System :: Unix",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Scientific/Engineering :: Bio-Informatics"
         ],
-    long_description=open('readme.md').read(),
     packages=setuptools.find_packages(),
     cmdclass={'install': Install},
     package_data={
