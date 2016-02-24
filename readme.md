@@ -58,7 +58,7 @@ NOTE: Bowtie2, Diamond, and MinPath are automatically installed when installing 
 
 ### Installation ###
 
-Before installing HUMAnN2, please download and install [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2). You can then add the MetaPhlAn2 folder to your $PATH or you can provide its location when running HUMAnN2 with the option "--metaphlan $DIR" (replacing $DIR with the full path to the MetaPhlAn2 folder). Bowtie2, Diamond, and Minpath will be automatically installed when you install HUMAnN2. 
+When installing HUMAnN2, please also download and install [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2). You can then add the MetaPhlAn2 folder to your $PATH or you can provide its location when running HUMAnN2 with the option "--metaphlan $DIR" (replacing $DIR with the full path to the MetaPhlAn2 folder). Bowtie2, Diamond, and Minpath will be automatically installed when you install HUMAnN2. 
 
 1. Install HUMAnN2
     * `` $ pip install humann2 ``
