@@ -197,11 +197,11 @@ less disk space is required.
 ## Initial Installation ##
 
 ### 1. Download HUMAnN2 ###
-You can download the latest HUMAnN2 release or the development version.
+You can download the latest HUMAnN2 release or the development version. The source contains example files. If installing with pip, it is optional to first download the HUMAnN2 source.
 
 Option 1: Latest Release (Recommended)
 
-* [Download](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.6.1.tar.gz) and unpack the latest release of HUMAnN2.
+* [humann2.tar.gz](https://pypi.python.org/pypi/humann2) and unpack the latest release of HUMAnN2.
 
 Option 2: Development Version
 
@@ -213,6 +213,19 @@ Option 2: Development Version
 
 
 ### 2. Install HUMAnN2 ###
+
+#### Installing with pip ####
+
+1. Install HUMAnN2
+    * `` $ pip install humann2 ``
+    * This command will automatically install MinPath (and a new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
+    * To bypass the install of Bowtie2 and Diamond, add the option "--install-option='--bypass-dependencies-install'" to the install command.
+    * To build Diamond from source during the install, add the option "--install-option='--build-diamond'" to the install command.
+    * To overwite existing installs of Bowtie2 and Diamond, add the option "--install-option='--replace-dependencies-install'" to the install command.
+    * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local' on Linux. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
+
+
+#### Installing from source ####
 
 1. Move to the HUMAnN2 directory
 
@@ -228,13 +241,16 @@ Option 2: Development Version
 
 ### 3. Test the install ###
 
-Test out the install of HUMAnN2 by running the unit tests.
+1. Test out the install with unit and functional tests
+     * `` $ humann2_test``
+     * To also run tool tests, add the option "--run-functional-tests-tools".
+     * To also run end-to-end tests, add the option "-run-functional-tests-end-to-end". Please note these tests take about 20 minutes to run. Also they require all dependencies of HUMAnN2 be installed in your PATH.
 
-``$ python setup.py test ``
+
 
 ### 4. Try out a demo run ###
 
-With HUMAnN2 installed you can try out a demo run using reduced versions of the databases.
+With HUMAnN2 installed you can try out a demo run using reduced versions of the databases. If installing from pip, please also download the source as it contains the demo examples.
 
 ``$ humann2 --input examples/demo.fastq --output $OUTPUT_DIR ``
 

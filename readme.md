@@ -2,7 +2,9 @@
 
 ----
 
- * Download the HUMAnN2 software ( [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.6.1.tar.gz) ) then follow the [steps to install and run](#markdown-header-getting-started-with-humann2).
+ * Install HUMAnN2 with `` $ pip install humann2 `` then follow the [steps to start running HUMAnN2](#markdown-header-getting-started-with-humann2).
+
+ * Optionally, download the HUMAnN2 software source and demos ( [humann2.tar.gz](https://pypi.python.org/pypi/humann2) ).
 
  * For additional information, please see the [HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual).
 
@@ -58,25 +60,29 @@ NOTE: Bowtie2, Diamond, and MinPath are automatically installed when installing 
 
 Before installing HUMAnN2, please download and install [MetaPhlAn2](http://huttenhower.sph.harvard.edu/metaphlan2). You can then add the MetaPhlAn2 folder to your $PATH or you can provide its location when running HUMAnN2 with the option "--metaphlan $DIR" (replacing $DIR with the full path to the MetaPhlAn2 folder). Bowtie2, Diamond, and Minpath will be automatically installed when you install HUMAnN2. 
 
-1. Download and unpack the HUMAnN2 software
-    * Download the software: [humann2.tar.gz](https://bitbucket.org/biobakery/humann2/downloads/humann2_v0.6.1.tar.gz)
-    * `` $ tar zxvf humann2.tar.gz ``
-    * `` $ cd humann2 ``
-3. Install the HUMAnN2 software
-    * `` $ python setup.py install ``
+1. Install HUMAnN2
+    * `` $ pip install humann2 ``
     * This command will automatically install MinPath (and a new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
-    * To bypass the install of Bowtie2 and Diamond, add the option "--bypass-dependencies-install" to the install command.
-    * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
-4. Test the HUMAnN2 install (Optional)
-     * `` $ python setup.py test``
-5. Try out a HUMAnN2 demo run (Optional)
+    * To bypass the install of Bowtie2 and Diamond, add the option "--install-option='--bypass-dependencies-install'" to the install command.
+    * To build Diamond from source during the install, add the option "--install-option='--build-diamond'" to the install command.
+    * To overwite existing installs of Bowtie2 and Diamond, add the option "--install-option='--replace-dependencies-install'" to the install command.
+    * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local' on Linux. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
+2. Test the HUMAnN2 install (Optional)
+     * `` $ humann2_test``
+     * To also run tool tests, add the option "--run-functional-tests-tools".
+     * To also run end-to-end tests, add the option "-run-functional-tests-end-to-end". Please note these tests take about 20 minutes to run. Also they require all dependencies of HUMAnN2 be installed in your PATH.
+3. Try out a HUMAnN2 demo run (Optional)
+    * Download the HUMAnN2 source with demos: [humann2.tar.gz](https://pypi.python.org/pypi/humann2)
+    * `` $ tar zxvf humann2.tar.gz ``
     * `` $ humann2 --input humann2/examples/demo.fastq --output $OUTPUT_DIR ``
     * When running this command, $OUTPUT_DIR should be replaced with the full path to the directory you have selected to write the output from the HUMAnN2 demo run.
-6. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB)
+    * Other types of demo files are included in this folder and can be run with the exact same command.
+    * Demo ChocoPhlAn and UniRef databases are also included in the download. The demo ChocoPhlAn database is located a humann2/data/chocophlan_DEMO and the demo UniRef database is located a humann2/data/uniref_DEMO. Until the full databases are downloaded HUMAnN2 will run with the demo database by default.
+4. Download the ChocoPhlAn database to $DIR (approx. size = 5.6 GB)
     * ``$ humann2_databases --download chocophlan full $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
     * This command will update the HUMAnN2 configuration file, storing the location you have selected for the ChocoPhlAn database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--nucleotide-database $DIR" when running HUMAnN2.
-7. Download the UniRef database to $DIR (approx. size = 2.8 GB)
+5. Download the UniRef database to $DIR (approx. size = 2.8 GB)
     * ``$ humann2_databases --download uniref diamond $DIR``
     * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
     * This command will update the HUMAnN2 configuration file, storing the location you have selected for the UniRef database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--protein-database $DIR" when running HUMAnN2.
@@ -137,7 +143,7 @@ NOTE: $SAMPLENAME can be set by the user with the option "--output-basename <$NE
 
 #### Demo runs ####
 
-The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
+The examples folder in the HUMAnN2 source download contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
 
 
 To run the fasta demo:
