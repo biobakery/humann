@@ -10,3 +10,23 @@ include examples/demo.sam
 
 include doc/UserManual.md
 
+include humann2/tools/README.txt
+
+include humann2/maintenance/README.md
+include humann2/maintenance/metacyc_swissprot_trembl_reference_databases.md
+
+prune humann2/quantify/MinPath
+
+exclude humann2/data/chocophlan_DEMO/g__Alistipes.s__Alistipes_shahii.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Bacteroides.s__Bacteroides_caccae.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Bacteroides.s__Bacteroides_cellulosilyticus.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Bacteroides.s__Bacteroides_uniformis.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Dialister.s__Dialister_invisus.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Eubacterium.s__Eubacterium_rectale.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Parabacteroides.s__Parabacteroides_distasonis.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Parabacteroides.s__Parabacteroides_merdae.centroids.v0.1.1.ffn.gz
+exclude humann2/data/chocophlan_DEMO/g__Ruminococcus.s__Ruminococcus_bromii.centroids.v0.1.1.ffn.gz
+
+exclude humann2/data/misc/map_EC_to_triplet_AC_U50_U90_Swissprot_and_Trembl.txt.gz
+exclude humann2/data/misc/map_infogo1000_uniref50.txt.gz
+exclude humann2/data/misc/map_ko_uniref50.txt.gz
