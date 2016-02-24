@@ -247,7 +247,7 @@ unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory
 unipathway_database_part2=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_pathways"))
 
 # pathways and gene families name mapping files
-gene_family_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_uniref50_name.txt.gz"))
+gene_family_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_uniref50_name.txt.bz2"))
 pathway_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_metacyc-pwy_name.txt.gz"))
 name_mapping_file_delimiter="\t"
 name_mapping_join=": "

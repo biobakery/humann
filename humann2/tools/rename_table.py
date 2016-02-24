@@ -21,7 +21,7 @@ p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
 Names = namedtuple( "Names", ["path"] )
 c_default_names = {
     "uniref50": Names(
-        os.path.join( p_root, "data", "misc", "map_uniref50_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "misc", "map_uniref50_name.txt.bz2" ) ),
     "kegg-orthology": Names(
         os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
     "kegg-pathway": Names(

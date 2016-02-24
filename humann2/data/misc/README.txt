@@ -1,7 +1,7 @@
 Misc data files for working with HUMAnN2 tools
 
 For use with rename_table.py:
-map_uniref50_name.txt.gz: human-readable names for UniRef50 centroids
+map_uniref50_name.txt.bz2: human-readable names for UniRef50 centroids
 map_ko_name.txt.gz: human-readable names for KEGG Orthogroups (legacy function)
 
 For use with regroup_table.py:

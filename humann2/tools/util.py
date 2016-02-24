@@ -5,6 +5,7 @@ import re
 import subprocess
 import csv
 import gzip
+import bz2
 
 # ---------------------------------------------------------------
 # utilities used by the split and join tables scripts
@@ -165,7 +166,12 @@ def try_zip_open( path, *args ):
     """
     fh = None
     try:
-        fh = open( path, *args ) if not re.search( r".gz$", path ) else gzip.GzipFile( path, *args )
+        if path.endswith(".gz"):
+            fh = gzip.GzipFile( path, *args )
+        elif path.endswith(".bz2"):
+            fh = bz2.BZ2File( path, *args )
+        else:
+            fh = open( path, *args )
     except EnvironmentError:
         sys.exit( "Problem opening file: " + path)
     return fh

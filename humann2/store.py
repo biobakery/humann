@@ -1429,6 +1429,8 @@ class Names:
         if not unreadable_file:
             if file.endswith(".gz"):
                 file_handle = gzip.open(file, "r")
+            elif file.endswith(".bz2"):
+                file_handle = bz2.BZ2File(file, "r")
             else:
                 file_handle = open(file,"r")
                 
