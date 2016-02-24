@@ -14,6 +14,8 @@ Given a table of feature values and a mapping
 of groups to component features, produce a 
 new table with group values in place of 
 feature values.
+
+For additional groups files, see https://bitbucket.org/biobakery/humann2/src/tip/humann2/data/misc/
 """
 
 # ---------------------------------------------------------------
@@ -27,10 +29,6 @@ c_default_groups = {
         os.path.join( p_root, "data", "pathways", "metacyc_reactions_level4ec_only.uniref.gz" ), 0, [1] ),
     "uniref50_ec":  Groups( 
         os.path.join( p_root, "data", "misc", "map_ec_uniref50.txt.gz" ), 0, [] ),
-    "uniref50_go":  Groups( 
-        os.path.join( p_root, "data", "misc", "map_infogo1000_uniref50.txt.gz" ), 0, [] ),
-    "uniref50_ko":  Groups( 
-        os.path.join( p_root, "data", "misc", "map_ko_uniref50.txt.gz" ), 0, [] ),
     }
 c_protected = [util.c_unmapped, util.c_unintegrated]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
