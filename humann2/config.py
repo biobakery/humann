@@ -240,7 +240,7 @@ remove_stratified_output=get_item(config_items, "output_format", "remove_stratif
 
 # pathways files
 humann2_install_directory=os.path.dirname(os.path.abspath(__file__))
-metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_reactions_level4ec_only.uniref.gz"))
+metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_reactions_level4ec_only.uniref.bz2"))
 metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_pathways_structured_filtered"))
     
 unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_uniprots.uniref.bz2"))
