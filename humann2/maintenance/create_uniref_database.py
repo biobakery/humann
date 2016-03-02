@@ -23,6 +23,8 @@ import re
 import shutil
 import os
 import subprocess
+import gzip
+import bz2
 
 from humann2 import config
 
@@ -57,7 +59,12 @@ def store_pathways(verbose):
     uniref_pathways={}
     for file in PATHWAYS_DATABASES:
         try:
-            file_handle=open(file)
+            if file.endswith(".gz"):
+                file_handle = gzip.open(file, "r")
+            elif file.endswith(".bz2"):
+                file_handle = bz2.BZ2File(file, "r")
+            else:
+                file_handle=open(file,"r")
             if verbose:
                 print("Reading data from pathways file: " + file)
         except EnvironmentError:
@@ -93,7 +100,7 @@ def add_gene_length(sequence_name, sequence):
     
     return new_sequence_name
 
-def check_sequence(sequence_name,uniref_pathways,filter,filter_ids):
+def check_sequence(sequence_name,uniref_pathways,filter,filter_ids,include_ids):
     """
     Check the name of the sequence to determine if it should
     be removed from the final set
@@ -116,7 +123,15 @@ def check_sequence(sequence_name,uniref_pathways,filter,filter_ids):
             if not tokens[UNIREF_ID_INDEX] in uniref_pathways:
                 filter_value="remove"
             else:
-                filter_value="store_pathways"  
+                filter_value="store_pathways"
+    if include_ids:
+        if tokens[UNIREF_ID_INDEX] in include_ids:
+            filter_value="store"
+        else:
+            if not tokens[UNIREF_ID_INDEX] in uniref_pathways:
+                filter_value="remove"
+            else:
+                filter_value="store_pathways"
         
     return filter_value
 
@@ -148,7 +163,7 @@ def process_id_list_file(file):
     return filter_ids
     
 
-def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,list_file):
+def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,exclude_list_file, include_list_file):
     """
     Read through the fasta file, storing headers and sequences
     Filter to remove sequences based on string or list
@@ -158,15 +173,24 @@ def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,list_file):
     if verbose:
         if filter:
             print("Filter set on, using string: " + filter)
-        if list_file:
-            print("Using ids to filter from file: " + list_file)
+        if exclude_list_file:
+            print("Using ids to exclude from file: " + exclude_list_file)
+        if include_list_file:
+            print("Using ids to include from file: " + include_list_file)
             
     # get set of filter ids if file set
     filter_ids={}
-    if list_file:
-        filter_ids=process_id_list_file(list_file)
+    if exclude_list_file:
+        filter_ids=process_id_list_file(exclude_list_file)
         if verbose:
             print("Total ids to filter: " + str(len(filter_ids.keys())))
+            
+    # get set of include ids if file set
+    include_ids={}
+    if include_list_file:
+        include_ids=process_id_list_file(include_list_file)
+        if verbose:
+            print("Total ids to include: " + str(len(include_ids.keys())))
         
     # check file exists
     if not os.path.isfile(fasta_file):
@@ -195,7 +219,7 @@ def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,list_file):
             if sequence_name:
                 # store the sequence just read
                 # if it is not to be filtered
-                filter_type=check_sequence(sequence_name,uniref_pathways,filter,filter_ids)
+                filter_type=check_sequence(sequence_name,uniref_pathways,filter,filter_ids,include_ids)
                 if "store" in filter_type:
                     new_sequence_name=add_gene_length(sequence_name, sequence)
                     fasta[new_sequence_name]=sequence
@@ -211,7 +235,7 @@ def process_fasta_file(fasta_file,uniref_pathways,verbose,filter,list_file):
 
     # store the last sequence if not filtered
     if sequence_name:
-        filter_type=check_sequence(sequence_name,uniref_pathways,filter,filter_ids)
+        filter_type=check_sequence(sequence_name,uniref_pathways,filter,filter_ids,include_ids)
         if "store" in filter_type:
             new_sequence_name=add_gene_length(sequence_name, sequence)
             fasta[new_sequence_name]=sequence
@@ -268,7 +292,10 @@ def parse_arguments(args):
         "-f","--filter",
         help="string to use for filtering (example: uncharacterized)\n")
     parser.add_argument(
-        "-l","--list",
+        "--exclude-list",
+        help="file of id list to use for filtering (example: id_list.tsv)\n")
+    parser.add_argument(
+        "--include-list",
         help="file of id list to use for filtering (example: id_list.tsv)\n")
     parser.add_argument(
         "-d","--format-database",
@@ -321,7 +348,7 @@ def main():
     if args.verbose:
         print("Annotating fasta file: " + args.input)
         
-    fasta=process_fasta_file(args.input,uniref_pathways,args.verbose,args.filter,args.list)
+    fasta=process_fasta_file(args.input,uniref_pathways,args.verbose,args.filter,args.exclude_list, args.include_list)
     
     # create a temp file of the fasta sequences
     input_file_basename=os.path.splitext(os.path.basename(args.input))[0]
