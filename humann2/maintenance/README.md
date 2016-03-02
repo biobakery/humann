@@ -70,8 +70,10 @@ The typical user will not need to work with these.
         * The uniref50.fasta can be downloaded from Uniprot from the following url: http://www.uniprot.org/downloads
         * By default this script will download the gene association data (~ 5GB) from Uniprot
         * Alternatively this database can be downloaded from the following url ( ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/gene_association.goa_uniprot.gz ) and provided as input to the script
+        * Instead of uniref50.fasta, uniref90.fasta can be provided to this script to create a file map_uniref90_go.txt.
 
     2. Create the UniRef50 GO filtered database formatted for diamond (the default translated search software)
-        * `` $ ./create_uniref_database.py --input uniref50.fasta --output filtered_database --list map_uniref50_go.txt --format-database diamond ``
+        * `` $ ./create_uniref_database.py --input uniref50.fasta --output filtered_database --include-list map_uniref50_go.txt --format-database diamond ``
         * This script will also annotate the fasta ids with the gene length
+        * To create a UniRef90 GO filtered database formatted for diamond, provide uniref90.fasta and map_uniref90_go.txt.
 
