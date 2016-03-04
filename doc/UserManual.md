@@ -32,8 +32,8 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Standard workflow](#markdown-header-standard-workflow)
 * [Output files](#markdown-header-output-files)
     1. [Gene families file](#markdown-header-1-gene-families-file)
-    2. [Pathway coverage file](#markdown-header-2-pathway-coverage-file)
-    3. [Pathway abundance file](#markdown-header-3-pathway-abundance-file)
+    2. [Pathway abundance file](#markdown-header-2-pathway-abundance-file)
+    3. [Pathway coverage file](#markdown-header-3-pathway-coverage-file)
     4. [Intermediate temp output files](#markdown-header-4-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#markdown-header-1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#markdown-header-2-bowtie2-reduced-alignment-results)
@@ -449,33 +449,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 *   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 * The UniRef50_unknown values represent the total abundance of reads which map to ChocoPhlAn nucleotide sequences which do not have a UniRef50 annotation.
 
-### 2. Pathway coverage file ###
-
-``` 
-# Pathway	$SAMPLENAME_Coverage
-UNMAPPED	1.0
-UNINTEGRATED	1.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	1.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	1.0
-UNINTEGRATED|unclassified	1.0
-PWY0-1301: melibiose degradation	1.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	1.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	1.0
-PWY0-1301: melibiose degradation|unclassified	1.0
-PWY-5484: glycolysis II (from fructose-6P)	1.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	0.7
-PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
-```
-
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
-*   This file details the presence/absence of each pathway in the community grouped by species. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes.
-*   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the community level gene abundance is {A=15, B=15}. Species 1 has 5 complete copies of the pathway while species 2 has 10 complete copies of the pathway. At a community level there are 15 complete copies of the pathway. The pathway coverage is computed once at the community level and again for each species using their gene abundances along with the structure of the pathway. The computation is similar to the pathway abundance computation applying the Chi-square cumulative distibution function to each reaction abundance. A pathway that has complete coverage, all reactions included in the pathway have an abundance, has a coverage of 1.0. In this example the pathway has coverage=1.0 in species 1, species 2, and at the community level.
-*   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
-*   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
-*   This file follows the same order for pathways and species as the abundance file. The values for UNMAPPED and UNINTEGRATED are set to 1.0 included so that this file will match the format of the abundance file exactly.
-
-### 3. Pathway abundance file ###
+### 2. Pathway abundance file ###
 
 ```
 # Pathway	$SAMPLENAME_Abundance
@@ -501,6 +475,32 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 *   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
 *   To account for non-linearity in the conversion of gene copy number to pathway copy number, we define a “compression constant” (*k*) equal to the total pathway abundance divided by the total abundance of genes that contributed to pathways. The "UNMAPPED" value reported in the pathway abundance table is equal to the total number of unmapped reads scaled by *k* (making it more comparable with pathway abundance values). Similarly, we define an "UNINTEGRATED" abundance for 1) the community, 2) each identified species, and 3) unclassified species equal to the total abundance of genes in that level that did not contribute to pathways scaled by *k*.
 * The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
+
+### 3. Pathway coverage file ###
+
+``` 
+# Pathway	$SAMPLENAME_Coverage
+UNMAPPED	1.0
+UNINTEGRATED	1.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	1.0
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	1.0
+UNINTEGRATED|unclassified	1.0
+PWY0-1301: melibiose degradation	1.0
+PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	1.0
+PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	1.0
+PWY0-1301: melibiose degradation|unclassified	1.0
+PWY-5484: glycolysis II (from fructose-6P)	1.0
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.7
+PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	0.7
+PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
+```
+
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
+*   This file details the presence/absence of each pathway in the community grouped by species. HUMAnN refers to pathway presence/absence as "coverage" and defines a pathway as a set of two or more genes.
+*   Pathway coverage at the community level is stratified to show the contributions from known and unknown species. **A pathway's community-level coverage is not the sum of its stratified coverage values.** For example, in the two-gene pathway {A, B}, if species 1 contributes abundances {A=5, B=5} and species 2 contributes abundance {A=10, B=10}, the community level gene abundance is {A=15, B=15}. Species 1 has 5 complete copies of the pathway while species 2 has 10 complete copies of the pathway. At a community level there are 15 complete copies of the pathway. The pathway coverage is computed once at the community level and again for each species using their gene abundances along with the structure of the pathway. The computation is similar to the pathway abundance computation applying the Chi-square cumulative distibution function to each reaction abundance. A pathway that has complete coverage, all reactions included in the pathway have an abundance, has a coverage of 1.0. In this example the pathway has coverage=1.0 in species 1, species 2, and at the community level.
+*   HUMAnN2 uses MetaCyc pathways along with MinPath for this computation.
+*   The user has the option to provide a custom pathways database to HUMAnN2 and to use all pathways instead of the minimal pathways computed by MinPath.
+*   This file follows the same order for pathways and species as the abundance file. The values for UNMAPPED and UNINTEGRATED are set to 1.0 included so that this file will match the format of the abundance file exactly.
 
 ### 4. Intermediate temp output files ###
 
