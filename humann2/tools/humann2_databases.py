@@ -56,8 +56,10 @@ current_downloads={
         },
     "uniref" : 
         {
-            "rapsearch2" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_rapsearch2.tar.gz",
-            "diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_diamond.tar.gz",
+            "uniref50_GO_filtered_rapsearch2" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_rapsearch2.tar.gz",
+            "uniref50_GO_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_diamond.tar.gz",
+            "uniref50_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref_annotated/uniref50_annotated.tar.gz",
+            "uniref90_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref_annotated/uniref90_annotated.tar.gz",
             "DEMO_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_DEMO_diamond.tar.gz"
         }
 }
