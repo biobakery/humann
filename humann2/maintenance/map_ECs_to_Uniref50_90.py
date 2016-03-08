@@ -47,7 +47,7 @@ def read_params(x):
 	parser.add_argument('--o_map1', action="store", dest='o_map1',nargs='?', help='Map EC_ACs_U50U90s', default = "map_EC_to_triplet_AC_U50_U90" )
 	parser.add_argument('--o_map2', action="store", dest='o_map2',nargs='?', help='Map EC_U50s' , default = "map_EC_to_U50s" )
 	parser.add_argument('--iSwssiprot', action="store", dest='iSwissprot',nargs='?', default="/n/huttenhower_lab/data/uniprot/2015-06/uniprot_sprot.dat")
-	parser.add_argument('--iTrembl', action="store", dest='iTrembl',nargs='?', default="/n/huttenhower_lab/data/trembl/uniprot_trembl.dat")
+	parser.add_argument('--iTrembl', action="store", dest='iTrembl',nargs='?', default="/n/hutlab11_nobackup/users/gweingart/uniprotkb/uniprot_trembl/uniprot_trembl.dat")
 	CommonArea['parser'] = parser
 	return  CommonArea
 
