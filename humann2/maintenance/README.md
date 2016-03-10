@@ -31,7 +31,7 @@ The typical user will not need to work with these.
         * If you are running on hutlab machines, these files can be found at /n/huttenhower_lab/data/idmapping/ .
 
     4. Create the humann2/data/pathways/metacyc_reactions_level4ec_only.uniref file (default pathways database file1).
-        * Create a reactions.dat file that only includes those with level 4 ECs
+        * Create a reactions.dat file that only includes those with level 4 ECs and that also includes all reactions to AC mappings
             * `` $ ./map_reactions_to_uniprot.py --input-reactions $METACYC/19.1/data/reactions.dat --input-enzrxn $METACYC/19.1/data/enzrxns.dat --input-proteins $METACYC/19.1/data/proteins.dat --input-gene-links $METACYC/19.1/data/gene-links.dat --output reactions_level4ec_only.dat ``
         * Create the uniref to reactions file
             * `` $ python Reaction_to_Uniref5090.py --i_reactions reactions_level4ec_only.dat  --i_sprot uniprot_sprot_trembl.dat  --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz  --o metacyc_reations_level4ec_only.uniref ``
