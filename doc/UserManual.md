@@ -274,9 +274,12 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 #### Download the UniRef50 database ####
 
-Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database (approximate size = 2.8 GB).
+Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database (approx. size = 4.6 GB for the full database, 239 MB for the EC filtered database).
 
-`` $ humann2_databases --download uniref diamond $INSTALL_LOCATION ``
+Download one database (full or EC filtered):
+    * To download the full database (RECOMMENDED): ``$ humann2_databases --download uniref uniref50_diamond $INSTALL_LOCATION``
+    * To download the EC filtered database: ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $INSTALL_LOCATION``
+    * Select the full database if you are interested in identifying uncharacterized proteins in your data set. Alternatively, select the EC filtered database if you have limited disk space and/or memory. For example, a run with 13 million reads (approximately 7 GB fastq file) passed as input to the translated search step, using a single core, ran in about 4 hours with a maximum of 6 GB of memory using the EC filtered database. The same input file using the full database ran in 25 hours, with a single core, with a maximum of 11 GB of memory.
 
 NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--protein-database <uniref>" option to humann2.
 
