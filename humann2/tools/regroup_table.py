@@ -115,7 +115,8 @@ def regroup( table, map_feature_groups, function, ungrouped=False ):
                         else util.c_strat_delim.join( [group, items[1]] ) 
             mapping.setdefault( groupname, [] ).append( i )
     # rebuild table
-    groupnames = sorted( mapping.keys() )
+    # *** sorting changed to force 1|A to come before 11 ***
+    groupnames = sorted( mapping.keys(), key=lambda k: k.split( util.c_strat_delim ) )
     groupdata = []
     for groupname in groupnames:
         oldrow_index = mapping[groupname]

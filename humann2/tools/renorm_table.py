@@ -13,6 +13,16 @@ normalized using the desired scheme.
 """
 
 # ---------------------------------------------------------------
+# constants
+# ---------------------------------------------------------------
+
+c_special = [
+    util.c_unmapped, 
+    util.c_unintegrated, 
+    util.c_ungrouped,
+    ]
+
+# ---------------------------------------------------------------
 # utilities
 # ---------------------------------------------------------------
 
@@ -28,10 +38,22 @@ def get_args ():
         help="Original output table (.tsv format); default=[STDIN]",
         )
     parser.add_argument( 
-        "-n", "--norm", 
+        "-u", "--units", 
         choices=["cpm", "relab"],
         default="cpm",
         help="Normalization scheme: copies per million [cpm], relative abundance [relab]; default=[cpm]",
+        )
+    parser.add_argument( 
+        "-m", "--mode", 
+        choices=["community", "levelwise"],
+        default="community",
+        help="Normalize all levels by [community] total or [levelwise] totals; default=[community]",
+        )
+    parser.add_argument( 
+        "-s", "--special", 
+        choices=["y", "n"],
+        default="y",
+        help="Include the special features UNMAPPED, UNINTEGRATED, and UNGROUPED; default=[y]",
         )
     parser.add_argument( 
         "-o", "--output", 
@@ -41,9 +63,17 @@ def get_args ():
     args = parser.parse_args()
     return args
 
-def normalize ( table, cpm=False ):
+def normalize ( table, cpm=True, levelwise=False, special=True ):
     divisor = 1e-6 if cpm else 1.0
-    # compute totals by delim level (e.g. community vs species)
+    # remove special features?
+    if not special:
+        test = [rowhead.split( util.c_strat_delim )[0] not in c_special for rowhead in table.rowheads]
+        for flag, rowhead in zip( test, table.rowheads ):
+            if not flag:
+                print( "Excluding special feature:", rowhead, file=sys.stderr )
+        table.rowheads = [rowhead for i, rowhead in enumerate( table.rowheads ) if test[i]]
+        table.data = [row for i, row in enumerate( table.data ) if test[i]]
+    # compute totals by delim level
     totals_by_level = {}
     for i, row in enumerate( table.data ):
         level = len( table.rowheads[i].split( util.c_strat_delim ) )
@@ -62,8 +92,9 @@ def normalize ( table, cpm=False ):
     # normalize
     for i, row in enumerate( table.data ):
         level = len( table.rowheads[i].split( util.c_strat_delim ) )
-        totals = totals_by_level[level]
-        table.data[i] = ["%.6g" % ( row[j] / totals[j] / divisor ) for j in range( len( totals ) )] 
+        # level=1 corresponds to the community level (no strata)
+        totals = totals_by_level[level] if levelwise else totals_by_level[1]
+        table.data[i] = ["%.6g" % ( row[j] / totals[j] / divisor ) for j in range( len( totals ) )]
 
 # ---------------------------------------------------------------
 # main
@@ -72,7 +103,12 @@ def normalize ( table, cpm=False ):
 def main ( ):
     args = get_args()
     table = util.Table( args.input )
-    normalize( table, cpm=True if args.norm == "cpm" else False )
+    normalize( 
+        table, 
+        cpm = args.units=="cpm",
+        levelwise = args.mode=="levelwise",
+        special = args.special=="y",
+        )
     table.write( args.output )
 
 if __name__ == "__main__":
