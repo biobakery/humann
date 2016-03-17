@@ -410,7 +410,7 @@ To run the standard workflow, follow these steps:
     * Prior to nomalization, select the scheme to use (copies per million or relative abundance). For example, if using [MaAsLin](http://huttenhower.sph.harvard.edu/maaslin), select relative abundance.
     * Use the HUMAnN2 tool renorm table, to compute the normalized abundances (relative abundance is selected in the example command below)
         * for $SAMPLE_genefamilies.tsv in $OUTPUT_DIR
-            * `` $ humann2_renorm_table --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_relab.tsv --norm relab ``
+            * `` $ humann2_renorm_table --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_relab.tsv --units relab ``
     * Please note, gene family abundance is reported in RPK (reads per kilobase). This is computed as the sum of the scores for all alignments for a gene family. An alignment score is based on the number of matches to the reference gene for a specific sequence. It is divided by the length of the reference gene in kilobases to normalize for gene length. Each alignment score is also normalized to account for alignments for a single sequence to multiple reference genes. Alignments are not considered if they do not pass the e-value, identity, and coverage thresholds.
     * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#markdown-header-10-log).
     * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the tutorial [Collapsing gene families](#markdown-header-collapsing-gene-families) for detailed information. 
@@ -783,7 +783,7 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 
 #### 4.  Renormalize table ####
 
-`` $ humann2_renorm_table --input $TABLE --norm $CHOICE --output $TABLE2 ``
+`` $ humann2_renorm_table --input $TABLE --units $CHOICE --output $TABLE2 ``
 
 *   $TABLE = gene/pathway table (tsv format)
 *   $CHOICE = "relab" (relative abundance) or "cpm" (copies per million)

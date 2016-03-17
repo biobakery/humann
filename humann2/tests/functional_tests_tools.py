@@ -267,7 +267,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         
         # run the command
         utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input,"--output",
-                           new_file,"--norm","cpm"])
+                           new_file,"--units","cpm"])
         
         # check the output is as expected
         self.assertTrue(utils.files_almost_equal(new_file, cfg.renorm_cpm_output))
@@ -286,7 +286,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         
         # run the command
         utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input,"--output",
-                           new_file,"--norm","relab"])
+                           new_file,"--units","relab"])
         
         # check the output is as expected
         self.assertTrue(utils.files_almost_equal(new_file, cfg.renorm_relab_output))
