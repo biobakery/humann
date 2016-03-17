@@ -692,7 +692,7 @@ output_format : remove_stratified_output = False
 output_format : output_max_decimals = 10
 alignment_settings : prescreen_threshold = 0.01
 alignment_settings : evalue_threshold = 1.0
-alignment_settings : identity_threshold = 40.0
+alignment_settings : identity_threshold = 50.0
 database_folders : nucleotide = data/chocophlan_DEMO
 database_folders : protein = data/uniref_DEMO
 run_modes : bypass_nucleotide_search = False
@@ -735,7 +735,7 @@ threads = 4
 ALIGNMENT SETTINGS
 evalue threshold = 1.0
 prescreen threshold = 0.01
-identity threshold = 40.0
+identity threshold = 50.0
 
 PATHWAYS SETTINGS
 minpath = on
@@ -1110,7 +1110,7 @@ HUMAnN2 frequently asked questions:
 10.  Is there a way to output files in biom format?
     *   Yes, use the ``--output-format biom`` option
 11.  Can I change the identity threshold for alignments?
-    *   Yes, use the ``--identity-threshold <40.0>`` option
+    *   Yes, use the ``--identity-threshold <50.0>`` option
 12.  Can I change the options provided to MetaPhlAn2?
     *   Yes, use the ``--metaphlan-options="-t rel_ab"`` option
     *   Please note the special formatting required for this option
@@ -1129,7 +1129,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                [--remove-temp-output] [--threads <1>]
-               [--prescreen-threshold <0.01>] [--identity-threshold <40.0>]
+               [--prescreen-threshold <0.01>] [--identity-threshold <50.0>]
                [--coverage-threshold <50.0>] [--bowtie2 <bowtie2>]
                [--usearch <usearch>] [--rapsearch <rapsearch>]
                [--diamond <diamond>]
@@ -1193,9 +1193,9 @@ optional arguments:
   --prescreen-threshold <0.01>
                         minimum percentage of reads matching a species
                         [DEFAULT: 0.01]
-  --identity-threshold <40.0>
+  --identity-threshold <50.0>
                         identity threshold for alignments
-                        [DEFAULT: 40.0]
+                        [DEFAULT: 50.0]
   --coverage-threshold <50.0>
                         coverage threshold for translated alignments
                         [DEFAULT: 50.0]
