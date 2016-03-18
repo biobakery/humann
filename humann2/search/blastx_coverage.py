@@ -105,8 +105,8 @@ def parse_arguments(args):
     parser.add_argument(
         "--coverage-threshold",
         type=float,
-        help="the coverage threshold\n[ DEFAULT : "+str(config.coverage_threshold)+" ]", 
-        default=config.coverage_threshold)
+        help="the subject coverage threshold\n[ DEFAULT : "+str(config.translated_subject_coverage_threshold)+" ]", 
+        default=config.translated_subject_coverage_threshold)
     parser.add_argument(
         "--print-protein-list",
         action="store_true",
@@ -119,7 +119,7 @@ def main():
     args = parse_arguments(sys.argv)
     
     # run coverage computation
-    allowed = blastx_coverage(args.input, args.coverage_threshold)
+    allowed = blastx_coverage(args.input, args.translated_subject_coverage_threshold)
 
     if args.print_protein_list:
         print("\n".join(allowed))

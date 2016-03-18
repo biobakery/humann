@@ -31,12 +31,12 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         """
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # get the set of allowed proteins
         allowed_proteins = blastx_coverage.blastx_coverage(cfg.rapsearch2_output_file_without_header_coverage,
-            config.coverage_threshold, log_messages=True)
+            config.translated_subject_coverage_threshold, log_messages=True)
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header_coverage)
@@ -49,7 +49,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
                 all_proteins.add(protein_name)
 
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the expected proteins are found
         self.assertEqual(sorted(all_proteins),sorted(allowed_proteins))
@@ -65,12 +65,12 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # get the set of allowed proteins
         allowed_proteins = blastx_coverage.blastx_coverage(cfg.rapsearch2_output_file_without_header_coverage_custom_annotations,
-            config.coverage_threshold, alignments, log_messages=True)
+            config.translated_subject_coverage_threshold, alignments, log_messages=True)
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header_coverage_custom_annotations)
@@ -83,7 +83,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
                 all_proteins.add(protein_name)
 
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the expected proteins are found
         self.assertEqual(sorted(all_proteins),sorted(allowed_proteins))
@@ -99,12 +99,12 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # get the set of allowed proteins
         allowed_proteins = blastx_coverage.blastx_coverage(cfg.rapsearch2_output_file_without_header_coverage_chocophlan_annotations,
-            config.coverage_threshold, alignments, log_messages=True)
+            config.translated_subject_coverage_threshold, alignments, log_messages=True)
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header_coverage_chocophlan_annotations)
@@ -117,7 +117,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
                 all_proteins.add(protein_name)
 
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the expected proteins are found
         self.assertEqual(sorted(all_proteins),sorted(allowed_proteins))
@@ -136,12 +136,12 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         alignments.process_id_mapping(cfg.coverage_id_mapping_file)
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # get the set of allowed proteins
         allowed_proteins = blastx_coverage.blastx_coverage(cfg.rapsearch2_output_file_without_header_coverage,
-            config.coverage_threshold, alignments, log_messages=True)
+            config.translated_subject_coverage_threshold, alignments, log_messages=True)
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header_coverage)
@@ -156,7 +156,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
                 all_proteins.add(protein_name)
 
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the expected proteins are found
         self.assertEqual(sorted(all_proteins),sorted(allowed_proteins))
@@ -173,12 +173,12 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to a small value so as to have some alignments pass
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=50.0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=50.0
         
         # get the set of allowed proteins
         allowed_proteins = blastx_coverage.blastx_coverage(cfg.rapsearch2_output_file_without_header_coverage,
-            config.coverage_threshold, alignments, True)
+            config.translated_subject_coverage_threshold, alignments, True)
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header_coverage)
@@ -200,7 +200,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         file_handle.close()
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the values are unchanged
         self.assertEqual(sorted(allowed_proteins), sorted(found_proteins))

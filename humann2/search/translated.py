@@ -293,7 +293,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
         
     # get the list of proteins from the alignment that meet the coverage threshold
     allowed_proteins = blastx_coverage.blastx_coverage(alignment_file_tsv,
-        config.coverage_threshold, alignments, log_messages=True)
+        config.translated_subject_coverage_threshold, alignments, log_messages=True)
 
     # read through the alignment file to identify ids
     # that correspond to aligned reads

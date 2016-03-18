@@ -1130,9 +1130,9 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                [--remove-temp-output] [--threads <1>]
                [--prescreen-threshold <0.01>] [--identity-threshold <50.0>]
-               [--coverage-threshold <50.0>] [--bowtie2 <bowtie2>]
-               [--usearch <usearch>] [--rapsearch <rapsearch>]
-               [--diamond <diamond>]
+               [--translated-subject-coverage-threshold <50.0>]
+               [--bowtie2 <bowtie2>] [--usearch <usearch>]
+               [--rapsearch <rapsearch>] [--diamond <diamond>]
                [--taxonomic-profile <taxonomic_profile.tsv>]
                [--id-mapping <id_mapping.tsv>]
                [--translated-alignment {usearch,rapsearch,diamond}]
@@ -1196,8 +1196,8 @@ optional arguments:
   --identity-threshold <50.0>
                         identity threshold for alignments
                         [DEFAULT: 50.0]
-  --coverage-threshold <50.0>
-                        coverage threshold for translated alignments
+  --translated-subject-coverage-threshold <50.0>
+                        subject coverage threshold for translated alignments
                         [DEFAULT: 50.0]
   --bowtie2 <bowtie2>   directory containing the bowtie2 executable
                         [DEFAULT: $PATH]

@@ -36,8 +36,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header)
@@ -66,7 +66,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the values are unchanged
         self.assertEqual(sorted(alignments.get_hit_list()), sorted(alignments_test.get_hit_list()))
@@ -84,12 +84,12 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to a small value so as to have some alignments pass
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0.50
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0.50
         
         # get the set of allowed proteins
         allowed_proteins = blastx_coverage.blastx_coverage(cfg.rapsearch2_output_file_without_header_coverage,
-            config.coverage_threshold, alignments, True)
+            config.translated_subject_coverage_threshold, alignments, True)
         
         # load the blastm8-like output
         file_handle=open(cfg.rapsearch2_output_file_without_header_coverage)
@@ -120,7 +120,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the values are unchanged
         self.assertEqual(sorted(alignments.get_hit_list()), sorted(alignments_test.get_hit_list()))
@@ -138,8 +138,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the rapsearch output
         file_handle=open(cfg.rapsearch2_output_file_with_header)
@@ -177,7 +177,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # set the threshold back to the default
         config.evalue_threshold=original_evalue_threshold
@@ -197,8 +197,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the rapsearch output
         file_handle=open(cfg.rapsearch2_output_file_with_header)
@@ -234,7 +234,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # set the threshold back to the default
         config.identity_threshold=original_identity_threshold
@@ -254,8 +254,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the rapsearch2 output
         file_handle=open(cfg.rapsearch2_output_file_with_header_no_log)
@@ -284,7 +284,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # check the evalues are unchanged
         self.assertEqual(sorted(alignments.get_hit_list()), sorted(alignments_test.get_hit_list()))
@@ -303,8 +303,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         unaligned_reads_store=store.Reads()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the rapsearch2 output with the unaligned reads function
         unaligned_file_fasta=translated.unaligned_reads(unaligned_reads_store, 
@@ -314,7 +314,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # three of the hits should be for gene "UniRef50"
         hits=alignments.hits_for_gene("UniRef50")
@@ -334,8 +334,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         unaligned_reads_store=store.Reads()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the rapsearch2 output with the unaligned reads function
         unaligned_file_fasta=translated.unaligned_reads(unaligned_reads_store, 
@@ -345,7 +345,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold
+        config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # there should be one bug name and the other should be unclassified
         self.assertEqual(sorted(alignments.bug_list()),sorted(["s__Bacteroides_xylanisolvens","unclassified"]))
@@ -364,8 +364,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         unaligned_reads_store=store.Reads()
         
         # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.coverage_threshold
-        config.coverage_threshold=0
+        current_coverage_threshold=config.translated_subject_coverage_threshold
+        config.translated_subject_coverage_threshold=0
         
         # load the rapsearch2 output with the unaligned reads function
         unaligned_file_fasta=translated.unaligned_reads(unaligned_reads_store, 
@@ -375,7 +375,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_file_fasta)   
         
         # reset the coverage threshold
-        config.coverage_threshold=current_coverage_threshold    
+        config.translated_subject_coverage_threshold=current_coverage_threshold    
 
         # there should be 4 hits identified
         all_hits=alignments.get_hit_list()
