@@ -64,6 +64,7 @@ def log_settings():
     lines.append("prescreen threshold = " + str(prescreen_threshold))
     lines.append("identity threshold = " + str(identity_threshold))
     lines.append("translated subject coverage threshold = " + str(translated_subject_coverage_threshold))
+    lines.append("translated query coverage threshold = " + str(translated_query_coverage_threshold))
     lines.append("")
     
     lines.append("PATHWAYS SETTINGS")
@@ -229,8 +230,9 @@ prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_thre
 # translated search identity threshold
 identity_threshold=get_item(config_items, "alignment_settings", "identity_threshold", "float")
 
-# translated search coverage threshold
+# translated search coverage thresholds
 translated_subject_coverage_threshold=get_item(config_items, "alignment_settings", "translated_subject_coverage_threshold", "float")
+translated_query_coverage_threshold=get_item(config_items, "alignment_settings", "translated_query_coverage_threshold", "float")
     
 # output file decimal places
 output_max_decimals=get_item(config_items, "output_format", "output_max_decimals", "int")

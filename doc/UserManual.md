@@ -1131,6 +1131,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--remove-temp-output] [--threads <1>]
                [--prescreen-threshold <0.01>] [--identity-threshold <50.0>]
                [--translated-subject-coverage-threshold <50.0>]
+               [--translated-query-coverage-threshold <90.0>]
                [--bowtie2 <bowtie2>] [--usearch <usearch>]
                [--rapsearch <rapsearch>] [--diamond <diamond>]
                [--taxonomic-profile <taxonomic_profile.tsv>]
@@ -1199,6 +1200,9 @@ optional arguments:
   --translated-subject-coverage-threshold <50.0>
                         subject coverage threshold for translated alignments
                         [DEFAULT: 50.0]
+  --translated-query-coverage-threshold <90.0>
+                        query coverage threshold for translated alignments
+                        [DEFAULT: 90.0]
   --bowtie2 <bowtie2>   directory containing the bowtie2 executable
                         [DEFAULT: $PATH]
   --usearch <usearch>   directory containing the usearch executable

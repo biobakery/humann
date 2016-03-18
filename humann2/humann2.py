@@ -195,6 +195,13 @@ def parse_arguments(args):
         type=float,
         default=config.translated_subject_coverage_threshold)
     parser.add_argument(
+        "--translated-query-coverage-threshold", 
+        help="query coverage threshold for translated alignments\n[DEFAULT: " 
+            + str(config.translated_query_coverage_threshold) + "]", 
+        metavar="<" + str(config.translated_query_coverage_threshold) + ">", 
+        type=float,
+        default=config.translated_query_coverage_threshold)
+    parser.add_argument(
         "--bowtie2",
         help="directory containing the bowtie2 executable\n[DEFAULT: $PATH]", 
         metavar="<bowtie2>") 
@@ -387,6 +394,7 @@ def update_configuration(args):
     config.prescreen_threshold=args.prescreen_threshold
     config.identity_threshold=args.identity_threshold
     config.translated_subject_coverage_threshold=args.translated_subject_coverage_threshold
+    config.translated_query_coverage_threshold=args.translated_query_coverage_threshold
     
     # Update the max decimals output
     config.output_max_decimals=args.output_max_decimals
