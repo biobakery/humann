@@ -863,7 +863,7 @@ def break_up_fasta_file(fasta_file, max_seqs):
 
     return fasta_files
 
-def fastq_to_fasta(file, apply_pick_frames=None):
+def fastq_to_fasta(file, apply_pick_frames=None, length_annotation=None):
     """
     Convert fastq file to fasta
     Also pick frames for sequences if set
@@ -902,11 +902,14 @@ def fastq_to_fasta(file, apply_pick_frames=None):
                 else:
                     sequences=[sequence]
                     
+                if length_annotation:
+                    sequence_id=add_length_annotation(sequence_id,len(sequence))
+                    
                 for sequence in sequences:
-                    file_out.write(sequence_id)
+                    file_out.write(sequence_id+"\n")
                     file_out.write(sequence+"\n")
             
-            sequence_id=line.replace("@",">",1)
+            sequence_id=line.replace("@",">",1).rstrip()
             sequence=""
         elif re.search("^[A|a|T|t|G|g|C|c|N|n]+$", line):
             sequence+=line.rstrip()
@@ -918,9 +921,12 @@ def fastq_to_fasta(file, apply_pick_frames=None):
             sequences=pick_frames.pick_frames(sequence)
         else:
             sequences=[sequence]
-                    
+            
+        if length_annotation:
+            sequence_id=add_length_annotation(sequence_id,len(sequence))
+        
         for sequence in sequences:
-            file_out.write(sequence_id)
+            file_out.write(sequence_id+"\n")
             file_out.write(sequence+"\n")    
 
     file_out.close()	
@@ -928,7 +934,7 @@ def fastq_to_fasta(file, apply_pick_frames=None):
 
     return new_file	
 
-def pick_frames_from_fasta(file):
+def pick_frames_from_fasta(file, length_annotation=None):
     """
     Convert fasta file to picked frames
     """
@@ -951,22 +957,69 @@ def pick_frames_from_fasta(file):
             # if a sequence has been read in then pick frames and write
             if sequence:
                 sequences=pick_frames.pick_frames(sequence)
+                
+                if length_annotation:
+                    sequence_id=add_length_annotation(sequence_id,len(sequence))
+                    
                 for sequence in sequences:
-                    file_out.write(sequence_id)
+                    file_out.write(sequence_id+"\n")
                     file_out.write(sequence+"\n")
                 sequence=""
-            sequence_id=line
+            sequence_id=line.rstrip()
         line=file_handle_read.readline()
     # if a sequence has been read in then pick frames and write
     if sequence:
         sequences=pick_frames.pick_frames(sequence)
+
+        if length_annotation:
+            sequence_id=add_length_annotation(sequence_id,len(sequence))
+
         for sequence in sequences:
-            file_out.write(sequence_id)
+            file_out.write(sequence_id+"\n")
             file_out.write(sequence+"\n")
     file_out.close()    
     file_handle_read.close()
 
-    return new_file    
+    return new_file
+
+def length_annotate_fasta(file):
+    """
+    Add annotations of the lengths of the sequences to the fasta sequence ids
+    """
+    
+    # check file exists
+    file_exists_readable(file)
+    
+    file_handle_read = open(file, "r")
+    
+    line = file_handle_read.readline()
+    
+    new_file=unnamed_temp_file()
+    file_out=open(new_file,"w")
+
+    sequence=""
+    while line:
+        if not re.search("^>",line):
+            sequence+=line.rstrip()
+        else:
+            # if a sequence has been read in then annotate and write
+            if sequence:
+                sequence_id=add_length_annotation(sequence_id,len(sequence))
+                file_out.write(sequence_id+"\n")
+                file_out.write(sequence+"\n")
+                sequence=""
+            sequence_id=line.rstrip()
+        line=file_handle_read.readline()
+    # if a sequence has been read in then annotate and write
+    if sequence:
+        sequence_id=add_length_annotation(sequence_id,len(sequence))
+        file_out.write(sequence_id+"\n")
+        file_out.write(sequence+"\n")
+        
+    file_out.close()    
+    file_handle_read.close()
+
+    return new_file      
     
 def tsv_to_biom(tsv_file, biom_file, table_type):
     """
@@ -1079,6 +1132,35 @@ def log_system_status():
         except (AttributeError, OSError, TypeError, psutil.Error):
             pass
     
+def add_length_annotation(id, length):
+    """
+    Add the length to the query id
+    """
     
+    # add the length and handle spaces as translated search will split on spaces
+    return id.split(" ")[0]+config.query_length_annotation_delimiter+str(length)
+
+def get_length_annotation(id):
+    """
+    Try to get the length annotation from the query id
+    """
+    
+    # check for the annotation delimiter
+    if config.query_length_annotation_delimiter in id:
+        info=id.split(config.query_length_annotation_delimiter)
+        try:
+            # the last item is the length
+            length=int(info.pop())
+            # the first and remaining items are the id
+            new_id=config.query_length_annotation_delimiter.join(info)
+        except (ValueError, IndexError):
+            length=1
+            new_id=id
+    else:
+        # if not present, then return full id and default length
+        new_id=id
+        length=1
+
+    return new_id, length    
     
     

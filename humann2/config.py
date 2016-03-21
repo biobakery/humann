@@ -271,6 +271,9 @@ pathway_AND="+"
 pathway_OR=","
 pathway_reaction_optional="-"
 
+# query annotation
+query_length_annotation_delimiter="|"
+
 # memory use
 memory_use_options=["minimum","maximum"]
 memory_use=memory_use_options[0]

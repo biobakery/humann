@@ -353,7 +353,80 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         # remove the temp gunzipped file
         utils.remove_temp_file(new_file)
 
+    def test_add_length_annotation(self):
+        """
+        Test the add_length_annotation function
+        """
+        
+        id="UniRef50_ABC"
+        length=100
+        
+        expected_result="UniRef50_ABC|100"
+        
+        self.assertEqual(utilities.add_length_annotation(id, length),expected_result)
+        
+    def test_add_length_annotation_spaces(self):
+        """
+        Test the add_length_annotation function with spaces in the id
+        """
+        
+        id="UniRef50_ABC space here"
+        length=100
+        
+        expected_result="UniRef50_ABC|100"
+        
+        self.assertEqual(utilities.add_length_annotation(id, length),expected_result)
+        
+    def test_get_length_annotation(self):
+        """
+        Test the get_length_annotation function
+        """
+        
+        annotated_id="UniRef50_ABC|100"
+        expected_result=("UniRef50_ABC",100)
+        
+        result=utilities.get_length_annotation(annotated_id)
+        
+        self.assertEqual(result[0],expected_result[0])
+        self.assertEqual(result[1],expected_result[1])
+        
+    def test_get_length_annotation_no_length(self):
+        """
+        Test the get_length_annotation function from an id without a length
+        """
+        
+        annotated_id="UniRef50_ABC"
+        expected_result=("UniRef50_ABC",1)
+        
+        result=utilities.get_length_annotation(annotated_id)
+        
+        self.assertEqual(result[0],expected_result[0])
+        self.assertEqual(result[1],expected_result[1])
+        
+    def test_get_length_annotation_non_int_length(self):
+        """
+        Test the get_length_annotation function from an id without an int length
+        """
+        
+        annotated_id="UniRef50_ABC|A"
+        expected_result=("UniRef50_ABC|A",1)
+        
+        result=utilities.get_length_annotation(annotated_id)
+        
+        self.assertEqual(result[0],expected_result[0])
+        self.assertEqual(result[1],expected_result[1])
 
-         
+    def test_get_length_annotation_multiple_annotations(self):
+        """
+        Test the get_length_annotation function from an id with multiple annotations
+        """
+        
+        annotated_id="UniRef50_ABC|A|C|100"
+        expected_result=("UniRef50_ABC|A|C",100)
+        
+        result=utilities.get_length_annotation(annotated_id)
+        
+        self.assertEqual(result[0],expected_result[0])
+        self.assertEqual(result[1],expected_result[1])         
     
         

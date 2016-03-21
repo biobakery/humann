@@ -277,8 +277,9 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                     unaligned_read=True
                     
             if unaligned_read:
-                file_handle_write_unaligned.write(">"+
-                    info[config.sam_read_name_index]+"\n")
+                annotated_sam_read_name=utilities.add_length_annotation(info[config.sam_read_name_index],
+                                                                    len(info[config.sam_read_index]))
+                file_handle_write_unaligned.write(">"+annotated_sam_read_name+"\n")
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
                 
                 # find the frames for the sequence and write to file
@@ -288,7 +289,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                         no_frames_found_count+=1
                     for frame in picked_frames:
                         file_handle_write_unaligned_frames.write(">"+
-                            info[config.sam_read_name_index]+"\n")
+                            annotated_sam_read_name+"\n")
                         file_handle_write_unaligned_frames.write(frame+"\n")
                 
                 # store the unaligned reads data

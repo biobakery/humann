@@ -236,23 +236,29 @@ def alignment(uniref, unaligned_reads_file):
     
     # Check that the file of reads to align is fasta
     temp_file=""
-    if utilities.fasta_or_fastq(unaligned_reads_file) == "fastq":
+    unaligned_reads_file_format=utilities.fasta_or_fastq(unaligned_reads_file)
+    if unaligned_reads_file_format == "fastq":
         logger.debug("Convert unaligned reads fastq file to fasta")
         # Convert file to fasta, also pick frames if selected
         if config.pick_frames_toggle == "on":
             logger.debug("Applying pick frames")
             input_fasta=utilities.fastq_to_fasta(unaligned_reads_file,
-                apply_pick_frames=True)
+                apply_pick_frames=True, length_annotation=True)
         else:
-            input_fasta=utilities.fastq_to_fasta(unaligned_reads_file)
+            input_fasta=utilities.fastq_to_fasta(unaligned_reads_file, length_annotation=True)
         # set the file as a temp to be removed later
         temp_file=input_fasta
-    elif config.bypass_nucleotide_search and config.pick_frames_toggle == "on":
-        # Process the fasta file to pick frames
-        logger.debug("Applying pick frames")
-        input_fasta=utilities.pick_frames_from_fasta(unaligned_reads_file)
-        # set the file as a temp to be removed later
-        temp_file=input_fasta
+    elif unaligned_reads_file_format == "fasta" and config.bypass_nucleotide_search:
+        if config.pick_frames_toggle == "on":
+            # Process the fasta file to pick frames
+            logger.debug("Applying pick frames")
+            input_fasta=utilities.pick_frames_from_fasta(unaligned_reads_file, length_annotation=True)
+            # set the file as a temp to be removed later
+            temp_file=input_fasta
+        else:
+            input_fasta=utilities.length_annotate_fasta(unaligned_reads_file)
+            # set the file as a temp to be removed later
+            temp_file=input_fasta
     else:
         input_fasta=unaligned_reads_file
 
@@ -334,6 +340,10 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             if process_alignment:
                     
                 queryid=alignment_info[config.blast_query_index]
+
+                # check for query length annotation
+                queryid, query_length = utilities.get_length_annotation(queryid)
+
                 alignment_length=alignment_info[config.blast_aligned_length_index]
                 
                 # try converting the alignment length to a number
