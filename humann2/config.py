@@ -380,8 +380,10 @@ blast_query_index=0
 blast_reference_index=1
 blast_identity_index=2
 blast_aligned_length_index=3
-blast_protein_start_index=8
-blast_protein_end_index=9
+blast_query_start_index=6
+blast_query_end_index=7
+blast_subject_start_index=8
+blast_subject_end_index=9
 blast_evalue_index=10
 blast_total_columns=12
 

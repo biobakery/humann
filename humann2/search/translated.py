@@ -299,108 +299,28 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
         
     # get the list of proteins from the alignment that meet the coverage threshold
     allowed_proteins = blastx_coverage.blastx_coverage(alignment_file_tsv,
-        config.translated_subject_coverage_threshold, alignments, log_messages=True)
+        config.translated_subject_coverage_threshold, alignments, log_messages=True, apply_filter=True)
 
-    # read through the alignment file to identify ids
-    # that correspond to aligned reads
-    # all translated alignment files will be of the tabulated blast format
-    file_handle=open(alignment_file_tsv,"r")
-    line=file_handle.readline()
-
-    log_evalue=False
-    large_evalue_count=0
-    small_identity_count=0
+    # run through final filter of alignment by allowed proteins
     small_coverage_count=0
-    while line:
-        if re.search("^#",line):
-            # Check for the rapsearch2 header to determine if these are log(e-value)
-            if re.search(config.blast_delimiter,line):
-                data=line.split(config.blast_delimiter)
-                if len(data)>config.blast_evalue_index:
-                    if re.search("log",data[config.blast_evalue_index]):
-                        log_evalue=True
-        else:
-            alignment_info=line.split(config.blast_delimiter)
-            
-            # try to obtain the identity value to determine if threshold is met
-            process_alignment=True
-            try:
-                identity=float(alignment_info[config.blast_identity_index])
-                if identity < config.identity_threshold:
-                    process_alignment=False
-                    small_identity_count+=1
-            except ValueError:
-                if alignment_info[config.blast_identity_index]:
-                    logger.debug("Unexpected value in identity field: %s",
-                        alignment_info[config.blast_identity_index])
-                    process_alignment=False
-                else:
-                    identity="NA"
-            
-            if process_alignment:
-                    
-                queryid=alignment_info[config.blast_query_index]
-
-                # check for query length annotation
-                queryid, query_length = utilities.get_length_annotation(queryid)
-
-                alignment_length=alignment_info[config.blast_aligned_length_index]
-                
-                # try converting the alignment length to a number
-                try:
-                    alignment_length=float(alignment_length)
-                except ValueError:
-                    logger.warning("Alignment length is not a number: %s", alignment_length)
-                    alignment_length=0.0
-                
-                evalue=alignment_info[config.blast_evalue_index]   
-                
-                # try converting evalue to float to check if it is a number
-                try:
-                    evalue=float(evalue)
-                except ValueError:
-                    logger.warning("E-value is not a number: %s", evalue)
-                    evalue=1.0
-                                
-                # convert rapsearch evalue to blastm8 format if logged
-                if log_evalue:
-                    try:
-                        evalue=math.pow(10.0, evalue)
-                    except (ValueError, OverflowError):
-                        logger.warning("Unable to convert rapsearch e-value: %s", evalue)
-                        logger.warning("Traceback: \n" + traceback.format_exc())
-                        evalue=1.0 
-            
-                # only store alignments with evalues less than threshold
-                if evalue<config.evalue_threshold:
-                    matches=identity/100.0*alignment_length
-                    
-                    # get the protein alignment information
-                    protein_name, gene_length, bug = alignments.process_reference_annotation(
-                        alignment_info[config.blast_reference_index])
-                    
-                    # check the protein matches one allowed
-                    if protein_name in allowed_proteins:
-                        # if matches allowed, then add alignment
-                        alignments.add(protein_name, gene_length, queryid, matches, 
-                            bug, alignment_length)
+    for alignment_info in utilities.get_filtered_translated_alignments(alignment_file_tsv, alignments,
+                                                  apply_filter=True, log_filter=True,
+                                                  unaligned_reads_store=unaligned_reads_store):
+        (protein_name, gene_length, queryid, matches, bug, alignment_length,
+         subject_start_index, subject_stop_index) = alignment_info
+        # check the protein matches one allowed
+        if protein_name in allowed_proteins:
+            # if matches allowed, then add alignment
+            alignments.add(protein_name, gene_length, queryid, matches, 
+                           bug, alignment_length)
                         
-                        # remove the id of the alignment from the unaligned reads store
-                        unaligned_reads_store.remove_id(queryid)
-                    else:
-                        small_coverage_count+=1 
-                else:
-                    large_evalue_count+=1
-            
-        line=file_handle.readline()
+            # remove the id of the alignment from the unaligned reads store
+            unaligned_reads_store.remove_id(queryid)
+        else:
+            small_coverage_count+=1
 
-    logger.debug("Total translated alignments not included based on large e-value: " + 
-        str(large_evalue_count))
-    logger.debug("Total translated alignments not included based on small percent identity: " + 
-        str(small_identity_count))
-    logger.debug("Total translated alignments not included based on small coverage value: " + 
+    logger.debug("Total translated alignments not included based on small subject coverage value: " + 
         str(small_coverage_count))
-    file_handle.close()
 
     # create unaligned file using list of remaining unaligned stored data
     file_handle_write=open(unaligned_file_fasta,"w")
@@ -409,4 +329,5 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     file_handle_write.close()
 
     return unaligned_file_fasta
+
 

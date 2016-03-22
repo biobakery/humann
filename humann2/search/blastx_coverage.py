@@ -16,69 +16,60 @@ import logging
 import argparse
 from collections import defaultdict
 
-from .. import config
+from humann2 import config
+from humann2 import utilities
+from humann2 import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None ):
+def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None, apply_filter=None):
+    # create alignments instance if none is passed
+    if alignments is None:
+        alignments=store.Alignments()
+    
     # store protein lengths
-    prot_lens = {}
+    protein_lengths = {}
     # store unique positions hit in each protein as sets
-    prot_hits = defaultdict( set )
+    protein_hits = defaultdict( set )
     # track proteins with sufficient coverage
     allowed = set()
     # track alignments unable to compute coverage
     no_coverage=0
-    # parse blast6out file
-    with open( blast6out ) as fh:
-        for line in fh:
-            # read if not comment line
-            if not re.match("#",line):
-                data=line.rstrip().split(config.blast_delimiter)
-                reference=data[config.blast_reference_index]
-                if alignments:
-                    # if the alignment structure is provided use the function with id mapping and
-                    # custom annotations to compute annotation information
-                    prot_name, gene_len, bug = alignments.process_reference_annotation(reference)
-                else:
-                    # if alignments are not provided, default to format of "protein | length"
-                    reference_information = reference.split("|")
-                    prot_name = reference_information[0]
-                    try:
-                        gene_len = reference_information[1]
-                    except IndexError:
-                        gene_len = 0
+    # parse blast6out file, applying filtering as selected
+    for alignment_info in utilities.get_filtered_translated_alignments(blast6out, alignments, apply_filter=apply_filter):
+        ( protein_name, gene_length, queryid, matches, bug, alignment_length,
+          subject_start_index, subject_stop_index) = alignment_info
+          
+        # divide the gene length by 3 to get protein length from nucleotide length
+        gene_length = gene_length / 3
                     
-                # the gene length is in nucleotides, so divide by three for protein length
-                try:
-                    prot_lens[prot_name] = int( gene_len ) / 3
-                except ValueError:
-                    prot_lens[prot_name] = 0
+        # store the protein length
+        protein_lengths[protein_name] = gene_length
         
-                try:
-                    prot_start = int( data[config.blast_protein_start_index] )
-                    prot_stop = int( data[config.blast_protein_end_index] )
-                    # keep track of unique hit positions in this protein
-                    prot_hits[prot_name].update( range( prot_start-1, prot_stop ) )
-                except (ValueError,IndexError):
-                    no_coverage+=1
+        # add the range of the alignment to the protein hits
+        protein_range=range(subject_start_index, subject_stop_index)
+        if protein_range:
+            # keep track of unique hit positions in this protein
+            protein_hits[protein_name].update(protein_range)
+        else:
+            no_coverage+=1
     # track proteins without lengths
     no_length=0
     # compute coverage
-    for prot_name, hit_positions in prot_hits.items():
+    for protein_name, hit_positions in protein_hits.items():
         try:
             # compute coverage, with 50 indicating that 50% of the protein is covered
-            coverage = len( hit_positions ) / float( prot_lens[prot_name] ) * 100
+            coverage = len( hit_positions ) / float( protein_lengths[protein_name] ) * 100
         except ZeroDivisionError:
             coverage = 0
             no_length+=1
         
         if coverage >= min_coverage:
-            allowed.add(prot_name)
+            allowed.add(protein_name)
 
     output_messages=["Total alignments without coverage information: "+str(no_coverage)]
-    output_messages+=["Total proteins in blastx output: "+str(len( prot_lens ))]
+    output_messages+=["Total proteins in blastx output: "+str(len( protein_lengths ))]
     output_messages+=["Total proteins without lengths: "+str(no_length)]
     output_messages+=["Proteins with coverage greater than threshold ("+str(min_coverage)+"): "+str(len( allowed ))]
     
@@ -119,7 +110,7 @@ def main():
     args = parse_arguments(sys.argv)
     
     # run coverage computation
-    allowed = blastx_coverage(args.input, args.translated_subject_coverage_threshold)
+    allowed = blastx_coverage(args.input, args.coverage_threshold)
 
     if args.print_protein_list:
         print("\n".join(allowed))

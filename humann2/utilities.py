@@ -39,6 +39,7 @@ import threading
 import Queue
 import datetime
 import time
+import math
 
 from . import config
 from .search import pick_frames
@@ -1163,4 +1164,144 @@ def get_length_annotation(id):
 
     return new_id, length    
     
+def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_filter=None,
+                            log_filter=None, unaligned_reads_store=None):
+    """
+    Read through the alignment file, yielding filtered alignments
+    Filter based on identity threshold, evalue, and coverage threshold
+    Remove from unaligned reads store if set
+    """
+
+    # read through the alignment file to identify ids
+    # that correspond to aligned reads
+    # all translated alignment files will be of the tabulated blast format
+    file_handle=open(alignment_file_tsv,"r")
+    line=file_handle.readline()
+
+    log_evalue=False
+    large_evalue_count=0
+    small_identity_count=0
+    small_query_coverage_count=0
+    percent_identity_convert_error=0
+    alignment_length_convert_error=0
+    evalue_convert_error=0
+    rapsearch_evalue_convert_error=0
+    while line:
+        if re.search("^#",line):
+            # Check for the rapsearch2 header to determine if these are log(e-value)
+            if re.search(config.blast_delimiter,line):
+                data=line.split(config.blast_delimiter)
+                if len(data)>config.blast_evalue_index:
+                    if re.search("log",data[config.blast_evalue_index]):
+                        log_evalue=True
+        else:
+            alignment_info=line.split(config.blast_delimiter)
+            
+            # try to obtain the identity value to determine if threshold is met
+            identity=alignment_info[config.blast_identity_index]
+            try:
+                identity=float(identity)
+            except ValueError:
+                percent_identity_convert_error+=1
+                identity=0.0
+
+            queryid=alignment_info[config.blast_query_index]
+                
+            # try converting the alignment length to a number
+            alignment_length=alignment_info[config.blast_aligned_length_index]
+            try:
+                alignment_length=float(alignment_length)
+            except ValueError:
+                alignment_length_convert_error+=1
+                alignment_length=0.0
+                
+            # try converting evalue to float to check if it is a number
+            evalue=alignment_info[config.blast_evalue_index] 
+            try:
+                evalue=float(evalue)
+            except ValueError:
+                evalue_convert_error+=1
+                evalue=1.0
+                                
+            # try to get the start and end positions for the query
+            try:
+                query_start_index = int(alignment_info[config.blast_query_start_index])
+                query_stop_index = int(alignment_info[config.blast_query_end_index])
+            except (ValueError, IndexError):
+                query_start_index=0
+                query_stop_index=0
+                
+            # check for query length annotation
+            queryid, query_length = get_length_annotation(queryid)
+                
+            # try to get the start and end positions for the subject
+            try:
+                subject_start_index = int(alignment_info[config.blast_subject_start_index])
+                subject_stop_index = int(alignment_info[config.blast_subject_end_index])
+            except (ValueError, IndexError):
+                subject_start_index=0
+                subject_stop_index=0
+
+            # convert rapsearch evalue to blastm8 format if logged
+            if log_evalue:
+                try:
+                    evalue=math.pow(10.0, evalue)
+                except (ValueError, OverflowError):
+                    rapsearch_evalue_convert_error+=1
+                    evalue=1.0 
+            
+            # compute the number of matches
+            matches=identity/100.0*alignment_length
+            
+            # get the protein alignment information
+            protein_name, gene_length, bug = alignments.process_reference_annotation(
+                alignment_info[config.blast_reference_index])
+            
+            # check if percent identity is less then threshold
+            filter=False
+            if identity < config.identity_threshold:
+                filter=True
+                small_identity_count+=1
+                
+            # filter alignments with evalues greater than threshold
+            if evalue > config.evalue_threshold:
+                filter=True
+                large_evalue_count+=1
+                
+            # filter alignments based on query coverage
+            if query_length > 1:
+                query_coverage = ( ( query_stop_index - query_start_index + 1) / float(query_length) )* 100.0
+            else:
+                # if the query length is not provided, default coverage to greater than threshold
+                query_coverage = config.translated_query_coverage_threshold + 1.0
+                
+            if query_coverage < config.translated_query_coverage_threshold:
+                filter=True
+                small_query_coverage_count+=1
+                
+            if apply_filter:
+                if not filter:
+                    yield ( protein_name, gene_length, queryid, matches, bug, 
+                            alignment_length, subject_start_index, subject_stop_index )
+                elif unaligned_reads_store:
+                    # remove the read from the unaligned reads store
+                    unaligned_reads_store.remove_id(queryid)
+            else:
+                yield ( protein_name, gene_length, queryid, matches, bug, 
+                        alignment_length, subject_start_index, subject_stop_index )
+            
+        line=file_handle.readline()
+        
+    if log_filter:
+        logger.debug("Total alignments where percent identity is not a number: " + str(percent_identity_convert_error))
+        logger.debug("Total alignments where alignment length is not a number: " + str(alignment_length_convert_error))
+        logger.debug("Total alignments where E-value is not a number: " + str(evalue_convert_error))
+        if log_evalue:
+            logger.debug("Total alignments unable to convert rapsearch e-value: " + str(rapsearch_evalue_convert_error))
+        logger.debug("Total translated alignments not included based on large e-value: " + 
+                     str(large_evalue_count))
+        logger.debug("Total translated alignments not included based on small percent identity: " + 
+                     str(small_identity_count))
+        logger.debug("Total translated alignments not included based on small query coverage: " + 
+                     str(small_query_coverage_count))
     
