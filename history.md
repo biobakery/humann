@@ -1,6 +1,14 @@
 
 # HUMAnN2 History #
 
+## v0.7.0 03-22-2016 ##
+
+### New Features ###
+
+* A new translated search filtering feature has been added. This by default filters alignments with less than 90% query coverage. This option is named "--translated-query-coverage-threshold <90.0>". The previous coverage option "--coverage-threshold <40.0>" has been renamed to "--translated-subject-coverage-threshold <50.0>" for clarity with the default increased from 40% to 50%. 
+* New options have been added to the humann2_rename_table script. An option to switch between community and levelwise normalization was added with the default set to community normalization. Special features like UNMAPPED categories can now be excluded when normalizing. Also the flag "--norm" has been renamed "--units" to clarify this option only changes the units reported not the style of normalization.
+* Four new translated search diamond formatted databases are now available. Two of the databases contain the full set of protein sequences (one for UniRef50 and one for UniRef90). The other databases are filtered to only include those proteins with ECs of level 4 or that are included in a MetaCyc pathway. The full databases allow users to identify unclassified proteins in their data set while the filtered databases require less memory and run time.
+
 ## v0.6.2 02-24-2016 ##
 
 ### New Features ###
