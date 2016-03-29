@@ -90,8 +90,12 @@ class ReportHook():
             if total_size > 0:
                 percent_downloaded=total_downloaded * 100.0 / total_size
                 # use carriage return plus sys.stdout to overwrite stdout
-                download_rate=total_downloaded/(time.time()-self.start_time)
-                estimated_time=(total_size-total_downloaded)/download_rate
+                try:
+                    download_rate=total_downloaded/(time.time()-self.start_time)
+                    estimated_time=(total_size-total_downloaded)/download_rate
+                except ZeroDivisionError:
+                    download_rate=0
+                    estimated_time=0
                 estimated_minutes=int(estimated_time/60.0)
                 estimated_seconds=estimated_time-estimated_minutes*60.0
                 status +="{:3.2f}".format(percent_downloaded) + " %  " + \
