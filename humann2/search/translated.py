@@ -184,15 +184,16 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
     print("\n"+message+"\n")
 
     if not bypass:
-
         args+=opts
-
         temp_out_files=[]
-        for database in os.listdir(uniref):
+        for database in os.listdir(uniref):          
             # ignore any files that are not the database files
             if database.endswith(config.diamond_database_extension):
                 # Provide the database name without the extension
                 input_database=os.path.join(uniref,database)
+                message="Aligning to reference database: " + database
+                logger.info(message)
+                print("\n"+message+"\n")  
                 input_database_extension_removed=re.sub(config.diamond_database_extension
                     +"$","",input_database)
                 full_args=args+["--db",input_database_extension_removed]
@@ -213,8 +214,8 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
                 
                 # convert output file to blast-like format
                 temp_out_file_daa=temp_out_file_daa+".daa"
-                view_args+=["--daa",temp_out_file_daa,"--out",temp_out_file]
-                utilities.execute_command(exe,view_args,[temp_out_file_daa],[])
+                full_view_args=view_args+["--daa",temp_out_file_daa,"--out",temp_out_file]
+                utilities.execute_command(exe,full_view_args,[temp_out_file_daa],[])
         
         # merge the temp output files
         utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
