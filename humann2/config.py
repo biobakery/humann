@@ -57,6 +57,7 @@ def log_settings():
     lines.append("translated search = " + translated_alignment_selected)
     lines.append("pick frames = " + pick_frames_toggle)
     lines.append("threads = " + str(threads))
+    lines.append("uniref90 mode = " + str(uniref90_mode))
     lines.append("")
     
     lines.append("ALIGNMENT SETTINGS")
@@ -220,6 +221,9 @@ bypass_translated_search=get_item(config_items, "run_modes", "bypass_translated_
     
 # number of threads
 threads=get_item(config_items, "run_modes", "threads", "int")
+
+# get the search mode
+uniref90_mode=get_item(config_items, "run_modes", "uniref90_mode", "bool")
     
 # evalue threshold
 evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold", "float")
@@ -228,6 +232,7 @@ evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold"
 prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")
 
 # translated search identity threshold
+identity_threshold_uniref90_mode = 90.0
 identity_threshold=get_item(config_items, "alignment_settings", "identity_threshold", "float")
 
 # translated search coverage thresholds
@@ -331,6 +336,7 @@ metaphlan_mpa_index="db_v20/mpa_v20_m200"
 chocophlan_delimiter="|"
 chocophlan_bug_index=6
 chocophlan_gene_indexes=[8]
+chocophlan_gene_indexes_uniref90_mode=[7]
 chocophlan_location_index=4
 chocophlan_location_delimiter="-"
 chocophlan_location_extra_characters="[:|c]"

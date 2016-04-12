@@ -143,6 +143,11 @@ def parse_arguments(args):
         type=float,
         default=config.evalue_threshold) 
     parser.add_argument(
+        "--uniref90-mode",
+        help="identify uniref90 gene families\n" + 
+        "[DEFAULT: identify uniref50 gene families]", 
+        action="store_true")
+    parser.add_argument(
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaphlan>")
@@ -437,6 +442,12 @@ def update_configuration(args):
                 config.chocophlan_gene_indexes.append(index)
             except ValueError:
                 pass
+    
+    # Set the id threshold and annotation index based on gene family mode
+    if args.uniref90_mode:
+        config.uniref90_mode = args.uniref90_mode
+        config.identity_threshold = config.identity_threshold_uniref90_mode
+        config.chocophlan_gene_indexes = config.chocophlan_gene_indexes_uniref90_mode
     
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):

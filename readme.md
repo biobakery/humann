@@ -85,10 +85,13 @@ When installing HUMAnN2, please also download and install [MetaPhlAn2](http://hu
 5. Download the UniRef database to $DIR (approx. size = 4.6 GB for the full database, 239 MB for the EC filtered database)
     * Download one database (full or EC filtered):
         * To download the full database (RECOMMENDED): ``$ humann2_databases --download uniref uniref50_diamond $DIR``
+            * If you would like to obtain UniRef90 gene families intead of UniRef50 gene families, replace uniref50 with uniref90 in this command. Then when running humann2 add the option "--uniref90-mode".
+            * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
         * To download the EC filtered database: ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $DIR``
+            * If you would like to obtain UniRef90 gene families intead of UniRef50 gene families, replace uniref50 with uniref90 in this command. Then when running humann2 add the option "--uniref90-mode".
+            * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
         * Select the full database if you are interested in identifying uncharacterized proteins in your data set. Alternatively, select the EC filtered database if you have limited disk space and/or memory. For example, a run with 13 million reads (approximately 7 GB fastq file) passed as input to the translated search step, using a single core, ran in about 4 hours with a maximum of 6 GB of memory using the EC filtered database. The same input file using the full database ran in 25 hours, with a single core, with a maximum of 11 GB of memory.  
-    * When running this command, $DIR should be replaced with the full path to the directory you have selected to store the database.
-    * This command will update the HUMAnN2 configuration file, storing the location you have selected for the UniRef database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--protein-database $DIR" when running HUMAnN2.
+        * The download command will update the HUMAnN2 configuration file, storing the location you have selected for the UniRef database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--protein-database $DIR" when running HUMAnN2.
 
 
 ### How to Run ###
