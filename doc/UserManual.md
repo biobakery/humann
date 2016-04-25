@@ -73,6 +73,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Analyzing metatranscriptomes](#markdown-header-analyzing-metatranscriptomes)
     * [Strain-level functional profiling](#markdown-header-strain-level-functional-profiling)
     * [Core diversity analysis with QIIME](#markdown-header-core-diversity-analysis-with-qiime)
+    * [Genus level gene families and pathways](#markdown-header-genus-level-gene-families-and-pathways)
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
@@ -1084,6 +1085,17 @@ Under the “color” tab, there are two variables that can be changed:
 
 The more categories in your mapping file, the more options you have to see if your samples are separating based on that feature.
 
+### Genus level gene families and pathways ###
+
+By default, the gene families and pathways output files from HUMAnN2 are species level. To obtain genus level gene families and pathways, follow these steps.
+
+1. Create a genus level gene families file
+    * `` $ humann2_gene_families_genus_level --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_genus_level.tsv ``
+    * In this command, replace ``$SAMPLE_genefamilies.tsv`` with the species level gene families file created by default by HUMAnN2 and ``$SAMPLE_genefamilies_genus_level.tsv`` with the name of the gene families genus level file that will be created.
+
+2. Run HUMAnN2, with the genus level gene families file as input, to get genus level pathways output files
+    * `` $ humann2 --input $SAMPLE_genefamilies_genus_level.tsv --output humann2_genus_level_output ``
+    * This run will be much faster and require less memory than the original run as HUMAnN2 is provided gene family abundances so it only needs to compute the pathways.
 
 ## FAQs ##
 
