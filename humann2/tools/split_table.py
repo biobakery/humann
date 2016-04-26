@@ -176,7 +176,14 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
                     float_data_point=float(data_point)
                 except ValueError:
                     float_data_point=0
-                original_gene_data[i]=str(float(original_gene_data[i])+float_data_point)
+                try:
+                    original_gene_data[i]=str(float(original_gene_data[i])+float_data_point)
+                except ValueError:
+                    sys.exit("ERROR: The format of the input file is not that expected. "+
+                             "Please provide a gene table, output file from picrust predict_metagenomes.py,"+
+                             " or output file from picrust metagenome_contributions.py. "+
+                             "If this file is output from picrust metagenome_contributions.py, "+
+                             "it does not include the expected header.")
             gene_table_data[gene]=original_gene_data
         else:
             gene_table_data[gene]=data
