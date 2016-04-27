@@ -594,7 +594,8 @@ setuptools.setup(
             'humann2_blastx_coverage = humann2.search.blastx_coverage:main',
             'humann2_test = humann2.tests.humann2_test:main',
             'humann2_build_custom_database = humann2.tools.build_custom_database:main',
-            'humann2_genefamilies_genus_level = humann2.tools.genefamilies_genus_level:main'
+            'humann2_genefamilies_genus_level = humann2.tools.genefamilies_genus_level:main',
+            'humann2_split_stratified_table = humann2.tools.split_stratified_table:main'
         ]},
     test_suite= 'humann2.tests.humann2_test.unittests_suite_only',
     zip_safe = False
