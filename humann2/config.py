@@ -57,13 +57,16 @@ def log_settings():
     lines.append("translated search = " + translated_alignment_selected)
     lines.append("pick frames = " + pick_frames_toggle)
     lines.append("threads = " + str(threads))
-    lines.append("uniref90 mode = " + str(uniref90_mode))
+    lines.append("")
+    
+    lines.append("SEARCH MODE")
+    lines.append("search mode = " + search_mode)
+    lines.append("identity threshold = " + str(identity_threshold))
     lines.append("")
     
     lines.append("ALIGNMENT SETTINGS")
     lines.append("evalue threshold = " + str(evalue_threshold))
     lines.append("prescreen threshold = " + str(prescreen_threshold))
-    lines.append("identity threshold = " + str(identity_threshold))
     lines.append("translated subject coverage threshold = " + str(translated_subject_coverage_threshold))
     lines.append("translated query coverage threshold = " + str(translated_query_coverage_threshold))
     lines.append("")
@@ -221,9 +224,6 @@ bypass_translated_search=get_item(config_items, "run_modes", "bypass_translated_
     
 # number of threads
 threads=get_item(config_items, "run_modes", "threads", "int")
-
-# get the search mode
-uniref90_mode=get_item(config_items, "run_modes", "uniref90_mode", "bool")
     
 # evalue threshold
 evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold", "float")
@@ -233,7 +233,8 @@ prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_thre
 
 # translated search identity threshold
 identity_threshold_uniref90_mode = 90.0
-identity_threshold=get_item(config_items, "alignment_settings", "identity_threshold", "float")
+identity_threshold_uniref50_mode = 50.0
+identity_threshold=identity_threshold_uniref50_mode
 
 # translated search coverage thresholds
 translated_subject_coverage_threshold=get_item(config_items, "alignment_settings", "translated_subject_coverage_threshold", "float")
@@ -337,6 +338,7 @@ chocophlan_delimiter="|"
 chocophlan_bug_index=6
 chocophlan_gene_indexes=[8]
 chocophlan_gene_indexes_uniref90_mode=[7]
+chocophlan_gene_indexes_uniref50_mode=[8]
 chocophlan_location_index=4
 chocophlan_location_delimiter="-"
 chocophlan_location_extra_characters="[:|c]"
@@ -437,7 +439,8 @@ rapsearch_version={
 
 # diamond options
 diamond_database_extension=".dmnd"
-diamond_opts=["--max-target-seqs",20,"--sensitive"]
+diamond_opts_uniref50=["--max-target-seqs",20,"--sensitive"]
+diamond_opts_uniref90=["--max-target-seqs",20]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={
@@ -474,3 +477,7 @@ unintegrated_pathway_name = "UNINTEGRATED"
 # Max arguments
 max_arguments=500
 
+# set the search mode options
+search_mode_uniref90="uniref90"
+search_mode_uniref50="uniref50"
+search_mode=search_mode_uniref50

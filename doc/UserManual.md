@@ -1136,7 +1136,7 @@ usage: humann2 [-h] [--version] [-v] [-r] [--bypass-prescreen]
                [--nucleotide-database <nucleotide_database>]
                [--annotation-gene-index <8>]
                [--protein-database <protein_database>] [--evalue <1.0>]
-               [--uniref90-mode] [--metaphlan <metaphlan>]
+               [--search-mode] [--metaphlan <metaphlan>]
                [--metaphlan-options <metaphlan_options>]
                [--o-log <sample.log>]
                [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
@@ -1188,8 +1188,9 @@ optional arguments:
                         [DEFAULT: humann2/data/uniref_DEMO]
   --evalue <1.0>        the evalue threshold to use with the translated search
                         [DEFAULT: 1.0]
-  --uniref90-mode       identify uniref90 gene families
-                        [DEFAULT: identify uniref50 gene families]
+  --search-mode {uniref50,uniref90}
+                        search for uniref50 or uniref90 gene families
+                        [DEFAULT: based on translated database selected]
   --metaphlan <metaphlan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]

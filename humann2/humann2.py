@@ -143,10 +143,11 @@ def parse_arguments(args):
         type=float,
         default=config.evalue_threshold) 
     parser.add_argument(
-        "--uniref90-mode",
-        help="identify uniref90 gene families\n" + 
-        "[DEFAULT: identify uniref50 gene families]", 
-        action="store_true")
+        "--search-mode",
+        help="search for uniref50 or uniref90 gene families\n" + 
+        "[DEFAULT: based on translated database selected]",
+        choices=[config.search_mode_uniref50, config.search_mode_uniref90],
+        default=None)
     parser.add_argument(
         "--metaphlan",
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
@@ -303,7 +304,6 @@ def parse_arguments(args):
         choices=config.memory_use_options)
 
     return parser.parse_args()
-	
 	 
 def update_configuration(args):
     """
@@ -397,7 +397,6 @@ def update_configuration(args):
         
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
-    config.identity_threshold=args.identity_threshold
     config.translated_subject_coverage_threshold=args.translated_subject_coverage_threshold
     config.translated_query_coverage_threshold=args.translated_query_coverage_threshold
     
@@ -419,35 +418,6 @@ def update_configuration(args):
     # Update the computation toggle choices
     config.xipe_toggle=args.xipe
     config.minpath_toggle=args.minpath
-    
-    # Update the chocophlan gene indexes
-    config.chocophlan_gene_indexes=[]
-    for index in args.annotation_gene_index.split(","):
-        # Look for array range
-        if ":" in index:
-            split_index=index.split(":")
-            start=split_index[0]
-            end=split_index[1]
-            
-            try:
-                start=int(start)
-                end=int(end)
-                config.chocophlan_gene_indexes+=range(start,end)
-            except ValueError:
-                pass
-        else:
-            # Convert to int
-            try:
-                index=int(index)
-                config.chocophlan_gene_indexes.append(index)
-            except ValueError:
-                pass
-    
-    # Set the id threshold and annotation index based on gene family mode
-    if args.uniref90_mode:
-        config.uniref90_mode = args.uniref90_mode
-        config.identity_threshold = config.identity_threshold_uniref90_mode
-        config.chocophlan_gene_indexes = config.chocophlan_gene_indexes_uniref90_mode
     
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):
@@ -543,6 +513,33 @@ def update_configuration(args):
     if config.verbose: 
         print("\n"+message+"\n")    
 
+def parse_chocophlan_gene_indexes(annotation_gene_index):
+    """ Parse the chocophlan gene index input """
+    
+    # Update the chocophlan gene indexes
+    chocophlan_gene_indexes=[]
+    for index in annotation_gene_index.split(","):
+        # Look for array range
+        if ":" in index:
+            split_index=index.split(":")
+            start=split_index[0]
+            end=split_index[1]
+            
+            try:
+                start=int(start)
+                end=int(end)
+                chocophlan_gene_indexes+=range(start,end)
+            except ValueError:
+                pass
+        else:
+            # Convert to int
+            try:
+                index=int(index)
+                chocophlan_gene_indexes.append(index)
+            except ValueError:
+                pass
+            
+    return chocophlan_gene_indexes
      
 def check_requirements(args):
     """
@@ -693,6 +690,7 @@ def check_requirements(args):
             
             valid_format_count=0
             database_files=os.listdir(config.protein_database)
+            valid_format_database_files=[]
             for file in database_files:
                 if file.endswith(expected_database_extension):
                     # if rapsearch check for the second database file
@@ -700,8 +698,10 @@ def check_requirements(args):
                         database_file=re.sub(config.rapsearch_database_extension+"$","",file)
                         if database_file in database_files:
                             valid_format_count+=1
+                            valid_format_database_files.append(database_file)
                     else:
                         valid_format_count+=1
+                        valid_format_database_files.append(file)
                         
             if valid_format_count == 0:
                 sys.exit("CRITICAL ERROR: The protein database directory provided ( " + config.protein_database 
@@ -709,6 +709,15 @@ def check_requirements(args):
                     " the translated alignment software selected ( " +
                     config.translated_alignment_selected + " ). Please format these files so"
                     + " they are of the expected extension ( " + expected_database_extension +" ).")
+                
+            # if a search mode is not set by the user, then try to get mode based on translated search database
+            if not args.search_mode:
+                if config.search_mode_uniref90 in valid_format_database_files[0].lower():
+                    logger.info("Search mode set to uniref90 because a uniref90 translated search database is selected")
+                    config.search_mode=config.search_mode_uniref90
+                elif config.search_mode_uniref50 in valid_format_database_files[0].lower():
+                    logger.info("Search mode set to uniref50 because a uniref50 translated search database is selected")
+                    config.search_mode=config.search_mode_uniref50
                 
         # Check if running with the demo database
         if not config.bypass_translated_search:
@@ -744,6 +753,45 @@ def check_requirements(args):
             # Check for the correct diamond version
             if config.translated_alignment_selected == "diamond":
                 utilities.check_software_version("diamond", config.diamond_version)
+
+    # parse the chocophlan gene index
+    chocophlan_gene_indexes=parse_chocophlan_gene_indexes(args.annotation_gene_index)            
+        
+    # set the user provided search mode, if set
+    if args.search_mode:
+        config.search_mode = args.search_mode
+        
+    # set the values based on the search mode
+    if config.search_mode == config.search_mode_uniref90:
+        # only change identity threshold to default if user has not provided a specific setting
+        if config.identity_threshold == args.identity_threshold:  
+            config.identity_threshold = config.identity_threshold_uniref90_mode
+        else:
+            config.identity_threshold = args.identity_threshold
+                
+        # only change chocophlan gene index if user has not provided a specific setting
+        if config.chocophlan_gene_indexes == chocophlan_gene_indexes:
+            config.chocophlan_gene_indexes = config.chocophlan_gene_indexes_uniref90_mode
+        else:
+            config.chocophlan_gene_indexes = chocophlan_gene_indexes
+                
+        # set the diamond options
+        config.diamond_opts = config.diamond_opts_uniref90
+    else:
+        # only change identity threshold to default if user has not provided a specific setting
+        if config.identity_threshold == args.identity_threshold:  
+            config.identity_threshold = config.identity_threshold_uniref50_mode
+        else:
+            config.identity_threshold = args.identity_threshold                
+
+        # only change chocophlan gene index if user has not provided a specific setting
+        if config.chocophlan_gene_indexes == chocophlan_gene_indexes:
+            config.chocophlan_gene_indexes = config.chocophlan_gene_indexes_uniref50_mode
+        else:
+            config.chocophlan_gene_indexes = chocophlan_gene_indexes
+            
+        # set the diamond options
+        config.diamond_opts = config.diamond_opts_uniref50
 
               
 def timestamp_message(task, start_time):
