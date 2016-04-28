@@ -1,6 +1,14 @@
 
 # HUMAnN2 History #
 
+## v0.7.1 04-27-2016 ##
+
+### New Features ###
+
+* A new option, "--search-mode <uniref50/uniref90>", was added. The default is set based on the translated database selected. This option sets the percent identity, chocophlan annotation index, and the translated search parameters.
+* A new tool, humann2_gene_families_genus_level, and tutorial were added to create genus level gene families and pathways files.
+* A new tool was added, humann2_split_stratified_table, to split output files into stratified and unstratified tables.
+
 ## v0.7.0 03-22-2016 ##
 
 ### New Features ###
