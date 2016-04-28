@@ -31,9 +31,9 @@ PICRUST_METAGENOME_SAMPLE_COLUMN=1
 PICRUST_METAGENOME_GENE_COLUMN=0
 PICRUST_METAGENOME_ABUNDANCE_COLUMN=2
 PICURST_METAGENOME_GENUS_COLUMN=13
-PICURST_METAGENOME_SPECIES_COLUMN=14
         
-def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None):
+def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None,
+                     taxonomy_level=None):
     """
     Split the gene table into a table per sample
     """
@@ -59,20 +59,24 @@ def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None):
         
     # check for picrust metagenome file format
     if re.search(PICRUST_METAGENOME_HEADER,header):
-        new_file_names=split_table_sample_rows(file_handle, line, output_dir, verbose)
+        new_file_names=split_table_sample_rows(file_handle, line, output_dir, verbose, taxonomy_level)
     else:
         new_file_names=split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index, verbose)
         
     return new_file_names
 
 
-def split_table_sample_rows(file_handle, line, output_dir, verbose):
+def split_table_sample_rows(file_handle, line, output_dir, verbose, taxonomy_level):
     """
     Split a table where the samples are indicated in each row
     """
     
     # create files for each sample
     new_file_names=[]
+    
+    # get the index to use for the taxonomy
+    taxonomy_options=PICRUST_METAGENOME_HEADER.split("\t")
+    taxonomy_index=taxonomy_options.index(taxonomy_level)-len(taxonomy_options)
     
     gene_table_data_by_sample_bug={}
     while line:
@@ -88,9 +92,14 @@ def split_table_sample_rows(file_handle, line, output_dir, verbose):
         
         sample=data[PICRUST_METAGENOME_SAMPLE_COLUMN]
         try:
-            bug=data[PICURST_METAGENOME_GENUS_COLUMN]+"."+data[PICURST_METAGENOME_SPECIES_COLUMN]
+            bug=data[taxonomy_index]
         except IndexError:
             bug=""
+        
+        # check for unclassified bugs (ie g__ )
+        if not bug.split("__")[-1]:
+            bug="unclassified"
+            
         
         # sum the abundance data by sample and bug
         if not sample in gene_table_data_by_sample_bug:
@@ -245,6 +254,11 @@ def parse_arguments(args):
         "--taxonomy_index",
         help="the index of the gene in the taxonomy data\n",
         type=int)
+    parser.add_argument(
+        "--taxonomy_level",
+        help="the level of taxonomy for the output (if input is from picrust metagenome_contributions.py)",
+        choices=PICRUST_METAGENOME_HEADER.split("\t"),
+        default="Genus")
 
     return parser.parse_args()
 
@@ -302,9 +316,11 @@ def main():
         print("Spliting gene table")
         
     if biom_flag:
-        new_file_names=split_gene_table(new_file,temp_dir,taxonomy_index=args.taxonomy_index)
+        new_file_names=split_gene_table(new_file,temp_dir,taxonomy_index=args.taxonomy_index,
+                                        taxonomy_level=args.taxonomy_level)
     else:
-        new_file_names=split_gene_table(args.input,output_dir,verbose=args.verbose)
+        new_file_names=split_gene_table(args.input,output_dir,verbose=args.verbose,
+                                        taxonomy_level=args.taxonomy_level)
         
     if args.verbose:
         print("Gene table has been split into " + str(len(new_file_names)) + " total files")
