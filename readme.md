@@ -84,14 +84,14 @@ When installing HUMAnN2, please also download and install [MetaPhlAn2](http://hu
     * This command will update the HUMAnN2 configuration file, storing the location you have selected for the ChocoPhlAn database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--nucleotide-database $DIR" when running HUMAnN2.
 5. Download a UniRef database (only download one database: UniRef50 full, UniRef50 EC filtered, UniRef90 full, or UniRef90 EC filtered)
     * Download one of the following databases (replacing $DIR with the location to store the database):
-        * To download the full UniRef50 database (RECOMMENDED, approx. size = 4.6 GB): 
-            * ``$ humann2_databases --download uniref uniref50_diamond $DIR``
-        * To download the UniRef50 EC filtered database (approx. size = 239 MB): 
-            * ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $DIR``
+        * To download the UniRef90 EC filtered database (RECOMMENDED, approx. size = 846 MB): 
+            * ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $DIR``
         * To download the full UniRef90 database (approx. size = 11 GB): 
             * ``$ humann2_databases --download uniref uniref90_diamond $DIR``
-        * To download the UniRef90 EC filtered database (approx. size = 846 MB): 
-            * ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $DIR``
+        * To download the UniRef50 EC filtered database (approx. size = 239 MB): 
+            * ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $DIR``
+        * To download the full UniRef50 database (approx. size = 4.6 GB): 
+            * ``$ humann2_databases --download uniref uniref50_diamond $DIR``
     * Select a full database if you are interested in identifying uncharacterized proteins in your data set. Alternatively, select an EC filtered database if you have limited disk space and/or memory. For example, a run with 13 million reads (approximately 7 GB fastq file) passed as input to the translated search step, using a single core, ran in about 4 hours with a maximum of 6 GB of memory using the UniRef50 EC filtered database. The same input file using the UniRef50 full database ran in 25 hours, with a single core, with a maximum of 11 GB of memory.  
     * The download command will update the HUMAnN2 configuration file, storing the location you have selected for the UniRef database. If you move this database and would like to change the configuration file, please see the [Configuration Section of the HUMAnN2 User Manual](http://huttenhower.sph.harvard.edu/humann2/manual#markdown-header-configuration). Alternatively, if you move this database, you can provide the location by adding the option "--protein-database $DIR" when running HUMAnN2.
 
