@@ -92,14 +92,18 @@ def split_table_sample_rows(file_handle, line, output_dir, verbose, taxonomy_lev
         
         sample=data[PICRUST_METAGENOME_SAMPLE_COLUMN]
         try:
-            bug=data[taxonomy_index]
+            bug=data[taxonomy_index:]
         except IndexError:
-            bug=""
+            bug=[]
         
-        # check for unclassified bugs (ie g__ )
-        if not bug.split("__")[-1]:
-            bug="unclassified"
+        # check for unclassified bugs (ie g__ ) and rename as "unclassified"
+        renamed_bug=[]
+        for taxon in bug:
+            if not taxon.split("__")[-1]:
+                taxon=taxon+"unclassified"
+            renamed_bug.append(taxon)
             
+        bug=".".join(renamed_bug)
         
         # sum the abundance data by sample and bug
         if not sample in gene_table_data_by_sample_bug:
