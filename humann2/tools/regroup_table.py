@@ -31,6 +31,7 @@ c_default_groups = {
         os.path.join( p_root, "data", "misc", "map_ec_uniref50.txt.gz" ), 0, [] ),
     }
 c_protected = [util.c_unmapped, util.c_unintegrated]
+c_topsort = c_protected + [util.c_ungrouped]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
 # ---------------------------------------------------------------
@@ -71,6 +72,12 @@ def get_args ():
         help="How to combine grouped features; default=[sum]",
         )
     parser.add_argument( 
+        "-e", "--precision",
+        default=3,
+        type=int,
+        help="Decimal places to round to after applying function; default=3",
+        )
+    parser.add_argument( 
         "-u", "--ungrouped",
         default="Y",
         choices=["Y", "N"],
@@ -90,33 +97,49 @@ def get_args ():
     args = parser.parse_args()
     return args
 
-def regroup( table, map_feature_groups, function, ungrouped=False ):
-    feature_counts = {}
+# ---------------------------------------------------------------
+# regrouping function
+# ---------------------------------------------------------------
+
+def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
+    
     function = c_funcmap[function]
+    seen_before = {}
+    feature_counts = {}
     # index of new group names to old table rows
     mapping = {}
+
     for i, rowhead in enumerate( table.rowheads ):
         items = rowhead.split( util.c_strat_delim )
-        if items[0] not in feature_counts:
-            feature_counts[items[0]] = 0
-        # account for previously renamed features
+        # get feature name, account for previously renamed features
+        stratum = items[1] if len( items ) > 1 else None
         feature = items[0].split( util.c_name_delim )[0]
+        if feature not in feature_counts:
+            feature_counts[feature] = 0
+        # decide which groups to use
         if feature in map_feature_groups:
             groups = map_feature_groups[feature]
         elif ungrouped:
             groups = [util.c_ungrouped]
         else:
             groups = []
+        # track grouping
         for group in groups:
-            if len( items ) == 1 and group != util.c_ungrouped:
-                feature_counts[items[0]] += 1
+            if feature not in seen_before and group != util.c_ungrouped:
+                feature_counts[feature] += 1
             # account for stratified feature
-            groupname = group if len( items ) == 1 \
-                        else util.c_strat_delim.join( [group, items[1]] ) 
+            groupname = group 
+            if stratum is not None:
+                groupname += util.c_strat_delim + stratum
             mapping.setdefault( groupname, [] ).append( i )
+        # we have processed an instance of this feature
+        seen_before[feature] = 1
+
     # rebuild table
     # *** sorting changed to force 1|A to come before 11 ***
     groupnames = sorted( mapping.keys(), key=lambda k: k.split( util.c_strat_delim ) )
+    # move special fields to the top
+    groupnames = sorted( groupnames, key=lambda k: 0 if k in c_topsort else 1 )
     groupdata = []
     for groupname in groupnames:
         oldrow_index = mapping[groupname]
@@ -125,9 +148,10 @@ def regroup( table, map_feature_groups, function, ungrouped=False ):
             for j in range( len( table.colheads ) ):
                 newrow[j].append( float( table.data[i][j] ) )
         # collapse groups
-        groupdata.append( [function( block ) for block in newrow] )
+        groupdata.append( [round( function( block ), precision ) for block in newrow] )
     table.rowheads = groupnames
     table.data = groupdata
+
     # report
     n = len( feature_counts )
     ungrouped = feature_counts.values().count( 0 )
@@ -147,9 +171,11 @@ def regroup( table, map_feature_groups, function, ungrouped=False ):
 
 def main ( ):
     args = get_args()
-    # load the table; find all keys in the table
+    # load the table; find unique feature ids (no names)
     table = util.Table( args.input )
-    allowed_values = {k.split( util.c_name_delim )[0]:1 for k in table.rowheads}
+    features = {k for k in table.rowheads}
+    features = {k.split( util.c_strat_delim )[0] for k in features}
+    features = {k.split( util.c_name_delim )[0] for k in features}
     # decide what grouping file to load and how
     if args.custom is not None:
         print( "Loading custom groups file: {}".format( args.custom ), file=sys.stderr )
@@ -160,7 +186,7 @@ def main ( ):
         sys.exit( "Must (i) choose groups option or (ii) provide groups file" )
     # load the grouping file
     map_group_features = util.load_polymap( 
-        p_groups, start=start, skip=skip, allowed_values=allowed_values )
+        p_groups, start=start, skip=skip, allowed_values=features )
     # coerce to features-first format (unless explicitly reversed)
     if not args.reversed:
         map_feature_groups = {}
@@ -174,7 +200,7 @@ def main ( ):
         for feature in c_protected:
             map_feature_groups.setdefault( feature, {} )[feature] = 1
     # perform the table regrouping
-    regroup( table, map_feature_groups, args.function, ungrouped=args.ungrouped=="Y" )
+    regroup( table, map_feature_groups, args.function, args.precision, ungrouped=args.ungrouped=="Y" )
     table.write( args.output )
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 
-
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
 import sys
