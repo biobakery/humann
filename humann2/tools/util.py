@@ -93,11 +93,17 @@ def process_gene_table_header(gene_table, allow_for_missing_header=None):
     return file_handle, header, line
 
 # ---------------------------------------------------------------
-# utilities used by the rename, renorm scripts
+# ---------------------------------------------------------------
+# utilities used by the rename, renorm, etc. scripts
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 
+# ---------------------------------------------------------------
 # constants
+# ---------------------------------------------------------------
+
 c_strat_delim     = "|"
+c_taxon_delim     = "."
 c_name_delim      = ": "
 c_multiname_delim = ";"
 c_str_unknown     = "NO_NAME"
@@ -106,6 +112,18 @@ c_unmapped        = "UNMAPPED"
 c_unintegrated    = "UNINTEGRATED"
 c_many_bytes      = 1e8
 c_zip_multiplier  = 10
+
+c_topsort = {
+    c_unmapped:0,
+    c_ungrouped:1,
+    c_unintegrated:2,
+    "UniRef50_unknown":3,
+    "UniRef90_unknown":4,
+}
+
+# ---------------------------------------------------------------
+# helper classes
+# ---------------------------------------------------------------
 
 class Table ( ):
 
@@ -155,6 +173,10 @@ class Table ( ):
                 values = map( lambda x: "%.6g" % ( x ), values )
             writer.writerow( [self.rowheads[i]] + values )
 
+# ---------------------------------------------------------------
+# helper functions
+# ---------------------------------------------------------------
+
 def size_warn( path ):
     m = 1 if ".gz" not in path else c_zip_multiplier
     if m * os.path.getsize( path ) > c_many_bytes:
@@ -199,3 +221,26 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
                         if allowed_values is None or value in allowed_values:
                             polymap.setdefault( key, {} )[value] = 1
     return polymap
+
+def fsplit( feature ):
+    items = feature.split( c_strat_delim )
+    stratum = None if len( items ) == 1 else items[1]
+    items = items[0].split( c_name_delim )
+    name = None if len( items ) == 1 else items[1]
+    feature = items[0]
+    return feature, name, stratum
+
+def fjoin( feature, name=None, stratum=None ):
+    if name is not None:
+        feature = c_name_delim.join( [feature, name] )
+    if stratum is not None:
+        feature = c_strat_delim.join( [feature, stratum] )
+    return feature
+
+def fsort( features ):
+    # force 1|A to come before 11
+    features = sorted( features, key=lambda f: f.split( c_strat_delim ) )
+    # force special features to the top (defined above)
+    default = 1 + max( c_topsort.values() )
+    features = sorted( features, key=lambda f: c_topsort.get( f, default ) )
+    return features
