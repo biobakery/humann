@@ -828,7 +828,7 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 
 `` $ humann2_merge_abundance_tables --input-genes $INPUT_GENES.tsv --input-pathways $INPUT_PATHWAYS.tsv --output $OUTPUT.tsv ``
 
-*   $INPUT_GENES.tsv = a file containing the gene families abundance table (tsv format)
+*   $INPUT_GENES.tsv = a file containing the gene families (or EC) abundance table (tsv format)
 *   $INPUT_PATHWAYS.tsv = a file containing the pathways abundance table (tsv format)
 *   $OUTPUT.tsv = the file to write the new merged abundance table (tsv format)
 *   Optional: ``--remove-taxonomy`` remove the taxonomy from the output file
