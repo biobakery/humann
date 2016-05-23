@@ -140,7 +140,7 @@ class Table ( ):
         if path is None:
             fh = sys.stdin
             path = "STDIN"
-            print( "Loading table from STDIN", file=sys.stderr )
+            print( "Loading table from: <STDIN>", file=sys.stderr )
         else:
             fh = try_zip_open( path )
             print( "Loading table from:", path, file=sys.stderr )
@@ -158,7 +158,7 @@ class Table ( ):
                 pass
         for rowhead in self.rowheads:
             if c_strat_delim in rowhead:
-                print( "Treating", path, "as stratified output, e.g.", 
+                print( "  Treating", path, "as stratified output, e.g.", 
                        rowhead.split( c_strat_delim ), file=sys.stderr )
                 self.is_stratified = True
                 break
@@ -173,6 +173,20 @@ class Table ( ):
                 values = map( lambda x: "%.6g" % ( x ), values )
             writer.writerow( [self.rowheads[i]] + values )
 
+class Ticker( ):
+    def __init__( self, iterable, step=100, pad="  " ):
+        self.count = 0        
+        self.total = len( iterable )
+        self.step = 100
+        self.pad = pad
+    def tick( self ):
+        self.count += 1
+        if self.count % self.step == 0:
+            self.report( )
+    def report( self ):
+        frac = self.count / float( self.total )
+        print( self.pad+"{:.1f}%".format( 100 * frac ), file=sys.stderr, end="\r" )
+
 # ---------------------------------------------------------------
 # helper functions
 # ---------------------------------------------------------------
@@ -180,7 +194,7 @@ class Table ( ):
 def size_warn( path ):
     m = 1 if ".gz" not in path else c_zip_multiplier
     if m * os.path.getsize( path ) > c_many_bytes:
-        print( "This is a large file, one moment please...", file=sys.stderr )
+        print( "  This is a large file, one moment please...", file=sys.stderr )
 
 def try_zip_open( path, *args ):
     """ 

@@ -103,8 +103,8 @@ def get_args ():
                          help="Which rows to include in the estimation/summation; default=TOTALS" )
     parser.add_argument( "-t", "--threshold", 
                          type=float, 
-                         default=1e-4, 
-                         help="Minimum frequency for a new taxon to be included; default=1e-4" )
+                         default=1e-3, 
+                         help="Minimum frequency for a new taxon to be included; default=1e-3" )
     args = parser.parse_args()
     return args
 
@@ -122,7 +122,7 @@ def build_taxmap( features, target_rank, p_datafile ):
     tol_mode = False
     lca_mode = False
     with util.try_zip_open( p_datafile ) as fh:
-        print( "Loadnig taxonomic data from "+p_datafile, file=sys.stderr )
+        print( "Loading taxonomic data from: "+p_datafile, file=sys.stderr )
         for row in csv.reader( fh, csv.excel_tab ):
             if row[0] == c_tol_header:
                 print( "  Loading TOL data", file=sys.stderr )
@@ -175,6 +175,7 @@ def main( ):
     args = get_args( )
     tbl = util.Table( args.input )
     # build the taxmap
+    print( "Building taxonomic map for input table", file=sys.stderr )
     taxmap = build_taxmap( tbl.rowheads, args.level, args.datafile )
     # refine the taxmap
     counts = {}
@@ -184,8 +185,11 @@ def main( ):
     count = {k:v/total for k, v in counts.items()}
     taxmap = {old:new for old, new in taxmap.items() if count[new] >= args.threshold}
     # reindex the table
+    print( "Reindexing the input table", file=sys.stderr )
+    ticker = util.Ticker( tbl.rowheads )
     index = {}
     for i, rowhead in enumerate( tbl.rowheads ):
+        ticker.tick()
         feature, name, stratum = util.fsplit( rowhead )
         new_rowhead = tax_connect( rowhead, taxmap )
         # unmapped is never stratified
@@ -205,8 +209,11 @@ def main( ):
         elif stratum is not None and args.mode == c_smode:
             index.setdefault( new_rowhead, [] ).append( i )
     # rebuild the table
+    print( "Rebuilding the input table", file=sys.stderr )
     rowheads2, data2 = [], []
+    ticker = util.Ticker( index )
     for rowhead in util.fsort( index ):
+        ticker.tick()
         rowheads2.append( rowhead )
         newrow = [0 for k in tbl.colheads]
         for i in index[rowhead]:
@@ -215,6 +222,9 @@ def main( ):
         data2.append( newrow )
     tbl.rowheads = rowheads2
     tbl.data = data2
+    # output
+    print( "Writing new table", file=sys.stderr )
+    tbl.write( args.output, unfloat=True )
     # report on performance
     success, total = 0, 0
     for rowhead in tbl.rowheads:
@@ -223,16 +233,13 @@ def main( ):
             total += 1
             if stratum != c_unclassified:
                 success += 1
-    print( "Of {TOTAL} stratifications, {SUCCESS} mapped at {TARGET} level ({PERCENT}%)".format( 
-            TOTAL=total,
-            SUCCESS=success,
-            TARGET=args.level,
+    print( "Summary: Of {TOTAL} stratifications, {SUCCESS} mapped at {TARGET} level ({PERCENT}%)".format( 
+            TOTAL=total, 
+            SUCCESS=success, 
+            TARGET=args.level, 
             PERCENT=round( 100 * success / float( total ), 1 ),
-            ),
-           file=sys.stderr,
+            ), file=sys.stderr,
            )
-    # output
-    tbl.write( args.output, unfloat=True )
 
 if __name__ == "__main__":
     main( )
