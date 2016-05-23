@@ -586,7 +586,7 @@ setuptools.setup(
             'humann2_rename_table = humann2.tools.rename_table:main',
             'humann2_renorm_table = humann2.tools.renorm_table:main',
             'humann2_regroup_table = humann2.tools.regroup_table:main',
-            'humann2_unistrat = humann2.tools.unistrat:main',
+            'humann2_infer_taxonomy = humann2.tools.infer_taxonomy:main',
             'humann2_humann1_kegg = humann2.tools.humann2_humann1_kegg:main',
             'humann2_rna_dna_norm = humann2.tools.rna_dna_norm:main',
             'humann2_strain_profiler = humann2.tools.strain_profiler:main',
