@@ -256,5 +256,5 @@ def fsort( features ):
     features = sorted( features, key=lambda f: f.split( c_strat_delim ) )
     # force special features to the top (defined above)
     default = 1 + max( c_topsort.values() )
-    features = sorted( features, key=lambda f: c_topsort.get( f, default ) )
+    features = sorted( features, key=lambda f: c_topsort.get( fsplit( f )[0], default ) )
     return features

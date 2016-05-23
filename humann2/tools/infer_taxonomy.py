@@ -196,7 +196,7 @@ def main( ):
         if feature == util.c_unmapped:
             index.setdefault( rowhead, [] ).append( i )
         # outside of unclassfied mode, keep totals
-        if stratum is None and args.mode != c_umode:
+        elif stratum is None and args.mode != c_umode:
             index.setdefault( rowhead, [] ).append( i )
             # in totals mode, guess at taxnomy from uniref name
             if args.mode == c_tmode:

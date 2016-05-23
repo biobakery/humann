@@ -1,0 +1,8 @@
+# HEADERS	SAMPLE1
+UNMAPPED	10
+UniRef50_O67749	500
+UniRef50_O67749|g__Aquifex.s__Aquifex_pyrophilus	200
+UniRef50_O67749|unclassified	300
+UniRef50_unknown	5000
+UniRef50_unknown|g__Aquifex.s__Aquifex_pyrophilus	3000
+UniRef50_unknown|unclassified	2000
