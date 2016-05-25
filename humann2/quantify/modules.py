@@ -368,6 +368,10 @@ def gap_fill(key_reactions, reaction_scores):
     
     reaction_scores_gap_filled=reaction_scores.copy()
     
+    # do not apply gap fill, if set to off
+    if config.gap_fill_toggle == "off":
+        return reaction_scores_gap_filled
+    
     # get the scores for all of the key reactions
     key_reactions_nonzero_scores=[]
     for reaction in key_reactions:

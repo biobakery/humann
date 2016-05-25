@@ -74,6 +74,7 @@ def log_settings():
     lines.append("PATHWAYS SETTINGS")
     lines.append("minpath = " + minpath_toggle)
     lines.append("xipe = " + xipe_toggle)
+    lines.append("gap fill = " + gap_fill_toggle)
     lines.append("")    
     
     lines.append("INPUT AND OUTPUT FORMATS")
@@ -293,6 +294,7 @@ toggle_choices=["on","off"]
 xipe_toggle = "off"
 minpath_toggle = "on"
 pick_frames_toggle = "off"
+gap_fill_toggle = "on"
 
 # file format
 output_format_choices=["tsv", "biom"]
@@ -481,3 +483,4 @@ max_arguments=500
 search_mode_uniref90="uniref90"
 search_mode_uniref50="uniref50"
 search_mode=search_mode_uniref50
+

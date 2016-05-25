@@ -256,6 +256,12 @@ def parse_arguments(args):
         default=config.pick_frames_toggle,
         choices=config.toggle_choices)
     parser.add_argument(
+        "--gap-fill",
+        help="turn on/off the gap fill computation\n[DEFAULT: " + 
+        config.gap_fill_toggle + "]",
+        default=config.gap_fill_toggle,
+        choices=config.toggle_choices)
+    parser.add_argument(
         "--output-format",
         help="the format of the output files\n[DEFAULT: " +
         config.output_format + "]",
@@ -418,6 +424,7 @@ def update_configuration(args):
     # Update the computation toggle choices
     config.xipe_toggle=args.xipe
     config.minpath_toggle=args.minpath
+    config.gap_fill_toggle=args.gap_fill
     
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):
