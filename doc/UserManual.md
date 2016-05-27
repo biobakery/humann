@@ -1111,40 +1111,40 @@ By default, the gene families and pathways output files from HUMAnN2 are species
 
 ### Inferring taxonomy for unclassified hits ###
 
-Relative to HUMAnN2's pangenome mapping, we tend to be less confident about the taxonomic assignments made during translated search. For this reason, all translated search results are given as "taxonony: unclassified" by default (allowing the user to focus on functional assignments within these results). However, due to the structure of the UniRef50 and UniRef90 databases, it is possible to infer some degree of taxonomic information for unclassified hits when performing translated search against these databases.
+Relative to HUMAnN2's pangenome mapping, we tend to be less confident about the taxonomic assignments made during translated search. For this reason, all translated search results are given as "taxonony=unclassified" by default (allowing the user to focus on functional assignments within these results). However, thanks to the structure of the UniRef50 and UniRef90 databases, it is possible to infer some degree of taxonomic information for unclassified hits when performing translated search against these databases.
 
-Each protein in a UniRef family is associated with one or more protein sequences of a given degree of sequence homology, out of which a single representative is selected. Consider the following UniRef50 family represented by sequence O67749:
+Each UniRef family is associated with one or more protein sequences of a given degree of sequence homology, out of which a single representative is selected. Consider the following UniRef50 family represented by sequence O67749:
 
 ```
 >UniRef50_O67749 GTPase Der n=10 Tax=Aquificaceae RepID=DER_AQUAE
 ```
 
-This protein family contains 10 sequences (the `n=` field) and these sequences all belong to the family-level clade Aquificaceae (the `tax=` field): the lowest common ancestor (LCA) of the 10 sequences in the cluster. If we observe translated hits to the UniRef50\_O67749 family, we can thus infer that the associated reads derive from species in Aquificaceae. This is not a guarantee, as the protein family may be distributed outside of the Aquificaceae, however (based on their annotations) no such sequences are known to UniRef. This method would not allow us to infer a genus for reads mapping to UniRef50\_O67749 by translated search, as the 10 member sequences are heterogeneous at the genus level. Clades above the LCA (e.g. kingdom: Bacteria) can be inferred.
+This protein family contains 10 sequences (the `n=` field). All sequences derive from species belonging to the family-level clade Aquificaceae (the `tax=` field): the species' lowest common ancestor (LCA). If we observe translated hits to the UniRef50\_O67749 family, we can infer that the associated reads derive from species in Aquificaceae. This is not a guarantee, as the protein family may be distributed outside of the Aquificaceae, however no such sequences are known to UniRef. This method would not allow us to infer a _genus_ for reads mapping to UniRef50\_O67749 by translated search, as the 10 member sequences are heterogeneous at the genus level. However, clades above the LCA (e.g. kingdom=Bacteria) _can_ be inferred.
 
-Based on this method, the HUMAnN2 utility `humann2_infer_taxonomy` can be used to assign approximate taxonomic information to translated search results as summarized in the `genefamilies.tsv` output file. By default, assignments are attempted at the taxonomic Family level, but other levels (Kingdom - Genus) can be selected. If an assignment cannot be made at the target level, the taxonomy is left as "unclassified." By default, assignments are made to the gene family totals. Additional modes allow the user to carry through known taxonomic information from the pangenome search ("stratified" mode) or to focus on unclassified hits only ("unclassified" mode). Consider the following examples based on this input file:
+Based on this method, the HUMAnN2 utility `humann2_infer_taxonomy` can be used to assign approximate taxonomic information to translated search results as summarized in HUMAnN2's `genefamilies.tsv` output files. By default, assignments are attempted at the taxonomic family level, but other levels (kingdom through genus) can be selected. If an assignment cannot be made at the target level, the taxonomy is left as "unclassified." By default, assignments are made to the gene family totals. Alternative modes allow the user to carry through known taxonomic information from the pangenome search ("stratified" mode) or to focus on unclassified hits only ("unclassified" mode). Consider the following examples based on this input file:
 
 ```
-# input.tsv
+# genefamilies.tsv
 UniRef50_O67749                                  50
 UniRef50_O67749|g__Aquifex.s__Aquifex_pyrophilus 25
 UniRef50_O67749|unclassified                     25
 ```
 
-The command `humann2_infer_taxonomy -i input.tsv` would yield:
+The command `humann2_infer_taxonomy -i genefamilies.tsv` yields:
 
 ```
 UniRef50_O67749                                  50
 UniRef50_O67749|f__Aquificaceae                  50
 ```
 
-The command `humann2_infer_taxonomy -i input.tsv -l Genus` would yield:
+The command `humann2_infer_taxonomy -i genefamilies.tsv -l Genus` yields:
 
 ```
 UniRef50_O67749                                  50
 UniRef50_O67749|unclassified                     50
 ```
 
-The command `humann2_infer_taxonomy -i input.tsv -l Genus -m stratified` would yield:
+The command `humann2_infer_taxonomy -i genefamilies.tsv -l Genus -m stratified` yields:
 
 ```
 UniRef50_O67749                                  50
@@ -1152,11 +1152,11 @@ UniRef50_O67749|g__Aquifex                       25
 UniRef50_O67749|unclassified                     25
 ```
 
-In the last example, the LCA for the UniRef50\_O67749 family is insufficient to infer a Genus, however the genus-level assignment from the pangenome search (i.e. to g\_\_Aquifex.s\_\_Aquifex_pyrophilus) is carried through.
+In the last example, the LCA for the UniRef50\_O67749 family is insufficient to infer a genus, however the genus-level assignment from the pangenome search (i.e. to g\_\_Aquifex.s\_\_Aquifex_pyrophilus) is carried through.
 
 The modified gene families output files can then be reprocessed through HUMAnN2 to compute pathway abundance/coverage using the inferred taxonomic stratifications.
 
-Note: `humann2_infer_taxonomy` requires a data file to link UniRef families to LCAs and infer taxonomic relationships. These [files can be downloaded here](https://bitbucket.org/biobakery/humann2/src/tip/humann2/data/misc/). Select `uniref90-tol-lca.dat.gz` if working with UniRef90 families or `uniref50-tol-lca.dat.gz` if working with UniRef50 families.
+**Note:** `humann2_infer_taxonomy` requires a data file to link UniRef families to LCAs and infer taxonomic relationships.  [These files can be downloaded here](https://bitbucket.org/biobakery/humann2/src/tip/humann2/data/misc/). Select `uniref90-tol-lca.dat.gz` if working with UniRef90 families or `uniref50-tol-lca.dat.gz` if working with UniRef50 families.
 
 
 ## FAQs ##
