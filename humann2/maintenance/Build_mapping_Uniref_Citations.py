@@ -336,7 +336,7 @@ def GenerateCrossReferenceFiles(CommonArea):
         for UnirefType in CommonArea["Unirefs"]:
             OutputFile = open(CommonArea[CitationType + UnirefType ]['OutputFileName'],'w')
             for Citation in sorted(CommonArea[CitationType  + UnirefType]["CrossReference"]): 
-                strOutputRec = Citation + strTab + ",".join(sorted(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])) + strEndOfLine
+                strOutputRec = Citation + strTab + ",".join(sorted(list(set(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])))) + strEndOfLine  #Eliminate dups by list(set())
                 OutputFile.write(strOutputRec )
             OutputFile.close()
             #************************************************
