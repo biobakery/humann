@@ -142,9 +142,9 @@ def PostUnirefCrossReference(CitationType,lCitationEntries,CommonArea):
             if CitationSingleEntry not in CommonArea[CitationType  + UnirefType]["CrossReference"]:
                 CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry] = list() # Initialize the cross reference
             CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry].append("UniRef" + UnirefType + "_" + CommonArea["CurrentU"+UnirefType])  # Add the entry to the cross reference
-
     return CommonArea 
  
+
  
 #********************************************************************************************
 #*  Process the Swissprot entries for an AC                                                 *
@@ -180,7 +180,9 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
             #************************************************* 
             strEC1 = strSwissprotLine.split("DE            EC=")[1] 
             EC  = re.split('[ ;]', strEC1)[0] 
-            lECs.append(EC)   # And store it in the ECs table for this AC
+            ECLevel  =  EC.replace(".-","").count(".")+1   # Check the EC level of this EC
+            if ECLevel == 4:                            # We are accumulating only ECs at level 4
+                lECs.append(EC)   # And store it in the ECs table for this AC
             
         if strSwissprotLine.startswith("DR"):  
             #*************************************************
