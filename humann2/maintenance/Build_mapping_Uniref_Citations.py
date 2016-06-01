@@ -41,7 +41,7 @@ from compiler.ast import flatten
 #                                                                                           *
 #   It then proceeds to read Swissprot (The  text file) and for each protein where the      *
 #     AC number matches one of the selected U90s in the previous step,  it generates a      *
-#     citations extract from the DE and DR records (EC and KO, BRENDA,GO and pfam           *
+#     citations extract from the DE and DR records (EC and KO, GO and Pfam                  *
 #                                                                                           *
 #                                                                                           *
 #   Written by George Weingart  May 26, 2016    george.weingart@gmail.com                   *
@@ -74,7 +74,7 @@ def read_params(x):
 	parser.add_argument('--o_extract',
 	   action="store",
 	   dest='o_extract',
-	   help='Name of the output dataset that contais the extract: Uniref90\Uniref50\All the GO, Brenda, Pfam, EC and KO mappings',
+	   help='Name of the output dataset that contais the extract: Uniref90\Uniref50\All the GO,   Pfam, EC and KO mappings',
 	   nargs='?',
 	   default="o_extract")
         parser.add_argument('--KeepTemporaryDatasets',
@@ -82,6 +82,7 @@ def read_params(x):
             dest='KeepTempDatasets',
             default=False,
             help='If set,  program will not clean generated temp directory  Example:  --KeepTemporaryDatasets')
+ 
 	CommonArea['parser'] = parser
 	return  CommonArea
 	
@@ -139,8 +140,9 @@ def PostUnirefCrossReference(CitationType,lCitationEntries,CommonArea):
     for UnirefType in CommonArea['Unirefs']:
         for CitationSingleEntry in lCitationEntries :
             if CitationSingleEntry not in CommonArea[CitationType  + UnirefType]["CrossReference"]:
-                CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry] = list() # Initialize the corss reference
-            CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry].append(CommonArea["CurrentU"+UnirefType])  # Add the entry to the cross reference
+                CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry] = list() # Initialize the cross reference
+            CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry].append("UniRef" + UnirefType + "_" + CommonArea["CurrentU"+UnirefType])  # Add the entry to the cross reference
+
     return CommonArea 
  
  
@@ -156,7 +158,6 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
             lSelectedU90s = list()  # List of U90s that we will process
             lECs = list()  # Initialize the ECs list
             lGOs = list()  # Initialize the GOs list
-            lBrendas = list()  # Initialize Brendas list
             lKOs = list()  # Initialize KO list
             lPfams = list() # Initialize Pfams list
             
@@ -193,10 +194,6 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
             if   strSwissprotLine.startswith("DR   GO; "):   # GO Entries
                 GOEntry = strSwissprotLine.split("DR   GO; ")[1].split(";")[0]  # This is the GO entry
                 lGOs.append(GOEntry)  # Add it to the list 
-                
-            elif   strSwissprotLine.startswith("DR   BRENDA; "):   # BRENDA Entries
-                BrendaEntry = strSwissprotLine.split("DR   BRENDA; ")[1].split(";")[0]  # This is the Brendas entry
-                lBrendas.append(BrendaEntry)  # Add it to the list 
 
             elif   strSwissprotLine.startswith("DR   KO; "):   # KO Entries
                 KOEntry = strSwissprotLine.split("DR   KO; ")[1].split(";")[0]  # This is the KO entry
@@ -211,7 +208,7 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
 
 
     for U90 in lSelectedU90s:
-        if len(lGOs) + len(lECs) + len(lBrendas) + len(lKOs) + len(lPfams)  == 0:  #If no data - skip this one
+        if len(lGOs) + len(lECs) + len(lKOs) + len(lPfams)  == 0:  #If no data - skip this one
             CommonArea['iCntrRecsWithNoCitations'] +=1  # Count them 
             continue
             
@@ -220,30 +217,26 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
         CommonArea["CurrentU90"] = U90  # We will use it in the cross reference routine
         CommonArea["CurrentU50"] = CommonArea['SelectedACs'][U90]  # We will use it in the cross reference routine
         
-        strBuiltRecord  = U90 + strTab +  CommonArea['SelectedACs'][U90]  
+        strBuiltRecord  = "UniRef90_" + U90 + strTab + "UniRef50_" +  CommonArea['SelectedACs'][U90]  # Added the literals "UniRef90 and 50" for downstream compatibility
         if len(lECs)  > 0:
             CommonArea['iCntrRecsWithCitationsEC']+=1   # Count the records that had EC citations
-            strECs = ",".join(lECs)
+            strECs = strTab.join(lECs)
             strBuiltRecord  = strBuiltRecord  + strTab + "EC=" + strECs
             CommonArea = PostUnirefCrossReference("EC",lECs,CommonArea)  # We will post it for cross refeencing the entries          
   
             
         if len(lGOs)  > 0:
             CommonArea['iCntrRecsWithCitationsGO']+=1   # Count the records that had GO citations
-            strGOs = ",".join(lGOs)
+            strGOs = strTab.join(lGOs)
             strBuiltRecord  = strBuiltRecord  + strTab + "GO=" + strGOs
             CommonArea = PostUnirefCrossReference("GO",lGOs,CommonArea)  # We will post it for cross refeencing the entries
   
       
-        if len(lBrendas)  > 0:
-            CommonArea['iCntrRecsWithCitationsBrenda'] +=1  # Count those
-            strBrendas = ",".join(lBrendas)
-            strBuiltRecord  = strBuiltRecord  + strTab + "BRENDA=" + strBrendas
-            CommonArea = PostUnirefCrossReference("BRENDA",lBrendas,CommonArea)  # We will post it for cross refeencing the entries 
+
            
             
         if len(lKOs)  > 0:
-            strKOs = ",".join(lKOs)
+            strKOs = strTab.join(lKOs)
             CommonArea['iCntrRecsWithCitationsKO']+=1 # Count those
             strBuiltRecord  = strBuiltRecord  + strTab + "KO=" + strKOs
             CommonArea = PostUnirefCrossReference("KO",lKOs,CommonArea)  # We will post it for cross refeencing the entries 
@@ -251,7 +244,7 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
             
         if len(lPfams)  > 0:
             CommonArea['iCntrRecsWithCitationsPfam']+=1 # COunt these
-            strPfams = ",".join(lPfams)
+            strPfams = strTab.join(lPfams)
             strBuiltRecord  = strBuiltRecord  + strTab + "Pfam=" + strPfams
             CommonArea = PostUnirefCrossReference("Pfam",lPfams,CommonArea)  # We will post it for cross refeencing the entries 
    
@@ -320,6 +313,7 @@ def GenerateTablesAndCrossReferenceFilenames(CommonArea):
         for UnirefType in CommonArea["Unirefs"]:
             CommonArea[CitationType+UnirefType] = dict()
             CommonArea[CitationType+UnirefType]["OutputFileName"] = "map_" + CitationType + "_uniref" + UnirefType   + ".txt"  # This is the output file name 
+            CommonArea[CitationType+UnirefType]["OutputFileName"] = CommonArea[CitationType+UnirefType]["OutputFileName"].lower()  # Convert it to lower case for output
             CommonArea[CitationType+UnirefType]["CrossReference"] = dict()  # This will contain the cross references that will be printed later 
  
     return CommonArea
@@ -329,14 +323,15 @@ def GenerateTablesAndCrossReferenceFilenames(CommonArea):
 #*  Generate the cross reference files                                               *
 #*************************************************************************************
 def GenerateCrossReferenceFiles(CommonArea):
-    print "In the output generation routine"
     strTab = "\t"
     strEndOfLine = "\n"
     for CitationType in CommonArea["Citations"]:
         for UnirefType in CommonArea["Unirefs"]:
             OutputFile = open(CommonArea[CitationType + UnirefType ]['OutputFileName'],'w')
             for Citation in sorted(CommonArea[CitationType  + UnirefType]["CrossReference"]): 
-                strOutputRec = Citation + strTab + ",".join(sorted(list(set(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])))) + strEndOfLine  #Eliminate dups by list(set())
+                strOutputRec = Citation + strTab + strTab.join(sorted(list(set(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])))) + strEndOfLine  #Eliminate dups by list(set())
+                ########strOutputRec = Citation + strTab + ",".join(sorted(list(set(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])))) + strEndOfLine  #Eliminate dups by list(set())
+
                 OutputFile.write(strOutputRec )
             OutputFile.close()
             #************************************************
@@ -369,7 +364,7 @@ CommonArea['o_extract'] = results.o_extract
 #***********************************************************************
 #*  Used to generetate the systems Corss reference files               *
 #***********************************************************************
-CommonArea["Citations"] = ["KO","BRENDA","Pfam","GO","EC"]
+CommonArea["Citations"] = ["KO","Pfam","GO","EC"]
 CommonArea["Unirefs"] = ["50","90"] 
 CommonArea = GenerateTablesAndCrossReferenceFilenames(CommonArea)  # We will generate here the dixtionaries and file names
 #***********************************************************************
@@ -380,7 +375,6 @@ CommonArea['sValidSissprotRecordTypes'] = ("AC","DR", "DE")  #These are the Swis
 
 CommonArea['iCntrRecsWithCitations'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithNoCitations'] = 0  # Counter for those Records
-CommonArea['iCntrRecsWithCitationsBrenda'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsPfam'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsKO'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsGO'] = 0  # Counter for those Records
@@ -428,7 +422,6 @@ print "* Proteins  with no citations:      ", "{:,.0f}".format(CommonArea['iCntr
 print "*"
 print "* Proteins with ECs from DE records:",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsEC'])
 print "* Proteins with KO citations       :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsKO'])
-print "* Proteins with BRENDA citations   :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsBrenda'])
 print "* Proteins with Pfam citations     :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsPfam'])
 print "* Proteins with GO citations       :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsGO'])
 print "*" * 100
