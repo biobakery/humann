@@ -105,30 +105,38 @@ def Process_Unirefs_File(CommonArea):
             U50ID = U5090Row[1].split("_")[1] 
             U90ID = U5090Row[3].split("_")[1] 
             AC = U5090Row[2]
+            
+            if  AC == U50ID:    #If this U50 is equal to an AC, then we are going to use it 
+                CommonArea['U50_Centroids'].append(U50ID)   
+                
             if U90ID != AC:  # We will select only those ones where the AC = U90ID
                 continue
             iU90SelectedCntr+=1
-            CommonArea['SelectedACs'][U90ID] = dict()  # Note that U90ID = AC
-            CommonArea['SelectedACs'][U90ID] = U50ID 
+            CommonArea['U90s_Centroids'][U90ID] = dict()  # Note that U90ID = AC
+            CommonArea['U90s_Centroids'][U90ID] = U50ID 
+            
+    CommonArea['U50_Centroids']  = set(CommonArea['U50_Centroids'])  # For future use  
     print "*" * 100
     print "* Read:                             ",  "{:,.0f}".format(iU5090RecCntr) , " U5090 records"
-    print "* A total of:                       ",  "{:,.0f}".format(iU90SelectedCntr), " records had U90 = AC and being processed"
+    print "* A total of:                       ",  "{:,.0f}".format(iU90SelectedCntr), " records had U90 = AC"
+    print "* A total of:                       ",  "{:,.0f}".format(len(CommonArea['U50_Centroids'])), " records had U50 = AC"
+
     return CommonArea
  
 #********************************************************************************************
 #*   Process Swissprot                                                                      *
 #******************************************************************************************** 
 def  ProcessSwissprotRecords(CommonArea):
-    lSwissprotEntries = list()   # We are going to store the records for a single AC in this list and process when find a break ("//")
+    lProteinInfo = list()   # We are going to store the records for a single AC in this list and process when find a break ("//")
     InputFile = open(CommonArea['i_sprot'])
     for iLine in InputFile: 
         iLine = iLine.rstrip('\n')
         if iLine.startswith("//"):
-            CommonArea = DecodeSwissprotEntries(lSwissprotEntries, CommonArea)  ## Decode the rows of Swissprot Entries we have accumulated
-            lSwissprotEntries = list()  # Reinitialize the table for the next AC
+            CommonArea = ProcessProtein(lProteinInfo, CommonArea)  ## Decode the rows of Swissprot Entries we have accumulated
+            lProteinInfo = list()  # Reinitialize the table for the next AC
         else:
             if iLine[:2] in CommonArea['sValidSissprotRecordTypes']:  # We will look only at these (AC and DR)
-                lSwissprotEntries.append(iLine)
+                lProteinInfo.append(iLine)
     return CommonArea 
  
  
@@ -136,44 +144,37 @@ def  ProcessSwissprotRecords(CommonArea):
 #********************************************************************************************
 #*  Post the citation type to generate the cross reference of CitationType U501,U502,...... *
 #********************************************************************************************
-def PostUnirefCrossReference(CitationType,lCitationEntries,CommonArea):
-    for UnirefType in CommonArea['Unirefs']:
-        for CitationSingleEntry in lCitationEntries :
-            if CitationSingleEntry not in CommonArea[CitationType  + UnirefType]["CrossReference"]:
-                CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry] = list() # Initialize the cross reference
-            CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry].append("UniRef" + UnirefType + "_" + CommonArea["CurrentU"+UnirefType])  # Add the entry to the cross reference
+def PostUnirefCrossReference(CitationType,lCitationEntries,CommonArea,UnirefType, UnirefEntry):
+    for CitationSingleEntry in lCitationEntries :
+        if CitationSingleEntry not in CommonArea[CitationType  + UnirefType]["CrossReference"]:
+            CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry] = list() # Initialize the cross reference
+        CommonArea[CitationType  + UnirefType]["CrossReference"][CitationSingleEntry].append("UniRef" + UnirefType + "_" + UnirefEntry)  # Add the entry to the cross reference
     return CommonArea 
  
-
- 
 #********************************************************************************************
-#*  Process the Swissprot entries for an AC                                                 *
-#     Glue the two uniref files                                                             *
+#*  Decode the Swissprot Entries                                                            *
 #********************************************************************************************
-def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
-    strTab = "\t"
-    strEndOfLine = "\n"
-    for strSwissprotLine in lSwissprotEntries:
+def  DecodeSwissprotLines(lProteinInfo):
+    dProteinInfo = dict()
+    lSelectedACsMatchingU90s = list()  # List of ACs that have a matching U90
+    lSelectedACsMatchingU50s = list()  # List of ACs that have a matching U50
+    lECs = list()  # Initialize the ECs list
+    lGOs = list()  # Initialize the GOs list
+    lKOs = list()  # Initialize KO list
+    lPfams = list() # Initialize Pfams list
+    for strSwissprotLine in lProteinInfo:
         if strSwissprotLine.startswith("AC"):  
-            lSelectedU90s = list()  # List of U90s that we will process
-            lECs = list()  # Initialize the ECs list
-            lGOs = list()  # Initialize the GOs list
-            lKOs = list()  # Initialize KO list
-            lPfams = list() # Initialize Pfams list
-            
-            #*************************************************
-            #*  AC Record                                    *
-            #*************************************************
             lACs = strSwissprotLine[5:].split(";")  #Check the ACs - we will only process ACs that AC=U90
             lACs = filter(None, lACs)  # Remove empty string
             for AC in lACs:
                 CommonArea['ACsProcessed']+=1  # This is the number of ACs that were in the Swissprot file
-                if  AC in CommonArea['SelectedACs']:
-                    lSelectedU90s.append(AC)   # Select this AC=U90
-            if len(lSelectedU90s) == 0:  # If we didn't find any AC that was in the U90s table - we won't process it
-                break
-            
-            
+                if  AC in CommonArea['U90s_Centroids']:
+                    lSelectedACsMatchingU90s.append(AC)   # Post to the table that contains AC=U90
+                if  AC in CommonArea['U50_Centroids']:
+                    lSelectedACsMatchingU50s.append(AC)   # Post to the table that contains AC=U90
+                    
+                    
+                    
         if strSwissprotLine.startswith("DE            EC="):
             #*************************************************
             #*  DE with an EC                                *
@@ -185,14 +186,6 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
                 lECs.append(EC)   # And store it in the ECs table for this AC
             
         if strSwissprotLine.startswith("DR"):  
-            #*************************************************
-            #*  DR Records                                   *
-            #*  Could have done a subroutine but it is not   *
-            #*  obvious, for different DR types that the data*
-            #*  in Swissprot is in the same format, so for   *
-            #*  future development (IF we'll need more       *
-            #*  citations types, it was coded like this      *
-            #*************************************************
             if   strSwissprotLine.startswith("DR   GO; "):   # GO Entries
                 GOEntry = strSwissprotLine.split("DR   GO; ")[1].split(";")[0]  # This is the GO entry
                 lGOs.append(GOEntry)  # Add it to the list 
@@ -205,61 +198,88 @@ def DecodeSwissprotEntries(lSwissprotEntries, CommonArea):
                 PfamEntry = strSwissprotLine.split("DR   Pfam; ")[1].split(";")[0]  # This is the Pfam entry
                 lPfams.append(PfamEntry)  # Add it to the list  
                   
-                  
-            
+    if lSelectedACsMatchingU90s  == 0  and lSelectedACsMatchingU50s == 0:  # If this protein is no U90 or U50 centroid - we will not process it 
+        return     dProteinInfo    
+    
+    #********************************************************
+    #* Build the decode information                         *
+    #********************************************************
+    dProteinInfo['lSelectedACsMatchingU90s'] = lSelectedACsMatchingU90s   
+    dProteinInfo['lSelectedACsMatchingU50s'] = lSelectedACsMatchingU50s  
+    dProteinInfo['lECs'] = lECs
+    dProteinInfo['lKOs'] = lKOs   
+    dProteinInfo['lGOs'] = lGOs
+    dProteinInfo['lPfams'] = lPfams 
+    if len(lECs) + len(lKOs) + len(lKOs) + len(lGOs) == 0:  #If there were no citations
+        dProteinInfo = dict()
+     
+    return     dProteinInfo   
 
+ 
+#********************************************************************************************
+#*  Process the Swissprot entries for an AC                                                 *
+#     Glue the two uniref files                                                             *
+#********************************************************************************************
+def ProcessProtein(lProteinInfo, CommonArea):
+    strTab = "\t"
+    strEndOfLine = "\n"
+    dProteinInfo = DecodeSwissprotLines(lProteinInfo)  # It will contain the decoded Swissprot Entry for that protein
+    if len(dProteinInfo)  == 0:   #If there was nothin interesting in this protein (No AC=U90 or AC=U50 or there were no citations)
+        return CommonArea
 
-    for U90 in lSelectedU90s:
-        if len(lGOs) + len(lECs) + len(lKOs) + len(lPfams)  == 0:  #If no data - skip this one
-            CommonArea['iCntrRecsWithNoCitations'] +=1  # Count them 
-            continue
-            
-        CommonArea['iCntrRecsWithCitations']+=1  # Count records that had any citations
-        
-        CommonArea["CurrentU90"] = U90  # We will use it in the cross reference routine
-        CommonArea["CurrentU50"] = CommonArea['SelectedACs'][U90]  # We will use it in the cross reference routine
-        
-        strBuiltRecord  = "UniRef90_" + U90 + strTab + "UniRef50_" +  CommonArea['SelectedACs'][U90]  # Added the literals "UniRef90 and 50" for downstream compatibility
-        if len(lECs)  > 0:
+    for U90 in dProteinInfo['lSelectedACsMatchingU90s']:   # print record in main extract and store in the U90 cross references
+        strBuiltRecord  = "UniRef90_" + U90 + strTab + "UniRef50_" +  CommonArea['U90s_Centroids'][U90]  # Added the literals "UniRef90 and 50" for downstream compatibility
+        if len(dProteinInfo['lECs'])  > 0:
             CommonArea['iCntrRecsWithCitationsEC']+=1   # Count the records that had EC citations
-            strECs = strTab.join(lECs)
+            strECs = strTab.join(dProteinInfo['lECs'])
             strBuiltRecord  = strBuiltRecord  + strTab + "EC=" + strECs
-            CommonArea = PostUnirefCrossReference("EC",lECs,CommonArea)  # We will post it for cross refeencing the entries          
-  
+            CommonArea = PostUnirefCrossReference("EC",dProteinInfo['lECs'],CommonArea,"90", U90)  # We will post it for cross refeencing the entries          
             
-        if len(lGOs)  > 0:
+        if len(dProteinInfo['lGOs'])  > 0:
             CommonArea['iCntrRecsWithCitationsGO']+=1   # Count the records that had GO citations
-            strGOs = strTab.join(lGOs)
+            strGOs = strTab.join(dProteinInfo['lGOs'])
             strBuiltRecord  = strBuiltRecord  + strTab + "GO=" + strGOs
-            CommonArea = PostUnirefCrossReference("GO",lGOs,CommonArea)  # We will post it for cross refeencing the entries
+            CommonArea = PostUnirefCrossReference("GO",dProteinInfo['lGOs'],CommonArea,"90", U90)  # We will post it for cross refeencing the entries
   
-      
-
-           
-            
-        if len(lKOs)  > 0:
-            strKOs = strTab.join(lKOs)
+        if len(dProteinInfo['lKOs'])  > 0:
+            strKOs = strTab.join(dProteinInfo['lKOs'])
             CommonArea['iCntrRecsWithCitationsKO']+=1 # Count those
             strBuiltRecord  = strBuiltRecord  + strTab + "KO=" + strKOs
-            CommonArea = PostUnirefCrossReference("KO",lKOs,CommonArea)  # We will post it for cross refeencing the entries 
+            CommonArea = PostUnirefCrossReference("KO",dProteinInfo['lKOs'],CommonArea,"90", U90)  # We will post it for cross refeencing the entries 
           
             
-        if len(lPfams)  > 0:
+        if len(dProteinInfo['lPfams'])  > 0:
             CommonArea['iCntrRecsWithCitationsPfam']+=1 # COunt these
-            strPfams = strTab.join(lPfams)
+            strPfams = strTab.join(dProteinInfo['lPfams'])
             strBuiltRecord  = strBuiltRecord  + strTab + "Pfam=" + strPfams
-            CommonArea = PostUnirefCrossReference("Pfam",lPfams,CommonArea)  # We will post it for cross refeencing the entries 
+            CommonArea = PostUnirefCrossReference("Pfam",dProteinInfo['lPfams'],CommonArea,"90", U90)  # We will post it for cross refeencing the entries 
    
                                             
         strBuiltRecord  = strBuiltRecord  + strEndOfLine 
         CommonArea['TemporaryOutputFile'].write(strBuiltRecord )
-         
+
+    #***************************************************************
+    #   Post cross reference entries for U50s                      *
+    #***************************************************************  
+    for U50 in dProteinInfo['lSelectedACsMatchingU50s']: 
+        if len(dProteinInfo['lECs'])  > 0:
+            CommonArea = PostUnirefCrossReference("EC",dProteinInfo['lECs'],CommonArea,"50", U50)  # We will post it for cross refeencing the entries          
+            
+        if len(dProteinInfo['lGOs'])  > 0:
+            CommonArea = PostUnirefCrossReference("GO",dProteinInfo['lGOs'],CommonArea,"50", U50)  # We will post it for cross refeencing the entries
+  
+        if len(dProteinInfo['lKOs'])  > 0:
+            CommonArea = PostUnirefCrossReference("KO",dProteinInfo['lKOs'],CommonArea,"50", U50)  # We will post it for cross refeencing the entries 
+          
+            
+        if len(dProteinInfo['lPfams'])  > 0:
+            CommonArea = PostUnirefCrossReference("Pfam",dProteinInfo['lPfams'],CommonArea,"50", U50)  # We will post it for cross refeencing the entries 
+                   
+                                 
     return  CommonArea  
  
 
- 
-  
- 
+
  
 #********************************************************************************************
 #*   Initialize the process                                                                 *
@@ -332,8 +352,6 @@ def GenerateCrossReferenceFiles(CommonArea):
             OutputFile = open(CommonArea[CitationType + UnirefType ]['OutputFileName'],'w')
             for Citation in sorted(CommonArea[CitationType  + UnirefType]["CrossReference"]): 
                 strOutputRec = Citation + strTab + strTab.join(sorted(list(set(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])))) + strEndOfLine  #Eliminate dups by list(set())
-                ########strOutputRec = Citation + strTab + ",".join(sorted(list(set(CommonArea[CitationType  + UnirefType]["CrossReference"][Citation])))) + strEndOfLine  #Eliminate dups by list(set())
-
                 OutputFile.write(strOutputRec )
             OutputFile.close()
             #************************************************
@@ -371,8 +389,10 @@ CommonArea["Unirefs"] = ["50","90"]
 CommonArea = GenerateTablesAndCrossReferenceFilenames(CommonArea)  # We will generate here the dixtionaries and file names
 #***********************************************************************
 
+CommonArea['U50_Centroids'] =  list()     # List of U50s where U50 = AC in Uniprot
 
-CommonArea['SelectedACs'] = dict()   # dict of ACs where AC = U90.  Contains U90=AC and U50
+
+CommonArea['U90s_Centroids'] = dict()   # dict of ACs where AC = U90.  Contains U90=AC and U50
 CommonArea['sValidSissprotRecordTypes'] = ("AC","DR", "DE")  #These are the Swissprot record types we are accepting
 
 CommonArea['iCntrRecsWithCitations'] = 0  # Counter for those Records
