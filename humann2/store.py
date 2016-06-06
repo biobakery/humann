@@ -1356,8 +1356,9 @@ class Reads:
         else:
             if file:
                 for id, sequence in self.process_file(file):
-                    if id in self.__ids:
-                            yield ">"+id+"\n"+sequence
+                    # check for the id or the id without the length annotation
+                    if utilities.remove_length_annotation(id) in self.__ids or id in self.__ids:
+                        yield ">"+id+"\n"+sequence
     
     def id_list(self):
         """
