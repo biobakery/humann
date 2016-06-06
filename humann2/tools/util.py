@@ -165,7 +165,7 @@ class Table ( ):
 
     def write ( self, path=None, unfloat=False ):
         fh = try_zip_open( path, "w" ) if path is not None else sys.stdout
-        writer = csv.writer( fh, dialect='excel-tab' )
+        writer = csv.writer( fh, delimiter="\t", lineterminator="\n")
         writer.writerow( [self.anchor] + self.colheads )
         for i in range( len( self.rowheads ) ):
             values = self.data[i][:]
