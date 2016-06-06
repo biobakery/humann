@@ -432,7 +432,7 @@ When HUMAnN2 is run, three main output files will be created (where `` $SAMPLENA
 ### 1. Gene families file ###
 
 ``` 
-# Gene Family	$SAMPLENAME_Abundance
+# Gene Family	$SAMPLENAME_Abundance-RPKs
 UNMAPPED        187.0
 UniRef50_unknown        150.0
 UniRef50_unknown|g__Bacteroides.s__Bacteroides_fragilis 150.0
