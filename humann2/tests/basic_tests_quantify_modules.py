@@ -5,6 +5,7 @@ import cfg
 import utils
 
 from humann2.quantify import modules
+from humann2 import config
 
 class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
     """
@@ -12,6 +13,9 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
     """
     
     def setUp(self):
+        # set gap fill on
+        config.gap_fill_toggle="on"
+        
         # set up nullhandler for logger
         logging.getLogger('humann2.quantify.modules').addHandler(logging.NullHandler())
         
