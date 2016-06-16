@@ -395,8 +395,6 @@ CommonArea['U50_Centroids'] =  list()     # List of U50s where U50 = AC in Unipr
 CommonArea['U90s_Centroids'] = dict()   # dict of ACs where AC = U90.  Contains U90=AC and U50
 CommonArea['sValidSissprotRecordTypes'] = ("AC","DR", "DE")  #These are the Swissprot record types we are accepting
 
-CommonArea['iCntrRecsWithCitations'] = 0  # Counter for those Records
-CommonArea['iCntrRecsWithNoCitations'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsPfam'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsKO'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsGO'] = 0  # Counter for those Records
@@ -439,8 +437,6 @@ with open(CurrentStepCopyOutputFileName, 'w') as f:
 print "* Number of proteins (ACs) in Swissprot file read:",  "{:,.0f}".format(CommonArea['ACsProcessed'])
 print "* Summary of generated records"
 print "* ----------------------------"
-print "* Proteins    with  citations:      ", "{:,.0f}".format(CommonArea['iCntrRecsWithCitations'])
-print "* Proteins  with no citations:      ", "{:,.0f}".format(CommonArea['iCntrRecsWithNoCitations']) 
 print "*"
 print "* Proteins with ECs from DE records:",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsEC'])
 print "* Proteins with KO citations       :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsKO'])

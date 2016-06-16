@@ -4,6 +4,7 @@ import sys,string
 import sys, os
 import argparse
 import tempfile 
+import pdb
 
 
 
@@ -22,7 +23,12 @@ import tempfile
 #  -----------------------------------------------------------------------------------------*
 #  Invoking the program:                                                                    *
 #  ---------------------                                                                    *
-#  python Reaction_to_Uniref5090.py --i_reactions /n/huttenhower_lab_nobackup/downloads/metacyc/19.1/data/reactions.dat  --i_sprot /n/huttenhower_lab/data/uniprot/2015-06/uniprot_sprot.dat  --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz  --o mapping_reactions_to_uniref5090
+#  python Reaction_to_Uniref5090.py --i_reactions /n/huttenhower_lab_nobackup/downloads/metacyc/19.1/data/reactions.dat 
+##        --i_sprot /n/huttenhower_lab/data/uniprot/2015-06/uniprot_sprot.dat 
+##        --uniref50gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz 
+##        --uniref90gz /n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz
+##        --EnzymesFile   /n/huttenhower_lab_nobackup/downloads/enzymes/enzyme.dat
+##         --o mapping_reactions_to_uniref5090
 #                                                                                           *
 #   Where:                                                                                  *
 #    --i_reactions, is the reactions file, which is currently located at                    *
@@ -187,17 +193,63 @@ def ReadSwissprot(i):
 
 #*************************************************************************************
 #* Parse Input parms                                                                 *
+#* Midification log:                                                                 *
+#* George Weingart: 2016/06/08                                                       *
+#* Added a parm to select only centroids of the U50 and U90 where a centroid is      *
+#*   the U50 or U90 where U50 or U90 = AC                                            *
+#*   --UseU5090CentroidsOnly                                                         *
+#* And added defaults for the parameters                                             *
 #*************************************************************************************
 def read_params(x):
 	CommonArea = dict()	
 	parser = argparse.ArgumentParser(description='Build relation: Reaction --> EC --> UniprotAC --> Uniref5090')
-	parser.add_argument('--i_reactions', action="store", dest='i_reactions',nargs='?')
-	parser.add_argument('--i_sprot', action="store", dest='i_sprot',nargs='?')
-	parser.add_argument('--uniref50gz', action="store", dest='Uniref50gz',nargs='?')
-	parser.add_argument('--uniref90gz', action="store", dest='Uniref90gz',nargs='?')
-	parser.add_argument('--o', action="store", dest='o',nargs='?' )
-	parser.add_argument('--ECLevel3Expand', action="store", dest='ECLevel3Expand',nargs='?')
-	parser.add_argument('--EnzymesFile', action="store", dest='EnzymesFile',nargs='?')
+	parser.add_argument('--i_reactions',
+	   action="store",
+	   dest='i_reactions',
+	   nargs='?',
+	   default="/n/huttenhower_lab_nobackup/downloads/metacyc/19.1/data/reactions.dat")
+	   
+   	parser.add_argument('--i_sprot',
+   	    action="store",
+   	    dest='i_sprot',
+   	    nargs='?',
+   	    default="/n/huttenhower_lab/data/uniprot/2015-06/uniprot_sprot.dat")
+   	    
+	parser.add_argument('--uniref50gz',
+	   action="store",
+	   dest='Uniref50gz',
+	   nargs='?',
+	   default="/n/huttenhower_lab/data/idmapping/map_uniprot_UniRef50.dat.gz")
+	   
+	parser.add_argument('--uniref90gz',
+	   action="store",
+	   dest='Uniref90gz',
+	   nargs='?',
+	   default="/n/huttenhower_lab/data/idmapping/map_uniprot_UniRef90.dat.gz")
+
+	parser.add_argument('--ECLevel3Expand',
+	   action="store", 
+	   dest='ECLevel3Expand',
+	   nargs='?')
+	   
+	parser.add_argument('--EnzymesFile',
+	   action="store",
+	   dest='EnzymesFile',
+	   nargs='?',
+	   default="/n/huttenhower_lab_nobackup/downloads/enzymes/enzyme.dat")
+	   
+        parser.add_argument('--o',
+	   action="store",
+	   dest='o',
+	   nargs='?',
+	   default="mapping_reactions_to_uniref5090.tab")
+
+        parser.add_argument('--UseU5090CentroidsOnly',
+	   action="store",
+	   dest='UseU5090CentroidsOnly',
+	   nargs='?',
+	   default="Y")	   
+	   	   	   
 	CommonArea['parser'] = parser
 	return  CommonArea
 
@@ -279,14 +331,35 @@ def ReadUniref5090File(strInput5090,sUniprotIds):
 		if lInputLineSplit[0]  not in sUniprotIds:			# If we don't need this ID 
 			continue										# skip it 
 		lEnt5090 = list()									# Initialize list
-		lEnt5090.append(lInputLineSplit[1].split("_")[1])	# Entry is of the form UniRef50_Q2FWP1 - We need only the Q2FWP1
-		lEnt5090.append(lInputLineSplit[3].split("_")[1])	# Entry is of the form UniRef50_Q2FWP1 - We need only the Q2FWP1
+		U50 = lInputLineSplit[1].split("_")[1]     
+		U90 = lInputLineSplit[3].split("_")[1]       
+
+		#***************************************************
+		#  Modification GW 20160609 Add to centroids       *
+		#***************************************************			
+		CommonArea['U50Centroids'].append(U50)             # Add it to the centroids table
+		CommonArea['U90Centroids'].append(U90)             # Add it to the centroids table
+		
+		
+		lEnt5090.append(U50)	          # Entry is of the form UniRef50_Q2FWP1 - We need only the Q2FWP1
+		lEnt5090.append(U90)	          # Entry is of the form UniRef50_Q2FWP1 - We need only the Q2FWP1
 		dUniprotUniref[lInputLineSplit[0]] = lEnt5090		# Post it in the dictionary
+		
+
+		
+		
+		
 		iTotalUniref5090RecsLoaded+=1						# Increase counter
 		if  iTotalUniref5090RecsLoaded %  iPrintAfter == 0:	# If we need to print status
 			print "Total of ", iTotalUniref5090RecsLoaded, " Uniref5090 records loaded into the table"
 	print "Load Complete - Total of ", iTotalUniref5090RecsLoaded, " Uniref5090 records loaded into the table"
 	File5090.close()										# CLose the file
+	
+	CommonArea['U50Centroids'] = set(CommonArea['U50Centroids'])             # Elininate duplicates
+	CommonArea['U90Centroids'] = set(CommonArea['U90Centroids'])             # Elininate duplicates
+	
+	print "Total number of U50 Centroids loaded: ",  str(len(CommonArea['U50Centroids']))
+	print "Total number of U90 Centroids loaded: ",  str(len(CommonArea['U90Centroids']))	
 	return dUniprotUniref
 
 
@@ -365,22 +438,49 @@ def GenerateExtract(CommonArea, OutputFileName):
 			
 		lU50 = list()
 		lU90 = list()	
+		
+		#********************************************************************************
+		#  Modification Log:                                                            *
+		#  Modified the code below so that if, requested only centroids,  use only      *
+		#  centroids (Defined as AC=U90 or AC=U50                                       *
+		#  Otherwise, select all ACs,  like we were doing till now                      *
+		#  George Weingart  2016/06/08                                                  *
+		#********************************************************************************
 		for AC in lACs:
 			if AC in CommonArea['dUniprotUniref']:
-				Uniref50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0] 
+				Uniref50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0]
 				lU50.append(Uniref50)
-				Uniref90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1] 
-				lU90.append(Uniref90)
+
+				Uniref90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1]
+				lU50.append(Uniref90)
+			    
+				    				    
+			    				    				    
+				    				    				    				    				    
+
  
 		lU50Sorted = sorted(list(set(lU50)))
 		lU90Sorted = sorted(list(set(lU90)))
  
 		for U50 in lU50Sorted:
-			bFlagUnirefFound = True
-			lBuiltRecord.append(U50)
+		        if  CommonArea['UseU5090CentroidsOnly'] == "Y":  # GW 20160609  Do we need only centroids ?
+		             if U50.split("_")[1] in CommonArea['U50Centroids']: 
+			         bFlagUnirefFound = True
+			         lBuiltRecord.append(U50)
+		        else:
+		            bFlagUnirefFound = True
+		            lBuiltRecord.append(U50)
+			         
 		for U90 in lU90Sorted:
-			bFlagUnirefFound = True
-			lBuiltRecord.append(U90)
+		        if  CommonArea['UseU5090CentroidsOnly'] == "Y":  # GW 20160609  Do we need only centroids ?
+		             if U90.split("_")[1] in CommonArea['U90Centroids']: 
+			         bFlagUnirefFound = True
+			         lBuiltRecord.append(U90)
+		        else:
+		            bFlagUnirefFound = True
+		            lBuiltRecord.append(U90)
+
+
  
 		strBuiltRecord = "\t".join(lBuiltRecord) + 	strNewLine
 		lBuiltRecord = list()
@@ -448,10 +548,14 @@ iFileSProt = results.i_sprot
 strUniref50gz = results.Uniref50gz					# The first file is the zipped version of the Uniref50 Translation file
 strUniref90gz = results.Uniref90gz					# The 2nd file is the zipped version of the Uniref90 Translation file
 OutputFileName = results.o								# The output file
+CommonArea['UseU5090CentroidsOnly'] = results.UseU5090CentroidsOnly      #Modification GW 20160608: Default - Use only U50 and u90 Centroids (Where AC=U50 or AC=U90)
  
 CommonArea  = ReadReactions(iFileReactions)			#Read the reactions file to build the relations REACTION -> EC
 CommonArea  = ReadSwissprot(iFileSProt)				#Read the Swissprot file to build the relations ECs --> UniprotKb ACs
 CommonArea  = ResolveReactionsToACs(CommonArea)		#Build the relations Reactions --> UniprotKb ACs
+
+CommonArea["U50Centroids"] = list()           # We are going to capture all U50s where U50=AC
+CommonArea["U90Centroids"] = list()           # We are going to capture all U90s where U90=AC
 
  
 
