@@ -3,6 +3,7 @@
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
 import sys
+import re
 import util
 
 description = """
@@ -16,6 +17,7 @@ normalized using the desired scheme.
 # constants
 # ---------------------------------------------------------------
 
+c_default_suffix = "-RPKs"
 c_special = [
     util.c_unmapped, 
     util.c_unintegrated, 
@@ -54,6 +56,11 @@ def get_args ():
         choices=["y", "n"],
         default="y",
         help="Include the special features UNMAPPED, UNINTEGRATED, and UNGROUPED; default=[y]",
+        )
+    parser.add_argument( 
+        "-p", "--update-snames", 
+        action="store_true",
+        help="Update '-RPK' in sample names to appropriate suffix; default=off",
         )
     parser.add_argument( 
         "-o", "--output", 
@@ -109,6 +116,12 @@ def main ( ):
         levelwise = args.mode=="levelwise",
         special = args.special=="y",
         )
+    if args.update_snames:
+        for i, colhead in enumerate( table.colheads ):
+            if re.search( c_default_suffix+"$", colhead ):
+                table.colheads[i] = re.sub( c_default_suffix+"$", "-"+args.units.upper(), colhead )
+            else:
+                table.colheads[i] += "-"+args.units.upper()
     table.write( args.output )
 
 if __name__ == "__main__":
