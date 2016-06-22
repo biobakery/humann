@@ -25,7 +25,9 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     3. [Test the install](#markdown-header-3-test-the-install)
     4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
     5. [Select a level of gene family resolution](#markdown-header-5-select-a-level-of-gene-family-resolution)
+        * [Should I pick UniRef90 or UniRef50?](#markdown-header-should-i-pick-uniref90-or-uniref50)
     6. [Select a scope for translated search](#markdown-header-6-select-a-scope-for-translated-search)
+        * [Which translated search scope should I pick?](#markdown-header-which-translated-search-scope-should-i-pick)
     7. [Download the databases](#markdown-header-7-download-the-databases)
         * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
         * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
@@ -289,7 +291,7 @@ HUMAnN2 falls back to translated search for reads that failed to align to a know
 
 See XXXXXXXXXXXXXXX for instructions on how to acquire a protein database.
 
-#### Which translated search mode should I use? ####
+#### Which translated search scope should I pick? ####
 
 For many users, **filtered translated search** will serve as a good default option. This will still provide 1,000s of gene-level features and an uncompromised metabolic network for the ``unclassified`` stratum. For extremely well-characterized samples, bypassing translated search is a reasonable option. For example, in the healthy human gut, the majority of sample reads (~80%) that *can* be mapped to a reference are mapped prior to translated search. 
 
