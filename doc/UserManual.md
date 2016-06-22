@@ -311,10 +311,14 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 Download a translated search database providing $INSTALL_LOCATION as the location to install the database:
 
-    * To download the full UniRef90 database: ``$ humann2_databases --download uniref uniref90_diamond $INSTALL_LOCATION`` (11.0GB)
-    * To download the EC-filtered UniRef90 database: ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION`` (0.8GB)
-    * To download the full UniRef50 database: ``$ humann2_databases --download uniref uniref90_diamond $INSTALL_LOCATION`` (4.6GB)
-    * To download the EC-filtered UniRef50 database: ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION`` (0.2GB)
+* To download the full UniRef90 database (11.0GB):
+    * ``$ humann2_databases --download uniref uniref90_diamond $INSTALL_LOCATION`` 
+* To download the EC-filtered UniRef90 database (0.8GB):
+    * ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION``
+* To download the full UniRef50 database (4.6GB):
+    * ``$ humann2_databases --download uniref uniref50_diamond $INSTALL_LOCATION``
+* To download the EC-filtered UniRef50 database (0.2GB):
+    * ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $INSTALL_LOCATION``
    
 NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--protein-database <uniref>" option to humann2.
 
