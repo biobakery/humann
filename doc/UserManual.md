@@ -24,7 +24,9 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     2. [Install HUMAnN2](#markdown-header-2-install-humann2)
     3. [Test the install](#markdown-header-3-test-the-install)
     4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
-    5. [Download the databases](#markdown-header-5-download-the-databases)
+    5. [Select a level of gene family resolution](#markdown-header-5-select-a-level-of-gene-family-resolution)
+    6. [Select a scope for translated search](#markdown-header-6-select-a-scope-for-translated-search)
+    7. [Download the databases](#markdown-header-7-download-the-databases)
         * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
         * [Download the UniRef50 database](#markdown-header-download-the-uniref50-database)
 * [Installation Update](#markdown-header-installation-update)
@@ -261,7 +263,7 @@ Output from this demo run will be written to the folder $OUTPUT_DIR.
 
 Please continue with the install directions to download the full databases before running with your sequencing data.
 
-### 5. Select a level of gene family resolution (UniRef90 vs UniRef50) ###
+### 5. Select a level of gene family resolution ###
 
 HUMAnN2 uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
 
@@ -275,7 +277,7 @@ UniRef50 is preferable when dealing with very poorly characterized microbiomes. 
 
 Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
 
-### 6. Pick a scope for translated search ###
+### 6. Select a scope for translated search ###
 
 HUMAnN2 falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
 
