@@ -24,11 +24,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     2. [Install HUMAnN2](#markdown-header-2-install-humann2)
     3. [Test the install](#markdown-header-3-test-the-install)
     4. [Try out a demo run](#markdown-header-4-try-out-a-demo-run)
-    5. [Select a level of gene family resolution](#markdown-header-5-select-a-level-of-gene-family-resolution)
-        * [Should I pick UniRef90 or UniRef50?](#markdown-header-should-i-pick-uniref90-or-uniref50)
-    6. [Select a scope for translated search](#markdown-header-6-select-a-scope-for-translated-search)
-        * [Which translated search scope should I pick?](#markdown-header-which-translated-search-scope-should-i-pick)
-    7. [Download the databases](#markdown-header-7-download-the-databases)
+    5. [Download the databases](#markdown-header-5-download-the-databases)
         * [Download the ChocoPhlAn database](#markdown-header-download-the-chocophlan-database)
         * [Download a translated search database](#markdown-header-download-a-translated-search-database)
 * [Installation Update](#markdown-header-installation-update)
@@ -66,6 +62,8 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         9. [Merge abundance tables](#markdown-header-9-merge-abundance-tables)
        10. [Infer taxonomy](#markdown-header-10-infer-taxonomy)
 * [Tutorials](#markdown-header-tutorials)
+    * [Selecting a level of gene family resolution](#markdown-header-selecting-a-level-of-gene-family-resolution)
+    * [Selecting a scope for translated search](#markdown-header-selecting-a-scope-for-translated-search)
     * [Paired-end reads](#markdown-header-humann2-and-paired-end-sequencing-data)
     * [PICRUSt output](#markdown-header-picrust-output)
     * [Legacy databases](#markdown-header-legacy-databases)
@@ -85,9 +83,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [FAQs](#markdown-header-faqs)
 * [Complete option list](#markdown-header-complete-option-list)
 
-
 ## Features ##
-
 
 1. Community functional profiles stratified by known and unclassified organisms
 
@@ -265,37 +261,7 @@ Output from this demo run will be written to the folder $OUTPUT_DIR.
 
 Please continue with the install directions to download the full databases before running with your sequencing data.
 
-### 5. Select a level of gene family resolution ###
-
-HUMAnN2 uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
-
-HUMAnN2 can be configured to output gene family abundance at the resolution of UniRef90 clusters or UniRef50 clusters. The mode can be manually configured via the ``--search-mode`` flag. By default, the search mode is set based on your current translated search database. In addition to changing the resolution of the gene families output, the search mode optimizes HUMAnN2 for searching against UniRef90 versus UniRef50 during translated search (e.g. toggling the minimum allowed amino acid mapping identity between 90% and 50%, respectively).
-
-#### Should I pick UniRef90 or UniRef50? ####
-
-For most applications, **UniRef90 is a good default choice** because its clusters are more conserved and therefore more likely to be isofunctional. UniRef50 clusters can be very broad, and thus pose the risk that the cluster representative might not reflect the function of the homologous sequence(s) found in your sample. One drawback of UniRef90 (relative to UniRef50) is that a slightly higher fraction of coding sequences in pangenomes are not assignable to a UniRef90 cluster, resulting in an increase in abundance for the ``UniRef90_unknown`` feature.
-
-UniRef50 is preferable when dealing with very poorly characterized microbiomes. In such cases, requiring reads to map at 90% identity to UniRef90 may be too stringent, and so mapping at 50% identity to UniRef50 is expected to explain a larger portion of sample reads (albeit at reduced functional resolution).
-
-Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
-
-### 6. Select a scope for translated search ###
-
-HUMAnN2 falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
-
-* **Bypass translated search** is selected via the ``--bypass-translated-search`` flag. In this mode, reads that failed to map to a pangenome are saved, but not otherwise searched at the protein level. There will be no ``unclassified`` strata in your output. 
-
-* **Filtered translated search** is selected by using a EC-filtered protein database. These databases (which come in UniRef90 and UniRef50 flavors) have been filtered to only include proteins associated with a level-4 enzyme commission (EC) category. These are the only proteins that would be able to contribute to downstream pathway reconstruction. Thus, filtered translated search will provide a comprehensive metabolic reconstruction for the ``unclassified`` stratum, but the number of ``unclassified`` protein families in the output will be limited to those with EC annotation.
-
-* **Comprehensive translated search** is selected by using a comprehensive protein database. These databases (which come in UniRef90 and UniRef50 flavors) have not been filtered, and are quite large (millions of sequences). Comprehensive search aims to explain as many sample reads as possible using reference-based approaches. Comprehensive search takes ~5x longer than filtered search [a difference of 5 versus 25 CPU-hours for a 10M read sample (using DIAMOND and UniRef50)]. Memory requirements are also larger for the larger database, though the increase is sublinear.
-
-See [below](#markdown-header-download-a-translated-search-database) for instructions on how to acquire a translated search database.
-
-#### Which translated search scope should I pick? ####
-
-For many users, **filtered translated search** will serve as a good default option. This will still provide 1,000s of gene-level features and an uncompromised metabolic network for the ``unclassified`` stratum. For extremely well-characterized samples, bypassing translated search is a reasonable option. For example, in the healthy human gut, the majority of sample reads (~80%) that *can* be mapped to a reference are mapped prior to translated search. 
-
-### 7. Download the databases ###
+### 6. Download the databases ###
 
 Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
 
@@ -309,16 +275,21 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 #### Download a translated search database ####
 
+While there is only one ChocoPhlAn database, users have a choice of translated search databases which offer trade-offs between resolution, coverage, and performance. For help selecting a translated search database, see the following tutorials:
+
+* [Selecting a level of gene family resolution](#markdown-header-select-a-level-of-gene-family-resolution)
+* [Selecting a scope for translated search](#markdown-header-select-a-scope-for-translated-search)
+
 Download a translated search database providing $INSTALL_LOCATION as the location to install the database:
 
+* To download the EC-filtered UniRef90 database (0.8GB; **RECOMMENDED**):
+    * ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION``
 * To download the full UniRef90 database (11.0GB):
     * ``$ humann2_databases --download uniref uniref90_diamond $INSTALL_LOCATION`` 
-* To download the EC-filtered UniRef90 database (0.8GB):
-    * ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION``
-* To download the full UniRef50 database (4.6GB):
-    * ``$ humann2_databases --download uniref uniref50_diamond $INSTALL_LOCATION``
 * To download the EC-filtered UniRef50 database (0.2GB):
     * ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $INSTALL_LOCATION``
+* To download the full UniRef50 database (4.6GB):
+    * ``$ humann2_databases --download uniref uniref50_diamond $INSTALL_LOCATION``
    
 NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--protein-database <uniref>" option to humann2.
 
@@ -882,6 +853,36 @@ HUMAnN2 includes tools to be used with gene, pathway, and taxonomic profile tabl
 *   See the [tutorial](#markdown-header-inferring-taxonomy-for-unclassified-hits) below for assistance.
 
 ## Tutorials ##
+
+### Selecting a level of gene family resolution ###
+
+HUMAnN2 uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
+
+HUMAnN2 can be configured to output gene family abundance at the resolution of UniRef90 clusters or UniRef50 clusters. The mode can be manually configured via the ``--search-mode`` flag. By default, the search mode is set based on your current translated search database. In addition to changing the resolution of the gene families output, the search mode optimizes HUMAnN2 for searching against UniRef90 versus UniRef50 during translated search (e.g. toggling the minimum allowed amino acid mapping identity between 90% and 50%, respectively).
+
+#### Should I pick UniRef90 or UniRef50? ####
+
+For most applications, **UniRef90 is a good default choice** because its clusters are more conserved and therefore more likely to be isofunctional. UniRef50 clusters can be very broad, and thus pose the risk that the cluster representative might not reflect the function of the homologous sequence(s) found in your sample. One drawback of UniRef90 (relative to UniRef50) is that a slightly higher fraction of coding sequences in pangenomes are not assignable to a UniRef90 cluster, resulting in an increase in abundance for the ``UniRef90_unknown`` feature.
+
+UniRef50 is preferable when dealing with very poorly characterized microbiomes. In such cases, requiring reads to map at 90% identity to UniRef90 may be too stringent, and so mapping at 50% identity to UniRef50 is expected to explain a larger portion of sample reads (albeit at reduced functional resolution).
+
+Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
+
+### 6. Select a scope for translated search ###
+
+HUMAnN2 falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
+
+* **Bypass translated search** is selected via the ``--bypass-translated-search`` flag. In this mode, reads that failed to map to a pangenome are saved, but not otherwise searched at the protein level. There will be no ``unclassified`` strata in your output. 
+
+* **Filtered translated search** is selected by using a EC-filtered protein database. These databases (which come in UniRef90 and UniRef50 flavors) have been filtered to only include proteins associated with a level-4 enzyme commission (EC) category. These are the only proteins that would be able to contribute to downstream pathway reconstruction. Thus, filtered translated search will provide a comprehensive metabolic reconstruction for the ``unclassified`` stratum, but the number of ``unclassified`` protein families in the output will be limited to those with EC annotation.
+
+* **Comprehensive translated search** is selected by using a comprehensive protein database. These databases (which come in UniRef90 and UniRef50 flavors) have not been filtered, and are quite large (millions of sequences). Comprehensive search aims to explain as many sample reads as possible using reference-based approaches. Comprehensive search takes ~5x longer than filtered search [a difference of 5 versus 25 CPU-hours for a 10M read sample (using DIAMOND and UniRef50)]. Memory requirements are also larger for the larger database, though the increase is sublinear.
+
+See [below](#markdown-header-download-a-translated-search-database) for instructions on how to acquire a translated search database.
+
+#### Which translated search scope should I pick? ####
+
+For many users, **filtered translated search** will serve as a good default option. This will still provide 1,000s of gene-level features and an uncompromised metabolic network for the ``unclassified`` stratum. For extremely well-characterized samples, bypassing translated search is a reasonable option. For example, in the healthy human gut, the majority of sample reads (~80%) that *can* be mapped to a reference are mapped prior to translated search. 
 
 ### HUMAnN2 and paired-end sequencing data ###
 
