@@ -251,8 +251,6 @@ Option 2: Development Version
      * To also run tool tests, add the option "--run-functional-tests-tools".
      * To also run end-to-end tests, add the option "-run-functional-tests-end-to-end". Please note these tests take about 20 minutes to run. Also they require all dependencies of HUMAnN2 be installed in your PATH.
 
-
-
 ### 4. Try out a demo run ###
 
 With HUMAnN2 installed you can try out a demo run using reduced versions of the databases. If installing from pip, please also download the source as it contains the demo examples.
@@ -263,8 +261,37 @@ Output from this demo run will be written to the folder $OUTPUT_DIR.
 
 Please continue with the install directions to download the full databases before running with your sequencing data.
 
+### 5. Select a level of gene family resolution (UniRef90 vs UniRef50) ###
 
-### 5. Download the databases ###
+HUMAnN2 uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
+
+HUMAnN2 can be configured to output gene family abundance at the resolution of UniRef90 clusters or UniRef50 clusters. The mode can be manually configured via the ``--search-mode`` flag. By default, the search mode is set based on your current translated search database. In addition to changing the resolution of the gene families output, the search mode optimizes HUMAnN2 for searching against UniRef90 versus UniRef50 during translated search (e.g. toggling the minimum allowed amino acid mapping identity between 90% and 50%, respectively).
+
+#### Should I pick UniRef90 or UniRef50? ####
+
+For most applications, **UniRef90 is a good default choice** because its clusters are more conserved and therefore more likely to be isofunctional. UniRef50 clusters can be very broad, and thus pose the risk that the cluster representative might not reflect the function of the homologous sequence(s) found in your sample. One drawback of UniRef90 (relative to UniRef50) is that a slightly higher fraction of coding sequences in pangenomes are not assignable to a UniRef90 cluster, resulting in an increase in abundance for the ``UniRef90_unknown`` feature.
+
+UniRef50 is preferable when dealing with very poorly characterized microbiomes. In such cases, requiring reads to map at 90% identity to UniRef90 may be too stringent, and so mapping at 50% identity to UniRef50 is expected to explain a larger portion of sample reads (albeit at reduced functional resolution).
+
+Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
+
+### 6. Pick a scope for translated search ###
+
+HUMAnN2 falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
+
+**Bypass translated search** is selected via the ``--bypass-translated-search`` flag. In this mode, reads that failed to map to a pangenome are saved, but not otherwise searched at the protein level. There will be no ``unclassified`` strata in your output. 
+
+**Filtered translated search** is selected by using a EC-filtered protein database. These databases (which come in UniRef90 and UniRef50 flavors) have been filtered to only include proteins associated with a level-4 enzyme commission (EC) category. These are the only proteins that would be able to contribute to downstream pathway reconstruction. Thus, filtered translated search will provide a comprehensive metabolic reconstruction for the ``unclassified`` stratum, but the number of ``unclassified`` protein families in the output will be limited to those with EC annotation.
+
+**Comprehensive translated search** is selected by using a comprehensive protein database. These databases (which come in UniRef90 and UniRef50 flavors) have not been filtered, and are quite large (millions of sequences). Comprehensive search aims to explain as many sample reads as possible using reference-based approaches. Comprehensive search takes ~5x longer than filtered search [a difference of 5 versus 25 CPU-hours for a 10M read sample (using DIAMOND and UniRef50)].
+
+See XXXXXXXXXXXXXXX for instructions on how to acquire a protein database.
+
+#### Which translated search mode should I use? ####
+
+For many users, **filtered translated search** will serve as a good default option. This will still provide 1,000s of gene-level features and an uncompromised metabolic network for the ``unclassified`` stratum. For extremely well-characterized samples, bypassing translated search is a reasonable option. For example, in the healthy human gut, the majority of sample reads (~80%) that *can* be mapped to a reference are mapped prior to translated search. 
+
+### 7. Download the databases ###
 
 Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
 
@@ -276,16 +303,15 @@ Download the ChocoPhlAn database providing $INSTALL_LOCATION as the location to 
 
 NOTE: The humann2 config file will be updated to point to this location for the default chocophlan database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the chocophlan database you would like to use with the "--nucleotide-database <chocophlan>" option to humann2.
 
+#### Download a translated search database ####
 
-#### Download the UniRef50 database ####
+Download a translated search database providing $INSTALL_LOCATION as the location to install the database:
 
-Download the UniRef50 database providing $INSTALL_LOCATION as the location to install the database (approx. size = 4.6 GB for the full database, 239 MB for the EC filtered database).
-
-Download one database (full or EC filtered):
-    * To download the full database (RECOMMENDED): ``$ humann2_databases --download uniref uniref50_diamond $INSTALL_LOCATION``
-    * To download the EC filtered database: ``$ humann2_databases --download uniref uniref50_ec_filtered_diamond $INSTALL_LOCATION``
-    * Select the full database if you are interested in identifying uncharacterized proteins in your data set. Alternatively, select the EC filtered database if you have limited disk space and/or memory. For example, a run with 13 million reads (approximately 7 GB fastq file) passed as input to the translated search step, using a single core, ran in about 4 hours with a maximum of 6 GB of memory using the EC filtered database. The same input file using the full database ran in 25 hours, with a single core, with a maximum of 11 GB of memory.
-
+    * To download the full UniRef90 database: ``$ humann2_databases --download uniref uniref90_diamond $INSTALL_LOCATION`` (11.0GB)
+    * To download the EC-filtered UniRef90 database: ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION`` (0.8GB)
+    * To download the full UniRef50 database: ``$ humann2_databases --download uniref uniref90_diamond $INSTALL_LOCATION`` (4.6GB)
+    * To download the EC-filtered UniRef50 database: ``$ humann2_databases --download uniref uniref90_ec_filtered_diamond $INSTALL_LOCATION`` (0.2GB)
+   
 NOTE: The humann2 config file will be updated to point to this location for the default uniref database. If you move this database, please use the "humann2_config" command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the "--protein-database <uniref>" option to humann2.
 
 NOTE: By default HUMAnN2 runs diamond for translated alignment. If you would like to use rapsearch2 for translated alignment, first download the rapsearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
