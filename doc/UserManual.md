@@ -277,8 +277,8 @@ NOTE: The humann2 config file will be updated to point to this location for the 
 
 While there is only one ChocoPhlAn database, users have a choice of translated search databases which offer trade-offs between resolution, coverage, and performance. For help selecting a translated search database, see the following tutorials:
 
-* [Selecting a level of gene family resolution](#markdown-header-select-a-level-of-gene-family-resolution)
-* [Selecting a scope for translated search](#markdown-header-select-a-scope-for-translated-search)
+* [Selecting a level of gene family resolution](#markdown-header-selecting-a-level-of-gene-family-resolution)
+* [Selecting a scope for translated search](#markdown-header-selecting-a-scope-for-translated-search)
 
 Download a translated search database providing $INSTALL_LOCATION as the location to install the database:
 
@@ -878,7 +878,7 @@ HUMAnN2 falls back to translated search for reads that failed to align to a know
 
 * **Comprehensive translated search** is selected by using a comprehensive protein database. These databases (which come in UniRef90 and UniRef50 flavors) have not been filtered, and are quite large (millions of sequences). Comprehensive search aims to explain as many sample reads as possible using reference-based approaches. Comprehensive search takes ~5x longer than filtered search [a difference of 5 versus 25 CPU-hours for a 10M read sample (using DIAMOND and UniRef50)]. Memory requirements are also larger for the larger database, though the increase is sublinear.
 
-See [below](#markdown-header-download-a-translated-search-database) for instructions on how to acquire a translated search database.
+See [above](#markdown-header-download-a-translated-search-database) for instructions on how to acquire a translated search database.
 
 #### Which translated search scope should I pick? ####
 
