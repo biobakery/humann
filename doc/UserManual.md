@@ -261,7 +261,7 @@ Output from this demo run will be written to the folder $OUTPUT_DIR.
 
 Please continue with the install directions to download the full databases before running with your sequencing data.
 
-### 6. Download the databases ###
+### 5. Download the databases ###
 
 Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
 
@@ -868,7 +868,7 @@ UniRef50 is preferable when dealing with very poorly characterized microbiomes. 
 
 Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
 
-### 6. Select a scope for translated search ###
+### Selecting a scope for translated search ###
 
 HUMAnN2 falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
 
