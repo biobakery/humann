@@ -263,7 +263,7 @@ Please continue with the install directions to download the full databases befor
 
 ### 5. Download the databases ###
 
-Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and UniRef50 databases. 
+Downloading the databases is a required step if your input is a filtered shotgun sequencing metagenome file (fastq, fastq.gz, fasta, or fasta.gz format). If your input files will always be mapping results files (sam, bam or blastm8 format) or gene tables (tsv or biom format), you do not need to download the ChocoPhlAn and translated search databases. 
 
 #### Download the ChocoPhlAn database ####
 
@@ -456,7 +456,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
 *   This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
 *   Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance.
-*   HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and UniRef50 for this computation.
+*   HUMAnN2 uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
 *   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
 *   Please note the gene families file will not be created if the input file type is a gene table.
 *   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
