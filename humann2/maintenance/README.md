@@ -48,7 +48,7 @@ The typical user will not need to work with these.
 #### Create HUMANn2 UniPathways pathways database files ####
 
 1. Create the file humann2/data/pathways/unipathway_pathways (optional pathway database file2)
-    * `` $ python Build_mapping_Pathways_Uniprot.py --i $UNIPROT/2014_10/pathway.txt --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz --oPathwaysACs  unipathway_pathways --oValidACs  list_of_ACs --oPathwaysUniref5090 PathwaysUniref5090 ``   
+    * `` $ python Build_mapping_Pathways_Uniprot.py --i $UNIPROT/2015_05/pathway.txt --uniref50gz map_uniprot_UniRef50.dat.gz --uniref90gz map_uniprot_UniRef90.dat.gz --oPathwaysACs  unipathway_pathways --oValidACs  list_of_ACs --oPathwaysUniref5090 PathwaysUniref5090 ``   
         * The command above, and those that follow, ``$UNIPROT`` should be replaced will the full path to the uniprot_pathways folder.
         * For detailed documentation about what this script does, please refer to the script header.
     * The input Uniprot files can be downloaded from the following sites:
