@@ -319,8 +319,8 @@ def ReadUniref5090File(strInput5090,sUniprotIds):
 	dUniprotUniref = dict()
 	iTotalUniref5090RecsLoaded = 0							# Counter of Uniref5090 recs loaded
 	iTotalUniref5090RecsRead = 0							# Counter of Uniref5090 recs Read
-	iPrintAfter = 1000000									# Print status after multiple of these number of records
-	iPrintAfterReads = 100000  								# Print status after read of these number of records
+	iPrintAfter = 10000000									# Print status after multiple of these number of records
+	iPrintAfterReads = 1000000  								# Print status after read of these number of records
 	File5090 = open(strInput5090)							# Open the file
 	for strInputLine in File5090:   						# Read Input file
 		iTotalUniref5090RecsRead+=1							# Count the reads
@@ -448,14 +448,18 @@ def GenerateExtract(CommonArea, OutputFileName):
 		#********************************************************************************
 		for AC in lACs:
 			if AC in CommonArea['dUniprotUniref']:
-				Uniref50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0]
-				lU50.append(Uniref50)
-
-				Uniref90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1]
-				lU50.append(Uniref90)
-			    
-				    				    
-			    				    				    
+			    if  CommonArea['UseU5090CentroidsOnly'] == "Y": 
+			        if AC == CommonArea['dUniprotUniref'][AC][0]:  # Is it a U50 Centroid? 
+                                    Uniref50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0]
+                                    lU50.append(Uniref50)
+			        if AC == CommonArea['dUniprotUniref'][AC][1]:  # Is it a U90 Centroid? 
+				    Uniref90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1]
+				    lU90.append(Uniref90)    #GW  20160702  Was U50 by mistake - fixed it 
+			    else:
+                                Uniref50 = "UniRef50_" + CommonArea['dUniprotUniref'][AC][0]
+                                lU50.append(Uniref50)    				    
+                                Uniref90 = "UniRef90_" + CommonArea['dUniprotUniref'][AC][1]
+                                lU90.append(Uniref90) 			    				    				    
 				    				    				    				    				    
 
  
@@ -463,20 +467,10 @@ def GenerateExtract(CommonArea, OutputFileName):
 		lU90Sorted = sorted(list(set(lU90)))
  
 		for U50 in lU50Sorted:
-		        if  CommonArea['UseU5090CentroidsOnly'] == "Y":  # GW 20160609  Do we need only centroids ?
-		             if U50.split("_")[1] in CommonArea['U50Centroids']: 
-			         bFlagUnirefFound = True
-			         lBuiltRecord.append(U50)
-		        else:
 		            bFlagUnirefFound = True
 		            lBuiltRecord.append(U50)
 			         
 		for U90 in lU90Sorted:
-		        if  CommonArea['UseU5090CentroidsOnly'] == "Y":  # GW 20160609  Do we need only centroids ?
-		             if U90.split("_")[1] in CommonArea['U90Centroids']: 
-			         bFlagUnirefFound = True
-			         lBuiltRecord.append(U90)
-		        else:
 		            bFlagUnirefFound = True
 		            lBuiltRecord.append(U90)
 
