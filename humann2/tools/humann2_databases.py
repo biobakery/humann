@@ -99,7 +99,7 @@ def download_database(database, build, location):
             except EnvironmentError:
                 print("Unable to remove file: " + downloaded_file)
             
-            print("Database installed: " + install_location + "\n")
+            print("\nDatabase installed: " + install_location + "\n")
         else:
             sys.exit("ERROR: Please select an available build.")
     else:
@@ -123,6 +123,11 @@ def parse_arguments(args):
         nargs=3,
         metavar=("<database>","<build>","<install_location>"),
         help="download the selected database to the install location\n")
+    parser.add_argument(
+        "--update-config", 
+        default="yes",
+        choices=["yes","no"],
+        help="update the config file to set the new database as the default [DEFAULT: yes]\n")
     
     return parser.parse_args()
 
@@ -145,9 +150,11 @@ def main():
                 sys.exit("CRITICAL ERROR: Unable to create directory: " + location)
         
         install_location=download_database(database,build,location)
-        # update the config file with the installed location
-        config.update_user_edit_config_file_single_item("database_folders",
-            database_type[database],install_location)
+        
+        if args.update_config == "yes":
+            # update the config file with the installed location
+            config.update_user_edit_config_file_single_item("database_folders",
+                database_type[database],install_location)
     
     if args.available or not args.download:
         # print the available databases

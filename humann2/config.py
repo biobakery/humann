@@ -143,7 +143,7 @@ def update_user_edit_config_file(new_config_items):
         config.write(file_handle)
         file_handle.close()
     except EnvironmentError:
-        sys.exit("Unable to write to the config file: " + full_path_user_edit_config_file)
+        sys.exit("Unable to write to the HUMAnN2 config file.")
     
 def read_user_edit_config_file():
     """
