@@ -25,10 +25,10 @@ For additional groups files, see https://bitbucket.org/biobakery/humann2/src/tip
 p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
 Groups = namedtuple( "Groups", ["path", "start", "skip"] )
 c_default_groups = {
+    "uniref90_rxn": Groups( 
+        os.path.join( p_root, "data", "pathways", "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
     "uniref50_rxn": Groups( 
         os.path.join( p_root, "data", "pathways", "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
-    "uniref50_ec":  Groups( 
-        os.path.join( p_root, "data", "misc", "map_ec_uniref50.txt.gz" ), 0, [] ),
     }
 c_protected = [util.c_unmapped, util.c_unintegrated]
 c_topsort = c_protected + [util.c_ungrouped]
