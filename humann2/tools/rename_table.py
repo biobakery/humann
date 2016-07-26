@@ -8,6 +8,12 @@ import util
 import argparse
 import re
 
+try:
+    from humann2 import config
+except ImportError:
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+        " Please check your install.") 
+
 description = """
 HUMAnN2 utility for renaming table features
 ===========================================
@@ -20,8 +26,6 @@ HUMAnN2 utility for renaming table features
 p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
 Names = namedtuple( "Names", ["path"] )
 c_default_names = {
-    "uniref50": Names(
-        os.path.join( p_root, "data", "misc", "map_uniref50_name.txt.bz2" ) ),
     "kegg-orthology": Names(
         os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
     "kegg-pathway": Names(
@@ -35,6 +39,29 @@ c_default_names = {
     "metacyc-pwy": Names(
         os.path.join( p_root, "data", "misc", "map_metacyc-pwy_name.txt.gz" ) ),
     }
+
+# get a list of all available script mapping files
+try:
+    all_mapping_files=os.listdir(config.utility_mapping_database)
+except EnvironmentError:
+    all_mapping_files=[]
+
+# add the options for the larger mapping files if they are present
+larger_mapping_files_found=False
+if "map_uniref50_name.txt.bz2" in all_mapping_files:
+    c_default_names["uniref50"]=Names(os.path.join(config.utility_mapping_database,"map_uniref50_name.txt.bz2"))
+    larger_mapping_files_found=True
+if "map_uniref90_name.txt.bz2" in all_mapping_files:
+    c_default_names["uniref90"]=Names(os.path.join(config.utility_mapping_database,"map_uniref90_name.txt.bz2"))
+    larger_mapping_files_found=True
+    
+if not larger_mapping_files_found:
+    description+="""
+
+For additional name mapping files, run the following command:
+$ humann2_databases --download utility_mapping full $DIR
+Replacing, $DIR with the directory to download and install the databases."""
+
 
 # ---------------------------------------------------------------
 # utilities 
