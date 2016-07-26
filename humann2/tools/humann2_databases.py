@@ -63,12 +63,17 @@ current_downloads={
             "uniref50_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref_ec_filtered/uniref50_ec_filtered.tar.gz",
             "uniref90_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref_ec_filtered/uniref90_ec_filtered.tar.gz",
             "DEMO_diamond" : "http://huttenhower.sph.harvard.edu/humann2_data/uniprot/uniref50_GO_filtered/uniref50_DEMO_diamond.tar.gz"
-        }
+        },
+    "utility_mapping" :
+        {
+            "full" : "http://huttenhower.sph.harvard.edu/humann2_data/full_mapping.tar.gz"
+         }
 }
 
 database_type={
     "chocophlan" : "nucleotide",
-    "uniref" : "protein"
+    "uniref" : "protein",
+    "utility_mapping" : "utility_mapping"
 }
 
 def download_database(database, build, location):

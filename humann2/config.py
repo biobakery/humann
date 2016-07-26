@@ -45,6 +45,7 @@ def log_settings():
         lines.append("pathways database file 2 = " + pathways_database_part2)
     else:
         lines.append("pathways database file = " + pathways_database_part2)
+    lines.append("utility mapping database folder = " + utility_mapping_database)
     lines.append("")
     
     lines.append("RUN MODES")
@@ -214,6 +215,7 @@ config_items=read_user_edit_config_file()
 # database folders
 nucleotide_database=get_item(config_items, "database_folders" , "nucleotide", "string")
 protein_database=get_item(config_items, "database_folders", "protein", "string")
+utility_mapping_database=get_item(config_items, "database_folders", "utility_mapping", "string")
         
 # run modes
 resume=get_item(config_items, "run_modes", "resume", "bool")
