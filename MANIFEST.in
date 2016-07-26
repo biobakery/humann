@@ -19,5 +19,13 @@ prune humann2/quantify/MinPath
 
 exclude humann2/data/misc/map_EC_to_triplet_AC_U50_U90_Swissprot_and_Trembl.txt.gz
 exclude humann2/data/misc/map_infogo1000_uniref50.txt.gz
-exclude humann2/data/misc/map_ko_uniref50.txt.gz
+exclude humann2/data/misc/map_infogo1000_uniref90.txt.gz
 exclude humann2/data/misc/map_uniref90_name.txt.bz2
+exclude humann2/data/misc/map_go_uniref50.txt.gz
+exclude humann2/data/misc/map_go_uniref90.txt.gz
+exclude humann2/data/misc/map_ko_uniref50.txt.gz
+exclude humann2/data/misc/map_ko_uniref90.txt.gz
+exclude humann2/data/misc/map_level4ec_uniref50.txt.gz
+exclude humann2/data/misc/map_level4ec_uniref90.txt.gz
+exclude humann2/data/misc/map_pfam_uniref50.txt.gz
+exclude humann2/data/misc/map_pfam_uniref90.txt.gz
