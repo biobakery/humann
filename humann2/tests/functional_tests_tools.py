@@ -103,25 +103,6 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
         
-    def test_humann2_regroup_table_uniref50_ec_tsv(self):
-        """
-        Test regrouping the tsv file with humann2_regroup_table
-        Test with uniref50 to ec mappings
-        """
-        
-        # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
-        
-        # run the command
-        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
-                           new_file,"--groups","uniref50_ec"])
-        
-        # check the output is as expected
-        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_ec_output))
-
-        # remove the temp file
-        utils.remove_temp_file(new_file)
-        
     def test_humann2_regroup_table_custom_grouping_tsv(self):
         """
         Test regrouping the tsv file with humann2_regroup_table
