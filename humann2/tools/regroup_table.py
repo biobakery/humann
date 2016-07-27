@@ -7,6 +7,12 @@ import sys
 import os
 import util
 
+try:
+    from humann2 import config
+except ImportError:
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+        " Please check your install.") 
+
 description = """
 HUMAnN2 utility for regrouping table features
 =============================================
@@ -14,8 +20,6 @@ Given a table of feature values and a mapping
 of groups to component features, produce a 
 new table with group values in place of 
 feature values.
-
-For additional groups files, see https://bitbucket.org/biobakery/humann2/src/tip/humann2/data/misc/
 """
 
 # ---------------------------------------------------------------
@@ -30,6 +34,35 @@ c_default_groups = {
     "uniref50_rxn": Groups( 
         os.path.join( p_root, "data", "pathways", "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
     }
+
+# get a list of all available script mapping files
+try:
+    all_mapping_files=os.listdir(config.utility_mapping_database)
+except EnvironmentError:
+    all_mapping_files=[]
+
+# add larger mapping files if they have been downloaded
+all_larger_mapping_files=["map_go_uniref50.txt.gz","map_go_uniref90.txt.gz",
+                          "map_infogo1000_uniref50.txt.gz","map_infogo1000_uniref90.txt.gz",
+                          "map_ko_uniref50.txt.gz","map_ko_uniref90.txt.gz",
+                          "map_level4ec_uniref50.txt.gz","map_level4ec_uniref90.txt.gz",
+                          "map_pfam_uniref50.txt.gz","map_pfam_uniref90.txt.gz"]
+larger_mapping_files_found=False
+for mapping_file in all_larger_mapping_files:
+    if mapping_file in all_mapping_files:
+        # get the option name from the file name
+        option_to, option_from=mapping_file.split(".")[0].replace("map_","").split("_")
+        option="_".join([option_from, option_to])
+        c_default_groups[option]=Groups(os.path.join(config.utility_mapping_database, mapping_file), 0, [])
+        larger_mapping_files_found=True
+    
+if not larger_mapping_files_found:
+    description+="""
+    
+For additional group mapping files, run the following command:
+$ humann2_databases --download utility_mapping full $DIR
+Replacing, $DIR with the directory to download and install the databases."""
+
 c_protected = [util.c_unmapped, util.c_unintegrated]
 c_topsort = c_protected + [util.c_ungrouped]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
