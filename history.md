@@ -1,6 +1,18 @@
 
 # HUMAnN2 History #
 
+## v0.8.0 07-26-2016 ##
+
+### New Features ###
+
+* A new tool named "humann2_infer_taxonomy" has been added.
+* A new option, "--gap-fill <on/off>", was added. The default is set to off.
+* A new option, "--taxonomy_level <Genus>", was added to humann2_split_tables. The default is "Genus". This option allows the user to select the level of taxonomy printed from input files that were created with PICRUSt predict_metagenomes.py. 
+* A new minimal demo set ( input files, demo chocophlan, and demo uniref90 database) was added. This includes more unclassified hits.
+* A new database download set ( utility_mapping ) has been added to the download databases script. This download includes the large rename, regroup, and infer taxonomy data files. After downloading this data set with the humann2_databases command, additional options are available for the rename and regroup scripts.
+* Rename and regroup files for UniRef90 have been added. Also regroup files for pfam are now available.
+* The uniref to metacyc mapping file has been updated to use centriods so that it is consistant with the latest regroup mapping files. 
+
 ## v0.7.1 04-27-2016 ##
 
 ### New Features ###
