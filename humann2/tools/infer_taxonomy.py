@@ -15,13 +15,14 @@ for unclassified features at a target level of resolution
 (default=Family). Will modify features of known genus/species 
 to match target level.
 
-Requires the following supplmental data files:
+Requires the following supplemental data files:
 
 uniref50-tol-lca.dat.gz (for UniRef50)
 uniref90-tol-lca.dat.gz (for UniRef90)
 
-Which can be downloaded from:
-https://bitbucket.org/biobakery/humann2/src/tip/humann2/data/misc/
+The data mapping files can be downloaded and installed with the following command:
+$ humann2_databases --download utility_mapping full $DIR
+Replacing, $DIR with the directory to install the databases.
 """
 
 # ---------------------------------------------------------------
