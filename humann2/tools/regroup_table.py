@@ -172,7 +172,7 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
     # *** sorting changed to force 1|A to come before 11 ***
     groupnames = sorted( mapping.keys(), key=lambda k: k.split( util.c_strat_delim ) )
     # move special fields to the top
-    groupnames = sorted( groupnames, key=lambda k: 0 if k in c_topsort else 1 )
+    groupnames = sorted( groupnames, key=lambda k: 0 if k.split( util.c_strat_delim )[0] in c_topsort else 1 )
     groupdata = []
     for groupname in groupnames:
         oldrow_index = mapping[groupname]
