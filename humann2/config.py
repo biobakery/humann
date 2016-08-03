@@ -484,5 +484,5 @@ max_arguments=500
 # set the search mode options
 search_mode_uniref90="uniref90"
 search_mode_uniref50="uniref50"
-search_mode=search_mode_uniref50
+search_mode=search_mode_uniref90
 
