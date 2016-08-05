@@ -1,6 +1,13 @@
 
 # HUMAnN2 History #
 
+## v0.8.1 08-05-2016 ##
+
+### New Features ###
+
+* A new visualization tool named "humann2_barplot" has been added.
+* A new association tool named "humann2_associate" has been added.
+
 ## v0.8.0 07-26-2016 ##
 
 ### New Features ###
