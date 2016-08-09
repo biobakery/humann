@@ -29,11 +29,11 @@ c_default_names = {
     "kegg-orthology": Names(
         os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
     "kegg-pathway": Names(
-        os.path.join( p_root, "data", "misc", "map_kegg_pathways_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "misc", "map_kegg-pwy_name.txt.gz" ) ),
     "kegg-module": Names(
-        os.path.join( p_root, "data", "misc", "map_kegg_modules_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "misc", "map_kegg-mdl_name.txt.gz" ) ),
     "ec": Names(
-        os.path.join( p_root, "data", "misc", "map_ec_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "misc", "map_level4ec_name.txt.gz" ) ),
     "metacyc-rxn": Names(
         os.path.join( p_root, "data", "misc", "map_metacyc-rxn_name.txt.gz" ) ),    
     "metacyc-pwy": Names(
