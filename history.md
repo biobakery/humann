@@ -1,6 +1,12 @@
 
 # HUMAnN2 History #
 
+## v0.8.2 08-09-2016 ##
+
+### Bug Fix ###
+
+* Synced up the names of three rename files with those selected in the humann2_rename_table script.
+
 ## v0.8.1 08-05-2016 ##
 
 ### New Features ###
