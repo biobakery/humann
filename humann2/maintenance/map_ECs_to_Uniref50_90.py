@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from cStringIO import StringIO
 import sys,string
 import os
 import argparse
@@ -58,7 +57,7 @@ def read_params(x):
 #* Build the AC -->[ECs]  relationship                                               *
 #*************************************************************************************
 def ReadSwissprot(iFile):
- 	InputFile = open(iFile)
+	InputFile = open(iFile)
 	LineCntr = 0
 	iInterval = 10000000
 	dACtoECs = dict()
@@ -66,7 +65,7 @@ def ReadSwissprot(iFile):
 	for iLine in InputFile: 
 			LineCntr = LineCntr +1
 			if LineCntr % iInterval == 0:
-				print "Total input records read = ", str(LineCntr) 
+				print("Total input records read = " + str(LineCntr)) 
 
 			if iLine.startswith("AC   "):
 				lTemp = iLine.rstrip().split().pop().split(";")
@@ -86,14 +85,14 @@ def ReadSwissprot(iFile):
 					dACtoECs[AC].append(EC)
 					
 	InputFile.close()
- 	return  dACtoECs
+	return  dACtoECs
 
 	
 #**************************************************************
 #*           Match Txn vs Master                              *
 #**************************************************************
 def TxnVsMaster(CommonArea):
- 	dUniprotUniref = dict()
+	dUniprotUniref = dict()
 	FlagEnd = False
 	iTxnIndex = 0	
 	iTotalACsProcessed = 0	
@@ -101,7 +100,7 @@ def TxnVsMaster(CommonArea):
 	iTotalUniref5090RecsRead = 0							# Counter of Uniref5090 recs Read
 	iPrintAfterReads = 1000000 								# Print status after read of these number of records
  
- 	CommonArea['File5090'] = open(CommonArea['strInput5090'])							# Open the file
+	CommonArea['File5090'] = open(CommonArea['strInput5090'])							# Open the file
 	MasterLine = CommonArea['File5090'].readline()						# Read the Line
 	MKey = MasterLine.split()[0]							# This is the Master Key
 	TxnKey = CommonArea['lACsSorted'][0]
@@ -114,7 +113,7 @@ def TxnVsMaster(CommonArea):
 				FlagEnd = True
 			iTotalACsProcessed+=1							# Count the reads
 			if  iTotalACsProcessed %  iPrintAfterACReads == 0:	# If we need to print status
-				print "Total of ", iTotalACsProcessed, " ACs Processed against the Uniref5090 file"	
+				print("Total of " + str(iTotalACsProcessed) + " ACs Processed against the Uniref5090 file")	
 			TxnKey = CommonArea['lACsSorted'][iTxnIndex]
 			lInputLineSplit = MasterLine.split() 				# Split the line using space as delimiter
 			lEnt5090 = list()									# Initialize list
@@ -128,7 +127,7 @@ def TxnVsMaster(CommonArea):
 				FlagEnd = True
 			iTotalUniref5090RecsRead+=1							# Count the reads
 			if  iTotalUniref5090RecsRead %  iPrintAfterReads == 0:	# If we need to print status
-				print "Total of ", iTotalUniref5090RecsRead, " Uniref5090 records read"
+				print("Total of " + str(iTotalUniref5090RecsRead) + " Uniref5090 records read")
 			MKey = MasterLine.split()[0]
 			continue
 		elif  TxnKey < MKey:
@@ -138,7 +137,7 @@ def TxnVsMaster(CommonArea):
 			TxnKey = CommonArea['lACsSorted'][iTxnIndex]
 			iTotalACsProcessed+=1							# Count the reads
 			if  iTotalACsProcessed %  iPrintAfterACReads == 0:	# If we need to print status
-				print "Total of ", iTotalACsProcessed, " ACs Processed against the Uniref5090 file"	
+				print("Total of " + str(iTotalACsProcessed) + " ACs Processed against the Uniref5090 file")	
 			continue
 			
 			
@@ -201,13 +200,13 @@ def InitializeProcess(strUniref50gz,  strUniref90gz):
 	os.system(cmd_chmod)									# Invoke os
 	strUniref50gzFileName = os.path.split(strUniref50gz)[1]
 	strUniref90gzFileName = os.path.split(strUniref90gz)[1]
-	print "Unzipping uniref50 file"
+	print("Unzipping uniref50 file")
 	cmd_gunzip = "gunzip -c " + strUniref50gz + ">" + strTempDir + "/" + strUniref50gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Unzipping uniref90 file"
- 	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
+	print("Unzipping uniref90 file")
+	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Pasting Uniref50 to Uniref90"
+	print("Pasting Uniref50 to Uniref90")
 
 	cmd_paste =  "paste " +  strTempDir + "/" + strUniref50gzFileName[:-3] + " " +\
 						strTempDir + "/" + strUniref90gzFileName[:-3] + ">" +\
@@ -249,7 +248,7 @@ def Merge_Dictionaries(d1,d2):
 #********************************************************************************************
 #* Main                                                                                     *
 #********************************************************************************************
-print "Program started"
+print("Program started")
 
 CommonArea = read_params( sys.argv )  # Parse command  
 parser = CommonArea['parser'] 
@@ -257,13 +256,13 @@ results = parser.parse_args()
 CommonArea['iFileSwissprot'] = results.iSwissprot
 CommonArea['iFileTrembl'] = results.iTrembl
 
-print "Reading Swissprot"
+print("Reading Swissprot")
 dACtoECsSwissprot = ReadSwissprot(CommonArea['iFileSwissprot']) #Read Swissprot 
 
-print "Reading Trembl"
+print("Reading Trembl")
 dACtoECsTrembl = ReadSwissprot(CommonArea['iFileTrembl'])  #Read Trembl
 
-print "Merging the Swissprot and Trembl dictionairies"
+print("Merging the Swissprot and Trembl dictionairies")
 dMerged = Merge_Dictionaries(dACtoECsSwissprot,dACtoECsTrembl) # Merge the two dictionaries
 
 
@@ -300,5 +299,5 @@ os.system(cmd_remove_tempdir)
 CommonArea = Build_EC_to_Uniref5090_File(CommonArea)    #  Build the cross reference
 
  
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
