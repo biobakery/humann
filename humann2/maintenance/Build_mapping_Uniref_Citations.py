@@ -1,6 +1,5 @@
 #!/usr/bin/env python
  
-from cStringIO import StringIO
 import sys,string
 import os
 from pprint import pprint
@@ -15,7 +14,6 @@ import re
 import uuid
 import subprocess
 from subprocess import call
-from compiler.ast import flatten
 
 
 #********************************************************************************************
@@ -55,7 +53,7 @@ from compiler.ast import flatten
 def read_params(x):
 	CommonArea = dict()
 	parser = argparse.ArgumentParser(description='Build mapping of Uniref50 90 to DR citations in Swissprot')
-        parser.add_argument('--i_sprot',
+	parser.add_argument('--i_sprot',
             action="store",
             dest='i_sprot',
             help='Name of the input Swissprot or Uniprot datasetin text format',
@@ -74,10 +72,10 @@ def read_params(x):
 	parser.add_argument('--o_extract',
 	   action="store",
 	   dest='o_extract',
-	   help='Name of the output dataset that contais the extract: Uniref90\Uniref50\All the GO,   Pfam, EC and KO mappings',
+	   help='Name of the output dataset that contais the extract: Uniref90 \ Uniref50 \ All the GO,   Pfam, EC and KO mappings',
 	   nargs='?',
 	   default="o_extract")
-        parser.add_argument('--KeepTemporaryDatasets',
+	parser.add_argument('--KeepTemporaryDatasets',
             action="store_true",  
             dest='KeepTempDatasets',
             default=False,
@@ -101,7 +99,7 @@ def Process_Unirefs_File(CommonArea):
         for U5090Row in U5090Recs:  # Read the file
             iU5090RecCntr+=1  # Count the recs
             if  iU5090RecCntr %  iPrintAfterReads == 0:	# If we need to print status
-                print "Total of ", iU5090RecCntr, " Uniref5090 records read"
+                print("Total of " + str(iU5090RecCntr) + " Uniref5090 records read")
             U50ID = U5090Row[1].split("_")[1] 
             U90ID = U5090Row[3].split("_")[1] 
             AC = U5090Row[2]
@@ -116,10 +114,10 @@ def Process_Unirefs_File(CommonArea):
             CommonArea['U90s_Centroids'][U90ID] = U50ID 
             
     CommonArea['U50_Centroids']  = set(CommonArea['U50_Centroids'])  # For future use  
-    print "*" * 100
-    print "* Read:                             ",  "{:,.0f}".format(iU5090RecCntr) , " U5090 records"
-    print "* A total of:                       ",  "{:,.0f}".format(iU90SelectedCntr), " records had U90 = AC"
-    print "* A total of:                       ",  "{:,.0f}".format(len(CommonArea['U50_Centroids'])), " records had U50 = AC"
+    print("".join("*" * 100))
+    print("* Read:                             " + "{:,.0f}".format(iU5090RecCntr) + " U5090 records")
+    print("* A total of:                       " + "{:,.0f}".format(iU90SelectedCntr) + " records had U90 = AC")
+    print("* A total of:                       " + "{:,.0f}".format(len(CommonArea['U50_Centroids'])) + " records had U50 = AC")
 
     return CommonArea
  
@@ -302,8 +300,8 @@ def Glue_Uniref50_Uniref90_Files(strUniref50gz,  strUniref90gz):
 	#*************************************************************************
 
 	TempFileNameRandom = uuid.uuid4()
-        CommonArea['TemporaryOutputFileName'] = os.path.join(CommonArea['strTempDir'], str(TempFileNameRandom) )  # We are going to post the output here and then sort it by U90 
-        CommonArea['TemporaryOutputFile'] = open(CommonArea['TemporaryOutputFileName'],'w')
+	CommonArea['TemporaryOutputFileName'] = os.path.join(CommonArea['strTempDir'], str(TempFileNameRandom) )  # We are going to post the output here and then sort it by U90 
+	CommonArea['TemporaryOutputFile'] = open(CommonArea['TemporaryOutputFileName'],'w')
         
         
 	dInputFiles["TempDirName"] = strTempDir					# Store the name of the temp dir for future use
@@ -311,11 +309,11 @@ def Glue_Uniref50_Uniref90_Files(strUniref50gz,  strUniref90gz):
 	os.system(cmd_chmod)									# Invoke os
 	strUniref50gzFileName = os.path.split(strUniref50gz)[1]
 	strUniref90gzFileName = os.path.split(strUniref90gz)[1]
-	print "Unzipping uniref50 file"
+	print("Unzipping uniref50 file")
 	cmd_gunzip = "gunzip -c " + strUniref50gz + ">" + strTempDir + "/" + strUniref50gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Unzipping uniref90 file"
- 	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
+	print("Unzipping uniref90 file")
+	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
 
 
@@ -370,7 +368,7 @@ def GenerateCrossReferenceFiles(CommonArea):
 #*************************************************************************************
 #*  Main Program                                                                     *
 #*************************************************************************************
-print "Program started"
+print("Program started")
 
 CommonArea = read_params( sys.argv )  # Parse command  
 parser = CommonArea['parser'] 
@@ -403,7 +401,7 @@ CommonArea['ACsProcessed'] = 0
 
 dInputFiles =  Glue_Uniref50_Uniref90_Files(CommonArea['Uniref50gz'] ,  CommonArea['Uniref90gz'])  # Invoke initialization
 CommonArea['strInput5090'] = dInputFiles["File5090"]		#Name of the Uniref5090 file
-print "Uniref50 and 90 glued"
+print("Uniref50 and 90 glued")
 
 
 CommonArea = Process_Unirefs_File(CommonArea)   #  Process the unirefs file
@@ -434,15 +432,15 @@ with open(CurrentStepCopyOutputFileName, 'w') as f:
 
 
 
-print "* Number of proteins (ACs) in Swissprot file read:",  "{:,.0f}".format(CommonArea['ACsProcessed'])
-print "* Summary of generated records"
-print "* ----------------------------"
-print "*"
-print "* Proteins with ECs from DE records:",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsEC'])
-print "* Proteins with KO citations       :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsKO'])
-print "* Proteins with Pfam citations     :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsPfam'])
-print "* Proteins with GO citations       :",  "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsGO'])
-print "*" * 100
+print("* Number of proteins (ACs) in Swissprot file read:" + "{:,.0f}".format(CommonArea['ACsProcessed']))
+print("* Summary of generated records")
+print("* ----------------------------")
+print("*")
+print("* Proteins with ECs from DE records:" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsEC']))
+print("* Proteins with KO citations       :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsKO']))
+print("* Proteins with Pfam citations     :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsPfam']))
+print("* Proteins with GO citations       :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsGO']))
+print("".join("*" * 100))
 
 
 CommonArea = GenerateCrossReferenceFiles(CommonArea)  # Generate the citations files
@@ -458,10 +456,10 @@ if results.KeepTempDatasets == False:
     with open(CurrentStepDelOutputFileName, 'w') as f:
         subprocess.call(lCommands, stdout=f)
 else:
-    print "Temporary directory will be kept"
-    print "Temporary directory ", CommonArea['strTempDir'] , " ****  Will be kept  ****"
+    print("Temporary directory will be kept")
+    print("Temporary directory " + CommonArea['strTempDir'] + " ****  Will be kept  ****")
 
 
 
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
