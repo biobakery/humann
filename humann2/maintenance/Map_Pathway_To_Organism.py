@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from cStringIO import StringIO
 import sys,string
 import sys, os
 import argparse
@@ -44,10 +43,10 @@ def ReadClasses(CommonArea):
 			if iLine.startswith("COMMON-NAME - ") and  bFlagTaxonomy == True:
 				CommonName = iLine.split("COMMON-NAME - ")[1].rstrip()
 				dTaxOrganism[UId] = CommonName 
- 	CommonArea['dTaxOrganism'] = dTaxOrganism
+	CommonArea['dTaxOrganism'] = dTaxOrganism
    
 	InputFile.close()
- 	return CommonArea
+	return CommonArea
 
 
 
@@ -82,14 +81,7 @@ def ReadPathways(CommonArea):
 	CommonArea['dPathwaysOrganism'] = dPathwaysOrganism
    
 	InputFile.close()
- 	return CommonArea
-
-
-
-
-
-
-
+	return CommonArea
 
 
 #*************************************************************************************
@@ -117,8 +109,8 @@ def  GenerateOutputFile(CommonArea):
 	strTab = "\t"
 	strNewLine = "\n"
 	OutputLineCntr = 0
- 	OutputFile = open(CommonArea['oFile'],'w')
- 	for Pathway in sorted(CommonArea['dPathwaysOrganism'].keys()):
+	OutputFile = open(CommonArea['oFile'],'w')
+	for Pathway in sorted(CommonArea['dPathwaysOrganism'].keys()):
 		lOutputRecord = [Pathway]
 		strOrganisms = ""
 		for Organism in CommonArea['dPathwaysOrganism'][Pathway]:
@@ -129,16 +121,10 @@ def  GenerateOutputFile(CommonArea):
 	OutputFile.close()
 	return CommonArea
 	
-	
-	
- 
-	
-	
-	
 #*************************************************************************************
 #*  Main Program                                                                     *
 #*************************************************************************************
-print "Program started"
+print("Program started")
 CommonArea = read_params( sys.argv )  # Parse command  
 parser = CommonArea['parser'] 
 results = parser.parse_args()
@@ -150,5 +136,5 @@ Commonrea = ReadClasses(CommonArea)    #Load the mapping Unique_id --> Organism
 Commonrea = ReadPathways(CommonArea)    #Load the mapping Unique_id --> Organism
 CommonArea = GenerateOutputFile(CommonArea)  #Print the relationships
 
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
