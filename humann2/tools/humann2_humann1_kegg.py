@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from cStringIO import StringIO
 import sys,string
 import sys, os
 import argparse
@@ -84,7 +83,7 @@ def read_params(x):
 #*  "http://www.genome.jp/kegg/catalog/org_list.html"                   *
 #************************************************************************
 def  ReadHtmlKegTable(CommonArea):
-		print "Trying to read the online kegg html table to translate OrgId to OrgName : http://www.genome.jp/kegg/catalog/org_list.html"
+		print("Trying to read the online kegg html table to translate OrgId to OrgName : http://www.genome.jp/kegg/catalog/org_list.html")
 		from bs4 import BeautifulSoup
 		import urllib2
 		
@@ -159,7 +158,7 @@ def  GetTaxonomy(OrgIdName):
 #*************************************************************************************
 #*  Main Program                                                                     *
 #*************************************************************************************
-print "Program started"
+print("Program started")
 
 CommonArea = read_params( sys.argv )  # Parse command  
 parser = CommonArea['parser'] 
@@ -185,7 +184,7 @@ CommonArea['dOrgIdOrgName'] = dict()
 try:
 	CommonArea  =  ReadSequentialTranslationFile(CommonArea)   #First,  try to read the sequential file in our directory
 except:
-	print "Reading the Table OrgId--> Name in ../data/misc/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website"
+	print("Reading the Table OrgId--> Name in ../data/misc/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website")
 	CommonArea  =  ReadHtmlKegTable(CommonArea)   #But if that fails - try directly from Kegg
  
 Flagete2Installed = True
@@ -193,7 +192,7 @@ try:
 	from ete2 import NCBITaxa
 	ncbi = NCBITaxa()
 except:
-	print "ete2 is not installed and thus we cannot provide the full taxonomy for the bug, providing only the name"
+	print("ete2 is not installed and thus we cannot provide the full taxonomy for the bug, providing only the name")
 	Flagete2Installed = False
 
 
@@ -216,11 +215,11 @@ dBugGeneToKO = dict()
 #*   Load the koc dictionary                                            *
 #************************************************************************
 for ikocLine in CommonArea['ikoc_file']: 
-    kocEntries  = ikocLine.split('\t')
-    KO = kocEntries[0]
-    kocEntries.pop(0)
+	kocEntries  = ikocLine.split('\t')
+	KO = kocEntries[0]
+	kocEntries.pop(0)
 
-    for kocEntry in kocEntries:
+	for kocEntry in kocEntries:
 		Bug = kocEntry.split("#")[0]
 		Gene = kocEntry.split("#")[1].rstrip('\n')
 		BugGene = Bug + ":" + Gene
@@ -259,5 +258,5 @@ for iLine in CommonArea['igenels_file']:
 	
 		
 OutputFile.close()
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
