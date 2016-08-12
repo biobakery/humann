@@ -87,7 +87,7 @@ def ReadUniref5090File(strInput5090,sUniprotIds):
 	for strInputLine in File5090:   						# Read Input file
 		iTotalUniref5090RecsRead+=1							# Count the reads
 		if  iTotalUniref5090RecsRead %  iPrintAfterReads == 0:	# If we need to print status
-			print "Total of ", iTotalUniref5090RecsRead, " Uniref5090 records read"
+			print("Total of " + str(iTotalUniref5090RecsRead) + " Uniref5090 records read")
 		lInputLineSplit = strInputLine.split() 				# Split the line using space as delimiter
 		if lInputLineSplit[0]  not in sUniprotIds:			# If we don't need this ID 
 			continue										# skip it 
@@ -97,8 +97,8 @@ def ReadUniref5090File(strInput5090,sUniprotIds):
 		dUniprotUniref[lInputLineSplit[0]] = lEnt5090		# Post it in the dictionary
 		iTotalUniref5090RecsLoaded+=1						# Increase counter
 		if  iTotalUniref5090RecsLoaded %  iPrintAfter == 0:	# If we need to print status
-			print "Total of ", iTotalUniref5090RecsLoaded, " Uniref5090 records loaded into the table"
-	print "Load Complete - Total of ", iTotalUniref5090RecsLoaded, " Uniref5090 records loaded into the table"
+			print("Total of " + str(iTotalUniref5090RecsLoaded) + " Uniref5090 records loaded into the table")
+	print("Load Complete - Total of " + str(iTotalUniref5090RecsLoaded) + " Uniref5090 records loaded into the table")
 	File5090.close()										# CLose the file
 	return dUniprotUniref
  
@@ -136,7 +136,7 @@ def ProcessMCCFile(strInputmcc,  dUniprotUniref):
 			OutputFile.write(strRebuiltRecord) 	 							#  write it
 			iTotalMCCRecordsProcessed+=1									# Add to the counter of MCC records processed
 		if  iTotalMCCRecordsProcessed %  iPrintAfterMCCProcessed == 0:	# If we need to print status
-			print "Total of ", iTotalMCCRecordsProcessed, " MCC records processed and a total of ", iTotalTranslationsFound , " Successful Translations"
+			print("Total of " + str(iTotalMCCRecordsProcessed) + " MCC records processed and a total of " + str(iTotalTranslationsFound) + " Successful Translations")
 	FileMCC.close()														# Close MCC file
 	return  
  
@@ -157,13 +157,13 @@ def InitializeProcess(strUniref50gz,  strUniref90gz):
 	os.system(cmd_chmod)									# Invoke os
 	strUniref50gzFileName = os.path.split(strUniref50gz)[1]
 	strUniref90gzFileName = os.path.split(strUniref90gz)[1]
-	print "Unzipping uniref50 file"
+	print("Unzipping uniref50 file")
 	cmd_gunzip = "gunzip -c " + strUniref50gz + ">" + strTempDir + "/" + strUniref50gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Unzipping uniref90 file"
- 	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
+	print("Unzipping uniref90 file")
+	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Pasting Uniref50 to Uniref90"
+	print("Pasting Uniref50 to Uniref90")
 
 	cmd_paste =  "paste " +  strTempDir + "/" + strUniref50gzFileName[:-3] + " " +\
 						strTempDir + "/" + strUniref90gzFileName[:-3] + ">" +\
@@ -193,7 +193,7 @@ def  GatherNeededUniprotIDs(strInputmcc):
 #********************************************************************************************
 #* Main                                                                                     *
 #********************************************************************************************
-print "Program Started"
+print("Program Started")
 strUniref50gz = sys.argv[1]					# The first file is the zipped version of the Uniref50 Translation file
 strUniref90gz = sys.argv[2]					# The 2nd file is the zipped version of the Uniref90 Translation file
 strInputmcc =  sys.argv[3]					#Name if mcc file
@@ -208,12 +208,12 @@ strInput5090 =  dInputFiles["File5090"]		#Name of the Uniref5090 file
 
 
 OutputFile = open(OutputFileName,'w')		#Open the Output file
-print "Starting the load of the table\n"
+print("Starting the load of the table\n")
 dUniprotUniref = ReadUniref5090File(strInput5090,sUniprotIds)	#Invoke reading of the file
-print "Completed the load of the table\n"
+print("Completed the load of the table\n")
  
 cmd_remove_tempdir = "rm -r /" + dInputFiles["TempDirName"]		# Remove the temporary directory
 os.system(cmd_remove_tempdir)	
 ProcessMCCFile(strInputmcc,  dUniprotUniref)		#Process MCC file records
 OutputFile.close()							#Close the Output file
-print "Program Ended Successfully"
+print("Program Ended Successfully")
