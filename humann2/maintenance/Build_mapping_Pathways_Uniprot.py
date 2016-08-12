@@ -1,6 +1,5 @@
 #!/usr/bin/env python
  
-from cStringIO import StringIO
 import sys,string
 import os
 from pprint import pprint
@@ -100,7 +99,7 @@ def BuildPathwaysToUniref(CommonArea):
 	#***************************************
 	dInputFiles =  InitializeProcess(CommonArea['Uniref50gz'] ,  CommonArea['Uniref90gz'])  # Invoke initialization
 	CommonArea['strInput5090'] = dInputFiles["File5090"]		#Name of the Uniref5090 file
-	print "Starting the load of the 5090 table\n"
+	print("Starting the load of the 5090 table\n")
 	
 	CommonArea = TxnVsMaster(CommonArea)   #Process the 5090 file against the ACs
  
@@ -122,7 +121,7 @@ def BuildPathwaysToUniref(CommonArea):
 				U50 = "Uniref50_" + CommonArea['dUniprotUniref'][AC][0]
 				lU50.append(U50)
 				U90 = "Uniref90_" + CommonArea['dUniprotUniref'][AC][1]
- 				lU90.append(U90)
+				lU90.append(U90)
 			except:
 				continue
 		
@@ -165,7 +164,7 @@ def TxnVsMaster(CommonArea):
 	for AC in CommonArea['sTableACs']:
 		lACs.append(AC) 
 	CommonArea['lACsSorted'] = sorted(lACs)
- 	CommonArea['File5090'] = open(CommonArea['strInput5090'])							# Open the file
+	CommonArea['File5090'] = open(CommonArea['strInput5090'])							# Open the file
 	MasterLine = CommonArea['File5090'].readline()						# Read the Line
 	MKey = MasterLine.split()[0]							# This is the Master Key
 	TxnKey = CommonArea['lACsSorted'][0]
@@ -178,7 +177,7 @@ def TxnVsMaster(CommonArea):
 				FlagEnd = True
 			iTotalACsProcessed+=1							# Count the reads
 			if  iTotalACsProcessed %  iPrintAfterACReads == 0:	# If we need to print status
-				print "Total of ", iTotalACsProcessed, " ACs Processed against the Uniref5090 file"	
+				print("Total of " + str(iTotalACsProcessed) + " ACs Processed against the Uniref5090 file")	
 			TxnKey = CommonArea['lACsSorted'][iTxnIndex]
 			lInputLineSplit = MasterLine.split() 				# Split the line using space as delimiter
 			lEnt5090 = list()									# Initialize list
@@ -192,7 +191,7 @@ def TxnVsMaster(CommonArea):
 				FlagEnd = True
 			iTotalUniref5090RecsRead+=1							# Count the reads
 			if  iTotalUniref5090RecsRead %  iPrintAfterReads == 0:	# If we need to print status
-				print "Total of ", iTotalUniref5090RecsRead, " Uniref5090 records read"
+				print("Total of " + str(iTotalUniref5090RecsRead) + " Uniref5090 records read")
 			MKey = MasterLine.split()[0]
 			continue
 		elif  TxnKey < MKey:
@@ -202,7 +201,7 @@ def TxnVsMaster(CommonArea):
 			TxnKey = CommonArea['lACsSorted'][iTxnIndex]
 			iTotalACsProcessed+=1							# Count the reads
 			if  iTotalACsProcessed %  iPrintAfterACReads == 0:	# If we need to print status
-				print "Total of ", iTotalACsProcessed, " ACs Processed against the Uniref5090 file"	
+				print("Total of " + str(iTotalACsProcessed) + " ACs Processed against the Uniref5090 file")	
 			continue
 			
 			
@@ -249,7 +248,7 @@ def Map_Pathways_to_UniprotIDs(CommonArea):
 					if sCurrentPathway is not None:
 						dPathwaysACs[sCurrentPathway].append(AC)
 						lTableACs.append(AC)
-  	else:
+	else:
 		if len(lOutputLine) > 0:
 			strBuiltRecord = "\t".join(lOutputLine) + 	"\n"
 			strBuiltRecord = strBuiltRecord.replace (" ", "_")   #Modified 20141216
@@ -260,11 +259,11 @@ def Map_Pathways_to_UniprotIDs(CommonArea):
 	sTableACs = set(lTableACs) 	#*** Remove dups of ACs
 	CommonArea['sTableACs'] = sTableACs
 	lListOfACs = list(sTableACs)
-	print "There are ", len(lListOfACs) ," unique AC entries in the set of ACs\n"
+	print("There are " + str(len(lListOfACs)) + " unique AC entries in the set of ACs\n")
 	
 
 	
- 	InputFile.close()
+	InputFile.close()
 	OutputFile.close()
 	OutputValidACsFile = open(CommonArea['oValidACs'],'w')    #Create the file of valid ACs to be used in ReadSwissprot.py
 	for ValidAC in CommonArea['sTableACs']:
@@ -289,13 +288,13 @@ def InitializeProcess(strUniref50gz,  strUniref90gz):
 	os.system(cmd_chmod)									# Invoke os
 	strUniref50gzFileName = os.path.split(strUniref50gz)[1]
 	strUniref90gzFileName = os.path.split(strUniref90gz)[1]
-	print "Unzipping uniref50 file"
+	print("Unzipping uniref50 file")
 	cmd_gunzip = "gunzip -c " + strUniref50gz + ">" + strTempDir + "/" + strUniref50gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Unzipping uniref90 file"
- 	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
+	print("Unzipping uniref90 file")
+	cmd_gunzip = "gunzip -c " + strUniref90gz + ">" + strTempDir + "/" + strUniref90gzFileName[:-3] # Build the gunzip command
 	os.system(cmd_gunzip)									# Invoke os
-	print "Pasting Uniref50 to Uniref90"
+	print("Pasting Uniref50 to Uniref90")
 
 	cmd_paste =  "paste " +  strTempDir + "/" + strUniref50gzFileName[:-3] + " " +\
 						strTempDir + "/" + strUniref90gzFileName[:-3] + ">" +\
@@ -330,7 +329,7 @@ def FilterLine(iLine):
 #*************************************************************************************
 #*  Main Program                                                                     *
 #*************************************************************************************
-print "Program started"
+print("Program started")
 
 CommonArea = read_params( sys.argv )  # Parse command  
 parser = CommonArea['parser'] 
@@ -352,5 +351,5 @@ if CommonArea['oPathwaysUniref5090'] is not None:
 	CommonArea = BuildPathwaysToUniref(CommonArea)
 
 
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
