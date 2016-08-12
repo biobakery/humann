@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from cStringIO import StringIO
 import sys,string
 import sys, os
 import argparse
@@ -7,9 +6,9 @@ try:
 	from ete2 import NCBITaxa
 	ncbi = NCBITaxa()
 except:
-	print "ete2 is required to run this program"
-	print "See http://pythonhosted.org/ete2/tutorial/tutorial_ncbitaxonomy.html"
-	print "Please install ete2 and rerun"
+	print("ete2 is required to run this program")
+	print("See http://pythonhosted.org/ete2/tutorial/tutorial_ncbitaxonomy.html")
+	print("Please install ete2 and rerun")
 	exit()
 
 
@@ -107,7 +106,7 @@ def  GetTaxonomy(OrgIdName):
 #*************************************************************************************
 #*  Main Program                                                                     *
 #*************************************************************************************
-print "Program started"
+print("Program started")
 
 
 CommonArea = read_params( sys.argv )  # Parse command  
@@ -126,7 +125,7 @@ for sLine in CommonArea['InputFile']:
 		OutputFile.write(sLine)
 		continue
 	if  not sLineBrokenByPipe[1].startswith('g__'):		#If it does not contain a bug - continue 
- 		OutputFile.write(sLine)
+		OutputFile.write(sLine)
 		continue
  
 	sB1 = sLine.split('.s__')[1]    #Split to get the bug name
@@ -140,5 +139,5 @@ for sLine in CommonArea['InputFile']:
 	
 		
 OutputFile.close()
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
