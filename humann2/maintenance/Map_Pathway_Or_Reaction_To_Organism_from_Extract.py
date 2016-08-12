@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from cStringIO import StringIO
 import sys,string
 import sys, os
 import argparse
@@ -87,22 +86,11 @@ def ReadExtract(CommonArea):
 					dPathwayOrganism[Pathway] = list()	# Create an empty list
 				if Species != "MetaCyc":
 					dPathwayOrganism[Pathway].append(Species)	# Append the Species
-
  
- 	CommonArea['dPathwayOrganism'] = dPathwayOrganism
+	CommonArea['dPathwayOrganism'] = dPathwayOrganism
    
 	InputFile.close()
- 	return CommonArea
-
-
- 
-
-
-
-
-
-
-
+	return CommonArea
 
 #*************************************************************************************
 #* Parse Input parms                                                                 *
@@ -128,8 +116,8 @@ def  GenerateOutputFile(CommonArea):
 	strTab = "\t"
 	strNewLine = "\n"
 	OutputLineCntr = 0
- 	OutputFile = open(CommonArea['oFile'],'w')
- 	for Pathway in sorted(CommonArea['dPathwayOrganism'] .keys()):
+	OutputFile = open(CommonArea['oFile'],'w')
+	for Pathway in sorted(CommonArea['dPathwayOrganism'] .keys()):
 		lOutputRecord = [Pathway]
 		strOrganisms = ""
  
@@ -150,7 +138,7 @@ def  GenerateOutputFile(CommonArea):
 #*************************************************************************************
 #*  Main Program                                                                     *
 #*************************************************************************************
-print "Program started"
+print("Program started")
 CommonArea = read_params( sys.argv )  # Parse command  
 parser = CommonArea['parser'] 
 results = parser.parse_args()
@@ -160,5 +148,5 @@ CommonArea['oFile'] = results.o
 Commonrea = ReadExtract(CommonArea)    # Read the file  
 CommonArea = GenerateOutputFile(CommonArea)  #Print the relationships
 
-print "Program ended Successfully"
+print("Program ended Successfully")
 exit(0)
