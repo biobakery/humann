@@ -53,6 +53,10 @@ if not glpsol_global is None:
 if not glpsol_global is None:
 	glpsol0=glpsol_global
 
+# this function returns a string from a group of items
+def get_string(*items): 
+    return " ".join(str(i) for i in items)
+
 def intmatrix(dim1, dim2):
 	mat = []
 	for i in range(dim1):
@@ -96,7 +100,7 @@ class MinPath:
 		self.pathMapped = []
 	
 		if whichdb == "SEED":
-			print "now get SEED"
+			print("now get SEED")
 			fig2ssfile = self.dataDir + "/figfam_subsystem.dat"
 			self.ReadFigSubsytem(fig2ssfile)
 		elif whichdb == "KEGG":
@@ -107,27 +111,27 @@ class MinPath:
 			self.ReadKO(kofile, getgene, givenspe) #KO: KEGG family
 		else:
 			if os.path.exists(mapfile):
-				print "mapfile", mapfile
+				print("mapfile", mapfile)
 				self.ReadAnyMap(mapfile)
 			elif os.path.exists(self.dataDir + "/" + os.path.basename(mapfile)):
-				print "file: ", self.dataDir + "/" + os.path.basename(mapfile)
+				print("file: ", self.dataDir + "/" + os.path.basename(mapfile))
 				self.ReadAnyMap(self.dataDir + "/" + os.path.basename(mapfile))
 			else:
 				sys.exit("file " + mapfile + " not found")
 
 		self.CheckUniqueFam()
 
-        def GetPathList(self):
+	def GetPathList(self):
 		return self.pathList;
 
-        def GetPathName(self):
+	def GetPathName(self):
 		return self.pathName;
 
 	def ReadAnyMap(self, mapfile):
 		try:
 			file = open(mapfile, "r")
 		except IOError:
-			print "open file %s error" % mapfile
+			print("open file %s error" % mapfile)
 
 		for aline in file:
 			if aline[0] == '#':
@@ -159,17 +163,17 @@ class MinPath:
 
 		self.famTot = len(self.famList)
 		self.pathTot = len(self.pathList)		
-		print "total family", self.famTot, " pathway", self.pathTot
+		print("total family", self.famTot, " pathway", self.pathTot)
 		#for idx in range(self.pathTot):
 		#	print "path", self.pathName[idx], " include fam", len(self.path2Fam[idx])
 
 	#read SEED figfam to subsytem mapping
 	def ReadFigSubsytem(self, fig2ssfile):
-		print "fig2ssfile=%s" % fig2ssfile
+		print("fig2ssfile=%s" % fig2ssfile)
 		try:
 			file = open(fig2ssfile, "r")
 		except IOError:
-			print "open file %s error" % fig2ssfile
+			print("open file %s error" % fig2ssfile)
 		for aline in file:
 			aline = aline.strip()
 			#note: in seed, a "family" (or "function") can have multiple FIG "sub"families
@@ -208,8 +212,8 @@ class MinPath:
 		file.close()
 		self.pathTot = len(self.pathList)
 		self.famTot = len(self.famList)
-		print "total SEED subsystem=%d" % self.pathTot
-		print "total SEED functions(families)=%d" % self.famTot
+		print("total SEED subsystem=%d" % self.pathTot)
+		print("total SEED functions(families)=%d" % self.famTot)
 
 	#read KEGG pathways from ~/pathway/map-title.tab
 	def ReadKEGGPath(self, pathfile):
@@ -229,15 +233,15 @@ class MinPath:
 		file.close()
 
 		self.pathTot = len(self.pathList)
-		print "total KEGG pathway=%d" % self.pathTot
+		print("total KEGG pathway=%d" % self.pathTot)
 
 	#read the KEGG families (KO) from ~/genes/ko
 	def ReadKO(self, kofile = "", ifreadgene = False, ifgivenspe = ""):
 		try:
 			file = open(kofile, "r")	
 		except IOError:
-			print "open file %s error" % kofile
-		print "read kofile=%s" % kofile
+			print("open file %s error" % kofile)
+		print("read kofile=%s" % kofile)
 		for aline in file:
 			aline = aline.strip()
 			m = re.search(r'^ENTRY\s+(?P<ko>[\S]+)', aline)
@@ -266,7 +270,7 @@ class MinPath:
 			#reading this information is time-consuming
 			if not ifreadgene:
 				continue
-       	 		m = re.search(r'^GENES', aline)
+			m = re.search(r'^GENES', aline)
 			if not m:
 				continue
 			#raw_input(" continue with reading gene...")
@@ -297,10 +301,10 @@ class MinPath:
 				if not ifvalid:
 					continue
 				#else: the org is the same
-                       		info = aline[17:]
-                        	info2 = re.sub(r'\([^\)]+\)', "", info)
-	                        items = info2.split()
-        	                for aquery in items:
+				info = aline[17:]
+				info2 = re.sub(r'\([^\)]+\)', "", info)
+				items = info2.split()
+				for aquery in items:
 					#thisgene = org + ":" + aquery
 					thisgene = aquery
 					#print "thisgene = ", thisgene
@@ -317,9 +321,9 @@ class MinPath:
 		self.famTot = len(self.famList)
 		self.famID = self.famList
 		self.orgTot = len(self.orgList)
-		print "total KEGG fam=%d" % (self.famTot)
+		print("total KEGG fam=%d" % (self.famTot))
 		if ifreadgene:
-			print "total organisms involved =%d" % (self.orgTot)
+			print("total organisms involved =%d" % (self.orgTot))
 			one2one = 0
 			one2mul = 0
 			for i in range(self.orgTot):
@@ -329,34 +333,34 @@ class MinPath:
 						one2mul += 1
 					else:
 						one2one += 1
-			print "total %d genes matched to multiple KO; %d matched to single KO" % (one2mul, one2one)
+			print("total %d genes matched to multiple KO; %d matched to single KO" % (one2mul, one2one))
 
 	#calcualte the uniqueness of Fam (KEGG families or SEED families)
 	def CheckUniqueFam(self):
 		for i in range(self.famTot):
 			if len(self.fam2Path[i]) > 10:
-				print "fam=%d %s [%s] map-to-path=%d" % (i, self.famList[i], self.famName[i], len(self.fam2Path[i]))			
+				print("fam=%d %s [%s] map-to-path=%d" % (i, self.famList[i], self.famName[i], len(self.fam2Path[i])))			
 				for p in self.fam2Path[i]:
-					print "   path-%d[%s %s]" % (p, self.pathList[p], self.pathName[p])
+					print("   path-%d[%s %s]" % (p, self.pathList[p], self.pathName[p]))
 		ubifam = 0
 		for i in range(self.famTot):
 			if len(self.fam2Path[i]) > 1:
 				ubifam += 1
-		print "total families that mapped to more than one pathway = %d" % ubifam
+		print("total families that mapped to more than one pathway = %d" % ubifam)
 					
 		for p in range(self.pathTot):
 			row = []
 			totfam = len(self.path2Fam[p])
 			uniquefam = 0 
-			print "pathway-%d[%s; %s] fam=%d" % (p, self.pathList[p], self.pathName[p], totfam)
+			print("pathway-%d[%s; %s] fam=%d" % (p, self.pathList[p], self.pathName[p], totfam))
 			for k in range(totfam):
 				fam = self.path2Fam[p][k]
 				if len(self.fam2Path[fam]) == 1:
 					uniquefam = uniquefam + 1 
 					row.append(fam)
-					print "   unique fam-%d %s %s" % (fam, self.famList[fam], self.famName[fam])
+					print("   unique fam-%d %s %s" % (fam, self.famList[fam], self.famName[fam]))
 			self.path2FamUni.append(row)
-			print ">>>pathway-%d[%s; %s] fam=%d unique-fam=%d" % (p, self.pathList[p], self.pathName[p], totfam, uniquefam)
+			print(">>>pathway-%d[%s; %s] fam=%d unique-fam=%d" % (p, self.pathList[p], self.pathName[p], totfam, uniquefam))
 	def GetPath2FamUniMapped(self, apath, what):
 		if apath in self.pathList:
 			p = self.pathList.index(apath)	
@@ -411,12 +415,12 @@ class MinPath:
 			return
 		self.famMapped = []
 		s = self.orgList.index(spe) 
-		print "spe", spe, "total gene", len(self.orgGeneList[s])
+		print("spe", spe, "total gene", len(self.orgGeneList[s]))
 		for g in range(len(self.orgGeneList[s])):
 			for fam in self.orgGene2Fam[s][g]:
 				if fam not in self.famMapped:
 					self.famMapped.append(fam)
-		print "total family=", len(self.famList), "total mapped=", len(self.famMapped)
+		print("total family=", len(self.famList), "total mapped=", len(self.famMapped))
 		#raw_input("type enter to continue")
 
 	def OrthMap(self, famidxlist=[], famnamelist=[], famcount = []):
@@ -448,7 +452,7 @@ class MinPath:
 					orthtotmap += 1
 					for path in self.fam2Path[idx]:
 						pathmap[path] = 1
-		print "original ortholog=%d found-in-the-fam-list=%d found-in-the-fam-mapped-to-pathway=%d" % (orthtot0, orthtotfind, orthtotmap)
+		print("original ortholog=%d found-in-the-fam-list=%d found-in-the-fam-mapped-to-pathway=%d" % (orthtot0, orthtotfind, orthtotmap))
 		self.pathMapped = []
 		for p in range(self.pathTot):
 			if pathmap[p]:
@@ -486,7 +490,7 @@ class MinPath:
 
 		#pathfam: the number of fam assigned to each pathway considering the "uniqueness" of fam to each pathway
 		maxhit = pathsort[-1] 
-		print "the maximum number of pathways a family is assigned to=%d" % maxhit
+		print("the maximum number of pathways a family is assigned to=%d" % maxhit)
 		hit = 1
 		unassigned = len(famsort)
 		beg = 0
@@ -530,8 +534,8 @@ class MinPath:
 				annpath = annpath + 1
 				self.pathMappedOpt.append(k)
 
-		print "total pathway %d (%d) is found, compared to %d (%d)" % (annpath, len(self.pathMappedOpt), annpath0, len(self.pathMapped))
-		print "%-50s %s\t%s" % ("#pathway", "fam-assigned(all)", "fam-assigned(unique)[weight]")
+		print("total pathway %d (%d) is found, compared to %d (%d)" % (annpath, len(self.pathMappedOpt), annpath0, len(self.pathMapped)))
+		print("%-50s %s\t%s" % ("#pathway", "fam-assigned(all)", "fam-assigned(unique)[weight]"))
 		for p in range(self.pathTot):
 			if pathfam0[p] == 0 and pathfam[p] == 0:
 				continue
@@ -542,13 +546,13 @@ class MinPath:
 				if famassign[k] != p:
 					continue
 				weight = weight + 1.0 / len(self.fam2Path[ks])
-			print "%-50s %d\t%d[%.1f]" % (tmp, pathfam0[p], pathfam[p], weight)
+			print("%-50s %d\t%d[%.1f]" % (tmp, pathfam0[p], pathfam[p], weight))
 		return self.pathMappedOpt
 
 	#Parsinomy approach to pathway inference
 	def Orth2PathMin(self, famidxlist=[], famnamelist=[], famcount=[], mpsfile="test.mps", glpsol=""):
 		# write mps file (the input for glpsol, the integer programming package)
-		print "now write mps file.."
+		print("now write mps file..")
 		self.WriteMps(famidxlist=famidxlist, famnamelist=famnamelist, famcount=famcount, mpsfile=mpsfile)
 
 		# run glpsol
@@ -580,8 +584,8 @@ class MinPath:
 		except IOError:
 			sys.exit("open file error " + mpsfile)
 			
-	        str = "%-14s%s\n" % ("NAME", "PATH")
-       	 	file.write(str)
+		str = "%-14s%s\n" % ("NAME", "PATH")
+		file.write(str)
 	
 		self.OrthMap(famidxlist=famidxlist, famnamelist=famnamelist, famcount=famcount)
 		orthtotmap = len(self.famMapped)
@@ -590,7 +594,7 @@ class MinPath:
 		file.write("ROWS\n")
 		file.write(" N  NUM\n")
 		for orth in self.famMapped:
-                	str = " G  F%s\n" % self.famList[orth];
+			str = " G  F%s\n" % self.famList[orth];
 			#note 1: use a different idx of family for mps file
                 	#note 2: when use E, there is no feasible solution
                 	#G>=1, mean each family has to be assigned to at least one pathway 
@@ -598,26 +602,26 @@ class MinPath:
 
         	#write COLUMNS
 		#the same column (pathway) needs to be organized in the same block 
-        	file.write("COLUMNS\n")
+		file.write("COLUMNS\n")
 		pathvalid = [0] * self.pathTot
 		for p in self.pathMapped:
 			#note: use a different pathway idx in mps
 			pathname = "P%s" % self.pathList[p]
-		        str = "    %-10s%-10s%10d\n" %(pathname, "NUM", 1)
+			str = "    %-10s%-10s%10d\n" %(pathname, "NUM", 1)
 			file.write(str)
 			for orth in self.famMapped:
-       	                 	famname = "F%s" % self.famList[orth];
+				famname = "F%s" % self.famList[orth];
 				for path in self.fam2Path[orth]:
 					if path == p:
-		                        	str = "    %-10s%-10s%10d\n" %(pathname, famname, 1)
+						str = "    %-10s%-10s%10d\n" %(pathname, famname, 1)
 						file.write(str)	
 						pathvalid[p] = 1
 
         	#write RHS
 		file.write("RHS\n")
 		for orth in self.famMapped:
-                	famname = "F%s" % self.famList[orth]
-                	str = "    %-10s%-10s%10.1f\n" % ("RHS1", famname, 1.0);
+			famname = "F%s" % self.famList[orth]
+			str = "    %-10s%-10s%10.1f\n" % ("RHS1", famname, 1.0);
 			file.write(str)
 
         	#write bounds
@@ -625,15 +629,15 @@ class MinPath:
 		for p in range(self.pathTot):
 			if pathvalid[p]:
 				path = self.pathList[p]
-	                	pathname = "P%s" % path;
-       	         		str = " BV %-10s%-10s\n" %("BND1", pathname);
+				pathname = "P%s" % path;
+				str = " BV %-10s%-10s\n" %("BND1", pathname);
                 		#all variants are binary (1 keep the pathway; 0 pathway not necessary)
 				file.write(str)
 
-        	file.write("ENDATA\n")
+		file.write("ENDATA\n")
 		file.close()		
 
-        	print "End of PrintMPS"
+		print("End of PrintMPS")
 		
 	def GetLPOut(self, lpoutfile="test.mps.LPout"):
 		try:
@@ -665,18 +669,18 @@ class MinPath:
 						#check with WriteMps: the pathway idx used in mps is to add "P" before the pathList
 		file.close()
 		if len(keeppath) != MINimum:
-			print "reading %s error: minimum %d read %d" % (lpoutfile, MINimum, len(keeppath)) 
+			print("reading %s error: minimum %d read %d" % (lpoutfile, MINimum, len(keeppath))) 
 			sys.exit()
 
 		self.pathMappedOpt = []
 		for path in keeppath:
 			if path not in self.pathList:
-				print "Error: unknown pathList %s" % path
+				print("Error: unknown pathList %s" % path)
 				sys.exit()
 			pathidx = self.pathList.index(path)
 			self.pathMappedOpt.append(pathidx)	
 
-		print "total pathways mappd: before inference %d, after inference %d" % (len(self.pathMapped), len(self.pathMappedOpt))
+		print("total pathways mappd: before inference %d, after inference %d" % (len(self.pathMapped), len(self.pathMappedOpt)))
 
 	#add the pathways with many functions annotated, even they were considered as redundant ones!
 	def PopulatePath(self, pathmapped = [], par = 0.7):
@@ -694,16 +698,16 @@ class MinPath:
 					if famvalid[f] == 1:
 						add += 1
 				#pathways with most functions annotated should be added back -- even it is a redundant one
-				print "pathway", p, self.pathList[p], self.pathName[p], "path2fam", len(self.path2Fam[p]), " real-family", add
+				print("pathway", p, self.pathList[p], self.pathName[p], "path2fam", len(self.path2Fam[p]), " real-family", add)
 				if add >= len(self.path2Fam[p]) * par:
 					pathmapped.append(p)
 					addpath += 1
-					print "this pathway is added back"
+					print("this pathway is added back")
 				#else:
 				#	print "this pathway does not have enough functions"
 				#raw_input("type enter to continue")
 
-		print "added pathway =", addpath
+		print("added pathway =",  addpath)
 
 	#remove the pathways with too few functions annotated (e.g., 2, use par), 
 	#even when their associated families are annotated(but NOT the unique ones)
@@ -729,10 +733,10 @@ class MinPath:
 				if uni == 0 and add <= par:
 					pathmapped.remove(p)
 					delpath += 1
-					print "pathway", p, self.pathList[p], self.pathName[p], "path2fam", len(self.path2Fam[p]), " real-family", add, " is removed from the list!!"
+					print("pathway", p, self.pathList[p], self.pathName[p], "path2fam", len(self.path2Fam[p]), " real-family", add, " is removed from the list!!")
 					#raw_input("type enter to continue")
 
-		print "deleted pathway =", delpath
+		print("deleted pathway =", delpath)
 
 	def DiffPathMap(self, maps, tags):
 		maps.insert(0, self.pathMapped)
@@ -742,12 +746,12 @@ class MinPath:
 		for m in range(mapnum):
 			for p in maps[m]:
 				pathvalid[p][m] = 1
-		print "#Summary for the pathway inference"
+		print("#Summary for the pathway inference")
 		#print description line
 		str = "%-5s %-10s %-70s %-5s %-5s" % ("ID", "List", "Name", "Fam", "Fam-found")
 		for atag in tags:
 			str += " %-3s" % atag
-		print str + " Same/Diff"
+		print(str + " Same/Diff")
 		#print each pathway
 		totsame = 0
 		totdiff = 0
@@ -774,19 +778,19 @@ class MinPath:
 			str = "%-5d %-10s %-70s %-5d %-5d" % (p + 1, self.pathList[p], self.pathName[p], len(self.path2Fam[p]), add)
 			for m in range(len(maps)):
 				str += " %-3d" % pathvalid[p][m] 
-			print str + " " + label
+			print(str + " " + label)
 		#print total number line
 		str = "%-5s %-10s %-70s %-5s %-5s" % ("#total", "", "", "", "")
 		for m in range(mapnum):
 			str += " %-3d" % len(maps[m]) 
-		print str
+		print(str)
 		#print functional diveristy line
 		#str = "#functional-diversity [max: log(%d)=%.3f]" % (self.pathTot, math.log(self.pathTot * 1.0))
 		#str = "%-99s" % str
 		#for m in range(mapnum):
 		##	str += " %.3f" % math.log(len(maps[m]) * 1.0)
 		#print str
-		print "#total match=%d diff=%d" % (totsame, totdiff)
+		print("#total match=%d diff=%d" % (totsame, totdiff))
 
 	def WriteReport(self, minpath, reportfile, detailfile):
 		na = True
@@ -836,23 +840,23 @@ class MinPath:
 				tmp = "n/a"
 			else:
 				tmp = pathvalid[p][0]
-			print >> file, "path", self.pathList[p], tags[0], tmp, " naive", pathvalid[p][1], " minpath", pathvalid[p][2], " fam0 ", len(self.path2Fam[p]), " fam-found ", add, " name ", self.pathName[p]
+			file.write(get_string("path", self.pathList[p], tags[0], tmp, " naive", pathvalid[p][1], " minpath", pathvalid[p][2], " fam0 ", len(self.path2Fam[p]), " fam-found ", add, " name ", self.pathName[p])+"\n")
 
 			if not (detailfile and pathvalid[p][2]):
 				continue
 			#print details
-			print >> detail, "path", self.pathList[p], "fam0", len(self.path2Fam[p]), "fam-found", add, "#", self.pathName[p]
+			detail.write(get_string("path", self.pathList[p], "fam0", len(self.path2Fam[p]), "fam-found", add, "#", self.pathName[p])+"\n")
 			for f in self.path2Fam[p]:
 				if famvalid[f] == 1 and self.famCount:
-					print >> detail, "  ", self.famID[f], "hits", self.famCount[f], "#", self.famName[f]
+					detail.write(get_string("  ", self.famID[f], "hits", self.famCount[f], "#", self.famName[f])+"\n")
 				elif famvalid[f] == 1:
-					print >> detail, "  ", self.famID[f], "#", self.famName[f]
+					detail.write(get_string("  ", self.famID[f], "#", self.famName[f])+"\n")
 					
-		print
-		print "Results are saved in file:", reportfile 
+		print("")
+		print("Results are saved in file:" + reportfile) 
 		file.close()
 		if detailfile:
-			print "Details are saved in file:", detailfile
+			print("Details are saved in file:" + detailfile)
 			detail.close()
 
 # this function reads in KO/fig assignment, then map KO/fig families to the pathways
@@ -885,7 +889,7 @@ def Orth2Path(infile = "demo.ko", whichdb = "KEGG", mpsfile = "test.mps", report
 				orthcount[idx] += ab
 	file.close()
 
-	print "total input orth=%d  unique=%d" % (add, len(orthlist))
+	print("total input orth=%d  unique=%d" % (add, len(orthlist)))
 
 	test = MinPath(whichdb = whichdb, mapfile = mapfile) #default pathwaydb: KEGG
 
@@ -929,15 +933,15 @@ if __name__ == '__main__':
 	elif anyfile and mapfile:
 		Orth2Path(infile = anyfile, mpsfile = mpsfile, reportfile = reportfile, detailfile = detailfile, whichdb = "ANY", mapfile=mapfile)
 	else:
-		print "Usage: python MinPath.py <-ko filename>/<-fig filename>/<-any annfile> [-map mapfile] [-report filename] [-details detailed-output]"
-		print "Note: your input file can contain functional annotations in either of the following"
-		print "   -ko file: annotation in KEGG KO families"
-		print "   -fig file: annotation in SEED fig families"
-		print "   -any file: annotation in any families, then you must specify -map, the pathway-function mapping file"
-		print "Example 1: python MinPath.py -ko demo.ko -report demo.ko.minpath"
-		print "Example 2: python MinPath.py -ko demo.ko -report demo.ko.minpath -details demo.ko.minpath.details"
-		print "Example 3: python MinPath.py -fig demo.fig -report demo.fig.minpath"
-		print "Example 4: python MinPath.py -fig demo.fig -report demo.fig.minpath -details demo.fig.minpath.details"
-		print "Example 5: python MinPath.py -any demo.ec -map ec2path -report demo.ec.minpath -details demo.ec.minpath.details"
+		print("Usage: python MinPath.py <-ko filename>/<-fig filename>/<-any annfile> [-map mapfile] [-report filename] [-details detailed-output]")
+		print("Note: your input file can contain functional annotations in either of the following")
+		print("   -ko file: annotation in KEGG KO families")
+		print("   -fig file: annotation in SEED fig families")
+		print("   -any file: annotation in any families, then you must specify -map, the pathway-function mapping file")
+		print("Example 1: python MinPath.py -ko demo.ko -report demo.ko.minpath")
+		print("Example 2: python MinPath.py -ko demo.ko -report demo.ko.minpath -details demo.ko.minpath.details")
+		print("Example 3: python MinPath.py -fig demo.fig -report demo.fig.minpath")
+		print("Example 4: python MinPath.py -fig demo.fig -report demo.fig.minpath -details demo.fig.minpath.details")
+		print("Example 5: python MinPath.py -any demo.ec -map ec2path -report demo.ec.minpath -details demo.ec.minpath.details")
 		sys.exit(1)
 
