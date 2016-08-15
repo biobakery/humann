@@ -56,14 +56,14 @@ def writeSamples( outfile1, outfile2, ncats, catsize, weird, weirdsize ):
 	try:
 		f = open( outfile1, "w" )
 	except IOError:
-		print "For some reason I cannot open "+outfile1
-		print "Check directory permissions and/or file name"
+		print("For some reason I cannot open "+outfile1)
+		print("Check directory permissions and/or file name")
 		exit(-1)
 	try:
 		g = open( outfile2, "w" )
 	except:
-		print "For some reason I cannot open "+outfile1
-		print "Check directory permissions and/or file name."
+		print("For some reason I cannot open "+outfile1)
+		print("Check directory permissions and/or file name.")
 		exit(-1)
 	for i in range(ncats):
 		f.write("cat_"+str(i)+"\t"+str(catsize)+"\n" )
@@ -88,13 +88,13 @@ def readSample( infile, dictOne = None ):
 			for a in aaOne[i:]:
 				resDict[a[0]] = a[1]
 			return resDict
-	   	except ValueError:
+		except ValueError:
 	   		pass
 	try:
 		f = infile if ( type( infile ) == file ) else open( infile )
 	except IOError:
-		print "For some reason I cannot open "+infile
-		print "Check directory permissions and/or file name."
+		print("For some reason I cannot open "+infile)
+		print("Check directory permissions and/or file name.")
 		exit(-1)
 	for rawline in f:
 		line = rawline.strip()
@@ -233,13 +233,13 @@ def mainStep1( sample1, sample2, sampleSize, nreps ):
 		baseDeltas.append( deltas2 )
 		# ^ appends the space delta to the main list of space delta dicts
 		if isDebug:
-			print "This iteration "
+			print("This iteration ")
 			for key in allKeys:
 				outStr = key + "\t" + str(l1xcd2[key]) + " -" + str( l2xcd2[key])
 				outStr+= " = " + str(deltas1[key]) + "\t||\t"
 				outStr+= str(b1xcd2[key]) + " - " + str(b2xcd2[key])
 				outStr+= " = " + str(deltas2[key])
-				print outStr
+				print(outStr)
 		# the print below is for debugging purposes.
 		# print i,"-->",listDeltas
 		
@@ -487,10 +487,10 @@ def doManyCases():
 			r3 = resultado['XXX'][0][0]
 			r123 = r1/3.0 + r2/3.0 + r3/3.0
 			ofi.write( str(ncats*catsize)+" "+str(weirdsize)+" "+str(r123)+"\n")
-			print ncats, weirdsize, resultado['XXX'][0]
+			print("".join([str(i) for i in [ncats, weirdsize, resultado['XXX'][0]]]))
 		ofi.write("\n")
 	timeEnd = time.time()
-	print "took ",timeEnd-timeStart, "seconds"
+	print("took " + str(timeEnd-timeStart) + "seconds")
 	ofi.close()
 if __name__=="__main__":
 	parser = OptionParser()
