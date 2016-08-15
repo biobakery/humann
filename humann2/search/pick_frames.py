@@ -108,8 +108,8 @@ def write ( header, sequence ):
     """ find a print valid frames from sequence in fasta format """
     valid_peptides = pick_frames( sequence )
     for p in valid_peptides:
-        print header
-        print p
+        print(header)
+        print(p)
 
 # ---------------------------------------------------------------
 # main (script mode)
