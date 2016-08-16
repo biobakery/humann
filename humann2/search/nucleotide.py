@@ -231,7 +231,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
   
     utilities.file_exists_readable(sam_alignment_file)
-    file_handle_read=open(sam_alignment_file, "r")
+    file_handle_read=open(sam_alignment_file, "rt")
     
     file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
     file_handle_write_aligned=open(reduced_aligned_reads_file, "w")
