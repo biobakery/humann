@@ -10,6 +10,7 @@ import os
 import sys
 import csv
 import argparse
+import math
 
 try:
     import matplotlib
@@ -29,51 +30,96 @@ c_epsilon = 1e-10
 c_unit_width = 0.1
 c_min_width = 6
 c_height = 6
+c_hunits = 9
+c_inches_per_axgrid = 3
 
 # ---------------------------------------------------------------
 # argument parsing
 # ---------------------------------------------------------------
 
+c_sort_help = """Sample sorting methods (can use more than one; will evaluate in order)
+
+none        : Default
+sum         : Sum of stratified values
+dominant    : Value of the most dominant stratification
+similarity  : Bray-Curtis agreement of relative stratifications
+usimilarity : Bray-Curtis agreement of raw stratifications
+metadata    : Given metadata label
+
+"""
+
+c_choices_help = """Scaling options for total bar heights (strata are always proportional to height)
+
+none        : Default
+pseudolog   : Total bar heights log-scaled (strata are NOT log scaled)
+normalize   : Bars all have height=1 (highlighting relative attribution)
+
+"""
+
 def get_args( ):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="HUMAnN2 plotting utility",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     parser.add_argument( "-i", "--input",
+                         metavar = "",
                          help="HUMAnN2 table with optional metadata", )
     parser.add_argument( "-f", "--focal-feature",
+                         metavar = "",
                          help="Feature ID of interest (give ID not full name)", )
     parser.add_argument( "-t", "--top-strata",
+                         metavar = "",
                          type=int,
                          default=7,
-                         help="Number of top stratifications (species) to highlight by highest grand means", )
+                         help="Number of top stratifications to highlight (top = highest grand means)", )
     parser.add_argument( "-s", "--sort",
+                         metavar = "",
                          nargs="+",
                          default=["none"],
                          choices=["none", "sum", "dominant", "similarity", "usimilarity", "metadata"],
-                         help="Sorting methods (can use more than one; will evaluate in order).", )
-    parser.add_argument( "-n", "--norm",
-                         action="store_true",
-                         help="Renormalize to highlight within-sample composition", )
+                         help=c_sort_help, )             
     parser.add_argument( "-l", "--last-metadatum",
+                         metavar = "",
                          default=None,
                          help="Indicate end of metadata rows", )
     parser.add_argument( "-m", "--focal-metadatum",
+                         metavar="",
                          default=None,
                          help="Indicate metadatum to highlight / group by", )
     parser.add_argument( "-c", "--colormap",
+                         metavar="",
                          default="jet",
-                         help="Color space for top stratifications", )
+                         help="Color space for stratifications", )
     parser.add_argument( "-k", "--meta-colormap",
-                         default="jet",
-                         help="Color space for metadata levels" )
+                         metavar="",
+                         default="Dark2",
+                         help="Color space for metadata levels", )
     parser.add_argument( "-x", "--exclude-unclassified",
                          action="store_true",
                          help="Do not include the 'unclassified' stratum", )
     parser.add_argument( "-o", "--output",
+                         metavar="",
                          default=None,
                          help="Where to save the figure", )
-    parser.add_argument( "-y", "--ymax",
-                         default=None,
-                         type=float,
-                         help="Force y-max", )
+    parser.add_argument( "-a", "--scaling",
+                         metavar="",
+                         choices=["none", "normalize", "pseudolog"],
+                         default="none",
+                         help=c_choices_help, )
+    parser.add_argument( "-g", "--as-genera",
+                         action="store_true",
+                         help="Collapse species to genera", )
+    parser.add_argument( "-d", "--grid",
+                         action="store_true",
+                         help="Add y-axis grid", )
+    parser.add_argument( "-z", "--remove-zeroes",
+                         action="store_true",
+                         help="Do not plot samples with zero sum for this feature", )
+    parser.add_argument( "-w", "--width",
+                         metavar = "",
+                         default=5,
+                         type=int,
+                         help="Relative plot width (default: 5)", )
     return parser.parse_args()
 
 # ---------------------------------------------------------------
@@ -86,8 +132,10 @@ def subseq( seq, index ):
 
 def bugname( rowhead ):
     """make bug names look nicer"""
-    if "." in rowhead:
+    if "s__" in rowhead:
         return rowhead.split( "." )[1].replace( "s__", "" ).replace( "_", " " )
+    elif "g__" in rowhead:
+        return rowhead.replace( "g__", "" ).replace( "_", " " )
     else:
         return rowhead
 
@@ -99,7 +147,15 @@ def get_colors( colormap, n ):
         return [cmap( int( 0.5 * cmap_max ) )]
     else:
         return [cmap( int( k * cmap_max / (n - 1) ) ) for k in range( n )]
-    
+
+def dumb( ax, border=False ):
+    ax.set_xticks( [] )
+    """dummy an axis"""
+    ax.set_yticks( [] )
+    if not border:
+        for k, v in ax.spines.items():
+            v.set_visible( False )
+                
 # ---------------------------------------------------------------
 # table class
 # ---------------------------------------------------------------
@@ -138,13 +194,13 @@ class FeatureTable:
                         self.metarow = values
                     if last is not None and rowhead == last:
                         adding = True
-        self.rowheads = map( bugname, self.rowheads )
         self.data = np.array( self.data )
         self.update()
         
     def update( self ):
         self.nrows, self.ncols = self.data.shape
         self.colsums = sum( self.data )
+        self.colsums = np.array( [k if k > 0 else -1.0 for k in self.colsums] )
         self.rowmap = {}
         self.colmap = {}
         for i, h in zip( range( self.nrows ), self.rowheads ):
@@ -154,9 +210,24 @@ class FeatureTable:
         assert self.nrows == len( self.rowheads ) == len( self.rowmap ), "row dim failure"
         assert self.ncols == len( self.colheads ) == len( self.colmap ), "col dim failure"
 
-    def norm( self ):
-        self.data = self.data / ( self.colsums + c_epsilon * np.ones( self.ncols ) )
+    def as_genera( self ):
+        print >>sys.stderr, "Regrouping to genera (before selecting/sorting strata)"""
+        temp = {}
+        for rowhead, row in zip( self.rowheads, self.data ):
+            rowhead = rowhead.split( "." )[0]
+            temp[rowhead] = temp.get( rowhead, np.zeros( self.ncols ) ) + row
+        self.rowheads = list( temp.keys( ) )
+        self.data = np.array( [temp[k] for k in self.rowheads] )
+        self.update( )
 
+    def remove_zeroes( self ):
+        order = [i for i, k in enumerate( self.colsums ) if k > 0]
+        self.colheads = subseq( self.colheads, order )
+        self.data = self.data[:, order]
+        if self.metarow is not None:
+            self.metarow = subseq( self.metarow, order )
+        self.update( )
+            
     def sort( self, method=None ):
         if method == "none":
             order = range( self.ncols )
@@ -220,7 +291,7 @@ class FeatureTable:
             self.rowheads += ["Unclassified"]
             self.data = np.vstack( [self.data, unclassified] )
         # reverse row order to simplfy plotting
-        self.rowheads.reverse()
+        self.rowheads.reverse( )
         self.data = self.data[::-1]
         self.update()
 
@@ -231,7 +302,7 @@ class FeatureTable:
 def main( ):
 
     args = get_args()
-
+    
     # load table manipulation 
     table = FeatureTable(
         args.input,
@@ -240,34 +311,35 @@ def main( ):
         metaheader=args.focal_metadatum,
         exclude_unclassified=args.exclude_unclassified,
     )
-    # normalize  
-    if args.norm:
-        table.norm()
+
+    # collapse to genera?
+    if args.as_genera:
+        table.as_genera( )
+    
+    # remove zeroes?
+    if args.remove_zeroes:
+        table.remove_zeroes( )
+        
     # apply one or more sorting methods
     for method in args.sort:
         table.sort( method )
+
     # filter/collapse features (moved to take place AFTER sorting)
     table.filter_top_strata( args.top_strata )
         
     # set up axis system
+    wunits = args.width
     fig = plt.figure()
-    fig.set_size_inches( 10, 5 )
-
-    def dumb( ax ):
-        ax.set_xticks( [] )
-        ax.set_yticks( [] )
-        for k, v in ax.spines.items():
-            v.set_visible( False )
-
+    fig.set_size_inches( wunits * c_inches_per_axgrid, 4.5 )
     if table.metarow is not None:
-        main_ax = plt.subplot2grid( ( 9, 3 ), ( 0, 0 ), rowspan=8, colspan=2 )
-        anno_ax = plt.subplot2grid( ( 9, 3 ), ( 0, 2 ), rowspan=9, colspan=1 )
-        meta_ax = plt.subplot2grid( ( 9, 3 ), ( 8, 0 ), rowspan=1, colspan=2 )
+        main_ax = plt.subplot2grid( ( c_hunits, wunits ), ( 0, 0 ), rowspan=c_hunits-1, colspan=wunits-1 )
+        anno_ax = plt.subplot2grid( ( c_hunits, wunits ), ( 0, wunits-1 ), rowspan=c_hunits, colspan=1 )
+        meta_ax = plt.subplot2grid( ( c_hunits, wunits ), ( c_hunits-1, 0 ), rowspan=1, colspan=wunits-1 )
         dumb( anno_ax )
-        dumb( meta_ax )
+        dumb( meta_ax, border=True )
     else:
-        main_ax = plt.subplot2grid( ( 1, 3 ), ( 0, 0 ), rowspan=1, colspan=2 )
-        anno_ax = plt.subplot2grid( ( 1, 3 ), ( 0, 2 ), rowspan=1, colspan=1 )
+        main_ax = plt.subplot2grid( ( 1, wunits ), ( 0, 0 ), rowspan=1, colspan=wunits-1 )
+        anno_ax = plt.subplot2grid( ( 1, wunits ), ( 0, wunits-1 ), rowspan=1, colspan=1 )
         dumb( anno_ax )
         
     # setup: colors
@@ -276,9 +348,29 @@ def main( ):
     for f in table.rowheads:
         if f not in cdict:
             cdict[f] = colors.pop()
+
+    # scaling options
+    if args.scaling == "none":
+        bottoms = np.zeros( table.ncols )
+        ylabel = "Relative abundance"
+        main_ax.set_ylim( 0, max( sum( table.data ) ) )
+    elif args.scaling == "normalize":
+        table.data = table.data / table.colsums
+        bottoms = np.zeros( table.ncols )
+        ylabel = "Relative contributions"
+        main_ax.set_ylim( 0, 1 )
+    elif args.scaling == "pseudolog":
+        floor = math.floor( min( [np.log10( k ) for k in table.colsums if k > 0] ) )
+        floors = floor * np.ones( table.ncols )
+        crests = np.array( [np.log10( k ) if k > 0 else 1 for k in table.colsums] )
+        heights = crests - floors
+        table.data = table.data / table.colsums * heights
+        main_ax.set_ylim( floor, math.ceil( np.log10( max( table.colsums ) ) ) )
+        bottoms = floors
+        ylabel = "log10( Relative abundance )"
+        
     # add bars
     series = []
-    bottoms = np.zeros( table.ncols )
     for i, f in enumerate( table.rowheads ):
         frow = table.data[table.rowmap[f]]
         series.append( main_ax.bar(
@@ -303,36 +395,52 @@ def main( ):
                 color=mc[v],
                 edgecolor="none",
                 )
-        
+
+    # attach metadata separators
+    if table.metarow is not None and args.sort[-1] == "metadata":
+        xcoords = []
+        for i, value in enumerate( table.metarow ):
+            if i > 0 and value != table.metarow[i-1]:
+                main_ax.axvline( x=i, color="black", zorder=2 )
+                meta_ax.axvline( x=i, color="black", zorder=2 )
+                
     # axis limits
     main_ax.set_xlim( 0, table.ncols )
-    main_ax.set_ylim( 0, max( bottoms ) )  
+
     # labels
     samp_ax = main_ax if table.metarow is None else meta_ax
     samp_ax.set_xlabel( "Samples (N=%d)" % ( table.ncols ) )
-    main_ax.set_title( "%s\nFrom: %s" % ( table.fname, os.path.split( args.input )[1] ) )
-    main_ax.set_ylabel( "Relative Abundance" )
+    #main_ax.set_title( "%s\nFrom: %s" % ( table.fname, os.path.split( args.input )[1] ) )
+    main_ax.set_title( table.fname, weight="bold" )
+    main_ax.set_ylabel( ylabel )
     # tick params
     main_ax.tick_params( axis="x", which="major", direction="out", bottom="on", top="off" )
     main_ax.tick_params( axis="y", which="major", direction="out", left="on", right="off" )
     main_ax.set_xticks( [] )
 
-    # norm override   
-    if args.norm:
-        main_ax.set_yticks( [] )
-        main_ax.set_ylabel( "" )
+    # pseudolog note
+    if args.scaling == "pseudolog":
+        xmin, xmax = main_ax.get_xlim( )
+        x = xmin + 0.01 * abs( xmax - xmin )
+        ymin, ymax = main_ax.get_ylim( )
+        y = ymax - 0.04 * abs( ymax - ymin )
+        main_ax.text( x, y,
+                      "*Stratifications are proportional",
+                      va="top", size=10,
+                      backgroundcolor="white", )
 
-    if args.ymax is not None:
-        main_ax.set_ylim( [0, args.ymax] )                        
-        main_ax.text( 0, args.ymax, "clipped at y="+str( args.ymax ), va="top" )
-        
+    # optional yaxis grid
+    if args.grid:
+        for ycoord in main_ax.yaxis.get_majorticklocs( ):
+            main_ax.axhline( y=ycoord, color="0.75", ls=":", zorder=0 )
+
     # legend
     xmar = 0.01
     xsep = 0.03
     ydex = 0.99
     ysep = 0.01
     yinc = 0.01
-    rech = 0.025
+    rech = 0.03
     recw = 0.1
 
     def add_items( title, labels, colors, ydex, bugmode=False ):
@@ -358,28 +466,29 @@ def main( ):
             )
             ydex -= ysep + rech
         return ydex
-        return 
-        
+
+    # add legend for stratifications
     ydex = add_items(
-        "Functional strata",
-        table.rowheads[::-1],
+        "Stratifications:",
+        map( bugname, table.rowheads[::-1] ),
         [cdict[r] for r in table.rowheads[::-1]],
         ydex,
         bugmode=True,
         )
 
+    # add legend for metadata
     if table.metarow is not None:
         add_items(
-            args.focal_metadatum,
+            "Sample type:",
+            #args.focal_metadatum,
             sorted( mc.keys() ),
             [mc[k] for k in sorted( mc.keys() )],
             ydex,
             )
-    
-    # output
+                         
+    # wrapup
     plt.tight_layout()
     fig.subplots_adjust( hspace=0.2, wspace=0.03 )
-    
     if args.output is not None:
         plt.savefig( args.output )
     else:
