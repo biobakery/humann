@@ -129,7 +129,7 @@ class MinPath:
 
 	def ReadAnyMap(self, mapfile):
 		try:
-			file = open(mapfile, "r")
+			file = open(mapfile, "rt")
 		except IOError:
 			print("open file %s error" % mapfile)
 
@@ -171,7 +171,7 @@ class MinPath:
 	def ReadFigSubsytem(self, fig2ssfile):
 		print("fig2ssfile=%s" % fig2ssfile)
 		try:
-			file = open(fig2ssfile, "r")
+			file = open(fig2ssfile, "rt")
 		except IOError:
 			print("open file %s error" % fig2ssfile)
 		for aline in file:
@@ -218,7 +218,7 @@ class MinPath:
 	#read KEGG pathways from ~/pathway/map-title.tab
 	def ReadKEGGPath(self, pathfile):
 		try:
-			file = open(pathfile, "r")	
+			file = open(pathfile, "rt")	
 		except IOError:
 			sys.exit("open file error " + pathfile)
 			
@@ -238,7 +238,7 @@ class MinPath:
 	#read the KEGG families (KO) from ~/genes/ko
 	def ReadKO(self, kofile = "", ifreadgene = False, ifgivenspe = ""):
 		try:
-			file = open(kofile, "r")	
+			file = open(kofile, "rt")	
 		except IOError:
 			print("open file %s error" % kofile)
 		print("read kofile=%s" % kofile)
@@ -641,7 +641,7 @@ class MinPath:
 		
 	def GetLPOut(self, lpoutfile="test.mps.LPout"):
 		try:
-			file = open(lpoutfile, "r")
+			file = open(lpoutfile, "rt")
 		except IOError:
 			sys.exit("open file error " + lpoutfile)
 			
@@ -799,7 +799,7 @@ class MinPath:
 			keggdir = "/dataomics/kegg/kegg-curr"
 			mapfile = keggdir + "/pathway/" + self.speID.lower() + "/map.list"
 			if os.path.exists(mapfile):
-				file = open(mapfile, "r")
+				file = open(mapfile, "rt")
 				for aline in file:
 					m = re.match('^[^\d]+(?P<id>\d+)', aline)
 					if m:
@@ -863,7 +863,7 @@ class MinPath:
 # last update by Yuzhen Ye on July 3, 2009
 def Orth2Path(infile = "demo.ko", whichdb = "KEGG", mpsfile = "test.mps", reportfile = "test.minpath", detailfile = "", mapfile=""):
 	try:
-		file = open(infile, "r")
+		file = open(infile, "rt")
 	except IOError:
 		sys.exit("open file error " + infile)
 		
