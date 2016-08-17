@@ -4,12 +4,12 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 from collections import namedtuple
 import sys
 import os
-import util
 import argparse
 import re
 
 try:
     from humann2 import config
+    from humann2.tools import util
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
@@ -117,7 +117,7 @@ def rename ( table, polymap ):
         if old_name not in util.c_topsort:
             items[0] = util.c_name_delim.join( [old_name, new_name] )
         table.rowheads[i] = util.c_strat_delim.join( items )
-    tcount = seen.values().count( True )
+    tcount = list(seen.values()).count( True )
     print( "Renamed %d of %d entries (%.2f%%)" \
            % ( tcount, len( seen ), 100 * tcount / float( len( seen ) ) ), 
            file=sys.stderr )
