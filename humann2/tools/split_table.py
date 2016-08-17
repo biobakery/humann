@@ -19,7 +19,7 @@ import os
 import re
 import shutil
 
-import util
+from humann2.tools import util
 
 GENE_TABLE_DELIMITER="\t"
 GENE_TABLE_COMMENT_LINE="^#"
