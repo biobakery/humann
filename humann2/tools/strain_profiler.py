@@ -4,7 +4,8 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
 import sys
 import csv
-import util
+
+from humann2.tools import util
 
 description = """
 HUMAnN2 utility for making strain profiles
@@ -93,7 +94,7 @@ def partition_table( table, m, n, pinterval ):
     # first build the partitions
     partitions = {}
     for i, rowhead in enumerate( table.rowheads ):
-        table.data[i] = map( float, table.data[i] )
+        table.data[i] = list(map( float, table.data[i] ))
         if util.c_strat_delim in rowhead:
             gene, species = rowhead.split( util.c_strat_delim )
             # disallow the unclassified stratum
