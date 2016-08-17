@@ -4,7 +4,8 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import argparse
 import sys
 import re
-import util
+
+from humann2.tools import util
 
 description = """
 HUMAnN2 utility for renormalizing TSV files
