@@ -4,7 +4,8 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 from math import log
 import argparse
 import sys
-import util
+
+from humann2.tools import util
 
 description = """
 HUMAnN2 utility for normalizing combined meta'omic sequencing data
@@ -85,7 +86,7 @@ def laplace( table, all_features ):
     alphas = [None for i in table.data[0]]
     for i, row in enumerate( table.data ):
         # float table here
-        table.data[i] = map( float, row )
+        table.data[i] = list(map( float, row ))
         for j, value in enumerate( table.data[i] ):
             if value > 0:
                 if alphas[j] is None or value < alphas[j]:
@@ -117,7 +118,7 @@ def witten_bell( table, all_features ):
     colsums = [0 for i in table.data[0]]
     for i, row in enumerate( table.data ):
         # float table here
-        table.data[i] = map( float, row )
+        table.data[i] = list(map( float, row ))
         for j, value in enumerate( table.data[i] ):
             nonzero[j] += 1 if value > 0 else 0
             colsums[j] += value
@@ -203,7 +204,7 @@ def main ( ):
         rna.data[i] = [s * r / d for s, r, d in zip( scale, rna.data[i], dna.data[i] )]
         if args.log_transform:
             divisor = log( args.log_base )
-            rna.data[i] = map( lambda x: log( x ) / divisor, rna.data[i] )
+            rna.data[i] = list(map( lambda x: log( x ) / divisor, rna.data[i] ))
     rna.write( args.output_basename+c_norm_rna_extension, unfloat=True )
 
 if __name__ == "__main__":
