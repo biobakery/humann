@@ -142,7 +142,7 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         reaction_scores["E_or_F"]=or_abundance
         expected_abundance=len(reaction_scores.values())/sum(1.0/v for v in reaction_scores.values())
         
-        self.assertEqual(abundance, expected_abundance)
+        self.assertAlmostEqual(abundance, expected_abundance)
         
     def test_compute_structured_pathway_abundance_or_coverage_test_abundance_missing_required_reaction(self):
         """
@@ -306,11 +306,11 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         # The abundance for each pathway is the average of the largest half of the reaction values
         # For unstructured pathways, if the reaction is not included it does not result in a zero abundance
         pathway1_values=[0,1,3,4]
-        pathway1_abundance_set=pathway1_values[(len(pathway1_values)/2):]
+        pathway1_abundance_set=pathway1_values[int(len(pathway1_values)/2):]
         pathway1_abundance=sum(pathway1_abundance_set)/len(pathway1_abundance_set)
         
         pathway2_values=[0,0,10,20,40,50]
-        pathway2_abundance_set=pathway2_values[(len(pathway2_values)/2):]
+        pathway2_abundance_set=pathway2_values[int(len(pathway2_values)/2):]
         pathway2_abundance=sum(pathway2_abundance_set)/len(pathway2_abundance_set)      
         
         pathways_abundance_store_result, reactions_in_pathways_present=modules.compute_pathways_abundance(pathways_and_reactions_store, pathways_database_store)
