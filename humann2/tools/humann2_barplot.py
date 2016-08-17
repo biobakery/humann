@@ -171,7 +171,7 @@ class FeatureTable:
         self.metarow = None
         self.fname = None
         adding = False
-        with open( path ) as fh:
+        with open( path , "rt") as fh:
             for row in csv.reader( fh, dialect="excel-tab" ):
                 rowhead, values = row[0], row[1:]
                 if self.colheads is None:
@@ -182,7 +182,7 @@ class FeatureTable:
                         feature_id = feature.split( ": " )[0]
                         if focus is None:
                             focus = feature_id
-                            print >>sys.stderr, "No feature selected, so defaulting to first feature:", feature
+                            sys.stderr.write("No feature selected, so defaulting to first feature: " + feature + "\n")
                         if focus != feature_id:
                             continue
                         else:
@@ -211,7 +211,7 @@ class FeatureTable:
         assert self.ncols == len( self.colheads ) == len( self.colmap ), "col dim failure"
 
     def as_genera( self ):
-        print >>sys.stderr, "Regrouping to genera (before selecting/sorting strata)"""
+        sys.stderr.write("Regrouping to genera (before selecting/sorting strata)\n")
         temp = {}
         for rowhead, row in zip( self.rowheads, self.data ):
             rowhead = rowhead.split( "." )[0]
