@@ -38,7 +38,7 @@ def split_table(input,output):
     except EnvironmentError:
         sys.exit("Unable to open output file for writing: " + output_unstratified)
     
-    with open(input) as file_handle:
+    with open(input, "rt") as file_handle:
         header=file_handle.readline()
         
         # write the header to both output files

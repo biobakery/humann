@@ -165,10 +165,16 @@ def calculate_percent_identity(cigar_string, md_field):
     # find the sets of numbers and identifers from the cigar string
     cigar_numbers=match_numbers.findall(cigar_string)
     cigar_identifiers=match_non_numbers.findall(cigar_string)
+
+    # find the index for all of the match/mismatches
+    matches_and_mismatches_index = []
+    for index, cigar_identifier in enumerate(cigar_identifiers):
+        if cigar_identifier == config.sam_cigar_match_identifer:
+            matches_and_mismatches_index.append(index)
     
     # identify the total number of matches and mismatches using the cigar match identifer
     try:
-        matches_and_mismatches=float(cigar_numbers[cigar_identifiers.index(config.sam_cigar_match_identifer)])
+        matches_and_mismatches=sum([float(cigar_numbers[index]) for index in matches_and_mismatches_index])
     except (IndexError, ValueError):
         matches_and_mismatches=0.0
     
@@ -231,7 +237,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
   
     utilities.file_exists_readable(sam_alignment_file)
-    file_handle_read=open(sam_alignment_file, "r")
+    file_handle_read=open(sam_alignment_file, "rt")
     
     file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
     file_handle_write_aligned=open(reduced_aligned_reads_file, "w")

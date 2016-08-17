@@ -44,7 +44,7 @@ def filter_fasta_file(fasta_file, output_folder, genus, id_mapping):
     """ Read through each sequence in the fasta file filtering by genus """
     
     try:
-        file_handle=open(fasta_file)
+        file_handle=open(fasta_file, "rt")
     except EnvironmentError:
         sys.exit("ERROR: Unable to read input fasta file: " + fasta_file)
         
@@ -106,7 +106,7 @@ def process_taxonomic_profile(taxonomic_profile, abundance_threshold):
     # The taxonomic profile will be formatted like the metaphlan2 output file
     
     try:
-        file_handle=open(taxonomic_profile)
+        file_handle=open(taxonomic_profile, "rt")
     except EnvironmentError:
         sys.exit("ERROR: Unable to read taxonomic profile: " + taxonomic_profile)
         

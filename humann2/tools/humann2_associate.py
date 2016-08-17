@@ -108,7 +108,7 @@ def main( ):
     args = get_args( )
     fnames, fvalues = [], []
     adding = False
-    with open( args.input ) as fh:
+    with open( args.input , "rt") as fh:
         for row in csv.reader( fh, csv.excel_tab ):
             header, values = row[0], row[1:]
             if header == args.focal_metadatum:

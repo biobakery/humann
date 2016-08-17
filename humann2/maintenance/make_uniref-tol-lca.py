@@ -35,7 +35,7 @@ args = parser.parse_args()
 # load and curate full taxonomy as dag
 # ---------------------------------------------------------------
 
-print >>sys.stderr, "Loading tree of life"
+print("Loading tree of life")
 
 """
  0 Taxon
@@ -88,17 +88,17 @@ for c, r in map_tax_rank.items():
     if c in map_tax_name and r in ranks:
         map_name_rank[map_tax_name[c]] = r
 
-print "# TOL"
+print("# TOL")
 for name in sorted( map_name_tax ):
-    print "\t".join( [name, map_name_rank.get( name, "n/a" ), map_name_parent.get( name, "root" )] )
+    print("\t".join( [name, map_name_rank.get( name, "n/a" ), map_name_parent.get( name, "root" )] ))
 
 # ---------------------------------------------------------------
 # load uniref taxonomy
 # ---------------------------------------------------------------
 
-print >>sys.stderr, "Loading uniref taxonomy"
+print("Loading uniref taxonomy")
 
-print "# LCA"
+print("# LCA")
 map_uni_tax = {}
 with try_open( args.uniref_headers ) as fh:
     for line in fh:
@@ -106,4 +106,4 @@ with try_open( args.uniref_headers ) as fh:
         if line[0] == ">":
             uni = line[1:].split( )[0]
             tax = re.search( "Tax=(.*) RepID", line ).group( 1 )
-            print "\t".join( [uni, tax] )
+            print("\t".join( [uni, tax] ))

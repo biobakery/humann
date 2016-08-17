@@ -116,7 +116,7 @@ results = parser.parse_args()
 CommonArea['ifile'] = results.i 
 CommonArea['oFile'] = results.o
 OutputFile = open(CommonArea['oFile'],'w')
-CommonArea['InputFile'] = open(CommonArea['ifile'])
+CommonArea['InputFile'] = open(CommonArea['ifile'], "rt")
  
 for sLine in CommonArea['InputFile']: 
 

@@ -60,11 +60,11 @@ def store_pathways(verbose):
     for file in PATHWAYS_DATABASES:
         try:
             if file.endswith(".gz"):
-                file_handle = gzip.open(file, "r")
+                file_handle = gzip.open(file, "rt")
             elif file.endswith(".bz2"):
-                file_handle = bz2.BZ2File(file, "r")
+                file_handle = bz2.BZ2File(file, "U")
             else:
-                file_handle=open(file,"r")
+                file_handle=open(file,"rt")
             if verbose:
                 print("Reading data from pathways file: " + file)
         except EnvironmentError:

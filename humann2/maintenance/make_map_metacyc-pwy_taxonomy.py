@@ -73,7 +73,7 @@ def write_output(metacyc_pathways, taxonomy_names, taxonomy_division,
     file_handle_names.close()
     file_handle_division.close()
     
-    print all_division
+    print(all_division)
         
 
 def read_ncbi_nodes(nodes_file):

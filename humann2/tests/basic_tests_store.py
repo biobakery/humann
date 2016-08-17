@@ -402,8 +402,9 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         # write the flat file created from a structured file to a temp file
         file_out, new_file=tempfile.mkstemp()
-        os.write(file_out, pathways_database_store.get_database())
         os.close(file_out)
+        with open(new_file, "w") as file_handle:
+            file_handle.write(pathways_database_store.get_database())
         
         # load in the flat file and compare with the correct flat file
         pathways_database_flat_store_write=store.PathwaysDatabase(new_file)
@@ -428,9 +429,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         # write the flat file created from a structured file to a temp file
         file_out, new_file=tempfile.mkstemp()
-        os.write(file_out, pathways_database_store.get_database())
         os.close(file_out)
-        
+        with open(new_file, "w") as file_handle:
+            file_handle.write(pathways_database_store.get_database())      
+  
         # load in the flat file and compare with the correct flat file
         pathways_database_flat_store_write=store.PathwaysDatabase(new_file)
         
@@ -456,9 +458,10 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         # write the flat file created from a structured file to a temp file
         file_out, new_file=tempfile.mkstemp()
-        os.write(file_out, pathways_database_store.get_database())
         os.close(file_out)
-        
+        with open(new_file, "w") as file_handle:
+            file_handle.write(pathways_database_store.get_database())       
+ 
         # load in the flat file and compare with the correct flat file
         pathways_database_flat_store_write=store.PathwaysDatabase(new_file)
         

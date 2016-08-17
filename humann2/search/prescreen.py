@@ -28,6 +28,9 @@ import re
 import sys
 import logging
 
+# import this range as a replacement for xrange in python2/3
+from builtins import range
+
 from .. import utilities
 from .. import config
 
@@ -99,7 +102,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     if bug_file != "Empty":
         # Identify the species that pass the threshold
         utilities.file_exists_readable(bug_file)
-        file_handle = open(bug_file, "r")
+        file_handle = open(bug_file, "rt")
 
         line = file_handle.readline()
         while line:
@@ -188,7 +191,7 @@ def create_custom_database(chocophlan_dir, bug_file):
         
         if not bypass:
             # run the command with chunks of input files to not exceed max arguments
-            species_file_list_subsets=[species_file_list[i:i+config.max_arguments] for i in xrange(0, len(species_file_list), config.max_arguments)]
+            species_file_list_subsets=[species_file_list[i:i+config.max_arguments] for i in range(0, len(species_file_list), config.max_arguments)]
             
             # run the first subset to create the new custom database
             first_subset=species_file_list_subsets.pop(0)

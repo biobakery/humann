@@ -51,7 +51,7 @@ def store_id_mapping(file):
     # Check the file exists and is readable
     utilities.file_exists_readable(file)
          
-    file_handle=open(file,"r")
+    file_handle=open(file,"rt")
          
     line=file_handle.readline()
     while line:
@@ -147,7 +147,7 @@ class Alignments:
         line=""
         try:
             self.__temp_alignments_file_handle.close()
-            self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "r")
+            self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "rt")
         
             line=self.__temp_alignments_file_handle.readline()
         except (EnvironmentError, AttributeError):
@@ -379,14 +379,14 @@ class Alignments:
         Return a list of all of the gene families
         """
         
-        return self.__gene_counts.keys()
+        return list(self.__gene_counts.keys())
     
     def bug_list(self):
         """
         Return a list of all of the bugs
         """
         
-        return self.__bug_counts.keys()
+        return list(self.__bug_counts.keys())
     
     def get_hit_list(self):
         """
@@ -512,7 +512,7 @@ class GeneScores:
         """
         
         if bug in self.__scores:
-            self.__scores[bug]=dict(self.__scores[bug].items() + gene_scores.items())
+            self.__scores[bug]=dict(list(self.__scores[bug].items()) + list(gene_scores.items()))
         else:
             self.__scores[bug]=gene_scores
 
@@ -560,7 +560,7 @@ class GeneScores:
         Return a list of the bugs including "all"
         """
         
-        return self.__scores.keys()
+        return list(self.__scores.keys())
 
     def gene_list(self):
         """
@@ -571,7 +571,7 @@ class GeneScores:
             for gene in self.__scores[bug]:
                 genes[gene]=1
         
-        return genes.keys()
+        return list(genes.keys())
     
     def gene_list_sorted_by_score(self,bug):
         """
@@ -609,7 +609,7 @@ class GeneScores:
         # Check the file exists and is readable
         utilities.file_exists_readable(file)
          
-        file_handle=open(file,"r")
+        file_handle=open(file,"rt")
          
         line=file_handle.readline()
         while line:
@@ -683,14 +683,14 @@ class PathwaysAndReactions:
         Get a list of the bugs
         """
         
-        return self.__pathways.keys()
+        return list(self.__pathways.keys())
     
     def pathway_list(self, bug):
         """
         Return the keys in the pathways dictionary for a bug
         """
         
-        return self.__pathways.get(bug,{}).keys()
+        return list(self.__pathways.get(bug,{}).keys())
     
     def reaction_scores(self, bug, pathway):
         """
@@ -715,11 +715,11 @@ class PathwaysAndReactions:
         median_score_value=0
         if all_scores:
             if len(all_scores) % 2 == 0:
-                index1=len(all_scores)/2
+                index1=int(len(all_scores)/2)
                 index2=index1-1
                 median_score_value=(all_scores[index1]+all_scores[index2])/2.0
             else:
-                median_score_value=all_scores[len(all_scores)/2]
+                median_score_value=all_scores[int(len(all_scores)/2)]
             
         return median_score_value
     
@@ -739,11 +739,11 @@ class PathwaysAndReactions:
         median_score_value=0
         if all_scores:
             if len(all_scores) % 2 == 0:
-                index1=len(all_scores)/2
+                index1=int(len(all_scores)/2)
                 index2=index1-1
                 median_score_value=(all_scores[index1]+all_scores[index2])/2.0
             else:
-                median_score_value=all_scores[len(all_scores)/2]
+                median_score_value=all_scores[int(len(all_scores)/2)]
             
         return median_score_value
     
@@ -832,7 +832,7 @@ class Pathways:
         Return the pathways list
         """
         
-        return self.__pathways.keys()
+        return list(self.__pathways.keys())
     
     def get_bugs_double_sorted(self,pathway):
         """
@@ -891,11 +891,11 @@ class ReactionsDatabase:
             utilities.file_exists_readable(database)
             
             if database.endswith(".gz"):
-                file_handle = gzip.open(database, "r")
+                file_handle = gzip.open(database, "rt")
             elif database.endswith(".bz2"):
-                file_handle = bz2.BZ2File(database, "r")
+                file_handle = bz2.BZ2File(database, "U")
             else:
-                file_handle=open(database,"r")
+                file_handle=open(database,"rt")
              
             line=file_handle.readline()
              
@@ -1130,7 +1130,7 @@ class PathwaysDatabase:
             # Check the database file exists and is readable
             utilities.file_exists_readable(database)
             
-            file_handle=open(database,"r")
+            file_handle=open(database,"rt")
              
             line=file_handle.readline()
              
@@ -1223,14 +1223,14 @@ class PathwaysDatabase:
         Return the list of reactions included in the database
         """
         
-        return self.__reactions_to_pathways.keys()
+        return list(self.__reactions_to_pathways.keys())
     
     def pathway_list(self):
         """
         Return the list of pathways included in the database
         """
         
-        return self.__pathways_to_reactions.keys()
+        return list(self.__pathways_to_reactions.keys())
     
     def get_database(self):
         """
@@ -1277,7 +1277,7 @@ class Reads:
         else:
             input_fasta=file
                        
-        file_handle=open(input_fasta,"r")
+        file_handle=open(input_fasta,"rt")
             
         sequence=""
         id=""
@@ -1366,7 +1366,7 @@ class Reads:
         """
         
         if self.__reads:
-            return self.__reads.keys()
+            return list(self.__reads.keys())
         else:
             return list(self.__ids)
     
@@ -1429,11 +1429,11 @@ class Names:
         # Test if this is a gzipped file
         if not unreadable_file:
             if file.endswith(".gz"):
-                file_handle = gzip.open(file, "r")
+                file_handle = gzip.open(file, "rt")
             elif file.endswith(".bz2"):
-                file_handle = bz2.BZ2File(file, "r")
+                file_handle = bz2.BZ2File(file, "U")
             else:
-                file_handle = open(file,"r")
+                file_handle = open(file,"rt")
                 
             line=file_handle.readline()
             while line:

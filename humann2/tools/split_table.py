@@ -40,7 +40,7 @@ def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None,
     
     # try to open the file
     try:
-        file_handle=open(gene_table,"r")
+        file_handle=open(gene_table,"rt")
         line=file_handle.readline()
     except EnvironmentError:
         sys.exit("Unable to read file: " + gene_table)

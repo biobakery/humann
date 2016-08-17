@@ -69,7 +69,7 @@ def process_gene_table_header(gene_table, allow_for_missing_header=None):
     
     # try to open the file
     try:
-        file_handle=open(gene_table,"r")
+        file_handle=open(gene_table,"rt")
         line=file_handle.readline()
     except EnvironmentError:
         sys.exit("Unable to read file: " + gene_table)
@@ -164,7 +164,7 @@ class Table ( ):
                 break
 
     def write ( self, path=None, unfloat=False ):
-        fh = try_zip_open( path, "w" ) if path is not None else sys.stdout
+        fh = try_zip_open( path, write=True) if path is not None else sys.stdout
         writer = csv.writer( fh, delimiter="\t", lineterminator="\n")
         writer.writerow( [self.anchor] + self.colheads )
         for i in range( len( self.rowheads ) ):
@@ -196,18 +196,27 @@ def size_warn( path ):
     if m * os.path.getsize( path ) > c_many_bytes:
         print( "  This is a large file, one moment please...", file=sys.stderr )
 
-def try_zip_open( path, *args ):
+def try_zip_open( path, write=None ):
     """ 
     open an uncompressed or gzipped file; fail gracefully 
     """
     fh = None
+
+    # set the open mode
+    if write:
+        open_mode = "w"
+    elif path.endswith(".bz2"):
+        open_mode = "U"
+    else:
+        open_mode = "rt"
+
     try:
         if path.endswith(".gz"):
-            fh = gzip.GzipFile( path, *args )
+            fh = gzip.open( path, open_mode )
         elif path.endswith(".bz2"):
-            fh = bz2.BZ2File( path, *args )
+            fh = bz2.BZ2File( path, open_mode )
         else:
-            fh = open( path, *args )
+            fh = open( path, open_mode )
     except EnvironmentError:
         sys.exit( "Problem opening file: " + path)
     return fh

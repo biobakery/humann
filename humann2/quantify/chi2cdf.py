@@ -27,12 +27,15 @@ import math
 import re
 import sys
 
+# this provides a forward compatible equivalent of xrange for python2/3
+from builtins import range
+
 # Adapted from samtools; will be occasionally inaccurate due to iteration stoppage
 def incomplete_gamma1( dS, dZ ):
     
     dS, dZ = (float(d) for d in (dS, dZ))
     dSum = dX = 1
-    for i in xrange( 1, 10000 ):
+    for i in range( 1, 10000 ):
         dX *= dZ / ( dS + i )
         dSum += dX
         if ( dX / dSum ) < 1e-14:

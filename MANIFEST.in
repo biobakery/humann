@@ -8,8 +8,6 @@ include examples/demo.fastq
 include examples/demo.m8
 include examples/demo.sam
 
-include doc/UserManual.md
-
 include humann2/tools/README.txt
 
 include humann2/maintenance/README.md
