@@ -117,10 +117,10 @@ def  ReadHtmlKegTable(CommonArea):
 #************************************************************************
 def  ReadSequentialTranslationFile(CommonArea):
 		if  CommonArea['ikeggOrgId2OrgName'] is not None:
-			CommonArea['ikeggOrgId2OrgName_file'] = open(CommonArea['ikeggOrgId2OrgName'])
+			CommonArea['ikeggOrgId2OrgName_file'] = open(CommonArea['ikeggOrgId2OrgName'], "rt")
 		else:
 			FileLocation = os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir, "data/misc/KeggOrgId2OrgNameTable.txt")
-			CommonArea['ikeggOrgId2OrgName_file'] = open(FileLocation)  
+			CommonArea['ikeggOrgId2OrgName_file'] = open(FileLocation, "rt")  
 			
 			
 		for iKeggOrgLine in CommonArea['ikeggOrgId2OrgName_file']: 
@@ -165,10 +165,10 @@ parser = CommonArea['parser']
 results = parser.parse_args()
 
 CommonArea['igenels'] = results.igenels
-CommonArea['igenels_file'] = open(CommonArea['igenels'])	# Open the igenels file
+CommonArea['igenels_file'] = open(CommonArea['igenels'], "rt")	# Open the igenels file
 
 CommonArea['ikoc'] = results.ikoc
-CommonArea['ikoc_file'] = open(CommonArea['ikoc'])	# Open the ikoc file
+CommonArea['ikoc_file'] = open(CommonArea['ikoc'], "rt")	# Open the ikoc file
 
 CommonArea['ikeggtrans'] = results.ikeggtrans
 
