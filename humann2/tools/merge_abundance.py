@@ -17,7 +17,7 @@ import gzip
 import bz2
 import re
 
-import util
+from humann2.tools import util
 
 TABLE_DELIMITER="\t"
 BUG_DELIMITER="|"
@@ -134,23 +134,26 @@ def read_mapping(gene_mapping_file,pathway_mapping_file):
     try:
         if gene_mapping_file.endswith(".gz"):
             file_handle=gzip.open(gene_mapping_file, "rt")
+            readlines = file_handle.readlines()
         elif gene_mapping_file.endswith(".bz2"):
-            file_handle = bz2.BZ2File(gene_mapping_file, "U")
+            file_handle = bz2.BZ2File(gene_mapping_file, "r")
+            readlines = [line.decode('utf-8') for line in file_handle.readlines()]
         else:
             file_handle=open(gene_mapping_file, "rt")
+            readlines = file_handle.readlines()
     except EnvironmentError:
         sys.exit("ERROR: Unable to open the mapping file: " + gene_mapping_file)
             
+    file_handle.close()
+    
     # read through the mapping lines
-    for line in file_handle:
+    for line in readlines:
         data=line.rstrip().split(TABLE_DELIMITER)
         reaction=data.pop(0)
         ecs=data.pop(0).split(EC_DELIMITER)
         reactions_to_genes[reaction]=data
         reactions_to_ecs[reaction]=ecs
                 
-    file_handle.close()
-    
     # read the reaction to pathway mappings
     pathways_to_genes={}
     pathways_to_ecs={}
@@ -232,7 +235,7 @@ def determine_mapping_type(gene_table,pathways_to_genes,pathways_to_ecs):
     
     all_genes=set()
     all_ecs=set()
-    for pathway,genes in pathways_to_genes.iteritems():
+    for pathway,genes in pathways_to_genes.items():
         all_genes.update(genes)
         all_ecs.update(pathways_to_ecs[pathway])
     
