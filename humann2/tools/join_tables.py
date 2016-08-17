@@ -19,7 +19,7 @@ import os
 import shutil
 import re
 
-import util
+from humann2.tools import util
 
 GENE_TABLE_DELIMITER="\t"
 BIOM_FILE_EXTENSION=".biom"
