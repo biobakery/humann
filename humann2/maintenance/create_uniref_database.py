@@ -61,22 +61,26 @@ def store_pathways(verbose):
         try:
             if file.endswith(".gz"):
                 file_handle = gzip.open(file, "rt")
+                readlines = file_handle.readlines()
             elif file.endswith(".bz2"):
-                file_handle = bz2.BZ2File(file, "U")
+                file_handle = bz2.BZ2File(file, "r")
+                readlines = [line.decode('utf-8') for line in file_handle.readlines()]
             else:
                 file_handle=open(file,"rt")
+                readlines = file_handle.readlines()
             if verbose:
                 print("Reading data from pathways file: " + file)
         except EnvironmentError:
             sys.exit("Unable to open file: " + file)
-            
-        for line in file_handle:
+
+        file_handle.close()
+
+        for line in readlines:
             tokens=line.rstrip('\n').split(PATHWAYS_DELIMITER)
             for token in tokens:
                 if re.search(PATHWAYS_UNIREF_IDENTIFIER,token,re.IGNORECASE):
                    uniref_pathways[token]=1
                    
-        file_handle.close()
         if verbose:
             print("Total ids stored: " + str(len(uniref_pathways.keys())))
         
