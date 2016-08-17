@@ -166,17 +166,17 @@ def calculate_percent_identity(cigar_string, md_field):
     cigar_numbers=match_numbers.findall(cigar_string)
     cigar_identifiers=match_non_numbers.findall(cigar_string)
 
-    # find the index for all of the match/mismatches
-    matches_and_mismatches_index = []
+    # find the index for all of the match/mismatch/insert/delete
+    match_mismatch_indel_index = []
     for index, cigar_identifier in enumerate(cigar_identifiers):
-        if cigar_identifier == config.sam_cigar_match_identifer:
-            matches_and_mismatches_index.append(index)
+        if cigar_identifier in config.sam_cigar_match_mismatch_indel_identifiers:
+            match_mismatch_indel_index.append(index)
     
-    # identify the total number of matches and mismatches using the cigar match identifer
+    # identify the total number of match/mismatch/indel
     try:
-        matches_and_mismatches=sum([float(cigar_numbers[index]) for index in matches_and_mismatches_index])
+        match_mismatch_indel_count=sum([float(cigar_numbers[index]) for index in match_mismatch_indel_index])
     except (IndexError, ValueError):
-        matches_and_mismatches=0.0
+        match_mismatch_indel_count=0.0
     
     # remove the tag from the md field
     md_field=md_field.split(config.sam_md_field_identifier)[-1]
@@ -191,10 +191,10 @@ def calculate_percent_identity(cigar_string, md_field):
         matches=0.0
     
     percent_identity=0.0
-    if matches_and_mismatches > 0.0:
-        percent_identity = 100.0 * ( matches / ( matches_and_mismatches * 1.0 ) )
+    if match_mismatch_indel_count > 0.0:
+        percent_identity = 100.0 * ( matches / ( match_mismatch_indel_count * 1.0 ) )
         
-    return percent_identity, matches_and_mismatches 
+    return percent_identity, match_mismatch_indel_count 
     
 def find_md_field(info):
     """

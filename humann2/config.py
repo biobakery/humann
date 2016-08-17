@@ -389,7 +389,7 @@ sam_read_quality=10
 sam_unmapped_flag=0x4
 sam_delimiter="\t"
 
-sam_cigar_match_identifer="M"
+sam_cigar_match_mismatch_indel_identifiers=["M","I","D"]
 sam_md_field_identifier="MD:Z:"
 
 #set the locations of data in a tabulated blast formatted file
