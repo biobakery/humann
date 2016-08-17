@@ -35,6 +35,20 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         
         self.assertEqual(identity, expected_identity)
 
+    def test_calculate_percent_identity_multiple_M_cigar_fields(self):
+        """
+        Test the calculate percent identity function
+        """
+
+        cigar_string="100S84M16S10M"
+        md_field="MD:Z:27A5G2T6G4T1A6T2C0A7A1A0A0C0G1G1A5"
+
+        expected_identity= 100.0 * ( 68 / 94.0 )
+
+        identity, alignment_length =nucleotide.calculate_percent_identity(cigar_string,md_field)
+
+        self.assertEqual(identity, expected_identity)
+
     def test_calculate_percent_identity_simple_md_field(self):
         """
         Test the calculate percent identity function
