@@ -25,7 +25,14 @@ THE SOFTWARE.
 
 import os
 import sys
-import ConfigParser
+
+# try to import the python2 ConfigParser
+# if unable to import, then try to import the python3 configparser
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
+
 import logging
 
 # name global logging instance
@@ -110,7 +117,7 @@ def update_user_edit_config_file(new_config_items):
     Update the settings to the user editable config file
     """
     
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     
     # start with the current config settings
     config_items = read_user_edit_config_file()
@@ -151,7 +158,7 @@ def read_user_edit_config_file():
     Read the settings from the config file
     """
     
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     
     try:
         config.read(full_path_user_edit_config_file)
