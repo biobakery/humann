@@ -7,24 +7,29 @@ To run: python setup.py install
 
 import sys
 
-# required python version
-required_python_version_major = 2
-required_python_version_minor = 7
-
-# Check the python version
+# required python versions (2.7+ or 3.0+)
+required_python_version_major = [2,3]
+required_python_version_minor = [7,0]
+    
+# check for either of the required versions
+pass_check=False
 try:
-    if (sys.version_info[0] != required_python_version_major or
-        sys.version_info[1] < required_python_version_minor):
-        sys.exit("CRITICAL ERROR: The python version found (version "+
-            str(sys.version_info[0])+"."+str(sys.version_info[1])+") "+
-            "does not match the version required (version "+
-            str(required_python_version_major)+"."+
-            str(required_python_version_minor)+"+)")
+    for major, minor in zip(required_python_version_major, required_python_version_minor):
+        if (sys.version_info[0] == major and sys.version_info[1] >= minor):
+            pass_check=True
 except (AttributeError,IndexError):
     sys.exit("CRITICAL ERROR: The python version found (version 1) " +
         "does not match the version required (version "+
         str(required_python_version_major)+"."+
+        str(required_python_version_minor)+"+)")    
+
+if not pass_check:
+    sys.exit("CRITICAL ERROR: The python version found (version "+
+        str(sys.version_info[0])+"."+str(sys.version_info[1])+") "+
+        "does not match the version required (version "+
+        str(required_python_version_major)+"."+
         str(required_python_version_minor)+"+)")
+
 
 try:
     import setuptools
