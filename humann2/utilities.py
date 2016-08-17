@@ -36,7 +36,14 @@ import traceback
 import gzip
 import shutil
 import threading
-import Queue
+
+# try to import the python2 module Queue
+# if unable to import, try to import the python3 module queue
+try:
+    import Queue as queue
+except ImportError:
+    import queue
+
 import datetime
 import time
 import math
@@ -88,18 +95,20 @@ def determine_file_format(file):
     try:      
         # check for gzipped files
         if file.endswith(".gz"):
-            file_handle = gzip.open(file, "r")
+            file_handle = gzip.open(file, "rt")
             gzipped=True
         else:
-            file_handle = open(file, "r")
+            file_handle = open(file, "rt")
         
         first_line = file_handle.readline().rstrip()
         while re.search("^#",first_line):
             first_line = file_handle.readline().rstrip()
         second_line = file_handle.readline().rstrip()
-    except EnvironmentError:
-        # if unable to open and read the file, return unknown
-        return "unknown"   
+    except (EnvironmentError, UnicodeDecodeError):
+        # if unable to open and read the file, set the format to unknown
+        format="unknown"
+        first_line = ""
+        second_line = ""  
     finally:
         file_handle.close()
 
@@ -190,13 +199,13 @@ def gunzip_file(gzip_file):
     logger.info(message)    
     
     try:
-        file_handle_gzip=gzip.open(gzip_file,"r")
+        file_handle_gzip=gzip.open(gzip_file,"rt")
         
         # create a unnamed temp file
         new_file=unnamed_temp_file()
         
         # write the gunzipped file
-        file_handle=open(new_file,"w")
+        file_handle=open(new_file,"wt")
         shutil.copyfileobj(file_handle_gzip, file_handle)
         
     except EnvironmentError:
@@ -364,7 +373,7 @@ def check_software_version(exe,version):
 
     try:
         process = subprocess.Popen([exe,version["flag"]],stderr=subprocess.STDOUT,
-            stdout=subprocess.PIPE)
+            stdout=subprocess.PIPE, universal_newlines=True)
         process_out=process.communicate()[0]
     except EnvironmentError:
         message="Error trying to call software version"
@@ -536,7 +545,7 @@ def command_threading(threads,commands):
     """
     
     # Create a queue to hold work
-    work_queue = Queue.Queue()
+    work_queue = queue.Queue()
     
     # Create a set of worker threads
     exit_codes={}
@@ -637,7 +646,7 @@ def execute_command(exe, args, infiles, outfiles, stdout_file=None,
         
         if stdin_file:
             try:
-                stdin=open(stdin_file,"r")
+                stdin=open(stdin_file,"rt")
             except EnvironmentError:
                 message="Unable to open file: " + stdin_file
                 logger.critical(message)
@@ -727,7 +736,7 @@ def fasta_or_fastq(file):
     file_exists_readable(file)
 	
     # read in first 2 lines of file to check format
-    file_handle = open(file, "r")
+    file_handle = open(file, "rt")
 	
     first_line = file_handle.readline()
     second_line = file_handle.readline()
@@ -749,7 +758,7 @@ def count_reads(file):
     Count the total number of reads in a file
     """
 
-    file_handle_read=open(file,"r")
+    file_handle_read=open(file,"rt")
 
     line=file_handle_read.readline()
 
@@ -830,7 +839,7 @@ def break_up_fasta_file(fasta_file, max_seqs):
     # check file exists
     file_exists_readable(fasta_file)
     
-    file_handle_read=open(fasta_file,"r")
+    file_handle_read=open(fasta_file,"rt")
 
     line=file_handle_read.readline()
 
@@ -885,7 +894,7 @@ def fastq_to_fasta(file, apply_pick_frames=None, length_annotation=None):
     # check file exists
     file_exists_readable(file)
 	
-    file_handle_read = open(file, "r")
+    file_handle_read = open(file, "rt")
 	
     line = file_handle_read.readline()
 	
@@ -943,7 +952,7 @@ def pick_frames_from_fasta(file, length_annotation=None):
     # check file exists
     file_exists_readable(file)
     
-    file_handle_read = open(file, "r")
+    file_handle_read = open(file, "rt")
     
     line = file_handle_read.readline()
     
@@ -991,7 +1000,7 @@ def length_annotate_fasta(file):
     # check file exists
     file_exists_readable(file)
     
-    file_handle_read = open(file, "r")
+    file_handle_read = open(file, "rt")
     
     line = file_handle_read.readline()
     
@@ -1182,7 +1191,7 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
     # read through the alignment file to identify ids
     # that correspond to aligned reads
     # all translated alignment files will be of the tabulated blast format
-    file_handle=open(alignment_file_tsv,"r")
+    file_handle=open(alignment_file_tsv,"rt")
     line=file_handle.readline()
 
     log_evalue=False
