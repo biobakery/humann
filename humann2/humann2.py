@@ -337,7 +337,7 @@ def update_configuration(args):
         
     # Set the metaphlan options, removing any extra spaces
     if args.metaphlan_options:
-        config.metaphlan_opts=filter(None,args.metaphlan_options.split(" "))
+        config.metaphlan_opts=list(filter(None,args.metaphlan_options.split(" ")))
  
     # Set the pathways database selection
     if args.pathways == "metacyc":
