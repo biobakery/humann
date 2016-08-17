@@ -252,14 +252,14 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         
         # create a small gzipped fasta file
         # read in the small fasta file
-        file_handle=open(cfg.small_fasta_file,"r")
+        file_handle=open(cfg.small_fasta_file,"rt")
         
         # create a temp file
         file_out, gzip_fasta_file=tempfile.mkstemp(suffix=".gz")
         os.close(file_out)
         
         # write the gzipped file
-        file_handle_gzip=gzip.open(gzip_fasta_file,"w")
+        file_handle_gzip=gzip.open(gzip_fasta_file,"wt")
         shutil.copyfileobj(file_handle, file_handle_gzip)
         file_handle.close()
         file_handle_gzip.close()
@@ -278,14 +278,14 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         
         # create a small gzipped fastq file
         # read in the small fastq file
-        file_handle=open(cfg.small_fastq_file,"r")
+        file_handle=open(cfg.small_fastq_file,"rt")
         
         # create a temp file
         file_out, gzip_fastq_file=tempfile.mkstemp(suffix=".gz")
         os.close(file_out)
         
         # write the gzipped file
-        file_handle_gzip=gzip.open(gzip_fastq_file,"w")
+        file_handle_gzip=gzip.open(gzip_fastq_file,"wt")
         shutil.copyfileobj(file_handle, file_handle_gzip)
         file_handle.close()
         file_handle_gzip.close()
@@ -322,14 +322,14 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         
         # create a small gzipped fastq file
         # read in the small fastq file
-        file_handle=open(cfg.small_fastq_file,"r")
+        file_handle=open(cfg.small_fastq_file,"rt")
         
         # create a temp file
         file_out, gzip_fastq_file=tempfile.mkstemp(suffix=".gz")
         os.close(file_out)
         
         # write the gzipped file
-        file_handle_gzip=gzip.open(gzip_fastq_file,"w")
+        file_handle_gzip=gzip.open(gzip_fastq_file,"wt")
         shutil.copyfileobj(file_handle, file_handle_gzip)
         file_handle.close()
         file_handle_gzip.close()
