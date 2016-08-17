@@ -26,7 +26,7 @@ def create_table(input,output):
     # read the input gene table
     genus_values={}
     all_values=""
-    with open(input) as file_handle:
+    with open(input, "rt") as file_handle:
         with open(output, "w") as file_handle_write:
             # write the header to the new file
             header=file_handle.readline()
