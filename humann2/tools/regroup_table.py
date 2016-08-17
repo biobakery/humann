@@ -5,10 +5,10 @@ from collections import namedtuple
 import argparse
 import sys
 import os
-import util
 
 try:
     from humann2 import config
+    from humann2.tools import util
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
@@ -187,9 +187,9 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
 
     # report
     n = len( feature_counts )
-    ungrouped = feature_counts.values().count( 0 )
+    ungrouped = list(feature_counts.values()).count( 0 )
     grouped_total = n - ungrouped
-    grouped_multi = grouped_total - feature_counts.values().count( 1 )
+    grouped_multi = grouped_total - list(feature_counts.values()).count( 1 )
     print( "Original Feature Count: %d; Grouped 1+ times: %d (%%%.1f); Grouped 2+ times: %d (%%%.1f)" % \
            ( n,
              grouped_total,
