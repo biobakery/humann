@@ -14,7 +14,7 @@ import argparse
 import sys
 import os
 
-import util
+from humann2.tools import util
 
 TABLE_DELIMITER="\t"
 LEVEL_DELIMITER="|"
