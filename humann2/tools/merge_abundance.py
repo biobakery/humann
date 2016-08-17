@@ -133,11 +133,11 @@ def read_mapping(gene_mapping_file,pathway_mapping_file):
     reactions_to_ecs={}
     try:
         if gene_mapping_file.endswith(".gz"):
-            file_handle=gzip.open(gene_mapping_file)
+            file_handle=gzip.open(gene_mapping_file, "rt")
         elif gene_mapping_file.endswith(".bz2"):
-            file_handle = bz2.BZ2File(gene_mapping_file)
+            file_handle = bz2.BZ2File(gene_mapping_file, "U")
         else:
-            file_handle=open(gene_mapping_file)
+            file_handle=open(gene_mapping_file, "rt")
     except EnvironmentError:
         sys.exit("ERROR: Unable to open the mapping file: " + gene_mapping_file)
             
@@ -155,7 +155,7 @@ def read_mapping(gene_mapping_file,pathway_mapping_file):
     pathways_to_genes={}
     pathways_to_ecs={}
     try:
-        file_handle=open(pathway_mapping_file)
+        file_handle=open(pathway_mapping_file, "rt")
     except EnvironmentError:
         sys.exit("ERROR: Unable to open the mapping file: " + pathway_mapping_file)
         
