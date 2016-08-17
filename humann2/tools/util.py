@@ -138,14 +138,14 @@ class Table ( ):
         self.data = []
         self.is_stratified = False
         if path is None:
-            fh = sys.stdin
+            rows = csv.reader( sys.stdin, dialect='excel-tab' )
             path = "STDIN"
             print( "Loading table from: <STDIN>", file=sys.stderr )
         else:
-            fh = try_zip_open( path )
+            rows = [line.split("\t") for line in try_zip_open_readlines( path )]
             print( "Loading table from:", path, file=sys.stderr )
             size_warn( path )
-        for row in csv.reader( fh, dialect='excel-tab' ):
+        for row in rows:
             try:
                 if self.anchor is None:
                     self.anchor = row[0]
@@ -170,7 +170,7 @@ class Table ( ):
         for i in range( len( self.rowheads ) ):
             values = self.data[i][:]
             if unfloat:
-                values = map( lambda x: "%.6g" % ( x ), values )
+                values = list( map( lambda x: "%.6g" % ( x ), values ))
             writer.writerow( [self.rowheads[i]] + values )
 
 class Ticker( ):
@@ -206,7 +206,7 @@ def try_zip_open( path, write=None ):
     if write:
         open_mode = "w"
     elif path.endswith(".bz2"):
-        open_mode = "U"
+        open_mode = "r"
     else:
         open_mode = "rt"
 
@@ -221,6 +221,19 @@ def try_zip_open( path, write=None ):
         sys.exit( "Problem opening file: " + path)
     return fh
 
+def try_zip_open_readlines( path ):
+    """
+    return the lines in the opened file
+    """
+
+    with try_zip_open( path ) as file_handle:
+        for line in file_handle:
+            if path.endswith(".bz2"):
+                # convert the line to text from binary
+                yield line.decode('utf-8').rstrip()
+            else:
+                yield line.rstrip()
+
 def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """
     Load a file like:
@@ -233,16 +246,16 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
     Inner values are not important (set to 1)
     """
     polymap = {}
-    with try_zip_open( path ) as fh:
-        print( "Loading mapping file from:", path, file=sys.stderr )
-        size_warn( path )
-        for row in csv.reader( fh, dialect="excel-tab" ):
-            key = row[start]
-            if allowed_keys is None or key in allowed_keys:
-                for i, value in enumerate( row ):
-                    if i != start and (skip is None or i not in skip):
-                        if allowed_values is None or value in allowed_values:
-                            polymap.setdefault( key, {} )[value] = 1
+    print( "Loading mapping file from:", path, file=sys.stderr )
+    size_warn( path )
+    for line in try_zip_open_readlines( path ):
+        row = line.split("\t")
+        key = row[start]
+        if allowed_keys is None or key in allowed_keys:
+            for i, value in enumerate( row ):
+                if i != start and (skip is None or i not in skip):
+                    if allowed_values is None or value in allowed_values:
+                        polymap.setdefault( key, {} )[value] = 1
     return polymap
 
 def fsplit( feature ):
