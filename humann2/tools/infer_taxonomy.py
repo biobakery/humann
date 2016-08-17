@@ -4,7 +4,8 @@ from __future__ import print_function # Python 2.7+ required
 import sys
 import csv
 import argparse
-import util
+
+from humann2.tools import util
 
 description = """
 HUMAnN2 utility for inferring "unclassified" taxonomy
