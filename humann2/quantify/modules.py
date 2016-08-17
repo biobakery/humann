@@ -161,7 +161,7 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
             # Process the minpath results
             if os.path.isfile(tmpfile):
         
-                file_handle_read=open(tmpfile, "r")
+                file_handle_read=open(tmpfile, "rt")
                 line=file_handle_read.readline()
                     
                 while line:
@@ -268,8 +268,8 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
     for bug in xipe_stdout_results:
             
         try:
-            xipe_stderr=open(xipe_stderr_results[bug],"r")
-            xipe_stdout=open(xipe_stdout_results[bug],"r")
+            xipe_stderr=open(xipe_stderr_results[bug],"rt")
+            xipe_stdout=open(xipe_stdout_results[bug],"rt")
         except EnvironmentError:
             logger.debug("Empty results file from xipe")
             continue
@@ -439,7 +439,7 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
                 sorted_reaction_scores=sorted(reaction_scores.values())
                     
                 # Select the second half of the list of reaction scores
-                abundance_set=sorted_reaction_scores[(len(sorted_reaction_scores)/ 2):]
+                abundance_set=sorted_reaction_scores[int(len(sorted_reaction_scores)/ 2):]
                 
                 # Compute abundance
                 abundance=sum(abundance_set)/len(abundance_set)
