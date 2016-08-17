@@ -892,18 +892,20 @@ class ReactionsDatabase:
             
             if database.endswith(".gz"):
                 file_handle = gzip.open(database, "rt")
+                readlines = file_handle.readlines()
             elif database.endswith(".bz2"):
-                file_handle = bz2.BZ2File(database, "U")
+                # read the bz2 file in binary and then decode for python2/3 compatibility
+                file_handle = bz2.BZ2File(database, "r")
+                readlines = [line.decode('utf-8') for line in file_handle.readlines()]
             else:
                 file_handle=open(database,"rt")
-             
-            line=file_handle.readline()
+                readlines = file_handle.readlines()
              
             # database is expected to contain a single line per reaction
             # this line begins with the reaction name and ec number and is followed 
             # by all genes associated with the reaction
              
-            while line:
+            for line in readlines:
                 data=line.rstrip().split(config.reactions_database_delimiter)
                 if len(data)>2:
                     reaction=data.pop(0)
@@ -920,8 +922,6 @@ class ReactionsDatabase:
                         else:
                             self.__genes_to_reactions[gene]=[reaction]    
                  
-                line=file_handle.readline()
-            
             file_handle.close()
         
     def add_reactions(self, reactions):
@@ -1430,13 +1430,16 @@ class Names:
         if not unreadable_file:
             if file.endswith(".gz"):
                 file_handle = gzip.open(file, "rt")
+                readlines = file_handle.readlines()
             elif file.endswith(".bz2"):
-                file_handle = bz2.BZ2File(file, "U")
+                # read the file in binary and then decode for python2/3 compatibility
+                file_handle = bz2.BZ2File(file, "r")
+                readlines = [line.decode('utf-8') for line in file_handle.readlines()]
             else:
                 file_handle = open(file,"rt")
+                readlines = file_handle.readlines()
                 
-            line=file_handle.readline()
-            while line:
+            for line in readlines:
                 try:
                     data = line.rstrip().split(config.name_mapping_file_delimiter)
                     id = data[0]
@@ -1446,7 +1449,6 @@ class Names:
                 
                 if id:
                     self.__names[id]=name
-                line=file_handle.readline()
                 
             file_handle.close()
             
