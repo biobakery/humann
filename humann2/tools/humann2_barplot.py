@@ -27,11 +27,7 @@ except:
 # ---------------------------------------------------------------
 
 c_epsilon = 1e-10
-c_unit_width = 0.1
-c_min_width = 6
-c_height = 6
 c_hunits = 9
-c_inches_per_axgrid = 3
 
 # ---------------------------------------------------------------
 # argument parsing
@@ -58,7 +54,7 @@ normalize   : Bars all have height=1 (highlighting relative attribution)
 
 def get_args( ):
     parser = argparse.ArgumentParser(
-        description="HUMAnN2 plotting utility",
+        description="HUMAnN2 plotting tool",
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument( "-i", "--input",
@@ -109,7 +105,7 @@ def get_args( ):
     parser.add_argument( "-g", "--as-genera",
                          action="store_true",
                          help="Collapse species to genera", )
-    parser.add_argument( "-d", "--grid",
+    parser.add_argument( "-r", "--grid",
                          action="store_true",
                          help="Add y-axis grid", )
     parser.add_argument( "-z", "--remove-zeroes",
@@ -117,9 +113,26 @@ def get_args( ):
                          help="Do not plot samples with zero sum for this feature", )
     parser.add_argument( "-w", "--width",
                          metavar = "",
-                         default=5,
+                         default=3,
                          type=int,
-                         help="Relative plot width (default: 5)", )
+                         help="Relative width of the plot vs. legend (default: 5)", )
+    parser.add_argument( "-d", "--dimensions",
+                         metavar = "",
+                         nargs=2,
+                         type=float,
+                         default=[10.0,4.0],
+                         help="Image height and width in inches (default: 8x4)", )
+    parser.add_argument( "-y", "--ylims",
+                         metavar = "",
+                         nargs=2,
+                         type=float,
+                         default=[None, None],
+                         help="Fixed limits for y-axis (only applies in log scaling)", )
+    parser.add_argument( "-e", "--legend-stretch",
+                         metavar = "",
+                         type=float,
+                         default=1.0,
+                         help="Stretch/compress legend elements", )
     return parser.parse_args()
 
 # ---------------------------------------------------------------
@@ -148,14 +161,20 @@ def get_colors( colormap, n ):
     else:
         return [cmap( int( k * cmap_max / (n - 1) ) ) for k in range( n )]
 
-def dumb( ax, border=False ):
-    ax.set_xticks( [] )
+def dummy( ax, border=False ):
     """dummy an axis"""
+    ax.set_xticks( [] )
     ax.set_yticks( [] )
     if not border:
         for k, v in ax.spines.items():
             v.set_visible( False )
-                
+
+def tsv_reader( path ):
+    """quick read"""
+    with open( path ) as fh:
+        for row in csv.reader( fh, csv.excel_tab ):
+            yield row
+            
 # ---------------------------------------------------------------
 # table class
 # ---------------------------------------------------------------
@@ -170,32 +189,31 @@ class FeatureTable:
         self.data = []
         self.metarow = None
         self.fname = None
-        adding = False
-        with open( path , "rt") as fh:
-            for row in csv.reader( fh, dialect="excel-tab" ):
-                rowhead, values = row[0], row[1:]
-                if self.colheads is None:
-                    self.colheads = values
-                else:
-                    if (adding or last is None) and "|" in rowhead:
-                        feature, stratum = rowhead.split( "|" )
-                        feature_id = feature.split( ": " )[0]
-                        if focus is None:
-                            focus = feature_id
-                            sys.stderr.write("No feature selected, so defaulting to first feature: " + feature + "\n")
-                        if focus != feature_id:
-                            continue
-                        else:
-                            self.fname = feature
-                            if stratum != "unclassified" or not exclude_unclassified:
-                                self.rowheads.append( stratum )
-                                self.data.append( map( float, values ) )
-                    if metaheader is not None and rowhead == metaheader:
-                        self.metarow = values
-                    if last is not None and rowhead == last:
-                        adding = True
+        in_features = False
+        for row in tsv_reader( path ):
+            rowhead, values = row[0], row[1:]
+            if self.colheads is None:
+                self.colheads = values
+            else:
+                if (in_features or last is None) and "|" in rowhead:
+                    feature, stratum = rowhead.split( "|" )
+                    feature_id = feature.split( ": " )[0]
+                    if focus is None:
+                        focus = feature_id
+                        sys.stderr.write( "No feature selected; defaulting to 1st feature: " + feature + "\n" )
+                    if focus != feature_id:
+                        continue
+                    else:
+                        self.fname = feature
+                        if stratum != "unclassified" or not exclude_unclassified:
+                            self.rowheads.append( stratum )
+                            self.data.append( map( float, values ) )
+                if metaheader is not None and rowhead == metaheader:
+                    self.metarow = values
+                if last is not None and rowhead == last:
+                    in_features = True
         self.data = np.array( self.data )
-        self.update()
+        self.update( )
         
     def update( self ):
         self.nrows, self.ncols = self.data.shape
@@ -211,7 +229,7 @@ class FeatureTable:
         assert self.ncols == len( self.colheads ) == len( self.colmap ), "col dim failure"
 
     def as_genera( self ):
-        sys.stderr.write("Regrouping to genera (before selecting/sorting strata)\n")
+        sys.stderr.write( "Regrouping to genera (before selecting/sorting strata)\n" )
         temp = {}
         for rowhead, row in zip( self.rowheads, self.data ):
             rowhead = rowhead.split( "." )[0]
@@ -328,46 +346,61 @@ def main( ):
     table.filter_top_strata( args.top_strata )
         
     # set up axis system
-    wunits = args.width
+    wunits = args.width + 1
     fig = plt.figure()
-    fig.set_size_inches( wunits * c_inches_per_axgrid, 4.5 )
+    fig.set_size_inches( *args.dimensions )
     if table.metarow is not None:
         main_ax = plt.subplot2grid( ( c_hunits, wunits ), ( 0, 0 ), rowspan=c_hunits-1, colspan=wunits-1 )
         anno_ax = plt.subplot2grid( ( c_hunits, wunits ), ( 0, wunits-1 ), rowspan=c_hunits, colspan=1 )
         meta_ax = plt.subplot2grid( ( c_hunits, wunits ), ( c_hunits-1, 0 ), rowspan=1, colspan=wunits-1 )
-        dumb( anno_ax )
-        dumb( meta_ax, border=True )
+        dummy( meta_ax, border=True )
     else:
         main_ax = plt.subplot2grid( ( 1, wunits ), ( 0, 0 ), rowspan=1, colspan=wunits-1 )
         anno_ax = plt.subplot2grid( ( 1, wunits ), ( 0, wunits-1 ), rowspan=1, colspan=1 )
-        dumb( anno_ax )
-        
-    # setup: colors
+    dummy( anno_ax )
+    anno_ax.set_xlim( 0, 1 )
+    anno_ax.set_ylim( 0, 1 )
+    
+    # setup: strata colors
     cdict = {"Other":"0.5", "Unclassified":"0.8"}
-    colors = get_colors( args.colormap, args.top_strata )
-    for f in table.rowheads:
-        if f not in cdict:
-            cdict[f] = colors.pop()
+    if os.path.exists( args.colormap ):
+        sys.stderr.write( "Reading strata colors from file: {}\n".format( args.colormap ) )
+        cdict = {}
+        for item, color in tsv_reader( args.colormap ):
+            if item not in cdict:
+                cdict[item] = color
+        for f in table.rowheads:
+            cdict[f] = cdict.get( f, "black" )
+    else:
+        colors = get_colors( args.colormap, args.top_strata )
+        for f in table.rowheads:
+            if f not in cdict:
+                cdict[f] = colors.pop( )
 
     # scaling options
     if args.scaling == "none":
-        bottoms = np.zeros( table.ncols )
-        ylabel = "Relative abundance"
-        main_ax.set_ylim( 0, max( sum( table.data ) ) )
+        ylabel      = "Relative abundance"
+        bottoms     = np.zeros( table.ncols )
+        ymin        = 0 if args.ylims[0] is None else args.ylims[0]
+        ymax        = max( sum( table.data ) ) if args.ylims[1] is None else args.ylims[1]
+        main_ax.set_ylim( ymin, ymax )
     elif args.scaling == "normalize":
-        table.data = table.data / table.colsums
-        bottoms = np.zeros( table.ncols )
-        ylabel = "Relative contributions"
+        ylabel      = "Relative contributions"
+        table.data  = table.data / table.colsums
+        bottoms     = np.zeros( table.ncols )
         main_ax.set_ylim( 0, 1 )
     elif args.scaling == "pseudolog":
-        floor = math.floor( min( [np.log10( k ) for k in table.colsums if k > 0] ) )
-        floors = floor * np.ones( table.ncols )
-        crests = np.array( [np.log10( k ) if k > 0 else 1 for k in table.colsums] )
-        heights = crests - floors
-        table.data = table.data / table.colsums * heights
-        main_ax.set_ylim( floor, math.ceil( np.log10( max( table.colsums ) ) ) )
+        ylabel      = "log10(Relative abundance)"
+        ymin        = min( [k for k in table.colsums if k > 0] ) if args.ylims[0] is None else args.ylims[0]
+        floor       = math.floor( np.log10( ymin ) )
+        floors      = floor * np.ones( table.ncols )
+        crests      = np.array( [np.log10( k ) if k > 10**floor else floor for k in table.colsums] )
+        heights     = crests - floors
+        table.data  = table.data / table.colsums * heights
+        ymax        = max( table.colsums ) if args.ylims[1] is None else args.ylims[1]
+        ceil        = math.ceil( np.log10( ymax ) )
         bottoms = floors
-        ylabel = "log10( Relative abundance )"
+        main_ax.set_ylim( floor, ceil )
         
     # add bars
     series = []
@@ -382,17 +415,28 @@ def main( ):
             edgecolor="none", ) )
         bottoms += frow
 
+    # setup: meta colors
+    if table.metarow is not None:
+        if os.path.exists( args.meta_colormap ):
+            mcdict = {}
+            sys.stderr.write( "Reading meta colors from file: {}\n".format( args.meta_colormap ) )
+            for item, color in tsv_reader( args.meta_colormap ):
+                mcdict[item] = color
+            for m in table.metarow:
+                mcdict[m] = mcdict.get( m, "black" )
+        else:
+            unique = sorted( set( table.metarow ) )
+            mcdict = {v:c for v, c in zip( unique, get_colors( args.meta_colormap, len( unique ) ) )}
+        
     # plot metadata?
     if table.metarow is not None:
-        unique = sorted( set( table.metarow ) )
-        mc = {v:c for v, c in zip( unique, get_colors( args.meta_colormap, len( unique ) ) )}
         meta_ax.set_xlim( 0, len( table.metarow ) )
         for i, v in enumerate( table.metarow ):
             meta_ax.bar(
                 i,
                 1,
                 width=1,
-                color=mc[v],
+                color=mcdict[v],
                 edgecolor="none",
                 )
 
@@ -412,7 +456,7 @@ def main( ):
     samp_ax.set_xlabel( "Samples (N=%d)" % ( table.ncols ) )
     #main_ax.set_title( "%s\nFrom: %s" % ( table.fname, os.path.split( args.input )[1] ) )
     main_ax.set_title( table.fname, weight="bold" )
-    main_ax.set_ylabel( ylabel )
+    main_ax.set_ylabel( ylabel, size=12 )
     # tick params
     main_ax.tick_params( axis="x", which="major", direction="out", bottom="on", top="off" )
     main_ax.tick_params( axis="y", which="major", direction="out", left="on", right="off" )
@@ -426,7 +470,7 @@ def main( ):
         y = ymax - 0.04 * abs( ymax - ymin )
         main_ax.text( x, y,
                       "*Stratifications are proportional",
-                      va="top", size=10,
+                      va="top", size=11,
                       backgroundcolor="white", )
 
     # optional yaxis grid
@@ -435,21 +479,26 @@ def main( ):
             main_ax.axhline( y=ycoord, color="0.75", ls=":", zorder=0 )
 
     # legend
+    scale = args.legend_stretch
     xmar = 0.01
     xsep = 0.03
-    ydex = 0.99
-    ysep = 0.01
-    yinc = 0.01
-    rech = 0.03
+    ybuf = 0.06 * scale
+    ysep = 0.02 * scale
+    yinc = 0.03 * scale
+    rech = 0.03 * scale
     recw = 0.1
+    big_font = 10 * scale
+    sml_font = 8 * scale
+    ydex = 1.0
 
     def add_items( title, labels, colors, ydex, bugmode=False ):
-        anno_ax.text( xmar, ydex, title, weight="bold", va="top" )
-        ydex -= 3.5 * rech
+        ydex -= ybuf
+        anno_ax.text( xmar, ydex, title, weight="bold", va="center", size=big_font )
+        ydex -= ybuf
         for l, c in zip( labels, colors ):
             anno_ax.add_patch(
                 patches.Rectangle(
-                    (xmar, ydex),
+                    (xmar, ydex-rech),
                     recw,
                     rech,
                     facecolor=c,
@@ -458,13 +507,14 @@ def main( ):
             )
             anno_ax.text(
                 xsep + recw,
-                ydex + 0.5 * rech,
+                ydex - 0.5 * rech,
                 l,
-                size=8,
+                size=sml_font,
                 va="center",
                 style="italic" if (bugmode and l not in ["Unclassified", "Other"]) else "normal",
             )
-            ydex -= ysep + rech
+            ydex -= rech + ysep
+        ydex += ysep
         return ydex
 
     # add legend for stratifications
@@ -479,10 +529,9 @@ def main( ):
     # add legend for metadata
     if table.metarow is not None:
         add_items(
-            "Sample type:",
-            #args.focal_metadatum,
-            sorted( mc.keys() ),
-            [mc[k] for k in sorted( mc.keys() )],
+            "Sample label:",
+            sorted( mcdict.keys( ) ),
+            [mcdict[k] for k in sorted( mcdict.keys() )],
             ydex,
             )
                          
