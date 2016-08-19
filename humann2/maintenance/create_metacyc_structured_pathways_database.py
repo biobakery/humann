@@ -192,7 +192,7 @@ class PathwayStructure():
                         items_to_join.append(i) 
                         
                 # remove any items that are empty
-                items_to_join=filter(lambda x:x,items_to_join)
+                items_to_join=list(filter(lambda x:x,items_to_join))
                 if items_to_join:
                     if len(items_to_join) == 1:
                         string_start=" "
