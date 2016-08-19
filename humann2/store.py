@@ -863,13 +863,13 @@ class Pathways:
         # Remove any pathways from the sorted list that are equivalent to zero based
         # on the precision selected for the output file
         # Double sort so that pathways with the same values are then sorted by name
-        sorted_pathways_list=filter(lambda pathway: float(utilities.format_float_to_string(self.get_score(pathway))) > 0, self.get_pathways_double_sorted())
+        sorted_pathways_list=list(filter(lambda pathway: float(utilities.format_float_to_string(self.get_score(pathway))) > 0, self.get_pathways_double_sorted()))
         
         sorted_pathways_and_bugs=[]
         # Get the bugs for each of the pathways
         for pathway in sorted_pathways_list:
             # Remove any zero values based on precision selected and double sort
-            bugs=filter(lambda bug: float(utilities.format_float_to_string(self.get_score_for_bug(bug, pathway))) > 0, self.get_bugs_double_sorted(pathway))
+            bugs=list(filter(lambda bug: float(utilities.format_float_to_string(self.get_score_for_bug(bug, pathway))) > 0, self.get_bugs_double_sorted(pathway)))
             sorted_pathways_and_bugs.append([pathway,bugs])
             
         return sorted_pathways_and_bugs
