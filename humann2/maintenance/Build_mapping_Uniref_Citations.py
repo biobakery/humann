@@ -163,7 +163,7 @@ def  DecodeSwissprotLines(lProteinInfo):
     for strSwissprotLine in lProteinInfo:
         if strSwissprotLine.startswith("AC"):  
             lACs = strSwissprotLine[5:].split(";")  #Check the ACs - we will only process ACs that AC=U90
-            lACs = filter(None, lACs)  # Remove empty string
+            lACs = list(filter(None, lACs))  # Remove empty string
             for AC in lACs:
                 CommonArea['ACsProcessed']+=1  # This is the number of ACs that were in the Swissprot file
                 if  AC in CommonArea['U90s_Centroids']:
