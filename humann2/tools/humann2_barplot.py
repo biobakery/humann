@@ -58,47 +58,48 @@ def get_args( ):
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument( "-i", "--input",
-                         metavar = "",
+                         metavar = "<input table>",
+                         required = True, 
                          help="HUMAnN2 table with optional metadata", )
     parser.add_argument( "-f", "--focal-feature",
-                         metavar = "",
+                         metavar = "<feature id>",
                          help="Feature ID of interest (give ID not full name)", )
     parser.add_argument( "-t", "--top-strata",
-                         metavar = "",
+                         metavar = "<int>",
                          type=int,
                          default=7,
                          help="Number of top stratifications to highlight (top = highest grand means)", )
     parser.add_argument( "-s", "--sort",
-                         metavar = "",
+                         metavar = "<sorting methods>",
                          nargs="+",
                          default=["none"],
                          choices=["none", "sum", "dominant", "similarity", "usimilarity", "metadata"],
                          help=c_sort_help, )             
     parser.add_argument( "-l", "--last-metadatum",
-                         metavar = "",
+                         metavar = "<feature>",
                          default=None,
                          help="Indicate end of metadata rows", )
     parser.add_argument( "-m", "--focal-metadatum",
-                         metavar="",
+                         metavar="<feature>",
                          default=None,
                          help="Indicate metadatum to highlight / group by", )
     parser.add_argument( "-c", "--colormap",
-                         metavar="",
+                         metavar="<colormap>",
                          default="jet",
                          help="Color space for stratifications", )
     parser.add_argument( "-k", "--meta-colormap",
-                         metavar="",
+                         metavar="<colormap>",
                          default="Dark2",
                          help="Color space for metadata levels", )
     parser.add_argument( "-x", "--exclude-unclassified",
                          action="store_true",
                          help="Do not include the 'unclassified' stratum", )
     parser.add_argument( "-o", "--output",
-                         metavar="",
+                         metavar="<file.ext>",
                          default=None,
                          help="Where to save the figure", )
     parser.add_argument( "-a", "--scaling",
-                         metavar="",
+                         metavar="<choice>",
                          choices=["none", "normalize", "pseudolog"],
                          default="none",
                          help=c_choices_help, )
@@ -112,22 +113,22 @@ def get_args( ):
                          action="store_true",
                          help="Do not plot samples with zero sum for this feature", )
     parser.add_argument( "-w", "--width",
-                         metavar = "",
-                         default=3,
+                         metavar = "<int>",
+                         default = 3,
                          type=int,
                          help="Relative width of the plot vs. legend (default: 5)", )
     parser.add_argument( "-d", "--dimensions",
-                         metavar = "",
+                         metavar = "<size>",
                          nargs=2,
                          type=float,
                          default=[10.0,4.0],
-                         help="Image height and width in inches (default: 8x4)", )
+                         help="Image height and width in inches (default: 8 4)", )
     parser.add_argument( "-y", "--ylims",
-                         metavar = "",
+                         metavar = "<limit>",
                          nargs=2,
                          type=float,
                          default=[None, None],
-                         help="Fixed limits for y-axis (only applies in log scaling)", )
+                         help="Fix limits for y-axis", )
     parser.add_argument( "-e", "--legend-stretch",
                          metavar = "",
                          type=float,
