@@ -82,7 +82,7 @@ def filter_fasta_file(fasta_file, output_folder, genus, id_mapping):
                 # Check if the sequence taxonomy is an included genus
                 # The taxonomy information is a string of words and any word
                 # can include the genus information
-                if filter(lambda x: x in genus, sequence_information):
+                if list(filter(lambda x: x in genus, sequence_information)):
                     write_sequence=True
             else:
                 write_sequence=True
@@ -124,7 +124,7 @@ def process_taxonomic_profile(taxonomic_profile, abundance_threshold):
                 read_percent=0
                 
             if read_percent >= abundance_threshold:
-                genus=filter(lambda x: GENUS_IDENTIFIER in x, data[0].split(TAXONOMY_DELIMITER))[0].replace(GENUS_IDENTIFIER,"").lower()
+                genus=list(filter(lambda x: GENUS_IDENTIFIER in x, data[0].split(TAXONOMY_DELIMITER)))[0].replace(GENUS_IDENTIFIER,"").lower()
                 if not genus in genus_found:
                     print("Adding genus: " + genus)
                 genus_found.add(genus)
