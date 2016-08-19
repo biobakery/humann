@@ -562,7 +562,7 @@ def compute_unmapped_and_unintegrated(gene_abundance_in_pathways, remaining_gene
     # Compute unintegrated
     unintegrated_all=compression_all * remaining_gene_abundance.get("all",0)
     unintegrated_per_bug={}
-    for bug in pathways_abundance.get_bugs_list():
+    for bug in sorted(pathways_abundance.get_bugs_list()):
         total_abundance_all_pathways=sum([pathways_abundance.get_score_for_bug(bug,pathway) for pathway in pathways_list])
         try:
             compression = total_abundance_all_pathways / ( gene_abundance_in_pathways.get(bug,0) * 1.0 )
