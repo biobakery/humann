@@ -1,8 +1,8 @@
 # Pathway	HUMAnN2_test_Abundance
 UNMAPPED	3.7627377
 UNINTEGRATED	705.2053062
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	304.7562183
 UNINTEGRATED|g__Bacteroides.s__Bacteroides_stercoris	772.5573648
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	304.7562183
 PWY-7221: guanosine ribonucleotides de novo biosynthesis	2.1708068
 PWY-7221: guanosine ribonucleotides de novo biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0482271
 PWY-3841: folate transformations II	1.6797900

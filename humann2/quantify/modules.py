@@ -475,7 +475,7 @@ def print_pathways(pathways, file, header, pathway_names, sorted_pathways_and_bu
     tsv_output.append(config.unintegrated_pathway_name+delimiter+utilities.format_float_to_string(unintegrated_all))
     # Process and print per bug if selected
     if not config.remove_stratified_output:
-        for bug in unintegrated_per_bug:
+        for bug in utilities.double_sort(unintegrated_per_bug):
             tsv_output.append(config.unintegrated_pathway_name+category_delimiter+bug
                               +delimiter+utilities.format_float_to_string(unintegrated_per_bug[bug]))
             
@@ -562,7 +562,7 @@ def compute_unmapped_and_unintegrated(gene_abundance_in_pathways, remaining_gene
     # Compute unintegrated
     unintegrated_all=compression_all * remaining_gene_abundance.get("all",0)
     unintegrated_per_bug={}
-    for bug in sorted(pathways_abundance.get_bugs_list()):
+    for bug in pathways_abundance.get_bugs_list():
         total_abundance_all_pathways=sum([pathways_abundance.get_score_for_bug(bug,pathway) for pathway in pathways_list])
         try:
             compression = total_abundance_all_pathways / ( gene_abundance_in_pathways.get(bug,0) * 1.0 )
