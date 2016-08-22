@@ -43,6 +43,11 @@ from subprocess import call
 #                                                                                           *
 #                                                                                           *
 #   Written by George Weingart  May 26, 2016    george.weingart@gmail.com                   *
+#  -----------------------------------------------------------------------------------------*
+#   Modification Log                                                                        *
+#   George Weingart 8/21/16 - Added extraction of DR eggnogg entries  such as :             *
+#   DR   eggNOG; NOG87981; -.                                                               *
+#   DR   eggNOG; NOG87986; -.                                                               *
 #********************************************************************************************
 
 
@@ -160,6 +165,7 @@ def  DecodeSwissprotLines(lProteinInfo):
     lGOs = list()  # Initialize the GOs list
     lKOs = list()  # Initialize KO list
     lPfams = list() # Initialize Pfams list
+    leggNOGS = list()  #  Initialize this list GW 20160821
     for strSwissprotLine in lProteinInfo:
         if strSwissprotLine.startswith("AC"):  
             lACs = strSwissprotLine[5:].split(";")  #Check the ACs - we will only process ACs that AC=U90
@@ -195,6 +201,11 @@ def  DecodeSwissprotLines(lProteinInfo):
             elif   strSwissprotLine.startswith("DR   Pfam; "):   # Pfam Entries
                 PfamEntry = strSwissprotLine.split("DR   Pfam; ")[1].split(";")[0]  # This is the Pfam entry
                 lPfams.append(PfamEntry)  # Add it to the list  
+                
+            elif   strSwissprotLine.startswith("DR   eggNOG;"):   # eggNog Entries
+                eggNOGEntry = strSwissprotLine.split("DR   eggNOG; ")[1].split(";")[0]  # This is the eggNOG entry GW 20160821
+                leggNOGS.append(eggNOGEntry)  # Add it to the list      
+                
                   
     if lSelectedACsMatchingU90s  == 0  and lSelectedACsMatchingU50s == 0:  # If this protein is no U90 or U50 centroid - we will not process it 
         return     dProteinInfo    
@@ -208,7 +219,8 @@ def  DecodeSwissprotLines(lProteinInfo):
     dProteinInfo['lKOs'] = lKOs   
     dProteinInfo['lGOs'] = lGOs
     dProteinInfo['lPfams'] = lPfams 
-    if len(lECs) + len(lKOs) + len(lKOs) + len(lGOs) == 0:  #If there were no citations
+    dProteinInfo['leggNOGS'] = leggNOGS 
+    if len(lECs) + len(lKOs) + len(lKOs) + len(lGOs)  + len(leggNOGS)== 0:  #If there were no citations   #GW 20160821  Addded eggNOGS
         dProteinInfo = dict()
      
     return     dProteinInfo   
@@ -252,7 +264,14 @@ def ProcessProtein(lProteinInfo, CommonArea):
             strBuiltRecord  = strBuiltRecord  + strTab + "Pfam=" + strPfams
             CommonArea = PostUnirefCrossReference("Pfam",dProteinInfo['lPfams'],CommonArea,"90", U90)  # We will post it for cross refeencing the entries 
    
+        if len(dProteinInfo['leggNOGS'])  > 0:  #  GW20160821  added eggNOGS
+            CommonArea['iCntrRecsWithCitationseggNOGS']+=1 # Count these #  GW20160821  added eggNOGS
+            streggNOGS = strTab.join(dProteinInfo['leggNOGS']) #  GW20160821  added eggNOGS
+            strBuiltRecord  = strBuiltRecord  + strTab + "eggNOG=" + streggNOGS #  GW20160821  added eggNOGS
+            CommonArea = PostUnirefCrossReference("eggNOG",dProteinInfo['leggNOGS'],CommonArea,"90", U90)  # We will post it for cross refeencing the entries #  GW20160821  added eggNOGS
                                             
+                                                                                  
+                                                                                                                                                              
         strBuiltRecord  = strBuiltRecord  + strEndOfLine 
         CommonArea['TemporaryOutputFile'].write(strBuiltRecord )
 
@@ -272,8 +291,11 @@ def ProcessProtein(lProteinInfo, CommonArea):
             
         if len(dProteinInfo['lPfams'])  > 0:
             CommonArea = PostUnirefCrossReference("Pfam",dProteinInfo['lPfams'],CommonArea,"50", U50)  # We will post it for cross refeencing the entries 
-                   
-                                 
+ 
+        if len(dProteinInfo['leggNOGS'])  > 0:
+            CommonArea = PostUnirefCrossReference("eggNOG",dProteinInfo['leggNOGS'],CommonArea,"50", U50)    #  GW20160821  added eggNOGS
+                                                                   
+                                                                                                                                                                                                      
     return  CommonArea  
  
 
@@ -382,7 +404,7 @@ CommonArea['o_extract'] = results.o_extract
 #***********************************************************************
 #*  Used to generetate the systems Corss reference files               *
 #***********************************************************************
-CommonArea["Citations"] = ["KO","Pfam","GO","EC"]
+CommonArea["Citations"] = ["KO","Pfam","GO","EC","eggNOG"]
 CommonArea["Unirefs"] = ["50","90"] 
 CommonArea = GenerateTablesAndCrossReferenceFilenames(CommonArea)  # We will generate here the dixtionaries and file names
 #***********************************************************************
@@ -397,6 +419,7 @@ CommonArea['iCntrRecsWithCitationsPfam'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsKO'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsGO'] = 0  # Counter for those Records
 CommonArea['iCntrRecsWithCitationsEC'] = 0  # Counter for those Records
+CommonArea['iCntrRecsWithCitationseggNOGS'] = 0 # GW20160821  counter for eggNOGS
 CommonArea['ACsProcessed'] = 0
 
 dInputFiles =  Glue_Uniref50_Uniref90_Files(CommonArea['Uniref50gz'] ,  CommonArea['Uniref90gz'])  # Invoke initialization
@@ -440,6 +463,7 @@ print("* Proteins with ECs from DE records:" + "{:,.0f}".format(CommonArea['iCnt
 print("* Proteins with KO citations       :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsKO']))
 print("* Proteins with Pfam citations     :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsPfam']))
 print("* Proteins with GO citations       :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationsGO']))
+print("* Proteins with eggNOG citations   :" + "{:,.0f}".format(CommonArea['iCntrRecsWithCitationseggNOGS']))
 print("".join("*" * 100))
 
 
