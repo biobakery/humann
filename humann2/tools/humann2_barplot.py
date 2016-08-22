@@ -366,7 +366,6 @@ def main( ):
     cdict = {"Other":"0.5", "Unclassified":"0.8"}
     if os.path.exists( args.colormap ):
         sys.stderr.write( "Reading strata colors from file: {}\n".format( args.colormap ) )
-        cdict = {}
         for item, color in tsv_reader( args.colormap ):
             if item not in cdict:
                 cdict[item] = color
@@ -419,8 +418,8 @@ def main( ):
     # setup: meta colors
     if table.metarow is not None:
         if os.path.exists( args.meta_colormap ):
-            mcdict = {}
             sys.stderr.write( "Reading meta colors from file: {}\n".format( args.meta_colormap ) )
+            mcdict = {}
             for item, color in tsv_reader( args.meta_colormap ):
                 mcdict[item] = color
             for m in table.metarow:
