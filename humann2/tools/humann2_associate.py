@@ -77,7 +77,7 @@ def spearman_analysis( mvalues, fnames, fvalues ):
             rho, p = spearmanr( mvalues, fvalues )
             stats.append( ["%.4g" % rho, p] )
         except:
-            print >>sys.stderr, "Unable to compute spearman r with feature:", fname
+            sys.stderr.write("Unable to compute spearman r with feature: " + fname +"\n")
     return adjust_stats( stats )
 
 def shatter( cats, values ):
@@ -97,7 +97,7 @@ def kruskalwallis_analysis( mvalues, fnames, fvalues ):
             hstat, p = kruskalwallis( *lists.values( ) )
             stats.append( [fname, summary, p] )
         except:
-            print >>sys.stderr, "Unable to compute kruskal-wallis with feature:", fname
+            sys.stderr.write("Unable to compute kruskal-wallis with feature: " + fname + "\n")
     return adjust_stats( stats )
 
 # ---------------------------------------------------------------
@@ -118,21 +118,21 @@ def main( ):
                 continue
             if adding and "|" not in header:
                 fnames.append( header )
-                fvalues.append( map( float, values ) )
+                fvalues.append( list(map( float, values ) ) )
     fh = open( args.output, "w" ) if args.output is not None else sys.stdout
     if args.focal_type == "continuous":
-        mvalues = map( float, mvalues )
+        mvalues = list( map( float, mvalues ) )
         stats = spearman_analysis( mvalues, fnames, fvalues )
-        print >>fh, "# spearman analysis of metadatum:", mname
-        print >>fh, "# feature\trho\tp-value\tq-value"
+        fh.write("# spearman analysis of metadatum: " + mname + "\n")
+        fh.write("# feature\trho\tp-value\tq-value\n")
     elif args.focal_type == "categorical":
         stats = kruskalwallis_analysis( mvalues, fnames, fvalues )
-        print >>fh, "# kruskal-wallis analysis of metadatum:", mname
-        print >>fh, "# feature\tlevel means\tp-value\tq-value"
+        fh.write("# kruskal-wallis analysis of metadatum: " + mname + "\n")
+        fh.write("# feature\tlevel means\tp-value\tq-value\n")
     for stat in stats:
         stat[-1] = "%.4g" % stat[-1]
         stat[-2] = "%.4g" % stat[-2]
-        print >>fh, "\t".join( map( str, stat ) )
+        fh.write("\t".join( list(map( str, stat )))+"\n")
             
 if __name__ == "__main__":
     main()
