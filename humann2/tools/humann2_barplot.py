@@ -208,7 +208,7 @@ class FeatureTable:
                         self.fname = feature
                         if stratum != "unclassified" or not exclude_unclassified:
                             self.rowheads.append( stratum )
-                            self.data.append( map( float, values ) )
+                            self.data.append( list( map( float, values ) ) )
                 if metaheader is not None and rowhead == metaheader:
                     self.metarow = values
                 if last is not None and rowhead == last:
