@@ -529,10 +529,11 @@ def main( ):
 
     # add legend for metadata
     if table.metarow is not None:
+        levels = sorted( set( table.metarow ) )
         add_items(
             "Sample label:",
-            sorted( mcdict.keys( ) ),
-            [mcdict[k] for k in sorted( mcdict.keys() )],
+            levels,
+            [mcdict[k] for k in levels],
             ydex,
             )
                          
