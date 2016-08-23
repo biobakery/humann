@@ -1,6 +1,16 @@
 
 # HUMAnN2 History #
 
+## v0.9.0 08-23-2016 ##
+
+### New Features ###
+
+* HUMAnN2 is now python3 compatible. 
+
+### Bug Fix ###
+
+* The cigar string calculation has been updated to allow for multiple M fields along with I/D fields.
+
 ## v0.8.2 08-09-2016 ##
 
 ### Bug Fix ###
