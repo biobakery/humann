@@ -53,7 +53,13 @@ from setuptools.command.install import install as _install
     
 import distutils
 import os
-import urllib
+
+# try to import urllib.request.urlretrieve for python3
+try:
+    from urllib.request import urlretrieve
+except ImportError:
+    from urllib import urlretrieve
+
 import tarfile
 import subprocess
 import shutil
@@ -119,7 +125,7 @@ def download(url, download_file):
 
     try:
         print("Downloading "+url)
-        file, headers = urllib.urlretrieve(url,download_file,reporthook=ReportHook().report)
+        file, headers = urlretrieve(url,download_file,reporthook=ReportHook().report)
     except EnvironmentError:
         print("Warning: Unable to download "+url)
     
