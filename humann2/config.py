@@ -147,7 +147,7 @@ def update_user_edit_config_file(new_config_items):
             config.set(section,name,value)
     
     try:
-        file_handle=open(full_path_user_edit_config_file,"wb")
+        file_handle=open(full_path_user_edit_config_file,"wt")
         config.write(file_handle)
         file_handle.close()
     except EnvironmentError:
