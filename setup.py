@@ -510,14 +510,14 @@ class Install(_install):
         # install minpath if not already installed
         install_minpath(replace_install=self.replace_dependencies_install)
         
-        _install.do_egg_install(self)
+        _install.run(self)
         
         # find the current install folder
         current_install_folder=None
         for item in os.listdir(self.install_lib):
             full_path_item=os.path.join(self.install_lib, item)
             if os.path.isdir(full_path_item):
-                if "humann2-"+VERSION+"-" in item:
+                if "humann2" == item:
                     current_install_folder=full_path_item
         
         # find all glpsol executables
@@ -525,7 +525,7 @@ class Install(_install):
             print("Unable to find install folder at: " + self.install_lib)
         else:
             glpsols=[]
-            minpath_folder=os.path.join(current_install_folder,"humann2","quantify","MinPath")
+            minpath_folder=os.path.join(current_install_folder,"quantify","MinPath")
             for root, directories, files in os.walk(minpath_folder):
                 for filename in files:
                     if filename == "glpsol":
@@ -549,10 +549,12 @@ class Install(_install):
             build_diamond=self.build_diamond
             if mac_os:
                 build_diamond=True
-                
-            install_glpk(self.install_scripts,replace_install=self.replace_dependencies_install)
-            install_diamond(self.install_scripts,build_diamond,replace_install=self.replace_dependencies_install)
-            install_bowtie2(self.install_scripts,mac_os,replace_install=self.replace_dependencies_install)
+
+            # get the final script install location for both source and wheel
+            install_scripts=os.path.join(self.install_base, "bin")
+            install_glpk(install_scripts,replace_install=self.replace_dependencies_install)
+            install_diamond(install_scripts,build_diamond,replace_install=self.replace_dependencies_install)
+            install_bowtie2(install_scripts,mac_os,replace_install=self.replace_dependencies_install)
         else:
             print("Bypass install of dependencies")
         
