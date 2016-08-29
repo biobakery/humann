@@ -1,6 +1,12 @@
 
 # HUMAnN2 History #
 
+## v0.9.1 08-26-2016 ##
+
+### New Features ###
+
+* HUMAnN2 is now wheel compatible. 
+
 ## v0.9.0 08-23-2016 ##
 
 ### New Features ###
