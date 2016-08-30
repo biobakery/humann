@@ -46,7 +46,7 @@ c_default_names = {
         os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) ),
     # infogo1000 is just a subset of go, but adding a separate entry for consistency
     "infogo1000": Names(
-        os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) )}
 
 # get a list of all available script mapping files
 try:
