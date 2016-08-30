@@ -38,7 +38,15 @@ c_default_names = {
         os.path.join( p_root, "data", "misc", "map_metacyc-rxn_name.txt.gz" ) ),    
     "metacyc-pwy": Names(
         os.path.join( p_root, "data", "misc", "map_metacyc-pwy_name.txt.gz" ) ),
-    }
+    "pfam": Names(
+        os.path.join( p_root, "data", "misc", "map_pfam_name.txt.gz" ) ),
+    "eggnog": Names(
+        os.path.join( p_root, "data", "misc", "map_eggnog_name.txt.gz" ) ),
+    "go": Names(
+        os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) ),
+    # infogo1000 is just a subset of go, but adding a separate entry for consistency
+    "infogo1000": Names(
+        os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) ),
 
 # get a list of all available script mapping files
 try:
@@ -61,7 +69,6 @@ if not larger_mapping_files_found:
 For additional name mapping files, run the following command:
 $ humann2_databases --download utility_mapping full $DIR
 Replacing, $DIR with the directory to download and install the databases."""
-
 
 # ---------------------------------------------------------------
 # utilities 

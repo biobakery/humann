@@ -46,7 +46,8 @@ all_larger_mapping_files=["map_go_uniref50.txt.gz","map_go_uniref90.txt.gz",
                           "map_infogo1000_uniref50.txt.gz","map_infogo1000_uniref90.txt.gz",
                           "map_ko_uniref50.txt.gz","map_ko_uniref90.txt.gz",
                           "map_level4ec_uniref50.txt.gz","map_level4ec_uniref90.txt.gz",
-                          "map_pfam_uniref50.txt.gz","map_pfam_uniref90.txt.gz"]
+                          "map_pfam_uniref50.txt.gz","map_pfam_uniref90.txt.gz",
+                          "map_eggnog_uniref50.txt.gz","map_eggnog_uniref90.txt.gz",]
 larger_mapping_files_found=False
 for mapping_file in all_larger_mapping_files:
     if mapping_file in all_mapping_files:
