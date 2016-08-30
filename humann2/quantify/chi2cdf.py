@@ -27,9 +27,6 @@ import math
 import re
 import sys
 
-# this provides a forward compatible equivalent of xrange for python2/3
-from builtins import range
-
 # Adapted from samtools; will be occasionally inaccurate due to iteration stoppage
 def incomplete_gamma1( dS, dZ ):
     

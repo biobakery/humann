@@ -28,9 +28,6 @@ import re
 import sys
 import logging
 
-# import this range as a replacement for xrange in python2/3
-from builtins import range
-
 from .. import utilities
 from .. import config
 
