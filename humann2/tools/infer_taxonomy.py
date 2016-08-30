@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 
 from __future__ import print_function # Python 2.7+ required
+import os
 import sys
 import csv
 import argparse
 
-from humann2.tools import util
+try:
+    from humann2 import config
+    from humann2.tools import util
+except ImportError:
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+        " Please check your install.")
 
 description = """
 HUMAnN2 utility for inferring "unclassified" taxonomy
@@ -14,17 +20,37 @@ Based on the lowest common ancestor (LCA) annotation
 of each UniRef50/90 cluster, infer approximate taxonomy 
 for unclassified features at a target level of resolution 
 (default=Family). Will modify features of known genus/species 
-to match target level.
+to match target level."""
 
-Requires the following supplemental data files:
+# ---------------------------------------------------------------
+# utility mapping interface
+# ---------------------------------------------------------------
 
-uniref50-tol-lca.dat.gz (for UniRef50)
-uniref90-tol-lca.dat.gz (for UniRef90)
+# get a list of all available utility mapping files
+try:
+    all_mapping_files=os.listdir( config.utility_mapping_database )
+except EnvironmentError:
+    all_mapping_files=[]
 
-The data mapping files can be downloaded and installed with the following command:
+databases = {
+    "uniref50": "uniref50-tol-lca.dat.gz",
+    "uniref90": "uniref50-tol-lca.dat.gz",
+    }
+
+missing = False
+for key, value in databases.items( ):
+    if value not in all_mapping_files:
+        missing = True
+    else:
+        databases[key] = os.path.join( config.utility_mapping_database, value )
+if missing:
+    sys.exit( """
+This tool requires the HUMAnN2 utility data files.
+To add these to your installation, please execute:
+
 $ humann2_databases --download utility_mapping full $DIR
-Replacing, $DIR with the directory to install the databases.
-"""
+
+Replacing, $DIR with the directory to install the databases.\n""" )
 
 # ---------------------------------------------------------------
 # constants
@@ -80,7 +106,7 @@ class TreeOfLife:
 # argument parsing
 # ---------------------------------------------------------------
 
-def get_args ():
+def get_args( ):
     """ Get args from Argparse """
     parser = argparse.ArgumentParser(
         description=description,
@@ -96,13 +122,14 @@ def get_args ():
                          choices=c_levels,
                          default="Family",
                          help="Desired level for taxonomic estimation/summation; default=Family" )
-    parser.add_argument( "-d", "--datafile", 
-                         default="uniref50-tol-lca.dat.gz", 
-                         help="Location of the uniref(50/90)-tol-lca data file; default=<HERE>" )
+    parser.add_argument( "-r", "--resolution",
+                         choices=databases.keys( ),
+                         required=True,
+                         help="Resolution of the input file." )
     parser.add_argument( "-m", "--mode", 
                          choices=[c_tmode, c_umode, c_smode],
                          default=c_tmode,
-                         help="Which rows to include in the estimation/summation; default=TOTALS" )
+                         help="Which rows to include in the estimation/summation; default=totals" )
     parser.add_argument( "-t", "--threshold", 
                          type=float, 
                          default=1e-3, 
@@ -178,7 +205,7 @@ def main( ):
     tbl = util.Table( args.input )
     # build the taxmap
     print( "Building taxonomic map for input table", file=sys.stderr )
-    taxmap = build_taxmap( tbl.rowheads, args.level, args.datafile )
+    taxmap = build_taxmap( tbl.rowheads, args.level, databases[args.resolution] )
     # refine the taxmap
     counts = {}
     for old, new in taxmap.items():
