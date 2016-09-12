@@ -570,7 +570,7 @@ class MinPath:
 		except (EnvironmentError, subprocess.CalledProcessError) as e:
 			message="Error when running glpsol from MinPath.\n"
 			if hasattr(e, 'output') and e.output:
-				message+="\nError message returned from glpsol :\n" + e.output+"\n"
+				message+="\nError message returned from glpsol :\n" + e.output.decode("utf-8") +"\n"
 			sys.exit(message)
 		# check the result
 		self.GetLPOut(lpout)
