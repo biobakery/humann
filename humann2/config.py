@@ -450,17 +450,17 @@ rapsearch_version={
 
 # diamond options
 diamond_database_extension=".dmnd"
-diamond_opts_uniref50=["--max-target-seqs",20,"--sensitive"]
-diamond_opts_uniref90=["--max-target-seqs",20]
+diamond_opts_uniref50=["--max-target-seqs",20,"--sensitive","--outfmt",6]
+diamond_opts_uniref90=["--max-target-seqs",20,"--outfmt",6]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={
-    "flag" : "-v",
+    "flag" : "version",
     "major" : 0,
-    "minor" : 7,
-    "second minor" : 9,
+    "minor" : 8,
+    "second minor" : 22,
     "line" : 0,
-    "column" : 1}
+    "column" : 2}
 
 # MinPath
 minpath_script="MinPath12hmp.py"
