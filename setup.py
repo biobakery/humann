@@ -336,12 +336,12 @@ def install_diamond(final_install_folder, build, replace_install=None):
     if not diamond_installed or replace_install:
         diamond_exe="diamond"
         diamond_file="diamond-linux64.tar.gz"
-        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v0.7.9/diamond-linux64.tar.gz"
+        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v0.8.22/diamond-linux64.tar.gz"
         
         # download source if build selected
         if build:
-            diamond_file="v0.7.9.tar.gz"
-            diamond_url="http://github.com/bbuchfink/diamond/archive/v0.7.9.tar.gz"
+            diamond_file="v0.8.22.tar.gz"
+            diamond_url="http://github.com/bbuchfink/diamond/archive/v0.8.22.tar.gz"
 
         humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
         tempfolder=tempfile.mkdtemp(prefix="diamond_download_",dir=humann2_source_folder)
@@ -355,7 +355,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
         if build:
             # get the current directory
             current_working_directory=os.getcwd()
-            diamond_build_dir=os.path.join(tempfolder,"diamond-0.7.9","src")
+            diamond_build_dir=os.path.join(tempfolder,"diamond-0.8.22","src")
             
             try:
                 os.chdir(diamond_build_dir)
@@ -374,31 +374,40 @@ def install_diamond(final_install_folder, build, replace_install=None):
             except (EnvironmentError,subprocess.CalledProcessError):
                 print("Warning: Please install make.")
                 
+            # test for cmake
+            try:
+                subprocess_output=subprocess.check_output(["cmake","--version"])
+            except (EnvironmentError,subprocess.CalledProcessError):
+                print("Warning: Please install cmake.")
+
             # install boost
             install_boost(diamond_build_dir)
                 
+            diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22","bin")
+            final_install_prefix=os.path.join(final_install_folder,os.pardir)
             try:
-                # run make
-                subprocess.call(["make"])
+                # make the install bin directory and change directories
+                os.mkdir(diamond_install_folder)
+                os.chdir(diamond_install_folder)
+                # run cmake and make
+                subprocess.call(["cmake","..","-DCMAKE_INSTALL_PREFIX="+final_install_prefix])
+                subprocess.call(["make","install"])
             except (EnvironmentError,subprocess.CalledProcessError):
                 print("Warning: Errors installing diamond.")
                 error_during_install=True
             
             # return to original working directory
             os.chdir(current_working_directory)
-            
-            diamond_exe_full_path=os.path.join(tempfolder,"diamond-0.7.9","bin",diamond_exe)
         else:
+            # copy the installed software to the final bin location
             diamond_exe_full_path=os.path.join(tempfolder, diamond_exe)
-            
-        # copy the installed software to the final bin location
-        try:
-            # copy to the install folder
-            shutil.copy(diamond_exe_full_path, final_install_folder)
-            # add executable permissions
-            os.chmod(os.path.join(final_install_folder,diamond_exe), 0o755)
-        except (EnvironmentError, shutil.Error):
-            error_during_install=True
+            try:
+                # copy to the install folder
+                shutil.copy(diamond_exe_full_path, final_install_folder)
+                # add executable permissions
+                os.chmod(os.path.join(final_install_folder,diamond_exe), 0o755)
+            except (EnvironmentError, shutil.Error):
+                error_during_install=True
             
         # remove the local diamond install
         try:
