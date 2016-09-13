@@ -1,6 +1,18 @@
 
 # HUMAnN2 History #
 
+## v0.9.2 09-13-2016 ##
+
+### New Features ###
+
+* Added new humann2_regroup_table mappings between EggNOG and UniRef50/90.
+* Added new humann2_rename_table mappings for Pfam, EggNOG, GO, and Informative GO.
+* Database files for humann2_infer_taxonomy are now discoverable after downloading the utility mapping dataset.
+
+### Bug Fix ###
+
+* Informative GO now uses bare GO identifiers to avoid a conflict with HUMAnN2's stratification syntax. Names can be attached to Informative GO identifiers using humann2_rename_table.
+
 ## v0.9.1 08-26-2016 ##
 
 ### New Features ###
