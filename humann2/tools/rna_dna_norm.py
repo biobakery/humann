@@ -43,11 +43,11 @@ def get_args ():
         )
     parser.add_argument( 
         "-d", "--input_dna", 
-        help="Original DNA output table (.tsv format)",
+        help="Original DNA output table (tsv or biom format)",
         )
     parser.add_argument( 
         "-r", "--input_rna", 
-        help="Original RNA output table (.tsv format)",
+        help="Original RNA output table (tsv or biom format)",
         )
     parser.add_argument( 
         "-o", "--output_basename", 

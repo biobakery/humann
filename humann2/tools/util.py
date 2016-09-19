@@ -15,6 +15,9 @@ import bz2
 # the last line in the file with this indicator is the header
 GENE_TABLE_COMMENT_LINE="#"
 
+# the extension used for biom files
+BIOM_FILE_EXTENSION=".biom"
+
 def find_exe_in_path(exe):
     """
     Check that an executable exists in $PATH
@@ -69,7 +72,7 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
     
     # try to open the file
     try:
-        lines=try_zip_open_readlines( gene_table )
+        lines=gzip_bzip2_biom_open_readlines( gene_table )
     except EnvironmentError:
         sys.exit("Unable to read file: " + gene_table)
             
@@ -228,18 +231,41 @@ def try_zip_open( path, write=None ):
         sys.exit( "Problem opening file: " + path)
     return fh
 
-def try_zip_open_readlines( path ):
+def read_biom_table( path ):
     """
-    return the lines in the opened file
+    return the lines in the biom file
     """
 
-    with try_zip_open( path ) as file_handle:
-        for line in file_handle:
-            if path.endswith(".bz2"):
-                # convert the line to text from binary
-                yield line.decode('utf-8').rstrip()
-            else:
-                yield line.rstrip()
+    try:
+        import biom
+    except ImportError:
+        sys.exit("Could not find the biom software."+
+            " This software is required since the input file is a biom file.")
+        
+    try:
+        tsv_table = biom.load_table( path ).to_tsv().decode('utf-8').split("\n")
+    except EnvironmentError, TypeError:
+        sys.exit("ERROR: Unable to read biom input file.")
+        
+    return tsv_table
+
+def gzip_bzip2_biom_open_readlines( path ):
+    """
+    return the lines in the opened file for tab delimited text, gzip, bzip2 and biom files
+    """
+
+    # if the file is biom, convert to text and return lines
+    if path.endswith(BIOM_FILE_EXTENSION):
+        for line in read_biom_table(path):
+            yield line
+    else:
+        with try_zip_open( path ) as file_handle:
+            for line in file_handle:
+                if path.endswith(".bz2"):
+                    # convert the line to text from binary
+                    yield line.decode('utf-8').rstrip()
+                else:
+                    yield line.rstrip()
 
 def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """
@@ -255,7 +281,7 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
     polymap = {}
     print( "Loading mapping file from:", path, file=sys.stderr )
     size_warn( path )
-    for line in try_zip_open_readlines( path ):
+    for line in gzip_bzip2_biom_open_readlines( path ):
         row = line.split("\t")
         key = row[start]
         if allowed_keys is None or key in allowed_keys:

@@ -81,7 +81,7 @@ def get_args ():
     parser.add_argument( 
         "-i", "--input", 
         default=None,
-        help="Original output table (.tsv format); default=[STDIN]",
+        help="Original output table (tsv or biom format); default=[TSV/STDIN]",
         )  
     parser.add_argument( 
         "-g", "--groups", 
