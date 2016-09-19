@@ -23,7 +23,6 @@ from humann2.tools import util
 
 GENE_TABLE_DELIMITER="\t"
 BIOM_FILE_EXTENSION=".biom"
-TSV_FILE_EXTENSION=".tsv"
         
 def join_gene_tables(gene_tables,output,verbose=None):
     """
@@ -40,14 +39,15 @@ def join_gene_tables(gene_tables,output,verbose=None):
         if verbose:
             print("Reading file: " + gene_table)
         
-        file_handle,header,line=util.process_gene_table_header(gene_table, allow_for_missing_header=True)
+        lines=util.process_gene_table_with_header(gene_table, allow_for_missing_header=True)
+        header=lines.next()
         
         # get the basename of the file
         file_basename='.'.join(os.path.basename(gene_table).split('.')[:-1])
         file_basenames.append(file_basename)
         
         if header:
-            header_info=header.rstrip().split(GENE_TABLE_DELIMITER)
+            header_info=header.split(GENE_TABLE_DELIMITER)
             if not start_column_id:
                 start_column_id=header_info[0]
             # allow for multiple samples
@@ -56,8 +56,8 @@ def join_gene_tables(gene_tables,output,verbose=None):
             # if there is no header in the file then use the file name as the sample name
             sample_names=[file_basename]
         
-        while line:
-            data=line.rstrip().split(GENE_TABLE_DELIMITER)
+        for line in lines:
+            data=line.split(GENE_TABLE_DELIMITER)
             try:
                 gene=data[0]
                 # if the header names multiple samples, merge all samples
@@ -83,10 +83,7 @@ def join_gene_tables(gene_tables,output,verbose=None):
                 else:
                     # add data point to end of list
                     gene_table_data[gene] = current_data + GENE_TABLE_DELIMITER.join(data_points) + GENE_TABLE_DELIMITER
-
-            line=file_handle.readline()
             
-        file_handle.close()
         samples+=sample_names
         index+=len(sample_names)
     # if all of the header names for the files are the same

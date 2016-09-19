@@ -47,8 +47,8 @@ def reduce_table(function,input,output,verbose,sort_by):
         print("Reading file: " + input)
         print("Using function: " + function)
         
-    file_handle,header,line=util.process_gene_table_header(input, allow_for_missing_header=True)
-    
+    lines=util.process_gene_table_with_header(input, allow_for_missing_header=True)
+    header=lines.next()
     
     if verbose:
         print("Opening output file: " + output)
@@ -67,9 +67,9 @@ def reduce_table(function,input,output,verbose,sort_by):
     
     store_data={}
     read_line=1
-    while line:
+    for line in lines:
         # read in the data and apply the function to each row
-        data=line.rstrip().split(TABLE_DELIMITER)
+        data=line.split(TABLE_DELIMITER)
         item=data.pop(0)
         
         # try to convert the data to floats
@@ -90,7 +90,6 @@ def reduce_table(function,input,output,verbose,sort_by):
             else:
                 file_handle_out.write(item+TABLE_DELIMITER+str(reduced_data)+"\n")
             
-        line=file_handle.readline()
         read_line+=1
         
         if read_line % READ_STATUS_MESSAGE_BLOCK == 0 and verbose:
@@ -100,7 +99,6 @@ def reduce_table(function,input,output,verbose,sort_by):
         for item in SORT_OPTIONS[sort_by](store_data):
             file_handle_out.write(item+TABLE_DELIMITER+str(store_data[item])+"\n")
     
-    file_handle.close()
     file_handle_out.close()
 
 def parse_arguments(args):

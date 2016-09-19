@@ -11,6 +11,10 @@ import bz2
 # utilities used by the split and join tables scripts
 # ---------------------------------------------------------------
 
+# indicator of a comment line or the header
+# the last line in the file with this indicator is the header
+GENE_TABLE_COMMENT_LINE="#"
+
 def find_exe_in_path(exe):
     """
     Check that an executable exists in $PATH
@@ -58,39 +62,41 @@ def tsv_to_biom(tsv_file, biom_file):
         command=" ".join(cmd)
         sys.exit("Unable to convert tsv file to biom"+"\n"+command)
         
-def process_gene_table_header(gene_table, allow_for_missing_header=None):
+def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
     """
     Process through the header portion of the gene table file
     """
     
-    # indicator of a comment line or the header
-    # the last line in the file with this indicator is the header
-    GENE_TABLE_COMMENT_LINE="^#"
-    
     # try to open the file
     try:
-        file_handle=open(gene_table,"rt")
-        line=file_handle.readline()
+        lines=try_zip_open_readlines( gene_table )
     except EnvironmentError:
         sys.exit("Unable to read file: " + gene_table)
             
     # find the headers
-    header_flag=False
-    header=line
-    while re.match(GENE_TABLE_COMMENT_LINE, line):
-        header_flag=True
-        header = line
-        line = file_handle.readline()
+    header=""
+    first_data_line=""
+    for line in lines:
+        if line[0] == GENE_TABLE_COMMENT_LINE:
+            header = line
+        else:
+            first_data_line = line
+            break
             
-    if not header_flag and not allow_for_missing_header:
+    if not header and not allow_for_missing_header:
         sys.exit("File does not have a required header: " + gene_table +
             " . Please add a header which includes the indicator: " +
             GENE_TABLE_COMMENT_LINE)
         
-    if not header_flag and allow_for_missing_header:
-        header = ""
-        
-    return file_handle, header, line
+    # provide the header
+    yield header
+    
+    # provide the first data line
+    yield first_data_line
+    
+    # now provide the remaining lines
+    for line in lines:
+        yield line
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------

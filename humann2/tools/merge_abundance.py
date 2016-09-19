@@ -35,7 +35,8 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     Write the merged abundances
     """
     
-    file_handle,header,line=util.process_gene_table_header(input_pathways, allow_for_missing_header=True)
+    lines=util.process_gene_table_with_header(input_pathways, allow_for_missing_header=True)
+    header=lines.next()
     
     # open the output file
     try:
@@ -51,8 +52,8 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     pathways={}
     pathways_by_bug={}
     pathway_names={}
-    while line:
-        data=line.rstrip().split(TABLE_DELIMITER)
+    for line in lines:
+        data=line.split(TABLE_DELIMITER)
         bug=""
         pathway=data[0]
         if BUG_DELIMITER in line:
@@ -76,10 +77,6 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
                 pathways_by_bug[pathway].append([bug,data[-1]])
             else:
                 pathways[pathway]=data[-1]
-
-        line=file_handle.readline()
-                        
-    file_handle.close()
 
     for pathway in sorted(pathways):
         # check if the name should be added to the pathway
@@ -188,12 +185,13 @@ def read_gene_table(gene_table):
     gene_table_data={}
     gene_names={}
     
-    file_handle,header,line=util.process_gene_table_header(gene_table, allow_for_missing_header=True)
+    lines=util.process_gene_table_with_header(gene_table, allow_for_missing_header=True)
+    header=lines.next()
     
-    while line:
+    for line in lines:
         # process if not a comment
         if not re.match("#",line):
-            data=line.rstrip().split(TABLE_DELIMITER)
+            data=line.split(TABLE_DELIMITER)
             
             try:
                 gene,bug=data[0].split(BUG_DELIMITER)
@@ -221,10 +219,6 @@ def read_gene_table(gene_table):
                     if not gene in gene_table_data:
                         gene_table_data[gene]={}
                     gene_table_data[gene][bug]=gene_table_data[gene].get(bug,0)+data_point
-
-        line=file_handle.readline()
-            
-    file_handle.close()
         
     return gene_table_data, gene_names
 
