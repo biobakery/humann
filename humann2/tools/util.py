@@ -88,8 +88,9 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
             " . Please add a header which includes the indicator: " +
             GENE_TABLE_COMMENT_LINE)
         
-    # provide the header
-    yield header
+    # provide the header, if one was found
+    if header:
+        yield header
     
     # provide the first data line
     yield first_data_line
@@ -148,7 +149,7 @@ class Table ( ):
             path = "STDIN"
             print( "Loading table from: <STDIN>", file=sys.stderr )
         else:
-            rows = [line.split("\t") for line in try_zip_open_readlines( path )]
+            rows = [line.split("\t") for line in process_gene_table_with_header( path, True )]
             print( "Loading table from:", path, file=sys.stderr )
             size_warn( path )
         for row in rows:
