@@ -22,7 +22,6 @@ import re
 from humann2.tools import util
 
 GENE_TABLE_DELIMITER="\t"
-BIOM_FILE_EXTENSION=".biom"
         
 def join_gene_tables(gene_tables,output,verbose=None):
     """
@@ -177,7 +176,7 @@ def main():
         for file in file_list:
             if re.search(args.file_name,file):
                 reduced_file_list.append(file)
-                if file.endswith(BIOM_FILE_EXTENSION):
+                if file.endswith(util.BIOM_FILE_EXTENSION):
                     biom_flag=True
     else: 
         for file in file_list:
@@ -187,7 +186,7 @@ def main():
                     print("Not including file in input folder: " + file)
             else:
                 reduced_file_list.append(file)
-                if file.endswith(BIOM_FILE_EXTENSION):
+                if file.endswith(util.BIOM_FILE_EXTENSION):
                     biom_flag=True
     file_list=reduced_file_list
             
@@ -208,7 +207,7 @@ def main():
             print("Temp folder created: " + temp_dir)
     
     for file in file_list:
-        if file.endswith(BIOM_FILE_EXTENSION):
+        if file.endswith(util.BIOM_FILE_EXTENSION):
             # create a new temp file
             file_out, new_file=tempfile.mkstemp(dir=temp_dir)
             os.close(file_out)
