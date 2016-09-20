@@ -83,7 +83,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
         
-    def test_humann2_regroup_table_uniref50_rxn_tsv(self):
+    def test_humann2_regroup_table_uniref50_rxn_tsv_mean(self):
         """
         Test regrouping the tsv file with humann2_regroup_table
         Test with uniref50 to reactions mappings
