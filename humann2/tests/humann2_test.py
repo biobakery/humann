@@ -28,6 +28,14 @@ except ImportError:
 # Check the python version
 check.python_version()
 
+# check for the biom install
+biom_installed=True
+try:
+    import biom
+    import h5py
+except ImportError:
+    biom_installed=False
+
 import argparse
 
 def parse_arguments(args):
@@ -53,6 +61,11 @@ def parse_arguments(args):
         help="do not run the unit tests\n", 
         action="store_true",
         default=False)
+    parser.add_argument(
+        "--run-all-tests", 
+        help="run all tests\n", 
+        action="store_true",
+        default=False)
     
     return parser.parse_args()
 
@@ -61,21 +74,29 @@ def get_testdirectory():
     
     return os.path.dirname(os.path.abspath(__file__))
 
-def get_funtionaltests_tools():
+def get_funtionaltests_tools(run_all_tests=None):
     """ Return all of the functional tests for tools"""
     
     directory_of_tests=get_testdirectory()
     
-    functional_suite = unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_tools*.py')
+    functional_suite = [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_tools*.py')]
+    
+    # if biom is installed, add the functional tools tests with biom
+    if biom_installed or run_all_tests:
+        functional_suite += [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_biom_tools*.py')]
     
     return functional_suite
 
-def get_funtionaltests_other():
+def get_funtionaltests_other(run_all_tests=None):
     """ Return all of the other functional tests """
     
     directory_of_tests=get_testdirectory()
     
-    functional_suite = unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_humann2*.py')
+    functional_suite = [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_humann2*.py')]
+    
+    # if biom is installed, add the functional end to end tests with biom
+    if biom_installed or run_all_tests:
+        functional_suite += [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_biom_humann2*.py')]
     
     return functional_suite
 
@@ -104,11 +125,11 @@ def main():
         test_suites=get_unittests()
     
     # Get the functional tests if requested
-    if args.run_functional_tests_tools:
-        test_suites+=get_funtionaltests_tools()
-    if args.run_functional_tests_end_to_end:
+    if args.run_functional_tests_tools or args.run_all_tests:
+        test_suites+=get_funtionaltests_tools(args.run_all_tests)
+    if args.run_functional_tests_end_to_end or args.run_all_tests:
         print("\n\nPlease note running functional end to end tests requires all dependencies of HUMAnN2.\n")
-        test_suites+=get_funtionaltests_other()
+        test_suites+=get_funtionaltests_other(args.run_all_tests)
 
     unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(test_suites))
 

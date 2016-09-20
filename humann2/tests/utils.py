@@ -58,7 +58,8 @@ def run_command(command):
     try:
         subprocess.check_call(command)
     except (EnvironmentError, subprocess.CalledProcessError):
-        print("Warning: Unable to execute command in test.\n"+" ".join(command))    
+        print("Warning: Unable to execute command in test.\n"+" ".join(command)) 
+        raise   
         
 def remove_temp_folder(tempdir):
     """ Remove the temp folder """
@@ -68,11 +69,14 @@ def remove_temp_folder(tempdir):
     except EnvironmentError:
         print("Warning: Unable to remove temp directory: " + tempdir)
         
-def check_output(output_files_expected,output_folder):
+def check_output(output_files_expected,output_folder=None):
     """ Check the output folder has the expected file and they are all non-zero """
     
     for file in output_files_expected:
-        expected_file = os.path.join(output_folder,file)
+        if output_folder:
+            expected_file = os.path.join(output_folder,file)
+        else:
+            expected_file = file
         # check the file exists
         yield (os.path.isfile(os.path.join(expected_file)), "File does not exist: " + file)
         
@@ -128,3 +132,20 @@ def file_basename(file):
     
     return os.path.splitext(os.path.basename(file))[0]
 
+def read_biom_table( path ):
+    """
+    return the lines in the biom file
+    """
+
+    try:
+        import biom
+    except ImportError:
+        sys.exit("Could not find the biom software."+
+            " This software is required since the input file is a biom file.")
+        
+    try:
+        tsv_table = biom.load_table( path ).to_tsv().split("\n")
+    except (EnvironmentError, TypeError):
+        sys.exit("ERROR: Unable to read biom input file.")
+        
+    return tsv_table

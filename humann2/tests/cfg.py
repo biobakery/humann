@@ -186,3 +186,15 @@ example_demo_data_folder=os.path.join(os.path.dirname(os.path.abspath(__file__))
 chocophlan_example_demo_folder=os.path.join(example_demo_data_folder, "chocophlan_DEMO")
 uniref_example_demo_folder=os.path.join(example_demo_data_folder, "uniref_DEMO")
 
+# Get the locations of the files for the biom tests
+expected_demo_output_files_biom=["demo_genefamilies.biom","demo_pathabundance.biom","demo_pathcoverage.biom"]
+demo_gene_families_biom=os.path.join(data_folder,"demo_genefamilies.tsv")
+expected_demo_output_files_biom_pathways=set(["PWY-6305","PWY490-3"])
+regroup_input_biom=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_input.biom")
+rename_input_biom=os.path.join(data_folder, rename_folder, "rename_table-input.biom")
+renorm_input_biom=os.path.join(data_folder, renorm_folder, "renorm_table-input.biom")
+renorm_cpm_output_biom=os.path.join(data_folder, renorm_folder, "renorm_table-cpm_output.biom")
+
+multi_sample_genefamilies_biom = os.path.join(data_folder, "multi_sample_genefamilies.biom")
+multi_sample_genefamilies_split_basename_biom="multi_sample_biom_genefamilies_"
+multi_sample_split_files_biom=["multi_sample_genefamilies_sample1.biom","multi_sample_genefamilies_sample2.biom"]
