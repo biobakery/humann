@@ -36,7 +36,7 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     """
     
     lines=util.process_gene_table_with_header(input_pathways, allow_for_missing_header=True)
-    header=lines.next()
+    header=next(lines)
     
     # open the output file
     try:
@@ -186,7 +186,7 @@ def read_gene_table(gene_table):
     gene_names={}
     
     lines=util.process_gene_table_with_header(gene_table, allow_for_missing_header=True)
-    header=lines.next()
+    header=next(lines)
     
     for line in lines:
         # process if not a comment

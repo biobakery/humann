@@ -48,7 +48,7 @@ def reduce_table(function,input,output,verbose,sort_by):
         print("Using function: " + function)
         
     lines=util.process_gene_table_with_header(input, allow_for_missing_header=True)
-    header=lines.next()
+    header=next(lines)
     
     if verbose:
         print("Opening output file: " + output)

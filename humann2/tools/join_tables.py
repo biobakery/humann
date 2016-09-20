@@ -39,7 +39,7 @@ def join_gene_tables(gene_tables,output,verbose=None):
             print("Reading file: " + gene_table)
         
         lines=util.process_gene_table_with_header(gene_table, allow_for_missing_header=True)
-        header=lines.next()
+        header=next(lines)
         
         # get the basename of the file
         file_basename='.'.join(os.path.basename(gene_table).split('.')[:-1])
