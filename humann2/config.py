@@ -455,7 +455,7 @@ diamond_opts_uniref90=["--max-target-seqs",20,"--outfmt",6]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={
-    "flag" : "version",
+    "flag" : "--version",
     "major" : 0,
     "minor" : 8,
     "second minor" : 22,
