@@ -109,7 +109,7 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
         reactions[bug]={}
         reactions_file_lines=[]
         if reactions_database:
-            for reaction in reactions_database.reaction_list():
+            for reaction in sorted(reactions_database.reaction_list()):
                 genes_list=reactions_database.find_genes(reaction)
                 abundance=0
                 # Add the scores for each gene to the total score for the reaction

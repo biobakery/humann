@@ -1238,7 +1238,7 @@ class PathwaysDatabase:
         """
         
         data=[]
-        for pathway in self.__pathways_to_reactions:
+        for pathway in sorted(self.__pathways_to_reactions):
             data.append(pathway+config.pathways_database_delimiter+
                 config.pathways_database_delimiter.join(self.__pathways_to_reactions[pathway]))
         return "\n".join(data)
