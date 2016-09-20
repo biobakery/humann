@@ -174,14 +174,68 @@ class Table ( ):
                 break
 
     def write ( self, path=None, unfloat=False ):
-        fh = try_zip_open( path, write=True) if path is not None else sys.stdout
-        writer = csv.writer( fh, delimiter="\t", lineterminator="\n")
-        writer.writerow( [self.anchor] + self.colheads )
+        """ If the output file has the biom extension, then write a biom output file """
+        
+        # get the rows of output to write
+        rows = self.write_rows(unfloat)
+        
+        if path.endswith(BIOM_FILE_EXTENSION):
+            self.write_biom(path, rows)
+        else:
+            self.write_tsv(path, rows)
+        
+    def write_rows(self, unfloat=False):
+        """ Yield the values to write to the output file """
+        yield [self.anchor] + self.colheads
         for i in range( len( self.rowheads ) ):
             values = self.data[i][:]
             if unfloat:
                 values = list( map( lambda x: "%.6g" % ( x ), values ))
-            writer.writerow( [self.rowheads[i]] + values )
+            yield [self.rowheads[i]] + values
+
+    def write_tsv ( self, path, rows ):
+        """ Write the output in tsv (possibly compressed) format to a file or stdout """
+        fh = try_zip_open( path, write=True) if path is not None else sys.stdout
+        writer = csv.writer( fh, delimiter="\t", lineterminator="\n")
+
+        for row in rows:
+            writer.writerow(row)
+            
+    def write_biom ( self, path, rows ):
+        """ Write the file in biom format """
+        
+        try:
+            import biom
+        except ImportError:
+            sys.exit("Could not find the biom software."+
+                " This software is required since the input file is a biom file.")
+            
+        try:
+            import numpy
+        except ImportError:
+            sys.exit("Could not find the numpy software."+
+                " This software is required since the input file is a biom file.")
+            
+        try:
+            import h5py
+        except ImportError:
+            sys.exit("Could not find the h5py software."+
+                " This software is required since the input file is a biom file.")
+            
+        # reformat the rows into a biom table
+        samples=next(rows)[1:]
+        ids=[]
+        data=[]
+        for row in rows:
+            ids.append(row[0])
+            data.append(row[1:])
+            
+        table=biom.Table(numpy.array(data), ids, samples)
+        
+        # write a h5py biom table
+        with h5py.File(path, 'w') as file_handle:
+            table.to_hdf5(file_handle, "humann2 utility script")
+        
 
 class Ticker( ):
     def __init__( self, iterable, step=100, pad="  " ):
@@ -243,8 +297,8 @@ def read_biom_table( path ):
             " This software is required since the input file is a biom file.")
         
     try:
-        tsv_table = biom.load_table( path ).to_tsv().decode('utf-8').split("\n")
-    except EnvironmentError, TypeError:
+        tsv_table = biom.load_table( path ).to_tsv().split("\n")
+    except (EnvironmentError, TypeError):
         sys.exit("ERROR: Unable to read biom input file.")
         
     return tsv_table
