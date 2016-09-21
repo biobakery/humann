@@ -1,6 +1,19 @@
 
 # HUMAnN2 History #
 
+## v0.9.3 09-21-2016 ##
+
+### New Features ###
+
+* Added biom input and output compatibility to the following scripts: humann2_infer_taxonomy, humann2_regroup_table, humann2_rename_table, humann2_renorm_table, humann2_rna_dna_norm, and humann2_strain_profiler.
+* Added gzip and bz2 input file compatibility to the following scripts: humann2_join_tables, humann2_merge_abundance, and humann2_reduce_table.
+
+### Other Changes ###
+
+* Added functional end to end and also tools tests for biom compatibility features.
+* Sorted the reactions and pathways provided to MinPath. This removes stochasticity seen when running with Python3.
+* Changed diamond version check option to "--version" as this is backwards compatible with the diamond v0.7 series.
+
 ## v0.9.2 09-13-2016 ##
 
 ### New Features ###
