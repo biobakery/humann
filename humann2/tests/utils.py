@@ -58,8 +58,7 @@ def run_command(command):
     try:
         subprocess.check_call(command)
     except (EnvironmentError, subprocess.CalledProcessError):
-        print("Warning: Unable to execute command in test.\n"+" ".join(command)) 
-        raise   
+        raise EnvironmentError("Warning: Unable to execute command in test.\n"+" ".join(command))    
         
 def remove_temp_folder(tempdir):
     """ Remove the temp folder """
@@ -140,12 +139,12 @@ def read_biom_table( path ):
     try:
         import biom
     except ImportError:
-        sys.exit("Could not find the biom software."+
+        raise ImportError("ERROR: Could not find the biom software."+
             " This software is required since the input file is a biom file.")
         
     try:
         tsv_table = biom.load_table( path ).to_tsv().split("\n")
     except (EnvironmentError, TypeError):
-        sys.exit("ERROR: Unable to read biom input file.")
+        raise EnvironmentError("ERROR: Unable to read biom input file.")
         
     return tsv_table
