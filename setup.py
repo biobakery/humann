@@ -127,7 +127,7 @@ def download(url, download_file):
         print("Downloading "+url)
         file, headers = urlretrieve(url,download_file,reporthook=ReportHook().report)
     except EnvironmentError:
-        print("Warning: Unable to download "+url)
+        print("WARNING: Unable to download "+url)
     
 
 def download_unpack_tar(url,download_file_name,folder,software_name):
@@ -137,7 +137,7 @@ def download_unpack_tar(url,download_file_name,folder,software_name):
     
     # Check for write permission to the target folder
     if not os.access(folder, os.W_OK):
-        print("Warning: The directory is not writeable: "+
+        print("WARNING: The directory is not writeable: "+
             folder + " . Please modify the permissions.")
     
     download_file=os.path.join(folder, download_file_name)
@@ -151,14 +151,14 @@ def download_unpack_tar(url,download_file_name,folder,software_name):
         tarfile_handle.extractall(path=folder)
         tarfile_handle.close()
     except (EnvironmentError,tarfile.ReadError):
-        print("Warning: Unable to extract "+software_name+".")
+        print("WARNING: Unable to extract "+software_name+".")
         error_during_extract=True
         
     if not error_during_extract:
         try:
             os.unlink(download_file)
         except EnvironmentError:
-            print("Warning: Unable to remove the temp download: " + download_file)
+            print("WARNING: Unable to remove the temp download: " + download_file)
         
 def download_unpack_zip(url,download_file_name,folder,software_name):
     """
@@ -167,7 +167,7 @@ def download_unpack_zip(url,download_file_name,folder,software_name):
     
     # Check for write permission to the target folder
     if not os.access(folder, os.W_OK):
-        print("Warning: The directory is not writeable: "+
+        print("WARNING: The directory is not writeable: "+
             folder + " . Please modify the permissions.")
     
     download_file=os.path.join(folder, download_file_name)
@@ -181,14 +181,14 @@ def download_unpack_zip(url,download_file_name,folder,software_name):
         zipfile_handle.extractall(path=folder)
         zipfile_handle.close()
     except EnvironmentError:
-        print("Warning: Unable to extract "+software_name+".")
+        print("WARNING: Unable to extract "+software_name+".")
         error_during_extract=True
         
     if not error_during_extract:
         try:
             os.unlink(download_file)
         except EnvironmentError:
-            print("Warning: Unable to remove the temp download: " + download_file)
+            print("WARNING: Unable to remove the temp download: " + download_file)
         
 def install_glpk(install_directory, replace_install=None):
     """
@@ -222,19 +222,19 @@ def install_glpk(install_directory, replace_install=None):
         try:
             os.chdir(glpk_install_folder)
         except EnvironmentError:
-            print("Warning: glpk was not downloaded.")
+            print("WARNING: glpk was not downloaded.")
         
         # test for gcc
         try:
             subprocess_output=subprocess.check_output(["gcc","--version"])
         except (EnvironmentError,subprocess.CalledProcessError):
-            print("Warning: Please install gcc.")
+            print("WARNING: Please install gcc.")
             
         # test for make
         try:
             subprocess_output=subprocess.check_output(["make","--version"])
         except (EnvironmentError,subprocess.CalledProcessError):
-            print("Warning: Please install make.")
+            print("WARNING: Please install make.")
             
         try:
             # run configure
@@ -244,7 +244,7 @@ def install_glpk(install_directory, replace_install=None):
             # run make install
             subprocess.call(["make","install"])
         except (EnvironmentError,subprocess.CalledProcessError):
-            print("Warning: Errors installing new glpk version.")
+            print("WARNING: Errors installing new glpk version.")
                 
         # return to original working directory
         os.chdir(current_working_directory)  
@@ -253,7 +253,7 @@ def install_glpk(install_directory, replace_install=None):
         try:
             shutil.rmtree(tempfolder)
         except EnvironmentError:
-            print("Warning: Unable to remove temp install folder.")
+            print("WARNING: Unable to remove temp install folder.")
 
     else:
         print("Found glpk install at "+glpk_installed)
@@ -313,13 +313,13 @@ def install_boost(folder):
     try:
         os.chdir(boost_build_dir)
     except EnvironmentError:
-        print("Warning: boost directory does not exist")
+        print("WARNING: boost directory does not exist")
 
     try:
         subprocess.call(["./bootstrap.sh","--with-libraries=timer,chrono,system,program_options,thread,iostreams","--prefix=../boost"])
         subprocess.call(["./b2","install"])
     except (EnvironmentError,subprocess.CalledProcessError):
-        print("Warning: Errors installing boost.")
+        print("WARNING: Errors installing boost.")
 
     # return to original working directory
     os.chdir(current_working_directory)
@@ -360,25 +360,25 @@ def install_diamond(final_install_folder, build, replace_install=None):
             try:
                 os.chdir(diamond_build_dir)
             except EnvironmentError:
-                print("Warning: diamond directory does not exist")
+                print("WARNING: diamond directory does not exist")
                 
             # test for gcc
             try:
                 subprocess_output=subprocess.check_output(["gcc","--version"])
             except (EnvironmentError,subprocess.CalledProcessError):
-                print("Warning: Please install gcc.")
+                print("WARNING: Please install gcc.")
                 
             # test for make
             try:
                 subprocess_output=subprocess.check_output(["make","--version"])
             except (EnvironmentError,subprocess.CalledProcessError):
-                print("Warning: Please install make.")
+                print("WARNING: Please install make.")
                 
             # test for cmake
             try:
                 subprocess_output=subprocess.check_output(["cmake","--version"])
             except (EnvironmentError,subprocess.CalledProcessError):
-                print("Warning: Please install cmake.")
+                print("WARNING: Please install cmake.")
 
             # install boost
             install_boost(diamond_build_dir)
@@ -393,7 +393,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
                 subprocess.call(["cmake","..","-DCMAKE_INSTALL_PREFIX="+final_install_prefix])
                 subprocess.call(["make","install"])
             except (EnvironmentError,subprocess.CalledProcessError):
-                print("Warning: Errors installing diamond.")
+                print("WARNING: Errors installing diamond.")
                 error_during_install=True
             
             # return to original working directory
@@ -413,10 +413,10 @@ def install_diamond(final_install_folder, build, replace_install=None):
         try:
             shutil.rmtree(tempfolder)
         except EnvironmentError:
-            print("Warning: Unable to remove temp install folder.")
+            print("WARNING: Unable to remove temp install folder.")
         
         if error_during_install:
-            print("Warning: Unable to install diamond. Please install diamond.")
+            print("WARNING: Unable to install diamond. Please install diamond.")
         else:
             print("Installed diamond at "+final_install_folder)
     else:
@@ -459,7 +459,7 @@ def install_bowtie2(final_install_folder, mac_os, replace_install=None):
         try:
             files=os.listdir(fullpath_bowtie2_exe)
         except EnvironmentError:
-            print("Warning: Bowtie2 files not found.")
+            print("WARNING: Bowtie2 files not found.")
             error_during_install=True
         
         for file in files:  
@@ -477,10 +477,10 @@ def install_bowtie2(final_install_folder, mac_os, replace_install=None):
         try:
             shutil.rmtree(tempfolder)
         except EnvironmentError:
-            print("Warning: Unable to remove temp install folder.")
+            print("WARNING: Unable to remove temp install folder.")
         
         if error_during_install:
-            print("Warning: Unable to install bowtie2. Please install bowtie2.")
+            print("WARNING: Unable to install bowtie2. Please install bowtie2.")
         else:
             print("Installed bowtie2 at "+final_install_folder)
     else:
