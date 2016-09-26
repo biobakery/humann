@@ -126,6 +126,8 @@ def download(url, download_file):
     try:
         print("Downloading "+url)
         file, headers = urlretrieve(url,download_file,reporthook=ReportHook().report)
+        # print final return to start new line of stdout
+        print("\n")
     except EnvironmentError:
         print("WARNING: Unable to download "+url)
     
@@ -369,33 +371,65 @@ def install_diamond(final_install_folder, build, replace_install=None):
                 print("WARNING: Please install gcc.")
                 
             # test for make
+            make_installed=True
             try:
                 subprocess_output=subprocess.check_output(["make","--version"])
             except (EnvironmentError,subprocess.CalledProcessError):
-                print("WARNING: Please install make.")
+                make_installed=False
+                print("INFO: make is not installed.")
                 
             # test for cmake
+            cmake_installed=True
             try:
                 subprocess_output=subprocess.check_output(["cmake","--version"])
             except (EnvironmentError,subprocess.CalledProcessError):
-                print("WARNING: Please install cmake.")
+                cmake_installed=False
+                print("INFO: cmake is not installed.")
 
-            # install boost
-            install_boost(diamond_build_dir)
-                
-            diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22","bin")
             final_install_prefix=os.path.join(final_install_folder,os.pardir)
-            try:
-                # make the install bin directory and change directories
-                os.mkdir(diamond_install_folder)
-                os.chdir(diamond_install_folder)
-                # run cmake and make
-                subprocess.call(["cmake","..","-DCMAKE_INSTALL_PREFIX="+final_install_prefix])
-                subprocess.call(["make","install"])
-            except (EnvironmentError,subprocess.CalledProcessError):
-                print("WARNING: Errors installing diamond.")
-                error_during_install=True
-            
+            if make_installed and cmake_installed:
+                # if make and cmake are installed, run the standard build
+                print("INFO: Installing diamond with cmake method.")
+                diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22","bin")
+                try:
+                    # make the install bin directory and change directories
+                    os.mkdir(diamond_install_folder)
+                    os.chdir(diamond_install_folder)
+                    # run cmake and make
+                    subprocess.call(["cmake","..","-DCMAKE_INSTALL_PREFIX="+final_install_prefix])
+                    subprocess.call(["make","install"])
+                except (EnvironmentError,subprocess.CalledProcessError):
+                    print("WARNING: Errors installing diamond.")
+                    error_during_install=True
+            else:
+                # if make or cmake are not installed, run the simple build
+                print("INFO: Installing diamond with simple build method.")
+                
+                diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22")
+                try:
+                    # change directories to the diamond source folder
+                    os.chdir(diamond_install_folder)
+                
+                    # remove the static flag from the build script
+                    subprocess.call(["sed","-i","s/ -static//", "build_simple.sh"])
+                
+                    # run the build script
+                    subprocess.call(["bash","-x", "build_simple.sh"])
+                except (EnvironmentError,subprocess.CalledProcessError):
+                    print("WARNING: Errors installing diamond.")
+                    error_during_install=True
+                # set the location of the diamond executable
+                diamond_exe_full_path=os.path.join(diamond_install_folder, diamond_exe) 
+               
+                # copy the installed software to the final bin location
+                try:
+                    # copy to the install folder
+                    shutil.copy(diamond_exe_full_path, final_install_folder)
+                    # add executable permissions
+                    os.chmod(os.path.join(final_install_folder,diamond_exe), 0o755)
+                except (EnvironmentError, shutil.Error):
+                    error_during_install=True 
+                    
             # return to original working directory
             os.chdir(current_working_directory)
         else:
