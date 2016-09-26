@@ -65,14 +65,13 @@ $ humann2_databases --download utility_mapping full $DIR
 Replacing, $DIR with the directory to download and install the databases."""
 
 c_protected = [util.c_unmapped, util.c_unintegrated]
-c_topsort = c_protected + [util.c_ungrouped]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
 # ---------------------------------------------------------------
 # utilities
 # ---------------------------------------------------------------
 
-def get_args ():
+def get_args( ):
     """ Get args from Argparse """
     parser = argparse.ArgumentParser(
         description=description, 
@@ -103,7 +102,7 @@ def get_args ():
         "-f", "--function", 
         choices=c_funcmap.keys(),
         default="sum",
-        help="How to combine grouped features; default=[sum]",
+        help="How to combine grouped features; default=sum",
         )
     parser.add_argument( 
         "-e", "--precision",
@@ -126,7 +125,7 @@ def get_args ():
     parser.add_argument( 
         "-o", "--output", 
         default=None,
-        help="Path for modified output table; default=[STDOUT]",
+        help="Path for modified output table; default=STDOUT",
         )
     args = parser.parse_args()
     return args
@@ -144,10 +143,7 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
     mapping = {}
 
     for i, rowhead in enumerate( table.rowheads ):
-        items = rowhead.split( util.c_strat_delim )
-        # get feature name, account for previously renamed features
-        stratum = items[1] if len( items ) > 1 else None
-        feature = items[0].split( util.c_name_delim )[0]
+        feature, name, stratum = util.fsplit( rowhead )
         if feature not in feature_counts:
             feature_counts[feature] = 0
         # decide which groups to use
@@ -164,16 +160,13 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
             # account for stratified feature
             groupname = group 
             if stratum is not None:
-                groupname += util.c_strat_delim + stratum
+                groupname = util.fjoin( groupname, stratum=stratum )
             mapping.setdefault( groupname, [] ).append( i )
         # we have processed an instance of this feature
         seen_before[feature] = 1
 
     # rebuild table
-    # *** sorting changed to force 1|A to come before 11 ***
-    groupnames = sorted( mapping.keys(), key=lambda k: k.split( util.c_strat_delim ) )
-    # move special fields to the top
-    groupnames = sorted( groupnames, key=lambda k: 0 if k.split( util.c_strat_delim )[0] in c_topsort else 1 )
+    groupnames = util.fsort( mapping.keys( ) )
     groupdata = []
     for groupname in groupnames:
         oldrow_index = mapping[groupname]
@@ -188,10 +181,10 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
 
     # report
     n = len( feature_counts )
-    ungrouped = list(feature_counts.values()).count( 0 )
+    ungrouped = list( feature_counts.values( ) ).count( 0 )
     grouped_total = n - ungrouped
     grouped_multi = grouped_total - list(feature_counts.values()).count( 1 )
-    print( "Original Feature Count: %d; Grouped 1+ times: %d (%%%.1f); Grouped 2+ times: %d (%%%.1f)" % \
+    print( "Original Feature Count: %d; Grouped 1+ times: %d (%.1f%%); Grouped 2+ times: %d (%.1f%%)" % \
            ( n,
              grouped_total,
              100 * grouped_total / float( n ),
@@ -203,7 +196,7 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
 # main
 # ---------------------------------------------------------------
 
-def main ( ):
+def main( ):
     args = get_args()
     # load the table; find unique feature ids (no names)
     table = util.Table( args.input )
@@ -217,7 +210,7 @@ def main ( ):
     elif args.groups is not None:
         p_groups, start, skip = c_default_groups[args.groups]
     else:
-        sys.exit( "Must (i) choose groups option or (ii) provide groups file" )
+        sys.exit( "Must specify either 1) built-in groups option [--groups] or 2) custom groups file [--custom]" )
     # load the grouping file
     map_group_features = util.load_polymap( 
         p_groups, start=start, skip=skip, allowed_values=features )
