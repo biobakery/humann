@@ -468,7 +468,10 @@ def print_pathways(pathways, file, header, pathway_names, sorted_pathways_and_bu
     category_delimiter=config.output_file_category_delimiter            
  
     # Create the header
-    tsv_output=["# Pathway"+ delimiter + config.file_basename + header]
+    column_name=config.file_basename + header
+    if config.remove_column_description_output:
+        column_name=config.file_basename
+    tsv_output=["# Pathway"+ delimiter + column_name]
     
     # Add the unmapped and unintegrated values
     tsv_output.append(config.unmapped_pathway_name+delimiter+utilities.format_float_to_string(unmapped_all))

@@ -51,7 +51,10 @@ def gene_families(alignments,gene_scores,unaligned_reads_count):
     category_delimiter=config.output_file_category_delimiter     
 
     # Write the scores ordered with the top first
-    tsv_output=["# Gene Family"+delimiter+config.file_basename+"_Abundance-RPKs"]
+    column_name=config.file_basename+"_Abundance-RPKs"
+    if config.remove_column_description_output:
+        column_name=config.file_basename
+    tsv_output=["# Gene Family"+delimiter+column_name]
     
     # Add the unaligned reads count
     tsv_output.append(config.unmapped_gene_name+delimiter+utilities.format_float_to_string(unaligned_reads_count))  

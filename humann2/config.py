@@ -90,6 +90,7 @@ def log_settings():
     lines.append("output file format = " + output_format)
     lines.append("output max decimals = " + str(output_max_decimals))
     lines.append("remove stratified output = " + str(remove_stratified_output))
+    lines.append("remove column description output = " + str(remove_column_description_output))
     lines.append("log level = " + log_level)
     lines.append("")
     
@@ -255,6 +256,9 @@ output_max_decimals=get_item(config_items, "output_format", "output_max_decimals
     
 # stratified output flag
 remove_stratified_output=get_item(config_items, "output_format", "remove_stratified_output", "bool")
+
+# column description flag
+remove_column_description_output=get_item(config_items, "output_format", "remove_column_description_output", "bool")
 
 # pathways files
 humann2_install_directory=os.path.dirname(os.path.abspath(__file__))

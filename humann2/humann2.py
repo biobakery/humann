@@ -287,6 +287,12 @@ def parse_arguments(args):
         action="store_true",
         default=config.remove_stratified_output)
     parser.add_argument(
+        "--remove-column-description-output", 
+        help="remove the description in the output column\n" + 
+            "[DEFAULT: output column includes description]", 
+        action="store_true",
+        default=config.remove_column_description_output)
+    parser.add_argument(
         "--input-format",
         help="the format of the input file\n[DEFAULT: format identified by software]",
         choices=config.input_format_choices)
@@ -435,7 +441,8 @@ def update_configuration(args):
         
     # Update the output format
     config.remove_stratified_output=args.remove_stratified_output
-     
+    config.remove_column_description_output=args.remove_column_description_output    
+ 
     # Check that the output directory is writeable
     output_dir = os.path.abspath(args.output)
     
