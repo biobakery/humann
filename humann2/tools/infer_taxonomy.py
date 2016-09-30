@@ -34,7 +34,7 @@ except EnvironmentError:
 
 databases = {
     "uniref50": "uniref50-tol-lca.dat.gz",
-    "uniref90": "uniref50-tol-lca.dat.gz",
+    "uniref90": "uniref90-tol-lca.dat.gz",
     }
 
 missing = False
