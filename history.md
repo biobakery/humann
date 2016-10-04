@@ -1,6 +1,13 @@
 
 # HUMAnN2 History #
 
+## v0.9.4 10-04-2016 ##
+
+### New Features ###
+
+* Added option "--remove-column-description-output" which will remove the description from the output file columns.
+* Added build simple method for diamond install for users without cmake installed.
+
 ## v0.9.3 09-21-2016 ##
 
 ### New Features ###
