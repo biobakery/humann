@@ -625,7 +625,6 @@ setuptools.setup(
         "Environment :: Console",
         "Operating System :: MacOS",
         "Operating System :: Unix",
-        "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.4",
         "Topic :: Scientific/Engineering :: Bio-Informatics"
