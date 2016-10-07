@@ -82,27 +82,26 @@ common_tax = {}
 headers = False
 with try_open( args.ncbi_taxonomy ) as fh:
     for row in csv.reader( fh, csv.excel_tab ):
-        if headers:
-            tax     = row[0]
-            common  = check( row[2], tax )
-            rank    = check( row[7] )
-            lineage = check( row[8] )
-            parent  = check( row[9] )
-            n = tol.get( tax )
-            if common != "":
-                n.common = common
-            n.rank = rank
+        if not headers:
+            headers = True
+        else:
+            tax       = row[0]
+            common    = check( row[2], tax )
+            rank      = check( row[7] )
+            lineage   = check( row[8] )
+            parent    = check( row[9] )
+            n         = tol.get( tax )
+            n.common  = common
+            n.rank    = rank
             n.lineage = lineage
-            n.weight = 0
-            p = tol.get( parent )
+            n.weight  = 0
+            p         = tol.get( parent )
             n.add_parent( p )
             common_tax.setdefault( common, [] ).append( tax ) 
-        else:
-            headers = True
 tol.update( )
 
 # ---------------------------------------------------------------
-# update nodeweights for disambiguation
+# disambiguate common names
 # ---------------------------------------------------------------
 
 for clade in tol.nodes( ):
@@ -124,6 +123,7 @@ for common, taxes in common_tax.items( ):
             if choices[-1][0] / (1 + choices[-2][0]) > 10:
                 dominant = choices[-1][1]
         # if no one is dominant by weight, take most specific
+        # this resolves bacterial phylogeny where e.g. p__, c__, o__ have same name
         if dominant is None:
             choices = []
             for tax in taxes:
@@ -141,14 +141,16 @@ for common, taxes in common_tax.items( ):
                 clade.status = "AmbiguousBypass"
 
 # ---------------------------------------------------------------
-# clean up
+# clean up ranks, output TOL
 # ---------------------------------------------------------------
 
 for node in tol.nodes( ):
+    # what we call kingdom ncbi calls superkingdom
     if node.rank == "Kingdom":
-        node.rank = ""
+        node.rank = c_na
     elif node.rank == "Superkingdom":
         node.rank = "Kingdom"
+    # helpful to label major virus subdivisions as phyla
     if not node.is_root and node.get_parent( ).common == "Viruses":
         node.rank = "Phylum"
 
