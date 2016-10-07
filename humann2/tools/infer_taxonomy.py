@@ -4,6 +4,7 @@ from __future__ import print_function # Python 2.7+ required
 import os
 import sys
 import csv
+import re
 import argparse
 
 try:
@@ -56,9 +57,7 @@ Replacing, $DIR with the directory to install the databases.\n""" )
 # constants
 # ---------------------------------------------------------------
 
-c_root = "Root"
 c_levels = [
-    c_root,
     "Kingdom",
     "Phylum",
     "Class",
@@ -72,34 +71,37 @@ c_smode = "stratified"
 c_tol_header = "# TOL"
 c_lca_header = "# LCA"
 c_unclassified = "unclassified"
+c_bypass = "AmbiguousBypass"
+c_na = "-"
 
 # ---------------------------------------------------------------
 # helper objects
 # ---------------------------------------------------------------
 
 class Taxon:
-    def __init__( self, name, rank, parent_name ):
+    def __init__( self, name, common, rank, pname, status ):
         self.name = name
+        self.common = common
         self.rank = rank
-        self.parent_name = parent_name
+        self.pname = pname
+        self.status = status
 
 class TreeOfLife:
     def __init__( self ):
         self.nodes = {}
-        self.root = Taxon( c_root, c_root, None )
-        self.nodes[self.root.name] = self.root
+        self.connect = {}
     def attach( self, node ):
-        if node.name not in self.nodes:
-            self.nodes[node.name] = node
-        else:
-            print( "Taxon <{}> already defined".format( node.name ), file=sys.stderr )
-    def get_lineage( self, name ):
+        self.nodes[node.name] = node
+        if node.status != c_bypass:
+            self.connect[node.common] = node.name
+    def get_lineage( self, common ):
         lineage = []
-        while name in self.nodes and name != self.root.name:
-            node = self.nodes[name]
-            lineage.append( [node.rank, node.name] )
-            name = node.parent_name
-        lineage.append( [self.root.rank, self.root.name] )
+        if common in self.connect:
+            name = self.connect[common]
+            while name in self.nodes and name != c_na:
+                node = self.nodes[name]
+                lineage.append( [node.rank, node.common] )
+                name = node.pname
         return lineage
 
 # ---------------------------------------------------------------
@@ -134,6 +136,8 @@ def get_args( ):
                          type=float, 
                          default=1e-3, 
                          help="Minimum frequency for a new taxon to be included; default=1e-3" )
+    parser.add_argument( "-d", "--dev",
+                         help="Manually specify a development database" )
     args = parser.parse_args()
     return args
 
@@ -141,9 +145,11 @@ def get_args( ):
 # utilities
 # ---------------------------------------------------------------
 
+def simplify( name ):
+    return re.sub( "[^A-Za-z0-9]+", "_", name )
+
 def build_taxmap( features, target_rank, p_datafile ):
-    unirefs = {k.split( util.c_strat_delim )[0] for k in features}
-    unirefs = {k.split( util.c_name_delim )[0] for k in unirefs}
+    unirefs = {util.fsplit( k )[0] for k in features}
     unirefs = {k for k in unirefs if "UniRef" in k}
     # load tree of life, subset uniref lca annotation and add to taxmap
     tol = TreeOfLife()
@@ -163,14 +169,13 @@ def build_taxmap( features, target_rank, p_datafile ):
                 lca_mode = True
                 continue
             if tol_mode:
-                name, rank, parent_name = row
-                tol.attach( Taxon( name, rank, parent_name ) )
+                tol.attach( Taxon( *row ) )
             elif lca_mode:
                 uni, lca = row
                 if uni in unirefs:
-                    for rank, name in tol.get_lineage( lca ):
+                    for rank, common in tol.get_lineage( lca ):
                         if rank == target_rank:
-                            taxmap[uni] = rank.lower()[0] + "__" + name
+                            taxmap[uni] = rank.lower()[0] + "__" + simplify( common )
                             break
     # augment taxmap with genus-level lineage information for stratified features
     for feature in features:
@@ -181,9 +186,9 @@ def build_taxmap( features, target_rank, p_datafile ):
                 taxmap[stratum] = genus
             else:
                 genus = genus.replace( "g__", "" )
-                for rank, name in tol.get_lineage( genus ):
+                for rank, common in tol.get_lineage( genus ):
                     if rank == target_rank:
-                        taxmap[stratum] = rank.lower()[0] + "__" + name
+                        taxmap[stratum] = rank.lower()[0] + "__" + simplify( common )
                         break
     return taxmap
 
@@ -205,7 +210,8 @@ def main( ):
     tbl = util.Table( args.input )
     # build the taxmap
     print( "Building taxonomic map for input table", file=sys.stderr )
-    taxmap = build_taxmap( tbl.rowheads, args.level, databases[args.resolution] )
+    p_datafile = args.dev if args.dev is not None else databases[args.resolution]
+    taxmap = build_taxmap( tbl.rowheads, args.level, p_datafile )
     # refine the taxmap
     counts = {}
     for old, new in taxmap.items():
@@ -224,10 +230,10 @@ def main( ):
         # unmapped is never stratified
         if feature == util.c_unmapped:
             index.setdefault( rowhead, [] ).append( i )
-        # outside of unclassfied mode, keep totals
+        # outside of unclassified mode, keep totals
         elif stratum is None and args.mode != c_umode:
             index.setdefault( rowhead, [] ).append( i )
-            # in totals mode, guess at taxnomy from uniref name
+            # in totals mode, guess at taxonomy from uniref name
             if args.mode == c_tmode:
                 index.setdefault( new_rowhead, [] ).append( i )
         elif stratum == c_unclassified and args.mode == c_umode:

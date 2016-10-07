@@ -1,26 +1,47 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import sys
 import csv
 import re
 import argparse
-from zopy.utils import try_open
+
+from zopy.utils import try_open, qw, die
+from zopy.dag import Node, DAG
 
 # ---------------------------------------------------------------
 # constants
 # ---------------------------------------------------------------
 
-levels = """
-Kingdom
-Phylum
-Class
-Order
-Family
-Genus
-Species
-"""
-ranks = [k for k in levels.split( "\n" ) if k != ""]
+c_na = "-"
 
+# ---------------------------------------------------------------
+# classes
+# ---------------------------------------------------------------
+
+class Clade( Node ):
+    def __init__( self, name ):
+        Node.__init__( self, name )
+        self.weight = 0
+        self.common = name
+        self.rank = c_na
+        self.lineage = c_na
+        self.status = c_na
+    def get_parent( self ):
+        # Node class allows multiple parents
+        p = None
+        if len( self.parents ) > 1:
+            die( "Clade with more than one parent" )
+        elif len( self.parents ) == 1:
+            p = list( self.parents )[0]
+        return p
+
+class TOL( DAG ):
+    def get( self, name ):
+        if name not in self.node_dict:
+            self.add( Clade( name ) )
+        return self.node_dict[name]
+        
 # ---------------------------------------------------------------
 # cli
 # ---------------------------------------------------------------
@@ -35,7 +56,7 @@ args = parser.parse_args()
 # load and curate full taxonomy as dag
 # ---------------------------------------------------------------
 
-print("Loading tree of life")
+print( "Loading tree of life", file=sys.stderr )
 
 """
  0 Taxon
@@ -50,60 +71,112 @@ print("Loading tree of life")
  9 Parent
 10 Virus hosts
 """
-#
-map_name_tax = {}
-map_tax_parent = {}
-map_parent_tax = {}
-map_tax_rank = {}
+
+def check( string, default=c_na ):
+    if string == "":
+        string = default
+    return string
+
+tol = TOL( )
+common_tax = {}
 headers = False
 with try_open( args.ncbi_taxonomy ) as fh:
     for row in csv.reader( fh, csv.excel_tab ):
         if headers:
-            map_tax_parent[row[0]] = row[9]
-            map_parent_tax[row[9]] = row[0]
-            map_name_tax.setdefault( row[2], [] ).append( row[0] )
-            map_tax_rank[row[0]] = row[7]
+            tax     = row[0]
+            common  = check( row[2], tax )
+            rank    = check( row[7] )
+            lineage = check( row[8] )
+            parent  = check( row[9] )
+            n = tol.get( tax )
+            if common != "":
+                n.common = common
+            n.rank = rank
+            n.lineage = lineage
+            n.weight = 0
+            p = tol.get( parent )
+            n.add_parent( p )
+            common_tax.setdefault( common, [] ).append( tax ) 
         else:
             headers = True
+tol.update( )
 
-# clean taxonomy
-for name, taxes in map_name_tax.items():
-    # **** sloppy: if the name isn't unique, assign to lowest taxid ****
-    map_name_tax[name] = sorted( taxes, key=lambda k: int( k ) )[0]
-map_tax_name = {v:k for k, v in map_name_tax.items()}
+# ---------------------------------------------------------------
+# update nodeweights for disambiguation
+# ---------------------------------------------------------------
 
-# update parent
-map_name_parent = {}
-for c, p in map_tax_parent.items():
-    if c in map_tax_name and p in map_tax_name:
-        map_name_parent[map_tax_name[c]] = map_tax_name[p]
+for clade in tol.nodes( ):
+    if clade.is_leaf:
+        for lin in clade.get_lineages( ):
+            for ancestor in lin:
+                ancestor.weight += 1
 
-# update rank
-map_name_rank = {}
-for c, r in map_tax_rank.items():
-    if r == "Kingdom":
-        r = "Subkingdom"
-    elif r == "Superkingdom":
-        r = "Kingdom"
-    if c in map_tax_name and r in ranks:
-        map_name_rank[map_tax_name[c]] = r
+for common, taxes in common_tax.items( ):
+    if len( taxes ) > 1:
+        dominant = None
+        # determine if one use of common name dominates
+        # ex. kingdom "Bacteria" versus stick insect genus "Bacteria"
+        if dominant is None:
+            choices = []
+            for tax in taxes:
+                choices.append( [tol.get( tax ).weight, tax] )
+            choices.sort( )
+            if choices[-1][0] / (1 + choices[-2][0]) > 10:
+                dominant = choices[-1][1]
+        # if no one is dominant by weight, take most specific
+        if dominant is None:
+            choices = []
+            for tax in taxes:
+                lin = tol.get( tax ).get_lineages( )[0]
+                choices.append( [len( lin ), tax] )
+            choices.sort( )
+            if choices[-1][0] > choices[-2][0]:
+                dominant = choices[-1][1]
+        # enact
+        for tax in taxes:
+            clade = tol.get( tax )
+            if tax == dominant:
+                clade.status = "AmbiguousConnect"
+            else:
+                clade.status = "AmbiguousBypass"
 
-print("# TOL")
-for name in sorted( map_name_tax ):
-    print("\t".join( [name, map_name_rank.get( name, "n/a" ), map_name_parent.get( name, "root" )] ))
+# ---------------------------------------------------------------
+# clean up
+# ---------------------------------------------------------------
+
+for node in tol.nodes( ):
+    if node.rank == "Kingdom":
+        node.rank = ""
+    elif node.rank == "Superkingdom":
+        node.rank = "Kingdom"
+    if not node.is_root and node.get_parent( ).common == "Viruses":
+        node.rank = "Phylum"
+
+print( "# TOL" )
+for node in tol.nodes( ):
+    if node.name == c_na:
+        continue
+    outline = [
+        node.name,
+        node.common,
+        node.rank,
+        node.get_parent( ).name if node.get_parent( ) is not None else c_na,
+        node.status,
+        ]
+    print( "\t".join( [str( k ) for k in outline] ) )
 
 # ---------------------------------------------------------------
 # load uniref taxonomy
 # ---------------------------------------------------------------
 
-print("Loading uniref taxonomy")
+print( "Loading uniref taxonomy", file=sys.stderr ) 
 
-print("# LCA")
-map_uni_tax = {}
+print( "# LCA" )
+uni_tax = {}
 with try_open( args.uniref_headers ) as fh:
     for line in fh:
         # >UniRef50_Q6GZX4 Putative transcription factor 001R n=13 Tax=Ranavirus RepID=001R_FRG3G
         if line[0] == ">":
             uni = line[1:].split( )[0]
             tax = re.search( "Tax=(.*) RepID", line ).group( 1 )
-            print("\t".join( [uni, tax] ))
+            print( "\t".join( [uni, tax] ) )
