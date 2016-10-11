@@ -1,6 +1,12 @@
 
 # HUMAnN2 History #
 
+## v0.9.5 TBD ##
+
+### New Features ###
+
+* The script humann2_infer_taxonomy has been updated to enable assignment of approximate taxonomic annotations to a greater proportion of unclassified UniRef90 and UniRef50 stratifications. To use the updated script, please also update your HUMAnN2 utility mapping files (humann2_databases --download utility_mapping full $DIR).
+
 ## v0.9.4 10-04-2016 ##
 
 ### New Features ###
