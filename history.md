@@ -6,6 +6,7 @@
 ### New Features ###
 
 * The script humann2_infer_taxonomy has been updated to enable assignment of approximate taxonomic annotations to a greater proportion of unclassified UniRef90 and UniRef50 stratifications. To use the updated script, please also update your HUMAnN2 utility mapping files (humann2_databases --download utility_mapping full $DIR).
+* The script split stratified table has been updated to be compatible with gzip, bzip2, and biom formats.
 
 ## v0.9.4 10-04-2016 ##
 
