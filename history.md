@@ -1,7 +1,7 @@
 
 # HUMAnN2 History #
 
-## v0.9.5 TBD ##
+## v0.9.5 10-24-2016 ##
 
 ### New Features ###
 
