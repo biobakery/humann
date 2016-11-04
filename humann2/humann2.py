@@ -624,6 +624,12 @@ def check_requirements(args):
         if not utilities.find_exe_in_path("biom"):
             sys.exit("CRITICAL ERROR: The biom executable can not be found. "
             "Please check the install or select another output format.")
+
+        try:
+            import biom
+        except ImportError:
+            sys.exit("Could not find the biom software."+
+                " This software is required since the output file is a biom file.")
      
     # If the file is fasta/fastq check for requirements   
     if args.input_format in ["fasta","fastq"]:
