@@ -293,8 +293,7 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
     # run through final filter of alignment by allowed proteins
     small_coverage_count=0
     for alignment_info in utilities.get_filtered_translated_alignments(alignment_file_tsv, alignments,
-                                                  apply_filter=True, log_filter=True,
-                                                  unaligned_reads_store=unaligned_reads_store):
+                                                  apply_filter=True, log_filter=True):
         (protein_name, gene_length, queryid, matches, bug, alignment_length,
          subject_start_index, subject_stop_index) = alignment_info
         # check the protein matches one allowed
