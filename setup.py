@@ -68,7 +68,7 @@ import tempfile
 import re
 import time
 
-VERSION = "0.9.5"
+VERSION = "0.9.6"
 AUTHOR = "HUMAnN2 Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
 MAINTAINER = "Lauren McIver"
