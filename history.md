@@ -1,6 +1,17 @@
 
 # HUMAnN2 History #
 
+## v0.9.6 11-10-2016 ##
+
+### New Features ###
+
+* Viral pangenomes were added to the full chocophlan database download.
+
+### Other Changes ###
+
+* The biom output format now uses the biom API to allow for empty matrices.
+* All sequences that do not pass filtering are considered unaligned (even if they have alignments to the reference).
+
 ## v0.9.5 10-24-2016 ##
 
 ### New Features ###
