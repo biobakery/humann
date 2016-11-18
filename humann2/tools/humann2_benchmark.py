@@ -20,7 +20,7 @@ import time
 
 def process_ps_stdout(stdout):
     """ Process the stdout of the ps command """
-    return [i.split()[0] for i in filter(lambda x: x, stdout.split("\n")[1:])]
+    return [i.split()[0] for i in filter(lambda x: x, stdout.decode("utf-8").split("\n")[1:])]
 
 def get_children(pid):
     """ Get the pids of the children of this pid """
@@ -64,7 +64,7 @@ def main():
         # while the process is running check on the memory use
         # get the pids of the main process and all children (and their children)
         pids=get_pids(pid)
-        stdout=subprocess.check_output(["ps","--pid",",".join(pids),"-o","pid,rss,command"])
+        stdout=subprocess.check_output(["ps","--pid",",".join(pids),"-o","pid,rss,command"]).decode("utf-8")
         print("\n"+stdout+"\n")
         # remove the header from the process output
         status=[i.split() for i in filter(lambda x: x, stdout.split("\n")[1:])]
