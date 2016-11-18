@@ -666,7 +666,8 @@ setuptools.setup(
             'humann2_genefamilies_genus_level = humann2.tools.genefamilies_genus_level:main',
             'humann2_split_stratified_table = humann2.tools.split_stratified_table:main',
             'humann2_associate = humann2.tools.humann2_associate:main',
-            'humann2_barplot = humann2.tools.humann2_barplot:main'
+            'humann2_barplot = humann2.tools.humann2_barplot:main',
+            'humann2_benchmark = humann2.tools.humann2_benchmark:main'
         ]},
     test_suite= 'humann2.tests.humann2_test.unittests_suite_only',
     zip_safe = False
