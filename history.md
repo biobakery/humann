@@ -1,6 +1,16 @@
 
 # HUMAnN2 History #
 
+## v0.9.7 11-22-2016 ##
+
+### New Features ###
+
+* A new script, humann2_benchmark, was added which captures MaxRSS and elapsed time for any command and all subprocesses spawned.
+
+### Other Changes ###
+
+* The gap fill option default was set to on.
+
 ## v0.9.6 11-10-2016 ##
 
 ### New Features ###
