@@ -46,7 +46,7 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         
         # run humann2 test
         command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,
-                   "--output-format", "biom"]
+                   "--output-format", "biom", "--gap-fill", "off"]
         utils.run_humann2(command)
         
         # check the output file of pathway abundance has the expected pathways
