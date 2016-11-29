@@ -65,7 +65,7 @@ from .quantify import modules
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-VERSION="0.9.7"
+VERSION="0.9.8"
 MAX_SIZE_DEMO_INPUT_FILE=10
 
 def parse_arguments(args):
