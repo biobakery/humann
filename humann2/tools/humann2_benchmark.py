@@ -17,6 +17,7 @@ The final output has the system time in minutes and the MaxRSS sum of all proces
 import sys
 import subprocess
 import time
+import argparse
 
 def process_ps_stdout(stdout):
     """ Process the stdout of the ps command """
@@ -53,9 +54,27 @@ def get_pids(pid):
     
     return list(pids)
 
+def parse_known_args():
+    """ Parse the known arguments """
+
+    parser = argparse.ArgumentParser(
+        description= "\n".join(["HUMAnN2 Benchmark\n",
+            "To run: $ humann2_benchmark COMMAND",
+            "Replacing COMMAND with the command to benchmark"]),
+        formatter_class=argparse.RawTextHelpFormatter)
+
+    return parser.parse_known_args()
+
 def main():
     """ Capture time and memory from command run """
-    process = subprocess.Popen(sys.argv[1:],shell=False)
+    known_args, unknown_args = parse_known_args()
+    if not unknown_args:
+        # return an error message if no command is provided
+        sys.exit("Please provide a command to benchmark: $ humann2_benchmark COMMAND")
+    try:
+        process = subprocess.Popen(unknown_args,shell=False)
+    except (EnvironmentError, subprocess.CalledProcessError):
+        sys.exit("Unable to execute command: " + " ".join(unknown_args))
     pid=str(process.pid)
     start=time.time()
     max_memory=0
