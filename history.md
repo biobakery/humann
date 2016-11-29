@@ -1,6 +1,12 @@
 
 # HUMAnN2 History #
 
+## v0.9.8 11-29-2016 ##
+
+### Other Changes ###
+
+* Help messages were added to the humann2_benchmark tool.
+
 ## v0.9.7 11-22-2016 ##
 
 ### New Features ###
