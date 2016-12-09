@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 
-"""
-HUMAnN2 Plotting Tool
-===============================================
-Author: Eric Franzosa (eric.franzosa@gmail.com)
-"""
-
 import os
 import sys
 import csv
@@ -15,29 +9,62 @@ try:
     import numpy as np
     from scipy.stats import spearmanr
     from scipy.stats.mstats import kruskalwallis
-except:
+except ImportError:
     sys.exit( "This script requires the Python scientific stack: numpy and scipy." )
-    
+
+try:
+    from humann2 import config
+    from humann2.tools import util
+except ImportError:
+    sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+              " Please check your install.")
+
+# ---------------------------------------------------------------
+# constants
+# ---------------------------------------------------------------
+   
+c_allowed_impute = 0.2
+
 # ---------------------------------------------------------------
 # argument parsing
 # ---------------------------------------------------------------
 
+description = """
+HUMAnN2 utility for performing metadata association
+===================================================
+"""
+
 def get_args( ):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description=description,
+        formatter_class=argparse.RawTextHelpFormatter,
+        )
     parser.add_argument( "-i", "--input", 
-                         help="HUMAnN2 table with metadata", )
-    parser.add_argument( "-l", "--last-metadatum",
-                         help="Indicate end of metadata rows", )
+                         metavar="<path>",
+                         required=True,
+                         help="HUMAnN2 table with metadata rows at the top", )
     parser.add_argument( "-m", "--focal-metadatum",
+                         metavar="<str>",
+                         required=True,
                          help="Indicate metadatum to test vs. community feature totals", )
+    parser.add_argument( "-l", "--last-metadatum",
+                         metavar="<str>",
+                         required=True,
+                         help="Indicate end of metadata rows", )
     parser.add_argument( "-t", "--focal-type",
+                         required=True,
                          choices=["continuous", "categorical"],
-                         default="categorical",
                          help="Metadatum type", )
     parser.add_argument( "-o", "--output",
-                         default=None,
+                         metavar="<path>",
+                         default="associations.tsv",
                          help="Where to save the output", )
-    return parser.parse_args()
+    parser.add_argument( "-f", "--fdr",
+                         metavar="<float>",
+                         type=float,
+                         default=0.2,
+                         help="FDR threshold (default=0.2)", )
+    return parser.parse_args( )
 
 # ---------------------------------------------------------------
 # utilities
@@ -72,12 +99,12 @@ def adjust_stats( stats ):
 
 def spearman_analysis( mvalues, fnames, fvalues ):
     stats = []
-    for fname, fvalue in zip( fnames, fvalues ):
+    for fname, frow in zip( fnames, fvalues ):
         try:
-            rho, p = spearmanr( mvalues, fvalues )
-            stats.append( ["%.4g" % rho, p] )
+            rho, p = spearmanr( mvalues, frow )
+            stats.append( [fname, "%.4g" % rho, p] )
         except:
-            sys.stderr.write("Unable to compute spearman r with feature: " + fname +"\n")
+            sys.stderr.write( "NOTE: Unable to compute Spearman r with feature: " + fname +"\n" )
     return adjust_stats( stats )
 
 def shatter( cats, values ):
@@ -88,17 +115,34 @@ def shatter( cats, values ):
 
 def kruskalwallis_analysis( mvalues, fnames, fvalues ):
     stats = []
-    for fname, fvalue in zip( fnames, fvalues ):
+    for fname, frow in zip( fnames, fvalues ):
         try:
-            lists = shatter( mvalues, fvalue )
+            lists = shatter( mvalues, frow )
             summary = {k:"%.4g" % ( np.mean( v ) ) for k, v in lists.items( )}
             summary = [":".join( [k, v] ) for k, v in summary.items( )]
             summary = "|".join( summary )
             hstat, p = kruskalwallis( *lists.values( ) )
             stats.append( [fname, summary, p] )
         except:
-            sys.stderr.write("Unable to compute kruskal-wallis with feature: " + fname + "\n")
+            sys.stderr.write("NOTE: Unable to compute Kruskal-Wallis with feature: " + fname + "\n")
     return adjust_stats( stats )
+
+def test_float_list( values ):
+    good = []
+    values2 = []
+    for v in values:
+        try:
+            v = float( v )
+            values2.append( v )
+            good.append( v )           
+        except:
+            values2.append( None )
+    if len( good ) / float( len( values2 ) ) >= 1 - c_allowed_impute:
+        impute = np.mean( good )
+        values = [k if k is not None else impute for k in values2]
+        return values
+    else:
+        return None
 
 # ---------------------------------------------------------------
 # main
@@ -106,9 +150,10 @@ def kruskalwallis_analysis( mvalues, fnames, fvalues ):
 
 def main( ):
     args = get_args( )
+    mname, mvalues = None, []
     fnames, fvalues = [], []
     adding = False
-    with open( args.input , "rt") as fh:
+    with open( args.input , "rt" ) as fh:
         for row in csv.reader( fh, csv.excel_tab ):
             header, values = row[0], row[1:]
             if header == args.focal_metadatum:
@@ -119,20 +164,37 @@ def main( ):
             if adding and "|" not in header:
                 fnames.append( header )
                 fvalues.append( list(map( float, values ) ) )
+    # tests
+    if not adding:
+        sys.exit( "STOPPED: last metadata row <{}> not found.\n".format( args.last_metadatum ) )
+    if mname is None:
+        sys.exit( "STOPPED: focal metadata row <{}> not found.\n".format( args.focal_metadatum ) )
+    if args.focal_type == "categorical" and len( set( mvalues ) ) > np.sqrt( len( mvalues ) ):
+        sys.stderr.write( "WARNING: categorical metadata <{}> has many distinct values.\n".format( args.focal_metadatum ) )
+    # begin analysis
     fh = open( args.output, "w" ) if args.output is not None else sys.stdout
     if args.focal_type == "continuous":
-        mvalues = list( map( float, mvalues ) )
+        mvalues = test_float_list( mvalues )
+        if mvalues is None:
+            sys.exit( "STOPPED: failed to float many entries in focal row <{}>".format( args.focal_metadatum ) )
         stats = spearman_analysis( mvalues, fnames, fvalues )
-        fh.write("# spearman analysis of metadatum: " + mname + "\n")
-        fh.write("# feature\trho\tp-value\tq-value\n")
+        sys.stderr.write( "Performing Spearman analysis vs. metadatum: " + mname + "\n" )
+        fh.write( "# Feature\tRho\tP-value\tQ-value\n" )
     elif args.focal_type == "categorical":
         stats = kruskalwallis_analysis( mvalues, fnames, fvalues )
-        fh.write("# kruskal-wallis analysis of metadatum: " + mname + "\n")
-        fh.write("# feature\tlevel means\tp-value\tq-value\n")
+        sys.stderr.write( "Performing Kruskal-Wallis analysis vs. metadatum: " + mname + "\n" )
+        fh.write( "# Feature\tLevel means (|ed)\tP-value\tQ-value\n" )
+    found_something = False
     for stat in stats:
-        stat[-1] = "%.4g" % stat[-1]
-        stat[-2] = "%.4g" % stat[-2]
-        fh.write("\t".join( list(map( str, stat )))+"\n")
-            
+        if stat[-1] <= args.fdr:
+            found_something = True
+            stat[-1] = "%.4g" % stat[-1]
+            stat[-2] = "%.4g" % stat[-2]
+            fh.write( "\t".join( list( map( str, stat ) ) ) + "\n" )
+    if not found_something:
+        sys.stderr.write( "NO FDR SIGNIFICANT ASSOCIATIONS\n" )
+    fh.close( )
+    sys.stderr.write( "Finished successfully.\n" )
+        
 if __name__ == "__main__":
-    main()
+    main( )

@@ -15,6 +15,7 @@ import math
 try:
     import matplotlib
     matplotlib.use( "Agg" )
+    matplotlib.rcParams["pdf.fonttype"] = 42
     import matplotlib.pyplot as plt
     import matplotlib.patches as patches
     import numpy as np
@@ -126,7 +127,6 @@ def get_args( ):
     parser.add_argument( "-y", "--ylims",
                          metavar = "<limit>",
                          nargs=2,
-                         type=float,
                          default=[None, None],
                          help="Fix limits for y-axis", )
     parser.add_argument( "-e", "--legend-stretch",
@@ -322,6 +322,11 @@ def main( ):
 
     args = get_args()
     
+    # treat "-" as none in ylims
+    a, b = args.ylims
+    args.ylims[0] = None if a in ["-", None] else float( a )
+    args.ylims[1] = None if b in ["-", None] else float( b )
+
     # load table manipulation 
     table = FeatureTable(
         args.input,
