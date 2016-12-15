@@ -659,7 +659,7 @@ setuptools.setup(
             'humann2_rna_dna_norm = humann2.tools.rna_dna_norm:main',
             'humann2_strain_profiler = humann2.tools.strain_profiler:main',
             'humann2_reduce_table = humann2.tools.reduce_table:main',
-            'humann2_merge_abundance_tables = humann2.tools.merge_abundance:main',
+            'humann2_unpack_pathways = humann2.tools.merge_abundance:main',
             'humann2_test = humann2.tests.humann2_test:main',
             'humann2_build_custom_database = humann2.tools.build_custom_database:main',
             'humann2_genefamilies_genus_level = humann2.tools.genefamilies_genus_level:main',
