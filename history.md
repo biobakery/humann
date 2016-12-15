@@ -1,6 +1,16 @@
 
 # HUMAnN2 History #
 
+## v0.9.9 12-15-2016 ##
+
+### Other Changes ###
+
+* HUMAnN2 submitted as of this release.
+* Renamed executable humann2_merge_abundance_tables to humann2_unpack_pathways.
+* Removed executable blastx_coverage because only module is currently used.
+* humann2_associate is now more robust to user-provided/misspecified/missing metadata.
+* Descriptions of HUMAnN2 utility scripts and "tutorials" in the manual have been standardized as "Guides to HUMAnN2 utility scripts" and "Other HUMAnN2 guides." These include several new guides for previously available scripts, e.g. humann2_barplot.
+
 ## v0.9.8 11-29-2016 ##
 
 ### Other Changes ###
