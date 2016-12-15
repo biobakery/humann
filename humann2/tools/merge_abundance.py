@@ -246,7 +246,7 @@ def parse_arguments(args):
     """
     
     parser = argparse.ArgumentParser(
-        description= "Merge gene and pathway abundance tables\n",
+        description= "Unpack pathway abundances to show genes included\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         "--input-genes",
