@@ -1318,7 +1318,7 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
                 
             # filter alignments based on query coverage
             if query_length > 1:
-                query_coverage = ( ( query_stop_index - query_start_index + 1) / float(query_length) )* 100.0
+                query_coverage = abs( ( query_stop_index - query_start_index + 1) / float(query_length) )* 100.0
             else:
                 # if the query length is not provided, default coverage to greater than threshold
                 query_coverage = config.translated_query_coverage_threshold + 1.0
