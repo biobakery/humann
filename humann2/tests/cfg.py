@@ -189,7 +189,7 @@ uniref_example_demo_folder=os.path.join(example_demo_data_folder, "uniref_DEMO")
 # Get the locations of the files for the biom tests
 expected_demo_output_files_biom=["demo_genefamilies.biom","demo_pathabundance.biom","demo_pathcoverage.biom"]
 demo_gene_families_biom=os.path.join(data_folder,"demo_genefamilies.tsv")
-expected_demo_output_files_biom_pathways=set(["PWY-6305","PWY490-3"])
+expected_demo_output_files_biom_pathways=set(["PWY-6305","PWY490-3","PWY-5173","PWY-7446","HEMESYN2-PWY","PWY-4203","PWY-1269"])
 regroup_input_biom=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_input.biom")
 rename_input_biom=os.path.join(data_folder, rename_folder, "rename_table-input.biom")
 renorm_input_biom=os.path.join(data_folder, renorm_folder, "renorm_table-input.biom")
