@@ -10,6 +10,7 @@ from humann2.search import translated
 from humann2.search import blastx_coverage
 from humann2 import store
 from humann2 import config
+from humann2 import utilities
 
 class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
     """
@@ -78,6 +79,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         Test with empty reads structure
         Test that function does not require gene lengths in reference id
         Test with the coverage filter
+        Test with query length annotations
+        Test that an alignment with query start larger than query end is not filtered
         """
         
         # create a set of alignments
@@ -100,7 +103,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
                 
                 referenceid=data[config.blast_reference_index]
                 gene, length, bug = alignments.process_reference_annotation(referenceid)
-                queryid=data[config.blast_query_index]
+                queryid, query_length=utilities.get_length_annotation(data[config.blast_query_index])
                 identity=float(data[config.blast_identity_index])
                 alignment_length=float(data[config.blast_aligned_length_index])
             
