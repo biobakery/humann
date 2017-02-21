@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v0.9.10 02-21-2017 ##
+
+* The query threshold filtering computation was updated to allow for query starts that are larger than query end indexes.
+
 ## v0.9.9 12-15-2016 ##
 
 ### Other Changes ###
