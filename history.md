@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v0.10.0 02-22-2017 ##
+
+* The query threshold filtering computation was updated so strand directionality does not affect results (ie reverse was two percent less than forward equivalent).
+
 ## v0.9.10 02-21-2017 ##
 
 * The query threshold filtering computation was updated to allow for query starts that are larger than query end indexes.
