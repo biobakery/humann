@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v0.11.0 TBD ##
+
+* Add a check and remove of spaces if present in fastq/fasta input files to address new illumina casava v1.8 format.
+
 ## v0.10.0 02-22-2017 ##
 
 * The query threshold filtering computation was updated so strand directionality does not affect results (ie reverse was two percent less than forward equivalent).
