@@ -586,6 +586,21 @@ def check_requirements(args):
             sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
                 " Please check the format of the input file.")
             
+    # check if the input file has sequence identifiers of the new illumina casava v1.8+ format
+    # these have spaces causing the paired end reads to have the same identifier after
+    # delimiting by space (causing bowtie2/diamond to label the reads with the same identifier)
+    if args.input_format in ["fasta","fastq"]:
+        if utilities.space_in_identifier(args.input):
+            message="Removing spaces from identifiers in input file"
+            print(message+" ...\n")
+            logger.info(message)
+            new_file = utilities.remove_spaces_from_file(args.input)
+            
+            if new_file:
+                args.input=new_file
+            else:
+                sys.exit("CRITICAL ERROR: Unable to remove spaces from identifiers in input file.")
+            
     # If the input format is in binary then convert to sam (tab-delimited text)
     if args.input_format == "bam":
         

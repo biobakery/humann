@@ -19,6 +19,8 @@ small_fasta_file=os.path.join(data_folder,"file.fasta")
 small_fasta_file_total_sequences=3
 small_fastq_file=os.path.join(data_folder,"file.fastq")
 small_fastq_file_total_sequences=2
+small_fastq_spaces_file=os.path.join(data_folder, "file_space_identifier.fastq")
+small_fastq_no_spaces_file=os.path.join(data_folder, "file_no_space_identifier.fastq")
 
 convert_fastq_file=os.path.join(data_folder,"convert_file.fastq")
 convert_fastq_at_character_file=os.path.join(data_folder,"convert_file_at_character.fastq")

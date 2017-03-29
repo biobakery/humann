@@ -427,6 +427,38 @@ class TestHumann2UtilitiesFunctions(unittest.TestCase):
         result=utilities.get_length_annotation(annotated_id)
         
         self.assertEqual(result[0],expected_result[0])
-        self.assertEqual(result[1],expected_result[1])         
+        self.assertEqual(result[1],expected_result[1])    
+        
+    def test_space_in_identifier(self):
+        """
+        Test the space in identifier function with a file with spaces
+        """
+        
+        self.assertTrue(utilities.space_in_identifier(cfg.small_fastq_spaces_file)) 
+        
+    def test_space_in_identifier_without_spaces(self):
+        """
+        Test the space in identifier function with a file without spaces
+        """
+        
+        self.assertFalse(utilities.space_in_identifier(cfg.small_fastq_no_spaces_file))  
+        
+    def test_remove_spaces_from_file(self):  
+        """
+        Test the remove spaces from file function
+        """
+        
+        new_file=utilities.remove_spaces_from_file(cfg.small_fastq_spaces_file)
+        
+        with open(cfg.small_fastq_no_spaces_file) as file_handle:
+            expected_file_lines=file_handle.readlines()
+        
+        with open(new_file) as file_handle:
+            actual_file_lines=file_handle.readlines()
+        
+        # remove the temp file
+        utils.remove_temp_file(new_file)
+        
+        self.assertEqual(expected_file_lines, actual_file_lines)
     
         

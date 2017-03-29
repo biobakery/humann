@@ -175,6 +175,41 @@ def determine_file_format(file):
                 
     return format
 
+def space_in_identifier(file):
+    """ Check if there are spaces in the fasta/fastq identifier by
+    checking the first line of the file """
+    
+    space_found = False
+    try:
+        file_handle = open(file, "rt")
+        line = file_handle.readline()
+        if " " in line:
+            space_found = True
+        file_handle.close()
+    except (EnvironmentError, UnicodeDecodeError):
+        logger.info("Unable to check file for identifier format")
+    
+    return space_found
+
+def remove_spaces_from_file(file):
+    """ Remove any spaces in the file, creating a new file of the output """
+    
+    # create an unnamed temp file
+    new_file=unnamed_temp_file()
+    
+    try:
+        file_handle_read = open(file, "rt")
+        file_handle_write = open(new_file, "wt")
+        for line in file_handle_read:
+            file_handle_write.write(line.replace(" ",""))
+        file_handle_read.close()
+        file_handle_write.close()
+    except (EnvironmentError, UnicodeDecodeError):
+        logger.info("Unable to write new file after removing spaces in identifier")
+        new_file=""
+        
+    return new_file
+
 def bam_to_sam(bam_file):
     """
     Convert from a bam to sam file
