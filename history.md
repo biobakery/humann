@@ -1,7 +1,7 @@
 
 # HUMAnN2 History #
 
-## v0.11.0 TBD ##
+## v0.11.0 03-29-2017 ##
 
 * Add a check and remove of spaces if present in fastq/fasta input files to address new illumina casava v1.8 format.
 
