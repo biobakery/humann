@@ -179,7 +179,13 @@ class Table ( ):
         # get the rows of output to write
         rows = self.write_rows(unfloat)
         
-        if path.endswith(BIOM_FILE_EXTENSION):
+        # check if the output file specified is a biom file based on the extension
+        try:
+            biom_file = path.endswith(BIOM_FILE_EXTENSION)
+        except (AttributeError, ValueError):
+            biom_file = False
+        
+        if biom_file:
             write_biom(path, rows)
         else:
             write_tsv(path, rows)
