@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v0.11.1 04-13-2017 ##
+
+* Fix the write table function to allow the tools with optional output arguments (renorm, rename, regroup, infer_taxonomy) to write to stdout if an output path is not provided.
+
 ## v0.11.0 03-29-2017 ##
 
 * Add a check and remove of spaces if present in fastq/fasta input files to address new illumina casava v1.8 format.
