@@ -106,9 +106,9 @@ def get_args( ):
         )
     parser.add_argument( 
         "-e", "--precision",
-        default=3,
+        default=None,
         type=int,
-        help="Decimal places to round to after applying function; default=3",
+        help="Decimal places to round to after applying function; default=Do not round",
         )
     parser.add_argument( 
         "-u", "--ungrouped",
@@ -174,8 +174,11 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
         for i in oldrow_index:
             for j in range( len( table.colheads ) ):
                 newrow[j].append( float( table.data[i][j] ) )
-        # collapse groups
-        groupdata.append( [round( function( block ), precision ) for block in newrow] )
+        # collapse groups (with optional rounding)
+        if precision is not None:
+            groupdata.append( [round( function( block ), precision ) for block in newrow] )
+        else:
+            groupdata.append( [function( block ) for block in newrow] )
     table.rowheads = groupnames
     table.data = groupdata
 
