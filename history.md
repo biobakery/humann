@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## Next ##
+
+* Fixed issue with insufficient default precision when applying regroup_table to relative abundance (sum=1) data.
+
 ## v0.11.1 04-13-2017 ##
 
 * Fix the write table function to allow the tools with optional output arguments (renorm, rename, regroup, infer_taxonomy) to write to stdout if an output path is not provided.
