@@ -71,13 +71,13 @@ c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 # utilities
 # ---------------------------------------------------------------
 
-def pretty_groups( ):
+def pretty_groups( cols=3 ):
+    padding = 2 + max( [len( k ) for k in c_default_groups] )
+    counter = 0
     desc =  "Built-in grouping options. Choose from:\n"
     desc += "---------------------------------------\n"
-    cols = 3
-    counter = 0
     for k in sorted( c_default_groups ):
-        desc += "{0: <22}".format( k )
+        desc += k.ljust( padding )
         counter += 1
         if counter == cols:
             desc += "\n"
