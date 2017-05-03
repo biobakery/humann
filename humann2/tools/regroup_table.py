@@ -71,6 +71,19 @@ c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 # utilities
 # ---------------------------------------------------------------
 
+def pretty_groups( ):
+    desc =  "Built-in grouping options. Choose from:\n"
+    desc += "---------------------------------------\n"
+    cols = 3
+    counter = 0
+    for k in sorted( c_default_groups ):
+        desc += "{0: <22}".format( k )
+        counter += 1
+        if counter == cols:
+            desc += "\n"
+            counter = 0
+    return desc
+
 def get_args( ):
     """ Get args from Argparse """
     parser = argparse.ArgumentParser(
@@ -80,17 +93,20 @@ def get_args( ):
     parser.add_argument( 
         "-i", "--input", 
         default=None,
+        metavar="<path>",
         help="Original output table (tsv or biom format); default=[TSV/STDIN]",
         )  
     parser.add_argument( 
         "-g", "--groups", 
-        choices=c_default_groups.keys(),
+        choices=c_default_groups.keys( ),
+        metavar="<choice>",
         default=None,
-        help="Built-in grouping options",
+        help=pretty_groups( ),
         )
     parser.add_argument( 
         "-c", "--custom", 
         default=None,
+        metavar="<path>",
         help="Custom groups file (.tsv or .tsv.gz format)",
         )
     parser.add_argument( 
@@ -108,6 +124,7 @@ def get_args( ):
         "-e", "--precision",
         default=None,
         type=int,
+        metavar="<int>",
         help="Decimal places to round to after applying function; default=Do not round",
         )
     parser.add_argument( 
@@ -125,6 +142,7 @@ def get_args( ):
     parser.add_argument( 
         "-o", "--output", 
         default=None,
+        metavar="<path>",
         help="Path for modified output table; default=STDOUT",
         )
     args = parser.parse_args()
