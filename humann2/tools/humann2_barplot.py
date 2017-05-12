@@ -481,8 +481,8 @@ def main( ):
     main_ax.tick_params( axis="y", which="major", direction="out", left="on", right="off" )
     main_ax.set_xticks( [] )
 
-    # pseudolog note
-    if args.scaling == "pseudolog":
+    # pseudoscaling note
+    if args.scaling in ["pseudolog", "pseudosqrt"]:
         xmin, xmax = main_ax.get_xlim( )
         x = xmin + 0.01 * abs( xmax - xmin )
         ymin, ymax = main_ax.get_ylim( )
