@@ -374,7 +374,7 @@ def return_exe_path(exe):
     paths = os.environ["PATH"].split(os.pathsep)
     for path in paths:
         fullexe = os.path.join(path,exe)
-        if os.path.exists(fullexe):
+        if os.path.exists(fullexe) and os.path.isfile(fullexe):
             if os.access(fullexe,os.X_OK):
                 return path
     return ""
