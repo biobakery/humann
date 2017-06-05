@@ -82,17 +82,20 @@ def get_args ():
     parser.add_argument( 
         "-i", "--input", 
         default=None,
+        metavar="<path>",
         help="Original output table (tsv or biom format); default=[TSV/STDIN]",
         )
     parser.add_argument( 
         "-n", "--names", 
-        choices=c_default_names.keys(),
+        choices=c_default_names.keys( ),
         default=None,
-        help="Table features that can be renamed with included data files",
+        metavar="<choice>",
+        help=util.pretty_grid( c_default_names, desc="Select an available renaming option:" ),
         )
     parser.add_argument( 
         "-c", "--custom", 
         default=None,
+        metavar="<path>",
         help="Custom mapping of feature IDs to full names (.tsv or .tsv.gz)",
         )
     parser.add_argument( 
@@ -103,6 +106,7 @@ def get_args ():
     parser.add_argument( 
         "-o", "--output", 
         default=None,
+        metavar="<path>",
         help="Path for modified output table; default=[STDOUT]",
         )
     args = parser.parse_args()

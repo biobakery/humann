@@ -71,19 +71,6 @@ c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 # utilities
 # ---------------------------------------------------------------
 
-def pretty_groups( cols=3 ):
-    padding = 2 + max( [len( k ) for k in c_default_groups] )
-    counter = 0
-    desc =  "Built-in grouping options. Choose from:\n"
-    desc += "---------------------------------------\n"
-    for k in sorted( c_default_groups ):
-        desc += k.ljust( padding )
-        counter += 1
-        if counter == cols:
-            desc += "\n"
-            counter = 0
-    return desc
-
 def get_args( ):
     """ Get args from Argparse """
     parser = argparse.ArgumentParser(
@@ -101,7 +88,7 @@ def get_args( ):
         choices=c_default_groups.keys( ),
         metavar="<choice>",
         default=None,
-        help=pretty_groups( ),
+        help=util.pretty_grid( c_default_groups, desc="Select an available regrouping option:" ),
         )
     parser.add_argument( 
         "-c", "--custom", 

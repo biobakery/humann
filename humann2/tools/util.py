@@ -373,3 +373,16 @@ def fsort( features ):
     default = 1 + max( c_topsort.values() )
     features = sorted( features, key=lambda f: c_topsort.get( fsplit( f )[0], default ) )
     return features
+
+def pretty_grid( items, cols=3, desc="Please select one of these options:" ):
+    padding = 2 + max( [len( k ) for k in items] )
+    counter = 0
+    desc += "\n"
+    desc += "-" * (len( desc ) - 1) + "\n"
+    for k in sorted( items ):
+        desc += k.ljust( padding )
+        counter += 1
+        if counter == cols:
+            desc += "\n"
+            counter = 0
+    return desc
