@@ -12,8 +12,8 @@ pipelines:
             - pip install biom-format
             - export PATH=$PATH:$HOME/.local/bin/
             - python setup.py install --user
-            - humann2_test --run-all-tests
-    test-py3:
+            - humann2_test
+    test-py2-tools:
       - step:
           image: quay.io/biobakery/metaphlan2
           script:
@@ -21,6 +21,46 @@ pipelines:
             - pip install h5py
             - pip install biom-format
             - export PATH=$PATH:$HOME/.local/bin/
-            - python3 setup.py install --user
-            - humann2_test --run-all-tests
+            - python setup.py install --user
+            - humann2_test --bypass-unit-tests --run-functional-tests-tools
+    test-py2-end-to-end:
+      - step:
+          image: quay.io/biobakery/metaphlan2
+          script:
+            - pip install numpy
+            - pip install h5py
+            - pip install biom-format
+            - export PATH=$PATH:$HOME/.local/bin/
+            - python setup.py install --user
+            - humann2_test --bypass-unit-tests --run-functional-tests-end-to-end
+    test-py3:
+      - step:
+          image: quay.io/biobakery/metaphlan2
+          script:
+            - brew install python3
+            - pip3 install numpy
+            - pip3 install h5py
+            - pip3 install biom-format
+            - python3 setup.py install
+            - humann2_test
+    test-py3-tools:
+      - step:
+          image: quay.io/biobakery/metaphlan2
+          script:
+            - brew install python3
+            - pip3 install numpy
+            - pip3 install h5py
+            - pip3 install biom-format
+            - python3 setup.py install
+            - humann2_test --bypass-unit-tests --run-functional-tests-tools
+    test-py3-end-to-end:
+      - step:
+          image: quay.io/biobakery/metaphlan2
+          script:
+            - brew install python3
+            - pip3 install numpy
+            - pip3 install h5py
+            - pip3 install biom-format
+            - python3 setup.py install
+            - humann2_test --bypass-unit-tests --run-functional-tests-end-to-end
 
