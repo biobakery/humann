@@ -1,0 +1,24 @@
+# This configuration creates two custom test pipelines.
+# Pipelines run the full humann2 test suite with python2 and python3.
+
+pipelines:
+  custom:
+    test-py2:
+      - step:
+          image: quay.io/biobakery/metaphlan2
+          script:
+            - pip install numpy
+            - pip install h5py
+            - pip install biom-format
+            - python setup.py install
+            - humann2_test --run-all-tests
+    test-py3:
+      - step:
+          image: quay.io/biobakery/metaphlan2
+          script:
+            - pip install numpy
+            - pip install h5py
+            - pip install biom-format
+            - python3 setup.py install
+            - humann2_test --run-all-tests
+
