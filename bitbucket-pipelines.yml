@@ -10,7 +10,8 @@ pipelines:
             - pip install numpy
             - pip install h5py
             - pip install biom-format
-            - python setup.py install
+            - export PATH=$PATH:$HOME/.local/bin/
+            - python setup.py install --user
             - humann2_test --run-all-tests
     test-py3:
       - step:
@@ -19,6 +20,7 @@ pipelines:
             - pip install numpy
             - pip install h5py
             - pip install biom-format
-            - python3 setup.py install
+            - export PATH=$PATH:$HOME/.local/bin/
+            - python3 setup.py install --user
             - humann2_test --run-all-tests
 
