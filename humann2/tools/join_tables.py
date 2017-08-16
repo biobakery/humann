@@ -95,7 +95,7 @@ def join_gene_tables(gene_tables,output,verbose=None):
         start_column_id="# header "
     sample_header=[start_column_id]+samples
     total_gene_tables=len(samples)
-    sorted_gene_list=sorted(list(gene_table_data))
+    sorted_gene_list=util.fsort(list(gene_table_data))
     try:
         file_handle=open(output,"w")
         file_handle.write(GENE_TABLE_DELIMITER.join(sample_header)+"\n")
