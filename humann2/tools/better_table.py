@@ -42,7 +42,6 @@ class Table:
         self.metadata = {}
         self.source = ""
         self.n = None
-        self.zeroes = None
         self.verbose = True
 
         if type( source ) is dict:
@@ -52,12 +51,12 @@ class Table:
             self.verbose = False
         else:
             if source is None:
-                self.source = "<STDIN>"
+                self.source = "STDIN"
                 handle = sys.stdin
             else:
                 self.source = source
                 handle = util.try_zip_open( source )
-            print( "Reading table data from {}".format( self.source ), file=sys.stderr )
+            print( "Reading table data from <{}>".format( self.source ), file=sys.stderr )
             IN_METADATA = False if metadata is None else True
             for row in csv.reader( handle, csv.excel_tab ):
                 if self.headers == []:
@@ -72,9 +71,11 @@ class Table:
         
         self.check_lengths( )
         self.n = len( self.headers )
-        self.zeroes = np.zeros( self.n )
         if self.source is not None:
             self.report( )
+
+    def zeros( self ):
+        return np.zeros( self.n )
 
     def report( self ):
         if self.verbose:
@@ -113,13 +114,13 @@ class Table:
 
     def write( self, path=None, unfloat=False ):
         if path is None:
-            path = "<STDOUT>"
+            path = "STDOUT"
             fh = sys.stdout
         else:
             fh = util.try_zip_open( path, "w" )
         writer = csv.writer( fh, csv.excel_tab )
         for row in self.iter_rows( unfloat=unfloat ):
             writer.writerow( row )
-        print( "Wrote table data to {}".format( path ), file=sys.stderr )
+        print( "Wrote table data to <{}>".format( path ), file=sys.stderr )
         self.verbose = True
         self.report( )

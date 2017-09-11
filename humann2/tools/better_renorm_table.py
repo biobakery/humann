@@ -6,7 +6,7 @@ import sys
 import re
 
 #from humann2.tools import util
-#from humann2.tools.arraytable import ArrayTable
+#from humann2.tools.better_table import Table
 import util
 from better_table import Table
 
@@ -42,37 +42,37 @@ def get_args( ):
         "-i", "--input",
         metavar="<path>",
         default=None,
-        help="Original output table (tsv or biom format); default=[TSV/STDIN]",
+        help="Original output table (tsv or biom format)\nDefault=[STDIN]",
         )
     parser.add_argument( 
         "-u", "--units", 
         choices=["cpm", "relab"],
         default="cpm",
         metavar="<choice>",
-        help="Normalization scheme: copies per million [cpm], relative abundance [relab]; default=[cpm]",
+        help="Normalization scheme: copies per million [cpm], relative abundance [relab]\nDefault=[cpm]",
         )
     parser.add_argument( 
         "--mode", 
         choices=["community", "levelwise"],
         default="community",
         metavar="<choice>",
-        help="Normalize all levels by [community] total or [levelwise] totals; default=[community]",
+        help="Normalize all levels by [community] total or [levelwise] totals\nDefault=[community]",
         )
     parser.add_argument( 
         "--exclude-special",
+        help="Exclude the special features UNMAPPED, UNINTEGRATED, and UNGROUPED\nDefault=[include these features]",
         action="store_true",
-        help="Exclude the special features UNMAPPED, UNINTEGRATED, and UNGROUPED; default=[include these features]",
         )
     parser.add_argument( 
         "--update-sample-names", 
         action="store_true",
-        help="Update '-RPK' in sample names to appropriate suffix; default=[do not change names]",
+        help="Update '-RPK' in sample names to appropriate suffix\nDefault=[do not change names]",
         )
     parser.add_argument( 
         "-o", "--output", 
         default=None,
         metavar="<path>",
-        help="Path for modified output table; default=[STDOUT]",
+        help="Path for modified output table\nDefault=[STDOUT]",
         )
     args = parser.parse_args( )
     return args
@@ -82,19 +82,20 @@ def normalize( table, cpm=True, levelwise=False, exclude_special=False ):
     # compute totals by level
     totals_by_level = {}
     for f in util.fsort( table.data ):
-        if exclude_special and f in c_special:
+        fbase, name, strat = util.fsplit( f )        
+        if exclude_special and fbase in c_special:
             print( "Excluding special feature:", f, file=sys.stderr )
             continue
         level = len( f.split( util.c_strat_delim ) )
         if level not in totals_by_level:
-            totals_by_level[level] = table.zeroes[:]
+            totals_by_level[level] = table.zeros( )
         totals_by_level[level] += table.data[f]
         new_data[f] = table.data[f]
     # check for zero totals
-    levels = [1] if not levelwise else sorted( levels )
+    levels = [1] if not levelwise else sorted( totals_by_level )
     for l in levels:
         totals = totals_by_level[l]
-        if min( totals_by_level[l] ) == 0:
+        if min( totals ) == 0:
             for i, v in enumerate( totals ):
                 if v == 0:
                      # avoid divide by zero
