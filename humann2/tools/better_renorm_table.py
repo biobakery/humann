@@ -5,10 +5,14 @@ import argparse
 import sys
 import re
 
-#from humann2.tools import util
-#from humann2.tools.better_table import Table
-import util
-from better_table import Table
+try:
+    # from humann2 import config
+    # from humann2.tools import util
+    import util
+    from better_table import Table
+except ImportError:
+    sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
+              "Please check your install." )
 
 description = """
 HUMAnN2 utility for renormalizing TSV files

@@ -339,7 +339,7 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
     Inner values are not important (set to 1)
     """
     polymap = {}
-    print( "Loading mapping file from:", path, file=sys.stderr )
+    print( "Loading mapping file from <{}>".format( path ), file=sys.stderr )
     size_warn( path )
     for line in gzip_bzip2_biom_open_readlines( path ):
         row = line.split("\t")
@@ -379,7 +379,7 @@ def pretty_grid( items, cols=3, desc="Please select one of these options:" ):
     counter = 0
     desc += "\n"
     desc += "-" * (len( desc ) - 1) + "\n"
-    for k in sorted( items ):
+    for k in items:
         desc += k.ljust( padding )
         counter += 1
         if counter == cols:
