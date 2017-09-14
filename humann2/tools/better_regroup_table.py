@@ -205,11 +205,11 @@ def regroup( table, map_feature_groups, function ):
     fdict["P2"] = 100 * fdict["N2"] / float( fdict["NT"] )
     fdict["MS"] = 100 * np.mean( group_mass / (c_eps + total_mass) )
     string = ("Regrouping report:\n"
-              "  Mean mapped read mass regrouped:  {MS:.1f}%\n"
+              "  Original mass regrouped (mean over samples, excludes unclassified): {MS:.1f}%\n"
               "  # of original community features: {NT:,}\n"  
-              "  # of features grouped one+ times: {N1:,} ({P1:.1f}%)\n"
-              "  # of features grouped two+ times: {N2:,} ({P2:.1f}%)\n"
-              "  # of final community groups:      {GT:,}")
+              "  # of features grouped 1+ times: {N1:,} ({P1:.1f}%)\n"
+              "  # of features grouped 2+ times: {N2:,} ({P2:.1f}%)\n"
+              "  # of final community groups: {GT:,}")
     print( string.format( **fdict ), file=sys.stderr )
     
     # new table
