@@ -123,7 +123,7 @@ def rename ( table, polymap ):
             new_name = util.c_multiname_delim.join( polymap[old_name].keys() )
             seen[old_name] = True
         else:
-            new_name = util.c_str_unknown
+            new_name = util.c_no_name
         # don't touch special features like UNMAPPED
         if old_name not in util.c_topsort:
             items[0] = util.c_name_delim.join( [old_name, new_name] )
