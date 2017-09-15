@@ -116,7 +116,7 @@ c_strat_delim     = "|"
 c_taxon_delim     = "."
 c_name_delim      = ": "
 c_multiname_delim = ";"
-c_str_unknown     = "NO_NAME"
+c_no_name         = "NO_NAME"
 c_ungrouped       = "UNGROUPED"
 c_unmapped        = "UNMAPPED"
 c_unintegrated    = "UNINTEGRATED"
@@ -261,6 +261,27 @@ class Ticker( ):
 # helper functions
 # ---------------------------------------------------------------
 
+def attach_common_arguments( parser ):
+    parser.add_argument(
+        "-i", "--input",
+        default=None,
+        metavar="<path>",
+        help="Original output table (tsv or biom format)\nDefault=[STDIN]",
+        )
+    parser.add_argument(
+        "-o", "--output",
+        default=None,
+        metavar="<path>",
+        help="Path for modified output table\nDefault=[STDOUT]",
+        )
+    parser.add_argument(
+        "-L", "--last-metadata",
+        default=None,
+        metavar="<row name>",
+        help="The last row containing metadata, if any\nDefault=[no metadata]",
+        )
+    return None
+
 def size_warn( path ):
     m = 1 if ".gz" not in path else c_zip_multiplier
     if m * os.path.getsize( path ) > c_many_bytes:
@@ -327,7 +348,7 @@ def gzip_bzip2_biom_open_readlines( path ):
                 else:
                     yield line.rstrip()
 
-def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
+def load_polymap( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """
     Load a file like:
     A 1 2
@@ -348,7 +369,7 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
             for i, value in enumerate( row ):
                 if i != start and (skip is None or i not in skip):
                     if allowed_values is None or value in allowed_values:
-                        polymap.setdefault( key, {} )[value] = 1
+                        polymap.setdefault( key, set( ) ).add( value )
     return polymap
 
 def fsplit( feature ):

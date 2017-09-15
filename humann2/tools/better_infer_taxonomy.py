@@ -118,16 +118,7 @@ def get_args( ):
         description=description,
         formatter_class=argparse.RawTextHelpFormatter
         )
-    parser.add_argument( "-i", "--input", 
-                         required=True,
-                         metavar="<path>", 
-                         help="HUMAnN2 genefamilies.tsv file",
-                         )
-    parser.add_argument( "-o", "--output", 
-                         default=None,
-                         metavar="<path>",
-                         help="Destination for modified table\n[Default=STDOUT]",
-                         )
+    util.attach_common_arguments( parser )   
     parser.add_argument( "-l", "--level",
                          choices=c_levels,
                          metavar="<choice>",
@@ -158,7 +149,7 @@ def get_args( ):
                          metavar="<path>",
                          help="Manually specify a development database",
                          )
-    args = parser.parse_args()
+    args = parser.parse_args( )
     return args
 
 # ---------------------------------------------------------------
@@ -227,7 +218,7 @@ def tax_connect( feature, taxmap ):
 
 def main( ):
     args = get_args( )
-    table = Table( args.input )
+    table = Table( args.input, last_metadata=args.last_metadata )
     # build the taxmap
     print( "Building taxonomic map for input table", file=sys.stderr )
     p_datafile = args.dev if args.dev is not None else databases[args.resolution]

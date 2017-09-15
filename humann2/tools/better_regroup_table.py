@@ -96,17 +96,11 @@ Replacing, $DIR with the directory to download and install the databases."""
 # ---------------------------------------------------------------
 
 def get_args( ):
-    """ Get args from Argparse """
     parser = argparse.ArgumentParser(
         description=description, 
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument( 
-        "-i", "--input", 
-        default=None,
-        metavar="<path>",
-        help="Original output table (tsv or biom format)\nDefault=[STDIN]",
-        )  
+    util.attach_common_arguments( parser )
     parser.add_argument( 
         "-g", "--groups", 
         choices=mapping_options.keys( ),
@@ -133,21 +127,6 @@ def get_args( ):
         metavar="<choice>",
         help=util.pretty_grid( c_functions.keys( ), cols=4, 
                                desc="Select a regrouping function (default=sum):" ),
-        )
-    """
-    parser.add_argument( 
-        "-e", "--precision",
-        default=None,
-        type=int,
-        metavar="<int>",
-        help="Decimal places to round to after applying function\nDefault=[no rounding]",
-        )
-        """
-    parser.add_argument( 
-        "-o", "--output", 
-        default=None,
-        metavar="<path>",
-        help="Path for modified output table\nDefault=[STDOUT]",
         )
     args = parser.parse_args()
     return args
@@ -230,7 +209,7 @@ def main( ):
     else:
         sys.exit( "Must specify either 1) built-in groups option [--groups] or 2) custom groups file [--custom]" )
     # load the table; find unique feature ids (no names)
-    table = Table( args.input )
+    table = Table( args.input, last_metadata=args.last_metadata )
     features = {util.fsplit( f )[0] for f in util.fsort( table.data )}
     # load the grouping file
     map_group_features = util.load_polymap( 

@@ -42,12 +42,7 @@ def get_args( ):
         description=description, 
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument( 
-        "-i", "--input",
-        metavar="<path>",
-        default=None,
-        help="Original output table (tsv or biom format)\nDefault=[STDIN]",
-        )
+    util.attach_common_arguments( parser )
     parser.add_argument( 
         "-u", "--units", 
         choices=["cpm", "relab"],
@@ -56,27 +51,21 @@ def get_args( ):
         help="Normalization scheme: copies per million [cpm], relative abundance [relab]\nDefault=[cpm]",
         )
     parser.add_argument( 
-        "--mode", 
+        "-m", "--mode", 
         choices=["community", "levelwise"],
         default="community",
         metavar="<choice>",
         help="Normalize all levels by [community] total or [levelwise] totals\nDefault=[community]",
         )
     parser.add_argument( 
-        "--exclude-special",
+        "-x", "--exclude-special",
         help="Exclude the special features UNMAPPED, UNINTEGRATED, and UNGROUPED\nDefault=[include these features]",
         action="store_true",
         )
     parser.add_argument( 
-        "--update-sample-names", 
+        "-n", "--update-sample-names", 
         action="store_true",
         help="Update '-RPK' in sample names to appropriate suffix\nDefault=[do not change names]",
-        )
-    parser.add_argument( 
-        "-o", "--output", 
-        default=None,
-        metavar="<path>",
-        help="Path for modified output table\nDefault=[STDOUT]",
         )
     args = parser.parse_args( )
     return args
@@ -120,7 +109,7 @@ def normalize( table, cpm=True, levelwise=False, exclude_special=False ):
 
 def main( ):
     args = get_args()
-    table = Table( args.input )
+    table = Table( args.input, last_metadata=args.last_metadata )
     table = normalize(
         table, 
         cpm = args.units=="cpm",

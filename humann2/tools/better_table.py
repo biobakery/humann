@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 """
+Updated HUMAnN2 table object
 ===============================================
 Author: Eric Franzosa (eric.franzosa@gmail.com)
 """
@@ -9,12 +10,12 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import os
 import sys
 import csv
+from collections import OrderedDict
 
 # ---------------------------------------------------------------
 # import checks
 # ---------------------------------------------------------------
 
-# humann2 checks
 try:
     from humann2 import config
     from humann2.tools import util
@@ -22,26 +23,31 @@ except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.")
 
-# numpy checks
 try:
     import numpy as np
 except:
     sys.exit( "This module requires the Python scientific stack: numpy, scipy, and matplotlib." )
 
 # ---------------------------------------------------------------
-# main class
+# the table class
 # ---------------------------------------------------------------
 
 class Table:
 
-    def __init__( self, source=None, headers=None, metadata=None ):
+    def __init__( self, source=None, headers=None, metadata=None, 
+                  last_metadata=None ):
 
-        self.data = {}
+        # the col1, row1 entry
         self.anchor = "# SAMPLES"
+        # list of the sample names (excludes anchor)
         self.headers = []
-        self.metadata = {}
-        self.source = ""
+        # metadata rows (dict: header->list)
+        self.metadata = OrderedDict( )
+        # data rows (dict: feature->array)
+        self.data = {}
+        # properties of the table
         self.n = None
+        self.source = ""
         self.verbose = True
 
         if type( source ) is dict:
@@ -57,24 +63,30 @@ class Table:
                 self.source = source
                 handle = util.try_zip_open( source )
             print( "Reading table data from <{}>".format( self.source ), file=sys.stderr )
-            IN_METADATA = False if metadata is None else True
+            IN_METADATA = False if last_metadata is None else True
             for row in csv.reader( handle, csv.excel_tab ):
                 if self.headers == []:
                     self.anchor = row[0]
                     self.headers = row[1:]
                 elif IN_METADATA:
-                    self.metadata[row[0]] == row[1:]
-                    if row[0] == metadata:
+                    self.metadata[row[0]] = row[1:]
+                    if row[0] == last_metadata:
                         IN_METADATA = False
                 else:
-                    self.data[row[0]] = np.array( row[1:], dtype=np.float )
-        
-        self.check_lengths( )
+                    try:
+                        self.data[row[0]] = np.array( row[1:], dtype=np.float )
+                    except:
+                        sys.exit( "Died while trying to turn row <{}> into numbers;\n"
+                                  "Use --last-metadata <row> to specify end of metadata.".format( row[0] ) )
+
         self.n = len( self.headers )
+        self.check_lengths( )
         if self.source is not None:
             self.report( )
 
     def zeros( self ):
+        # update in case table size changed?
+        self.n = len( self.headers )
         return np.zeros( self.n )
 
     def report( self ):
@@ -103,8 +115,8 @@ class Table:
         # headers
         yield [self.anchor] + self.headers
         # metadata if any
-        for name in sorted( self.metadata ):
-            yield [name] + metadata[name]
+        for name, metarow in self.metadata.items( ):
+            yield [name] + metarow
         # feature rows (data)
         for name in util.fsort( self.data ):
             values = list( self.data[name] )
