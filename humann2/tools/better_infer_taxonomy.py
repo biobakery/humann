@@ -17,6 +17,11 @@ except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
               "Please check your install." )
 
+try:
+    import numpy as np
+except ImportError:
+    sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (e.g. numpy)" )
+
 description = """
 HUMAnN2 utility for inferring "unclassified" taxonomy
 =====================================================
@@ -145,6 +150,11 @@ def get_args( ):
                          metavar="<float>",
                          help="Minimum frequency for a new taxon to be included\n[Default=0.001]",
                          )
+    parser.add_argument( "-w", "--taxonomy-report",
+                         metavar="<path>",
+                         default=None,
+                         help="Write a taxonomy report at the specified path.\n[Default=no report]",
+                         )
     parser.add_argument( "-d", "--dev",
                          metavar="<path>",
                          help="Manually specify a development database",
@@ -211,6 +221,22 @@ def tax_connect( feature, taxmap ):
     else:
         stratum2 = taxmap.get( stratum, c_unclassified )
     return util.fjoin( feature, name, stratum2 )
+
+def tax_report( table, path ):
+    stacks = {}
+    for f in table.data:
+        fbase, fname, stratum = util.fsplit( f )
+        if fbase == util.c_unmapped:
+            stacks[fbase] = [table.data[f]]
+        elif stratum is not None:
+            stacks.setdefault( stratum, [] ).append( table.data[f] )
+    means = {}
+    for stratum, stack in stacks.items( ):
+        means[stratum] = np.mean( np.vstack( stack ) )
+    total = sum( means.values( ) )
+    with util.try_zip_open( path, "w" ) as fh:
+        for s in sorted( means, key=lambda x: -means[x] ):
+            print( "{}\t{:.6f}".format( s, means[s] / float( total ) ), file=fh )
 
 # ---------------------------------------------------------------
 # main
@@ -279,6 +305,10 @@ def main( ):
     # output
     print( "Writing new table", file=sys.stderr )
     new_table.write( args.output, unfloat=True )
+    # write tax report?
+    if args.taxonomy_report is not None:
+        print( "Writing taxonomy report at:", args.taxonomy_report, file=sys.stderr )
+        tax_report( new_table, args.taxonomy_report )
 
 if __name__ == "__main__":
     main( )

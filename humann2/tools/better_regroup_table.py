@@ -19,7 +19,7 @@ except ImportError:
 try:
     import numpy as np
 except ImportError:
-    sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (e.g. numpy" )
+    sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (e.g. numpy)" )
 
 description = """
 HUMAnN2 utility for regrouping table features

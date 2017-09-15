@@ -138,7 +138,11 @@ def get_args( ):
                          help="Minimum frequency for a new taxon to be included; default=1e-3" )
     parser.add_argument( "-d", "--dev",
                          help="Manually specify a development database" )
-    args = parser.parse_args()
+    parser.add_argument( "-w", "--write-report",
+                         default=None,
+                         metavar="<path>",
+                         help="Write a taxonomy report at the specified path.", )
+    args = parser.parse_args( )
     return args
 
 # ---------------------------------------------------------------
