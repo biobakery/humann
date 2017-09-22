@@ -29,14 +29,14 @@ Computes ecological diversity statistics for individual
 functions in a stratified HUMAnN2 profile based on their 
 per-species contributions. The analysis is restricted to 
 functions that were "well-explained" in the input (i.e. 
-a majority of copies are attributed to species the 
+a majority of copies were attributed to species in the 
 majority of samples).
 
 Diversity is calculated over samples where the feature 
 was well-explained and the 'unclassified' stratum is 
 excluded. Alpha diversity is calculated with the 
-Gini-Simpson index. Beta diversity is calculated with 
-the Bray-Curtis index.
+<Gini-Simpson> index. Beta diversity is calculated with 
+the <Bray-Curtis> index.
 """
 
 # ---------------------------------------------------------------
