@@ -53,7 +53,7 @@ class Table:
         if type( source ) is dict:
             self.data = source
             self.headers = headers
-            self.metadata = metadata
+            self.metadata = self.metadata if metadata is None else metadata
             self.verbose = False
         else:
             if source is None:
@@ -106,7 +106,7 @@ class Table:
         elif row_lens != set( [len( self.headers )] ):
             print( row_lens, set( [len( self.headers )] ) ) 
             sys.exit( "Data row length does not match number of headers." )
-        elif self.metadata != {}:
+        elif len( self.metadata ) > 0:
             meta_lens = set( len( row ) for name, row in self.metadata.items( ) )
             if meta_lens != row_lens:
                 sys.exit( "Metadata row lengths not consistent with data row lengths." )
@@ -124,7 +124,7 @@ class Table:
                 values = ["0" if x == 0 else "%.6g" % ( x ) for x in values]
             yield [name] + values
 
-    def write( self, path=None, unfloat=False ):
+    def write( self, path=None, unfloat=False, report=True ):
         if path is None:
             path = "STDOUT"
             fh = sys.stdout
@@ -134,5 +134,6 @@ class Table:
         for row in self.iter_rows( unfloat=unfloat ):
             writer.writerow( row )
         print( "Wrote table data to <{}>".format( path ), file=sys.stderr )
-        self.verbose = True
-        self.report( )
+        if report:
+            self.verbose = True
+            self.report( )
