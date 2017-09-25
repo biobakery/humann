@@ -74,12 +74,17 @@ c_levels = [
     "Family",
     "Genus",
 ]
-c_tmode = "totals"
-c_umode = "unclassified"
-c_smode = "stratified"
+
+c_modes = [
+    "totals:       operate on original totals, discard original strata",
+    "unclassified: operate on unclassified, discard original total + species",
+    "stratified:   operate on all original strata, including unclassified",
+    "species:      operate on original species only, pass-through unclassified",
+]
+c_mode_names = [k.split( ":" )[0] for k in c_modes]
+
 c_tol_header = "# TOL"
 c_lca_header = "# LCA"
-c_unclassified = "unclassified"
 c_bypass = "AmbiguousBypass"
 c_na = "-"
 
@@ -124,31 +129,29 @@ def get_args( ):
         formatter_class=argparse.RawTextHelpFormatter
         )
     util.attach_common_arguments( parser )   
-    parser.add_argument( "-l", "--level",
+    parser.add_argument( "-l", "--taxonomic-level",
                          choices=c_levels,
                          metavar="<choice>",
                          default="Family",
                          help=util.pretty_grid( c_levels, cols=7,
-                                                desc="Level for taxonomic summarization [default=Family]:" ), 
+                                                desc="Level for taxonomic summarization [Default=Family]:" ), 
                          )
     parser.add_argument( "-r", "--resolution",
                          metavar="<choice>",
                          choices=databases.keys( ),
-                         required=True,
-                         help=util.pretty_grid( databases.keys( ), "Input UniRef type:" ),
+                         help=util.pretty_grid( databases.keys( ), "Required outside of 'species' mode:" ),
                          )
-    parser.add_argument( "-m", "--mode", 
-                         choices=[c_tmode, c_umode, c_smode],
-                         default=c_tmode,
+    parser.add_argument( "-m", "--mode",
+                         choices=c_mode_names,
+                         default=["stratified"],
                          metavar="<choice>",
-                         help=util.pretty_grid( [c_tmode, c_umode, c_smode],
-                                           cols=3, desc="Which rows to operate on [Default={}]:".format( c_tmode ) ),
+                         help=util.pretty_grid( c_modes, cols=1, desc="Operating mode [Default=stratified]" ),
                          )
     parser.add_argument( "-t", "--threshold", 
                          type=float, 
-                         default=1e-3,
+                         default=None,
                          metavar="<float>",
-                         help="Minimum frequency for a new taxon to be included\n[Default=0.001]",
+                         help="Minimum frequency for a new taxon to be included\n[Default=0/include everything]",
                          )
     parser.add_argument( "-w", "--taxonomy-report",
                          metavar="<path>",
@@ -169,7 +172,16 @@ def get_args( ):
 def simplify( name ):
     return re.sub( "[^A-Za-z0-9]+", "_", name )
 
-def build_taxmap( features, target_rank, p_datafile ):
+def genus_taxmap( features ):
+    taxmap = {}
+    for feature in features:
+        fbase, fname, stratum = util.fsplit( feature )
+        if stratum is not None and stratum != util.c_unclassified:
+            genus = stratum.split( util.c_taxon_delim )[0]
+            taxmap[stratum] = genus
+    return taxmap
+
+def complete_taxmap( features, target_rank, p_datafile ):
     unirefs = {util.fsplit( k )[0] for k in features}
     unirefs = {k for k in unirefs if "UniRef" in k}
     # load tree of life, subset uniref lca annotation and add to taxmap
@@ -209,18 +221,53 @@ def build_taxmap( features, target_rank, p_datafile ):
                 genus = genus.replace( "g__", "" )
                 for rank, common in tol.get_lineage( genus ):
                     if rank == target_rank:
-                        taxmap[stratum] = rank.lower()[0] + "__" + simplify( common )
+                        taxmap[stratum] = rank.lower( )[0] + "__" + simplify( common )
                         break
     return taxmap
 
 def tax_connect( feature, taxmap ):
     old = feature
     feature, name, stratum = util.fsplit( feature )
-    if stratum is None or stratum == c_unclassified:
-        stratum2 = taxmap.get( feature, c_unclassified )
+    if stratum is None or stratum == util.c_unclassified:
+        stratum2 = taxmap.get( feature, util.c_unclassified )
     else:
-        stratum2 = taxmap.get( stratum, c_unclassified )
+        stratum2 = taxmap.get( stratum, util.c_unclassified )
     return util.fjoin( feature, name, stratum2 )
+
+def generate_mapping( table, taxmap, mode ):
+    mapping = {}
+    for f in table.data:
+        fbase, fname, stratum = util.fsplit( f )
+        new_f = tax_connect( f, taxmap )
+        # community total
+        if stratum is None:
+            # always keep UNMAPPED
+            if f == util.c_unmapped:
+                mapping.setdefault( f, set( ) ).add( f )
+            # keep original totals unless in "unclassified" mode
+            elif mode != "unclassified":
+                mapping.setdefault( f, set( ) ).add( f )
+                # total becomes a new stratum in "totals" mode
+                if mode == "totals":
+                    mapping.setdefault( new_f, set( ) ).add( f )
+        # unclassified stratum
+        elif stratum == util.c_unclassified:
+            # create a new total in unclassified mode and infer
+            if mode == "unclassified":
+                new_tot = util.fjoin( fbase, fname, None )
+                mapping.setdefault( new_tot, set( ) ).add( f )
+                mapping.setdefault( new_f, set( ) ).add( f )
+            # infer in stratified mode
+            elif mode == "stratified":
+                mapping.setdefault( new_f, set( ) ).add( f )
+            # just pass through in species mode
+            elif mode == "species":
+                mapping.setdefault( f, set( ) ).add( f )
+        # this must be a known-species stratum
+        elif "s__" in stratum:
+            if mode in ["stratified", "species"]:
+                mapping.setdefault( new_f, set( ) ).add( f )
+    return mapping
 
 def tax_report( table, path ):
     stacks = {}
@@ -245,41 +292,33 @@ def tax_report( table, path ):
 def main( ):
     args = get_args( )
     table = Table( args.input, last_metadata=args.last_metadata )
-    # build the taxmap
+    # make a taxmap
     print( "Building taxonomic map for input table", file=sys.stderr )
-    p_datafile = args.dev if args.dev is not None else databases[args.resolution]
-    taxmap = build_taxmap( table.data.keys( ), args.level, p_datafile )
-    # refine the taxmap
-    counts = {}
-    for old, new in taxmap.items():
-        counts[new] = counts.get( new, 0 ) + 1
-    total = float( sum( counts.values( ) ) )
-    count = {k:v/total for k, v in counts.items()}
-    taxmap = {old:new for old, new in taxmap.items() if count[new] >= args.threshold}
+    # use default genus.species annotation to regroup at genus level
+    if args.mode == "species" and args.taxonomic_level == "Genus":
+        taxmap = genus_taxmap( table.data.keys( ) )
+    # load a full taxmap
+    elif args.dev is not None:
+        taxmap = complete_taxmap( table.data.keys( ), args.taxonomic_level, args.dev )
+    elif args.resolution not in databases:
+        print( ("EXITING: Outside of 'species' mode you must specify your UniRef resolution\n"
+                "using the -r/--resolution flag: ").format( databases.keys( ) ), file=sys.stderr )
+        sys.exit( )
+    else:
+        taxmap = complete_taxmap( table.data.keys( ), args.taxonomic_level, databases[args.resolution] )
+    # optionally forget very rare taxa in the taxmap
+    if args.threshold > 0:
+        counts = {}
+        for old, new in taxmap.items( ):
+            counts[new] = counts.get( new, 0 ) + 1
+        total = float( sum( counts.values( ) ) )
+        counts = {k:v/total for k, v in counts.items( )}
+        for old, new in taxmap.items( ):
+            if counts[new] < args.threshold:
+                taxmap[old] = util.c_unclassified
     # reindex the table
     print( "Reindexing the table", file=sys.stderr )
-    mapping = {}
-    for f in table.data:
-        fbase, fname, stratum = util.fsplit( f )
-        new_f = tax_connect( f, taxmap )
-        # unmapped is never stratified
-        if f == util.c_unmapped:
-            mapping.setdefault( rowhead, set( ) ).add( f )
-        # outside of unclassified mode, keep original totals
-        elif stratum is None and args.mode != c_umode:
-            mapping.setdefault( f, set( ) ).add( f )
-            # in totals mode, guess at taxonomy from uniref name
-            if args.mode == c_tmode:
-                mapping.setdefault( new_f, set( ) ).add( f )
-        elif stratum == c_unclassified and args.mode == c_umode:
-            # in unclassified mode, make a new row for the total...
-            new_tot = util.fjoin( fbase, fname, None )
-            mapping.setdefault( new_tot, set( ) ).add( f )
-            # ...then replace "unclassified" with inferred taxonomy
-            mapping.setdefault( new_f, set( ) ).add( f )
-        elif stratum is not None and args.mode == c_smode:
-            # work with taxonomy of known stratifications
-            mapping.setdefault( new_f, set( ) ).add( f )
+    mapping = generate_mapping( table, taxmap, args.mode )
     # rebuild the table
     print( "Rebuilding the input table", file=sys.stderr )
     new_data = {}
@@ -289,19 +328,22 @@ def main( ):
             new_data[f] += table.data[f2]
     new_table = Table( new_data, metadata=table.metadata, headers=table.headers )
     # report on performance
-    success, total = 0, 0
-    for f in new_table.data:
+    total = set( )
+    unclass = set( )
+    for f in mapping:
         fbase, fname, stratum = util.fsplit( f )
         if stratum is not None:
-            total += 1
-            if stratum != c_unclassified:
-                success += 1
-    success_rate = 100 * success / float( total )
+            total.add( fbase )
+            if stratum == util.c_unclassified:
+                unclass.add( fbase )
+    # success -> feature no longer has unclassified level
+    success = total - unclass
+    success_rate = 100 * len( success ) / float( len( total ) )
     print( "Reclassification summary:", file=sys.stderr )
-    print( "  Level: {}".format( args.level ), file=sys.stderr )
-    print( "  Features: {:,}".format( total ), file=sys.stderr )
-    print( "  Mapped at target level: {:,} ({:.1f})%".format( 
-            success, success_rate ), file=sys.stderr )
+    print( "  Level: {}".format( args.taxonomic_level ), file=sys.stderr )
+    print( "  Features considered: {:,}".format( len( total ) ), file=sys.stderr )
+    print( "  Fully classified at target level: {:,} ({:.1f})%".format( 
+            len( success ), success_rate ), file=sys.stderr )
     # output
     print( "Writing new table", file=sys.stderr )
     new_table.write( args.output, unfloat=True )
