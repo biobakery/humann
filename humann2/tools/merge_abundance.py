@@ -45,7 +45,7 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
         sys.exit("ERROR: Unable to write to output file: " + output)
         
     if header:
-        write_file_handle.write(header)
+        write_file_handle.write(header+"\n")
         
     # read through the pathways mapping file, then merge in the gene families information
     # read thorugh the file first to allow for unordered input files
