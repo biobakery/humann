@@ -77,25 +77,9 @@ def get_args( ):
 # utilities
 # ---------------------------------------------------------------
 
-def adiv_slow( samples ):
-    """ gini-simpson on 2d array with samples as first axis """
-    values = []
-    for s in samples:
-        values.append( 1 - sum( s**2 ) )
-    return np.mean( values )
-
 def adiv_fast( samples ):
     """ gini-simpson on 2d array with samples as first axis """
     return np.mean( 1 - np.sum( samples**2, axis=1 ) )
-
-def bdiv_slow( samples ):
-    """ bray-curtis on 2d array with samples as first axis """
-    values = []
-    for i1, s1 in enumerate( samples ):
-        for i2, s2 in enumerate( samples ):
-            if i1 > i2:
-                values.append( spd.braycurtis( s1, s2 ) )
-    return np.mean( values )
 
 def bdiv_fast( samples ):
     """ bray-curtis on 2d array with samples as first axis """

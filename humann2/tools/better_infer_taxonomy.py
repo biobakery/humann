@@ -78,10 +78,10 @@ c_levels = [
 ]
 
 c_modes = [
-    "stratified:   adjust all strata, including unclassified (UniRef50/90 only)",
-    "species:      adjust species strata only, maintaining totals + unclassified",
-    "unclassified: adjust unclassified, discarding original total + species (UniRef50/90 only)",
-    "totals:       adjust original totals, discard original strata (UniRef50/90 only)",
+    "stratified:   adjust all strata (UniRef50/90 only)",
+    "species:      adjust species strata only",
+    "unclassified: adjust unclassified, discarding totals + species (UniRef50/90 only)",
+    "totals:       adjust totals, discarding strata (UniRef50/90 only)",
 ]
 c_mode_names = [k.split( ":" )[0] for k in c_modes]
 
@@ -288,16 +288,18 @@ def tax_report( table, path ):
         if s is not None:
             stacks.setdefault( s, [] ).append( table.data[f] )
     totals = table.zeros( )
+    # sum within-sample, normalize to sample totals
+    masses = {}
     for s, stack in stacks.items( ):
-        ssum = np.sum( np.vstack( stack ) )
-        stacks[s] = ssum
-        totals += ssum
-    for s, ssum in stacks.items( ):
-        stacks[s] = np.mean( ssum / totals )
+        masses[s] = np.sum( np.vstack( stack ), axis=0 )
+        totals += masses[s]
+    masses = {s:np.mean( row/totals ) for s, row in masses.items( )}
+    # report
     with util.try_zip_open( path, "w" ) as fh:
         print( "Taxon\tMean % of new abundance", file=fh )
-        for s in sorted( stacks, key=lambda x: -stacks[x] ):
-            print( "{}\t{:.1f}".format( s, 100 * stacks[s] ), file=fh )
+        for s in sorted( masses, key=lambda x: -masses[x] ):
+            if masses[s] > 0:
+                print( "{}\t{:.1f}".format( s, 100 * masses[s] ), file=fh )
 
 def load_appropriate_taxmap( table, args ):
     # infer taxmap from humann2 stratifications
