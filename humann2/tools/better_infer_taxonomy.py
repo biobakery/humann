@@ -23,15 +23,15 @@ try:
 except ImportError:
     sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (e.g. numpy)" )
 
-description = """
+description = util.wrap( """
 HUMAnN2 utility for inferring taxonomy
-======================================
+
 Given a gene families file, this script can infer the taxonomy of
 unclassified features based on known lowest command ancestor (LCA)
 annotations of UniRef50/90 clusters. This script can also be applied 
 to _any_ HUMAnN2 table to regroup species-level stratifications to 
 broader taxonomic levels ("species" mode).
-"""
+""" )
 
 # ---------------------------------------------------------------
 # check that user has the required database file

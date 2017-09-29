@@ -5,6 +5,7 @@ import os
 import sys
 import argparse
 import re
+from textwrap import fill
 
 try:
     #from humann2.tools import util
@@ -21,7 +22,7 @@ try:
 except ImportError:
     sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (numpy + scipy)" )
 
-description = """
+description = util.wrap( """
 HUMAnN2 utility for calculating contributional diversity
 ========================================================
 
@@ -37,7 +38,7 @@ was well-explained and the 'unclassified' stratum is
 excluded. Alpha diversity is calculated with the 
 <Gini-Simpson> index. Beta diversity is calculated with 
 the <Bray-Curtis> index.
-"""
+""" )
 
 # ---------------------------------------------------------------
 # constants

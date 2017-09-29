@@ -408,3 +408,35 @@ def pretty_grid( items, cols=3, desc="Please select one of these options:" ):
             desc += "\n"
             counter = 0
     return desc
+
+def wrap( text, width=85 ):
+    # remove flanking whitespace
+    text = text.strip( )
+    lines = text.split( "\n" )
+    # title
+    rule = "=" * width
+    newlines = [rule, lines[0], rule, "\n"]
+    newline = ""
+    # description lines
+    for line in lines[2:]:
+        line = line.strip( )
+        if line == "":
+            newlines.append( newline )
+            newlines.append( "\n" )
+            newline = ""
+            continue
+        words = line.split( )
+        for word in words:
+            if len( word ) > width:
+                newlines.append( newline )
+                newlines.append( word )
+                newline = ""
+            elif len( newline + " " + word ) > width:
+                newlines.append( newline )
+                newline = word
+            else:
+                newline += (" " if newline != "" else "") + word
+    if len( newline ) > 0:
+        newlines.append( newline )
+    newlines += ["\n", rule]
+    return "\n".join( [k for k in newlines] )

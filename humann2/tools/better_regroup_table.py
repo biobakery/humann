@@ -21,14 +21,12 @@ try:
 except ImportError:
     sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (e.g. numpy)" )
 
-description = """
+description = util.wrap( """
 HUMAnN2 utility for regrouping table features
-=============================================
-Given a table of feature values and a mapping
-of groups to component features, produce a 
-new table with group values in place of 
-feature values.
-"""
+
+Given a table of feature values and a mapping of groups to component features, produce a 
+new table with group values in place of feature values.
+""" )
 
 # ---------------------------------------------------------------
 # constants

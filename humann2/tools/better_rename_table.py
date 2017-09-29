@@ -16,10 +16,12 @@ except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
               "Please check your install." )
 
-description = """
+description = util.wrap( """
 HUMAnN2 utility for renaming table features
-===========================================
-"""
+
+Attaches "glosses" (human-readable names) to HUMAnN2 features identified
+by codes only (e.g. UniRef IDs). Maintains table stratifications.
+""" )
 
 # ---------------------------------------------------------------
 # handling of renaming files

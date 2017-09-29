@@ -14,12 +14,15 @@ except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
               "Please check your install." )
 
-description = """
-HUMAnN2 utility for renormalizing TSV files
-===========================================
-Each level of a stratified table will be 
-normalized using the desired scheme.
-"""
+description = util.wrap( """
+HUMAnN2 utility for renormalizing output tables
+
+Each level of a stratified table will be normalized using the desired scheme.
+Relative abundance (relab) units causes normalized levels to sum to 1.0.
+Copies per million (CPM) units causes normalized levels to sum to 1 million.
+CPMs are more convenient for tables with many features (e.g. gene families).
+Note that in this case CPM does NOT refer to _counts_ per million.
+""" )
 
 # ---------------------------------------------------------------
 # constants

@@ -19,16 +19,16 @@ try:
 except ImportError:
     sys.exit( "CRITICAL ERROR: This script requires the python scientific stack (e.g. numpy)" )
 
-description = """
+description = util.wrap( """
 HUMAnN2 utility for normalizing combined meta'omic sequencing data
-==================================================================
+
 Given HUMAnN2 output for metatranscriptomes (mtx) and metagenomes (mgx)
 from the same biosamples, produce a new table of "relative expression"
 values by normalizing mtx by their mgx copy number. Normalization can
 be by log2-ratio or difference. When using ratios, zero values are 
 additively smoothed. Note: The script will not proceed if samples
 are not 1:1 paired.
-"""
+""" )
 
 # ---------------------------------------------------------------
 # constants
