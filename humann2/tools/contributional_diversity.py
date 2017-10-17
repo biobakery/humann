@@ -29,15 +29,14 @@ HUMAnN2 utility for calculating contributional diversity
 Computes ecological diversity statistics for individual 
 functions in a stratified HUMAnN2 profile based on their 
 per-species contributions. The analysis is restricted to 
-functions that were "well-explained" in the input (i.e. 
-a majority of copies were attributed to species in the 
-majority of samples).
+functions that were 1) detected in a minimum fraction of samples (P),
+with 2) a minimum abundance (A), and 3) a minimum fraction of function copies
+(E) attributed to species (i.e. not "unclassified").
 
-Diversity is calculated over samples where the feature 
-was well-explained and the 'unclassified' stratum is 
-excluded. Alpha diversity is calculated with the 
-<Gini-Simpson> index. Beta diversity is calculated with 
-the <Bray-Curtis> index.
+Diversity is calculated over samples where the function passed the
+above criteria and the "unclassified" stratum is excluded. 
+Mean alpha (within-sample) diversity is calculated with the <Gini-Simpson> index. 
+Mean beta (between-sample) diversity is calculated with the <Bray-Curtis> index.
 """ )
 
 # ---------------------------------------------------------------
@@ -57,19 +56,26 @@ def get_args( ):
     )
     util.attach_common_arguments( parser )
     parser.add_argument( 
-        "-E", "--min-percent-explained",
-        default=75.0,
-        type=float,
-        metavar="<value in 0-100>",
-        help=("Only consider features where species explain >=E%% of copies in >=E%% of samples\n"
-              "[Default=75.0]"),
+        "-P", "--min-prevalence",
+        default=0.75,
+        metavar="<value in 0.0-1.0>",
+        help=("A function must be 'valid' in this fraction of samples to be considered\n"
+              "[Default=0.75]")
         )
     parser.add_argument( 
         "-A", "--min-abundance",
         default=0.0,
         metavar="<float>",
-        help=("Also require total feature abundance >A per sample\n"
-              "[Default=0.0, i.e. only exclude samples with zero abundance]")
+        help=("A function must exceed this abundance to be considered 'valid' in a given sample\n"
+              "[Default=0.0]")
+        )
+    parser.add_argument( 
+        "-E", "--min-explained",
+        default=0.75,
+        type=float,
+        metavar="<value in 0.0-1.0>",
+        help=("Exclude samples where <E of function copies (fraction) are attributed to species\n"
+              "[Default=0.75]"),
         )
     args = parser.parse_args( )
     return args
@@ -87,8 +93,7 @@ def bdiv_fast( samples ):
     # pdist returns the non-redundant, non-self distances
     return np.mean( spd.pdist( samples, metric="braycurtis" ) )
 
-def contributional_diversity( table, min_abund=None, min_explained=None ):
-    min_explained_frac = min_explained / 100.0
+def contributional_diversity( table, min_prevalence=None, min_abund=None, min_explained=None ):
     # total stratified abundance of each function
     total = {}
     # total abundance attributed to species
@@ -118,9 +123,9 @@ def contributional_diversity( table, min_abund=None, min_explained=None ):
         index = []
         for i in range( n ):
             if my_tot[i] > min_abund:
-                if my_exp[i] / my_tot[i] >= min_explained_frac:
+                if my_exp[i] / my_tot[i] >= min_explained:
                     index.append( i )
-        if len( index ) / float( n ) >= min_explained_frac:
+        if len( index ) / float( n ) >= min_prevalence:
             allowed[f] = index
     # compute stats over passing samples (in index)
     fstats = {}
@@ -130,8 +135,8 @@ def contributional_diversity( table, min_abund=None, min_explained=None ):
         my_tot = total[f][index]
         my_exp = explained[f][index]
         # basic stats (all samples)
-        inner["0: Samples used"] = len( index )
-        inner["1: Samples used (frac)"] = len( index ) / float( len( total[f] ) )
+        inner["0: Prevalence (N)"] = len( index )
+        inner["1: Prevalence (frac)"] = len( index ) / float( len( total[f] ) )
         inner["2: Mean abundance"] = np.mean( my_tot )
         my_frac = my_exp / my_tot
         inner["3: Mean explained (frac)"] = np.mean( my_frac )
@@ -140,8 +145,8 @@ def contributional_diversity( table, min_abund=None, min_explained=None ):
         # convert to 2d array with samples as first axis
         samples = np.vstack( stack ).transpose( )
         # compute diversity (alpha=gini-simpson / beta=bray-curtis)
-        inner["4: Contrib div, alpha"] = adiv_fast( samples )
-        inner["5: Contrib div, beta"] = bdiv_fast( samples )
+        inner["4: alpha contrib. div."] = adiv_fast( samples )
+        inner["5: beta contrib. div."] = bdiv_fast( samples )
     # report
     print( "Contributional diversity report:", file=sys.stderr )
     tot = len( total )
@@ -149,7 +154,7 @@ def contributional_diversity( table, min_abund=None, min_explained=None ):
     tot = len( fstats )
     frac = 100 * len( fstats ) / float( len( total ) )
     print( "  Required feature abundance >{} and >={}% of copies explained in >={}% of samples".format(
-            min_abund, min_explained, min_explained ), file=sys.stderr )
+            min_abund, 100 * min_explained, 100 * min_prevalence ), file=sys.stderr )
     print( "  Features deemed appropriate for analysis: {:,} ({:.1f}%)".format( tot, frac ), file=sys.stderr )
     # nested dict of per-function stats
     return fstats
@@ -164,8 +169,9 @@ def main( ):
     # compute diversity stats
     fstats = contributional_diversity( 
         table, 
+        min_prevalence=args.min_prevalence,
         min_abund=args.min_abundance, 
-        min_explained=args.min_percent_explained,
+        min_explained=args.min_explained,
         )
     # make output table
     headers = sorted( {v for k in fstats for v in fstats[k]} )
