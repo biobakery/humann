@@ -651,7 +651,7 @@ setuptools.setup(
             # tool scripts (humann2/tools)
             'humann2_associate = humann2.tools.associate:main',
             'humann2_barplot = humann2.tools.barplot:main',
-            'humann2_benchmark = humann2.tools.benchmark:main'
+            'humann2_benchmark = humann2.tools.benchmark:main',
             'humann2_build_custom_database = humann2.tools.build_custom_database:main',
             'humann2_config = humann2.tools.config:main',
             'humann2_contributional_diversity = humann2.tools.contributional_diversity:main',
