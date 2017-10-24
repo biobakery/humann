@@ -269,13 +269,13 @@ def attach_common_arguments( parser, no_output=False ):
         "-i", "--input",
         default=None,
         metavar="<path>",
-        help="Original output table (tsv or biom format)\nDefault=[STDIN]",
+        help="HUMAnN2 table (.tsv or .biom format)\nDefault=[STDIN]",
         )
     parser.add_argument(
         "-L", "--last-metadata",
         default=None,
-        metavar="<row name>",
-        help="The last row containing metadata, if any\nDefault=[no metadata]",
+        metavar="<row>",
+        help="The name (header) of the last row containing metadata, if any\nDefault=[No metadata]",
         )
     # some scripts have custom output
     if not no_output:
@@ -283,7 +283,7 @@ def attach_common_arguments( parser, no_output=False ):
             "-o", "--output",
             default=None,
             metavar="<path>",
-            help="Path for modified output table\nDefault=[STDOUT]",
+            help="Path for output table\nDefault=[STDOUT]",
         )
     return None
 

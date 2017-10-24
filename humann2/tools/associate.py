@@ -12,7 +12,7 @@ try:
     from humann2.tools.humann2_table import Table
 except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
-              " Please check your install.")
+              " Please check your install." )
 
 try:
     import numpy as np
@@ -35,10 +35,12 @@ description = util.wrap( """
 HUMAnN2 utility for associating functions with metadata
 
 This script is part of the HUMAnN2 demo and is not intended for
-serious statistical analyses. Table must have metadata rows at the
-top. One continuous or categorical metadata row can be non-parametrically
-associated (Spearman/Kruskal-Wallis) with the function totals in 
-the input HUMAnN2 table.
+serious statistical analyses. Given a HUMAnN2 table with metadata rows
+at the top, perform repeated, non-parametric comparison between a focal
+metadata row and each feature total in the table. A continuous metadata feature
+will be compared by the Spearman correlation, and a categorical metadata feature
+will be compared by the Kruskal-Wallis test. Resulting p-values are subjected
+to Benjamini-Hochberg FDR correction.
 """ )
 
 def get_args( ):
@@ -46,7 +48,7 @@ def get_args( ):
         description=description,
         formatter_class=argparse.RawTextHelpFormatter,
         )
-    utils.attach_common_arguments( no_output=True )
+    util.attach_common_arguments( parser, no_output=True )
     parser.add_argument( "-m", "--focal-metadatum",
                          metavar="<str>",
                          required=True,
@@ -58,13 +60,13 @@ def get_args( ):
                          help="Metadatum type", )
     parser.add_argument( "-o", "--output",
                          metavar="<path>",
-                         default="associations.tsv",
-                         help="Where to save the output", )
+                         default=None,
+                         help="Where to write the statistical results\n[Default=STDOUT]", )
     parser.add_argument( "-f", "--fdr",
                          metavar="<float>",
                          type=float,
                          default=0.2,
-                         help="FDR threshold (default=0.2)", )
+                         help="Benjamini-Hochberg FDR threshold\n[Default=0.2]", )
     return parser.parse_args( )
 
 # ---------------------------------------------------------------
@@ -97,45 +99,38 @@ def pvalues2qvalues( pvalues ):
     qvalues = [pvalues[i-1] * n / i for i in range( 1, n+1 )]
     # adjust qvalues to enforce monotonic behavior
     # q( i ) = min( q( i..n ) )
-    qvalues.reverse()
+    qvalues.reverse( )
     for i in range( 1, n ):
         if qvalues[i] > qvalues[i-1]:
             qvalues[i] = qvalues[i-1]
-    qvalues.reverse()
+    qvalues.reverse( )
     # rebuild qvalues in the original order
     ordered_qvalues = [None for q in qvalues]
     for i, q in enumerate( qvalues ):
         ordered_qvalues[index[i]] = q
     return ordered_qvalues
 
-def fdr_correct( stats ):
+def fdr_adjust( stats ):
     H = [h for h in stats]
-    P = [stats[h].get( "P-value", 1 ) for h in stats]
+    P = [stats[h].get( "p-value", 1.0 ) for h in stats]
     Q = pvalues2qvalues( P )
     for h, q in zip( H, Q ):
         stats[h]["q-value"] = q
     return None
 
-def adjust_stats( stats ):
-    pvalues = [stat[-1] for stat in stats]
-    qvalues = pvalues2qvalues( pvalues )
-    for i in range( len( stats ) ):
-        stats[i].append( qvalues[i] )
-    return sorted( stats, key=lambda stat: stat[-1] )
-
 def spearman_analysis( T, mvals ):
-    print( "Performing Spearman analysis vs. metadatum:" + mname, file=sys.stderr )
     mvals = metafloat( mvals )
     stats = {}
     for f in util.fsort( T.data ):
         fcode, fname, fstrat = util.fsplit( f )
         if fstrat is None:
             fname = util.fjoin( fcode, fname )
-            inner = stats.setdefault( fname, {} )
             try:
+                inner = {}
                 rho, p = spearmanr( T.data[f], mvals )
-                inner["effect size"] = rho
+                inner["effect_size"] = rho
                 inner["p-value"] = p
+                stats[fname] = inner
             except:
                 print( "WARNING: Unable to compute Spearman with feature:", fname, file=sys.stderr )
     return stats
@@ -154,19 +149,26 @@ def kruskalwallis_analysis( T, mvals ):
         fcode, fname, fstrat = util.fsplit( f )
         if fstrat is None:
             fname = util.fjoin( fcode, fname )
-            inner = stats.setdefault( fname, {} )
             try:
+                inner = {}
                 lists = shatter( mvals, T.data[f] )
                 summary = {k:"%.4g" % ( np.mean( v ) ) for k, v in lists.items( )}
-                summary = [":".join( [k, v] ) for k, v in summary.items( )]
+                summary = [":".join( [k, summary[k]] ) for k in sorted( summary )]
                 summary = "; ".join( summary )
                 hstat, p = kruskalwallis( *lists.values( ) )
-                inner["effect size"] = hstat
+                inner["effect_size"] = hstat
                 inner["p-value"] = p
-                inner["level means"] = summary
+                inner["level_means"] = summary
+                stats[fname] = inner
             except:
                 print( "WARNING: Unable to compute Kruskal-Wallis with feature:", fname, file=sys.stderr )
     return stats
+
+def reformat( stats ):
+    for f in stats:
+        for k in ["effect_size", "p-value", "q-value"]:
+            stats[f][k] = "%.4g" % ( stats[f][k] )
+    return None
 
 # ---------------------------------------------------------------
 # main
@@ -183,31 +185,35 @@ def main( ):
     # headers
     headers = [
         "# feature",
-        "effect size",
+        "effect_size",
         "p-value",
         "q-value",
         ]    
     # perform relevant analysis
     if args.focal_type == "continuous":
+        print( "Performing Spearman analysis vs. metadatum:", mname, file=sys.stderr )
         stats = spearman_analysis( T, mvals )
     elif args.focal_type == "categorical":
+        print( "Performing Kruskal-Wallis analysis vs. metadatum:", mname, file=sys.stderr )
         stats = kruskalwallis_analysis( T, mvals )
-        headers.append( "level means" )
-    # add qvalues
-    fdr_correct( stats )
+        headers.append( "level_means" )
+    # add qvalues / format
+    fdr_adjust( stats )
+    order = [(stats[f].get( "q-value", 1.0 ), f) for f in stats] 
+    order = [(q, f) for q, f in order if q <= args.fdr]
+    order.sort( )
+    reformat( stats )
     # write results
     fh = open( args.output, "w" ) if args.output is not None else sys.stdout
     writer = csv.writer( fh, csv.excel_tab )
-    writer.writerow( headers )
-    FOUND_SOMETHING = False
-    for f in sorted( stats ):
-        if stats[f].get( "Q-value" ) <= args.fdr:
-            FOUND_SOMETHING = True
-            row = [f] + [stats[f].get( h, "#N/A" ) for h in headers[1:]]
-            writer.writerow( row )
-    if not FOUND_SOMETHING:
-        print( "No FDR significant associations found.", file=sys.stderr )
+    writer.writerow( [k.upper( ) for k in headers] )
+    for q, f in order:
+        row = [f] + [stats[f].get( h, "#N/A" ) for h in headers[1:]]
+        writer.writerow( row )
     fh.close( )
+    # wrap up
+    if len( order ) == 0:
+        print( "No FDR significant associations found.", file=sys.stderr )
     print( "Finished successfully.", file=sys.stderr )
         
 if __name__ == "__main__":

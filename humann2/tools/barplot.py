@@ -1,16 +1,22 @@
 #!/usr/bin/env python
 
-"""
-HUMAnN2 Plotting Tool
-===============================================
-Author: Eric Franzosa (eric.franzosa@gmail.com)
-"""
-
+from __future__ import print_function
 import os
 import sys
 import csv
 import argparse
 import math
+
+from collections import Counter
+
+try:
+    from humann2 import config
+    from humann2.tools import util
+    from humann2.tools.humann2_table import Table
+    from humann2.tools.legendizer import Legendizer
+except ImportError:
+    sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+              " Please check your install." )
 
 try:
     import matplotlib
@@ -20,15 +26,16 @@ try:
     import matplotlib.patches as patches
     import numpy as np
     import scipy.cluster.hierarchy as sch
-except:
-    sys.exit( "This script requires the Python scientific stack: numpy, scipy, and matplotlib." )
-    
+except ImportError:
+    sys.exit( "This script requires the Python scientific stack: numpy, scipy, and matplotlib." )   
+
 # ---------------------------------------------------------------
 # global constants
 # ---------------------------------------------------------------
 
 c_epsilon = 1e-10
 c_hunits = 9
+c_other = "Other"
 
 # ---------------------------------------------------------------
 # argument parsing
@@ -54,37 +61,47 @@ normalize   : Bars all have height=1 (highlighting relative attribution)
 
 """
 
+# ---------------------------------------------------------------
+# command-line interface
+# ---------------------------------------------------------------
+
+description = util.wrap( """
+HUMAnN2 utility for plotting a single stratified feature
+
+Plots the stratified contributions of a specified function. Can optionally
+sort samples to reveal ecological- or metadata-linked trends. Can perform custom
+scaling to highlight stratifications even when community totals have high dynamic range.
+""" )
+
 def get_args( ):
     parser = argparse.ArgumentParser(
-        description="HUMAnN2 plotting tool",
+        description=description,
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument( "-i", "--input",
-                         metavar = "<input table>",
-                         required = True, 
-                         help="HUMAnN2 table with optional metadata", )
+    util.attach_common_arguments( parser, no_output=True )
     parser.add_argument( "-f", "--focal-feature",
-                         metavar = "<feature id>",
+                         metavar = "<feature>",
                          help="Feature ID of interest (give ID not full name)", )
     parser.add_argument( "-t", "--top-strata",
                          metavar = "<int>",
                          type=int,
                          default=7,
-                         help="Number of top stratifications to highlight (top = highest grand means)", )
+                         help="Number of top stratifications to highlight (top = highest grand means)\n[Default=7]", )
     parser.add_argument( "-s", "--sort",
                          metavar = "<sorting methods>",
                          nargs="+",
                          default=["none"],
                          choices=["none", "sum", "dominant", "similarity", "usimilarity", "metadata"],
                          help=c_sort_help, )             
-    parser.add_argument( "-l", "--last-metadatum",
-                         metavar = "<feature>",
-                         default=None,
-                         help="Indicate end of metadata rows", )
-    parser.add_argument( "-m", "--focal-metadatum",
+    parser.add_argument( "-m", "--focal-metadata",
                          metavar="<feature>",
                          default=None,
-                         help="Indicate metadatum to highlight / group by", )
+                         help="Indicate metadata to highlight / group by", )
+    parser.add_argument( "-l", "--max-metalevels",
+                         metavar="<int>",
+                         type=int,
+                         default=7,
+                         help="Color the N most populous metadata levels; collapse others as 'Other'\n[Default=7]" )
     parser.add_argument( "-c", "--colormap",
                          metavar="<colormap>",
                          default="jet",
@@ -118,7 +135,7 @@ def get_args( ):
                          metavar = "<int>",
                          default = 3,
                          type=int,
-                         help="Relative width of the plot vs. legend (default: 5)", )
+                         help="Relative width of the plot vs. legend (default: 3)", )
     parser.add_argument( "-d", "--dimensions",
                          metavar = "<size>",
                          nargs=2,
@@ -131,11 +148,11 @@ def get_args( ):
                          default=[None, None],
                          help="Fix limits for y-axis", )
     parser.add_argument( "-e", "--legend-stretch",
-                         metavar = "",
+                         metavar = "<float>",
                          type=float,
                          default=1.0,
                          help="Stretch/compress legend elements", )
-    return parser.parse_args()
+    return parser.parse_args( )
 
 # ---------------------------------------------------------------
 # utilities
@@ -176,44 +193,43 @@ def tsv_reader( path ):
     with open( path ) as fh:
         for row in csv.reader( fh, csv.excel_tab ):
             yield row
+
+def simplify_metadata( values, n=None ):
+    counts = Counter( values )
+    if len( counts ) > n:
+        index = [[-c, k] for k, c in counts.items( )]
+        index.sort( )
+        allowed = {x[1] for x in index[0:n]}
+        values = [k if k in allowed else c_other for k in values]
+    return values
             
 # ---------------------------------------------------------------
-# table class
+# Single-feature table class with numerical methods
 # ---------------------------------------------------------------
     
 class FeatureTable:
 
-    """ """
-    
-    def __init__( self, path, focus=None, last=None, metaheader=None, exclude_unclassified=False ):
-        self.colheads = None
+    def __init__( self, Table, focus, metaname=None, exclude_unclassified=False ):
+
+        self.colheads = Table.headers[:]
         self.rowheads = []
         self.data = []
+        self.metaname = metaname
         self.metarow = None
-        self.fname = None
-        in_features = False
-        for row in tsv_reader( path ):
-            rowhead, values = row[0], row[1:]
-            if self.colheads is None:
-                self.colheads = values
-            else:
-                if (in_features or last is None) and "|" in rowhead:
-                    feature, stratum = rowhead.split( "|" )
-                    feature_id = feature.split( ": " )[0]
-                    if focus is None:
-                        focus = feature_id
-                        sys.stderr.write( "No feature selected; defaulting to 1st feature: " + feature + "\n" )
-                    if focus != feature_id:
-                        continue
-                    else:
-                        self.fname = feature
-                        if stratum != "unclassified" or not exclude_unclassified:
-                            self.rowheads.append( stratum )
-                            self.data.append( list( map( float, values ) ) )
-                if metaheader is not None and rowhead == metaheader:
-                    self.metarow = values
-                if last is not None and rowhead == last:
-                    in_features = True
+        self.title = None
+
+        # isolate optional metadata row for plotting
+        if metaname is not None:
+            self.metarow = Table.metadata.get( metaname, None )
+
+        # pull out relevant feature rows
+        for f in util.fsort( Table.data ):
+            fcode, fname, fstratum = util.fsplit( f )
+            if fcode == focus and fstratum is not None:
+                self.title = util.fjoin( fcode, fname )
+                if fstratum != util.c_unclassified or not exclude_unclassified:
+                    self.rowheads.append( fstratum )
+                    self.data.append( Table.data[f] )
         self.data = np.array( self.data )
         self.update( )
         
@@ -231,7 +247,7 @@ class FeatureTable:
         assert self.ncols == len( self.colheads ) == len( self.colmap ), "col dim failure"
 
     def as_genera( self ):
-        sys.stderr.write( "Regrouping to genera (before selecting/sorting strata)\n" )
+        print( "Regrouping to genera (before selecting/sorting strata)", file=sys.stderr )
         temp = {}
         for rowhead, row in zip( self.rowheads, self.data ):
             rowhead = rowhead.split( "." )[0]
@@ -278,7 +294,7 @@ class FeatureTable:
         self.colheads = subseq( self.colheads, order )
         if self.metarow is not None:
             self.metarow = subseq( self.metarow, order )
-        self.update()
+        self.update( )
         
     def filter_top_strata( self, top_strata ):
         # save unclassified if present
@@ -310,10 +326,10 @@ class FeatureTable:
         if unclassified is not None:
             self.rowheads += ["Unclassified"]
             self.data = np.vstack( [self.data, unclassified] )
-        # reverse row order to simplfy plotting
+        # reverse row order to simplify plotting
         self.rowheads.reverse( )
         self.data = self.data[::-1]
-        self.update()
+        self.update( )
 
 # ---------------------------------------------------------------
 # main
@@ -321,7 +337,7 @@ class FeatureTable:
 
 def main( ):
 
-    args = get_args()
+    args = get_args( )
     
     # treat "-" as none in ylims
     a, b = args.ylims
@@ -329,11 +345,14 @@ def main( ):
     args.ylims[1] = None if b in ["-", None] else float( b )
 
     # load table manipulation 
-    table = FeatureTable(
-        args.input,
+    table = Table( 
+        args.input, 
+        last_metadata=args.last_metadata,
+        )
+    table = FeatureTable( 
+        table,
         focus=args.focal_feature,
-        last=args.last_metadatum,
-        metaheader=args.focal_metadatum,
+        metaname=args.focal_metadata,
         exclude_unclassified=args.exclude_unclassified,
     )
 
@@ -352,9 +371,13 @@ def main( ):
     # filter/collapse features (moved to take place AFTER sorting)
     table.filter_top_strata( args.top_strata )
         
+    # simplify metadata
+    if table.metarow is not None:
+        table.metarow = simplify_metadata( table.metarow, args.max_metalevels )
+
     # set up axis system
     wunits = args.width + 1
-    fig = plt.figure()
+    fig = plt.figure( )
     fig.set_size_inches( *args.dimensions )
     if table.metarow is not None:
         main_ax = plt.subplot2grid( ( c_hunits, wunits ), ( 0, 0 ), rowspan=c_hunits-1, colspan=wunits-1 )
@@ -371,7 +394,7 @@ def main( ):
     # setup: strata colors
     cdict = {"Other":"0.5", "Unclassified":"0.8"}
     if os.path.exists( args.colormap ):
-        sys.stderr.write( "Reading strata colors from file: {}\n".format( args.colormap ) )
+        print( "Reading strata colors from file:", args.colormap, file=sys.stderr )
         for item, color in tsv_reader( args.colormap ):
             if item not in cdict:
                 cdict[item] = color
@@ -396,7 +419,7 @@ def main( ):
         bottoms     = np.zeros( table.ncols )
         main_ax.set_ylim( 0, 1 )
     elif args.scaling == "pseudolog":
-        ylabel      = "log10(Relative abundance)"
+        ylabel      = "log10( Relative abundance )"
         ymin        = min( [k for k in table.colsums if k > 0] ) if args.ylims[0] is None else args.ylims[0]
         floor       = math.floor( np.log10( ymin ) )
         #floor       = floor if abs( np.log10( ymin ) - floor ) >= c_epsilon else (floor - 1)
@@ -409,7 +432,7 @@ def main( ):
         bottoms     = floors
         main_ax.set_ylim( floor, ceil )
     elif args.scaling == "pseudosqrt":
-        ylabel      = "sqrt(Relative abundance)"
+        ylabel      = "sqrt( Relative abundance )"
         ymin        = 0 if args.ylims[0] is None else args.ylims[0]
         floor       = np.sqrt( ymin )
         floors      = floor * np.ones( table.ncols )
@@ -438,7 +461,7 @@ def main( ):
     if table.metarow is not None:
         if os.path.exists( args.meta_colormap ):
             sys.stderr.write( "Reading meta colors from file: {}\n".format( args.meta_colormap ) )
-            mcdict = {}
+            mcdict = {"Other":"0.5"}
             for item, color in tsv_reader( args.meta_colormap ):
                 mcdict[item] = color
             for m in table.metarow:
@@ -473,8 +496,7 @@ def main( ):
     # labels
     samp_ax = main_ax if table.metarow is None else meta_ax
     samp_ax.set_xlabel( "Samples (N=%d)" % ( table.ncols ) )
-    #main_ax.set_title( "%s\nFrom: %s" % ( table.fname, os.path.split( args.input )[1] ) )
-    main_ax.set_title( table.fname, weight="bold" )
+    main_ax.set_title( table.title, weight="bold", size=12 )
     main_ax.set_ylabel( ylabel, size=12 )
     # tick params
     main_ax.tick_params( axis="x", which="major", direction="out", bottom="on", top="off" )
@@ -498,74 +520,34 @@ def main( ):
             main_ax.axhline( y=ycoord, color="0.75", ls=":", zorder=0 )
 
     # legend
-    scale = args.legend_stretch
-    xmar = 0.01
-    xsep = 0.03
-    ybuf = 0.06 * scale
-    ysep = 0.02 * scale
-    yinc = 0.03 * scale
-    rech = 0.03 * scale
-    recw = 0.1
-    big_font = 10 * scale
-    sml_font = 8 * scale
-    ydex = 1.0
-
-    def add_items( title, labels, colors, ydex, bugmode=False ):
-        ydex -= ybuf
-        anno_ax.text( xmar, ydex, title, weight="bold", va="center", size=big_font )
-        ydex -= ybuf
-        for l, c in zip( labels, colors ):
-            anno_ax.add_patch(
-                patches.Rectangle(
-                    (xmar, ydex-rech),
-                    recw,
-                    rech,
-                    facecolor=c,
-                    edgecolor="k",
-                )
-            )
-            anno_ax.text(
-                xsep + recw,
-                ydex - 0.5 * rech,
-                l,
-                size=sml_font,
-                va="center",
-                style="italic" if (bugmode and l not in ["Unclassified", "Other"]) else "normal",
-            )
-            ydex -= rech + ysep
-        ydex += ysep
-        return ydex
+    L = Legendizer( anno_ax, markersize=50 )
 
     # add legend for stratifications
-    ydex = add_items(
-        "Stratifications:",
-        map( bugname, table.rowheads[::-1] ),
-        [cdict[r] for r in table.rowheads[::-1]],
-        ydex,
-        bugmode=True,
-        )
+    L.subhead( "Stratifications:" )
+    for i in range( len( table.rowheads ) ):
+        i = -(i+1)
+        value = table.rowheads[i]
+        name = bugname( value )
+        color = cdict[value]
+        L.element( marker="s", color=color, label=name,
+                   label_style="italic" if "s__" in value else "normal",
+                   )
 
     # add legend for metadata
     if table.metarow is not None:
-        levels = sorted( set( table.metarow ) )
-        add_items(
-            "Sample label:",
-            levels,
-            [mcdict[k] for k in levels],
-            ydex,
-            )
+        L.subhead( "Sample type:" )
+        levels = sorted( set( table.metarow ), key=lambda x: (0, x) if x != c_other else (1, x) )
+        for i in range( len( levels ) ):
+            L.element( marker="s", color=mcdict[levels[i]], label=levels[i] )
                          
     # wrapup
-    plt.tight_layout()
-    fig.subplots_adjust( hspace=0.2, wspace=0.03 )
+    L.draw( )
+    plt.tight_layout( )
+    fig.subplots_adjust( hspace=0.2, wspace=0.02 )
     if args.output is not None:
         plt.savefig( args.output )
     else:
         plt.savefig( os.path.split( args.input )[1]+".pdf" )
-
-# ---------------------------------------------------------------
-# boilerplate
-# ---------------------------------------------------------------
         
 if __name__ == "__main__":
-    main()
+    main( )
