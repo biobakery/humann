@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import os
 import sys
@@ -262,7 +264,7 @@ class Ticker( ):
 # helper functions
 # ---------------------------------------------------------------
 
-def attach_common_arguments( parser ):
+def attach_common_arguments( parser, no_output=False ):
     parser.add_argument(
         "-i", "--input",
         default=None,
@@ -270,16 +272,18 @@ def attach_common_arguments( parser ):
         help="Original output table (tsv or biom format)\nDefault=[STDIN]",
         )
     parser.add_argument(
-        "-o", "--output",
-        default=None,
-        metavar="<path>",
-        help="Path for modified output table\nDefault=[STDOUT]",
-        )
-    parser.add_argument(
         "-L", "--last-metadata",
         default=None,
         metavar="<row name>",
         help="The last row containing metadata, if any\nDefault=[no metadata]",
+        )
+    # some scripts have custom output
+    if not no_output:
+        parser.add_argument(
+            "-o", "--output",
+            default=None,
+            metavar="<path>",
+            help="Path for modified output table\nDefault=[STDOUT]",
         )
     return None
 

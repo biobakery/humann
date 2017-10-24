@@ -6,10 +6,8 @@ import argparse
 
 try:
     from humann2 import config
-    #from humann2.tools import util
-    #from humann2.tools.better_table import Table
-    import util
-    from better_table import Table
+    from humann2.tools import util
+    from humann2.tools.humann2_table import Table
 except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
               "Please check your install." )
@@ -29,10 +27,6 @@ be by log2-ratio or difference. When using ratios, zero values are
 additively smoothed. Note: The script will not proceed if samples
 are not 1:1 paired.
 """ )
-
-# ---------------------------------------------------------------
-# constants
-# ---------------------------------------------------------------
 
 # ---------------------------------------------------------------
 # command-line interface
@@ -80,6 +74,10 @@ def get_args( ):
     args = parser.parse_args( )
     return args
 
+# ---------------------------------------------------------------
+# utilities
+# ---------------------------------------------------------------
+
 def smooth( table ):
     return None
 
@@ -104,4 +102,4 @@ def main( ):
     rna.write( args.output_basename+c_norm_rna_extension, unfloat=True )
 
 if __name__ == "__main__":
-    main()
+    main( )
