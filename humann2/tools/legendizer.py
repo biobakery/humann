@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""
+Adapted from zopy.mplutils2.legendizer
+"""
+
 class Legendizer( ):
 
     def __init__( self, ax, hscale=1.0, vscale=1.0, markersize=10, labelsize=8 ):

@@ -5,13 +5,10 @@ import os
 import sys
 import argparse
 import re
-from textwrap import fill
 
 try:
-    #from humann2.tools import util
-    #from humann2.tools.better_table import Table
-    import util
-    from better_table import Table
+    from humann2.tools import util
+    from humann2.tools.humann2_table import Table
 except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
               "Please check your install." )  
@@ -43,7 +40,7 @@ Mean beta (between-sample) diversity is calculated with the <Bray-Curtis> index.
 # constants
 # ---------------------------------------------------------------
 
-c_eps = 1e-10
+c_eps = 1e-20
 
 # ---------------------------------------------------------------
 # command-line interface
@@ -59,15 +56,15 @@ def get_args( ):
         "-P", "--min-prevalence",
         default=0.75,
         metavar="<value in 0.0-1.0>",
-        help=("A function must be 'valid' in this fraction of samples to be considered\n"
+        help=("A function must be detected + well-explained in this fraction of samples to be considered\n"
               "[Default=0.75]")
         )
     parser.add_argument( 
         "-A", "--min-abundance",
-        default=0.0,
+        default=c_eps,
         metavar="<float>",
-        help=("A function must exceed this abundance to be considered 'valid' in a given sample\n"
-              "[Default=0.0]")
+        help=("A function must exceed this abundance to be considered 'detected' in a given sample\n"
+              "[Default=1e-20]")
         )
     parser.add_argument( 
         "-E", "--min-explained",
@@ -122,7 +119,7 @@ def contributional_diversity( table, min_prevalence=None, min_abund=None, min_ex
         # index of samples we'll use for this function
         index = []
         for i in range( n ):
-            if my_tot[i] > min_abund:
+            if my_tot[i] >= min_abund:
                 if my_exp[i] / my_tot[i] >= min_explained:
                     index.append( i )
         if len( index ) / float( n ) >= min_prevalence:
