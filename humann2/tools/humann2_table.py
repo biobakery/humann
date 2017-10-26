@@ -100,16 +100,17 @@ class Table:
     def check_lengths( self ):
         row_lens = {len( row ) for name, row in self.data.items( )}
         if len( row_lens ) == 0:
-            sys.exit( "No data rows loaded." )
+            # try this as a warning and not a failure
+            print( "WARNING: No data rows loaded.", file=sys.stderr )
         elif len( row_lens ) > 1:
-            sys.exit( "Data rows have unequal lengths." )
+            sys.exit( "CRITICAL ERROR: Data rows have unequal lengths." )
         elif row_lens != set( [len( self.headers )] ):
             print( row_lens, set( [len( self.headers )] ) ) 
-            sys.exit( "Data row length does not match number of headers." )
+            sys.exit( "CRITICAL ERROR: Data row length does not match number of headers." )
         elif len( self.metadata ) > 0:
             meta_lens = set( len( row ) for name, row in self.metadata.items( ) )
             if meta_lens != row_lens:
-                sys.exit( "Metadata row lengths not consistent with data row lengths." )
+                sys.exit( "CRITICAL ERROR: Metadata row lengths not consistent with data row lengths." )
 
     def iter_rows( self, unfloat=False ):
         # headers
