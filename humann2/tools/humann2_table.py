@@ -92,10 +92,11 @@ class Table:
     def report( self ):
         if self.verbose:
             print( "  # of samples: {:,}".format( len( self.headers ) ), file=sys.stderr )
-            print( "  # of metadata rows: {:,}".format( len( self.metadata ) ), file=sys.stderr )
-            print( "  # of feature rows: {:,}".format( len( self.data ) ), file=sys.stderr )
+            if len( self.metadata ) > 0:
+                print( "  # of metadata rows: {:,}".format( len( self.metadata ) ), file=sys.stderr )
             totals = {util.fsplit( f )[0] for f in util.fsort( self.data )}
             print( "  # of feature totals: {:,}".format( len( totals ) ), file=sys.stderr )
+            print( "  # of feature rows: {:,}".format( len( self.data ) ), file=sys.stderr )
 
     def check_lengths( self ):
         row_lens = {len( row ) for name, row in self.data.items( )}
