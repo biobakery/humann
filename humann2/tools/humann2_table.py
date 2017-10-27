@@ -113,6 +113,25 @@ class Table:
             if meta_lens != row_lens:
                 sys.exit( "CRITICAL ERROR: Metadata row lengths not consistent with data row lengths." )
 
+    def resample( self, samples ):
+        """ slice columns from table as new table """
+        colmap = {s:i for i, s in enumerate( self.headers )}
+        order = []
+        for s in samples:
+            if s in colmap:
+                order.append( colmap[s] )
+            else:
+                path = "table" if self.source is None else "table <{}>".format( self.source )
+                sys.exit( "CRITICAL ERROR: could not find sample <{}> in {}.".format( s, path ) )
+        new_headers = [self.headers[i] for i in order]
+        new_data = {}
+        for f, row in self.data:
+            new_data[f] = row[order]
+        new_metadata = OrderedDict( )
+        for f, row in self.metadata:
+            new_metadata[f] = [row[i] for i in order]
+        return Table( new_data, headers=new_headers, metadata=new_metadata )
+
     def iter_rows( self, unfloat=False ):
         # headers
         yield [self.anchor] + self.headers

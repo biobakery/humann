@@ -24,8 +24,7 @@ Given HUMAnN2 output for metatranscriptomes (mtx) and metagenomes (mgx)
 from the same biosamples, produce a new table of "relative expression"
 values by normalizing mtx by their mgx copy number. Normalization can
 be by log2-ratio or difference. When using ratios, zero values are 
-additively smoothed. Note: The script will not proceed if samples
-are not 1:1 paired.
+additively smoothed.
 """ )
 
 # ---------------------------------------------------------------
@@ -52,9 +51,16 @@ def get_args( ):
         )
     parser.add_argument( 
         "-o", "--output",
-        required=True,
+        default="relative_expression.tsv",
         metavar="<path>",
-        help="Relative expression values",
+        help="Where to write relative expression values\n[Default=relative_expression.tsv]",
+        )
+    parser.add_argument(
+        "-s", "--sample-map",
+        metavar="<path>",
+        help=("Two columns pairing the DNA samples with RNA samples"
+              "If not provided, program will assume that sample N/column N+1"
+              "from the two tables should be paired"),
         )
     parser.add_argument( 
         "-m", "--mode",

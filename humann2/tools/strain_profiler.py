@@ -5,15 +5,20 @@ import argparse
 import sys
 import csv
 
-from humann2.tools import util
+try:
+    from humann2.tools import util
+    from humann2.tools.humann2_table import Table
+except ImportError:
+    sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
+              "Please check your install." )
 
-description = """
-HUMAnN2 utility for making strain profiles
-==========================================
-Based on the principle of detecting variable 
-presence and absence of gene families within a species
-that is otherwise well-covered in multiple samples.
-"""
+description = util.wrap( """
+HUMAnN2 utility for building strain profiles
+
+For well-covered species, slice out profiles of gene presence/absence 
+as a strain profile across samples. NOTE: Preferred input is a HUMAnN2 gene
+families file containing UNNORMALIZED RPK units (for coverage inference).
+""" )
 
 # ---------------------------------------------------------------
 # constants
@@ -22,56 +27,64 @@ that is otherwise well-covered in multiple samples.
 c_strain_profile_extension = "-strain_profile.tsv"
 c_tax_delim = "."
 c_forbidden = ["unclassified"]
+c_formats_help = """(You may list more than one.)
+abunds: output the strain profiles in the original abundance units
+binary: output the strain profiles in 1/0 (presence/absence) units
+hybrid: output binary/original value pairs"""
 
 # ---------------------------------------------------------------
 # utilities 
 # ---------------------------------------------------------------
 
-def get_args ():
+def get_args( ):
     """ Get args from Argparse """
     parser = argparse.ArgumentParser(
         description=description,
         formatter_class=argparse.RawTextHelpFormatter
         )
+    util.attach_common_arguments( parser, no_output=True )
     parser.add_argument( 
-        "-i", "--input", 
-        default=None,
-        help="Original output table (tsv or biom format); default=[TSV/STDIN]",
+        "-o", "--output-directory", 
+        metavar="<path>",
+        default=".",
+        help="Directory to write strain profiles\n[Default=.]",
         )
     parser.add_argument( 
-        "-m", "--critical_mean", 
-        type=float,
-        default=10.0,
-        help="Default mean non-zero gene abundance for inclusion; default=10.0",
-        )
-    parser.add_argument( 
-        "-n", "--critical_count", 
+        "-g", "--minimum-nonzero-genes", 
+        metavar="<int>",
         type=int,
         default=500,
-        help="Default non-zero number of genes for inclusion; default=500",
+        help=("To be considered, a species must recruit reads to this "
+              "many genes in a sample\n[Default=500]"),
         )
     parser.add_argument( 
-        "-p", "--pinterval",
+        "-c", "--median-coverage", 
         type=float,
-        default=[util.c_eps, 1.0],
-        nargs=2,
-        help="Only genes with prevalence in this interval are allowed; default=[1e-10, 1]",
+        metavar="<float>",
+        default=20.0,
+        help=("To be considered, non-zero genes must meet this median abundance\n"
+              "[Default=20.0; assuming RPK units from 100 nt reads, 20 RPK ~ 2x coverage]"),
         )
     parser.add_argument( 
-        "-s", "--critical_samples",
+        "-s", "--minimum-samples",
         type=int,
+        metavar="<int>",
         default=2,
-        help="Threshold number of samples having strain; default=2",
+        help=("Only write strain profiles for strains detected in at least this many samples\n"
+              "[Default=2]"),
         )
     parser.add_argument( 
-        "-l", "--limit",
-        default=None,
-        help="Limit output to species matching a particular pattern, e.g. 'Streptococcus'; default=OFF",
+        "-f", "--output-formats",
+        metavar="<abunds/hybrid/binary>",
+        #nargs="+",
+        default=["binary"],
+        choices=["abunds", "hybrid", "binary"],
+        help=c_formats_help,
         )
-    args = parser.parse_args()
+    args = parser.parse_args( )
     return args
 
-class Partition ( ):
+class Partition( ):
     def __init__ ( self, name=None ):
         self.name = name
         self.rows = {}
