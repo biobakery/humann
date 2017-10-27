@@ -130,25 +130,25 @@ def contributional_diversity( table, min_prevalence=None, min_abund=None, min_ex
         my_tot = total[f][index]
         my_exp = explained[f][index]
         # basic stats (all samples)
-        inner["0: Prevalence (N)"] = len( index )
-        inner["1: Prevalence (frac)"] = len( index ) / float( len( total[f] ) )
-        inner["2: Mean abundance"] = np.mean( my_tot )
+        inner["1: Prevalence (N)"] = len( index )
+        inner["2: Prevalence (frac)"] = len( index ) / float( len( total[f] ) )
+        inner["3: Mean abundance"] = np.mean( my_tot )
         my_frac = my_exp / my_tot
-        inner["3: Mean explained (frac)"] = np.mean( my_frac )
+        inner["4: Mean explained (frac)"] = np.mean( my_frac )
         # stack of per-species contributions normalized to _their_ total
         stack = [row[index] / my_exp for row in stacks[f]]
         # convert to 2d array with samples as first axis
         samples = np.vstack( stack ).transpose( )
         # compute diversity (alpha=gini-simpson / beta=bray-curtis)
-        inner["4: alpha contrib. div."] = adiv_fast( samples )
-        inner["5: beta contrib. div."] = bdiv_fast( samples )
+        inner["5: Alpha contrib. div."] = adiv_fast( samples )
+        inner["6: Beta contrib. div."] = bdiv_fast( samples )
     # report
     print( "Contributional diversity report:", file=sys.stderr )
     tot = len( total )
     print( "  Features considered: {:,}".format( tot ), file=sys.stderr )
     tot = len( fstats )
     frac = 100 * len( fstats ) / float( len( total ) )
-    print( "  Required feature abundance >{} and >={}% of copies explained in >={}% of samples".format(
+    print( "  Required feature abundance >={} and >={}% of copies explained in >={}% of samples".format(
             min_abund, 100 * min_explained, 100 * min_prevalence ), file=sys.stderr )
     print( "  Features deemed appropriate for analysis: {:,} ({:.1f}%)".format( tot, frac ), file=sys.stderr )
     # nested dict of per-function stats
@@ -177,7 +177,7 @@ def main( ):
             temp.append( fstats[f][h] )
         data[f] = np.array( temp )
     fstats = Table( data, headers=headers )
-    fstats.anchor = "# Func \ Stat"
+    fstats.anchor = "# Feat \ Stat"
     fstats.write( args.output, unfloat=True )
 
 if __name__ == "__main__":
