@@ -21,7 +21,6 @@ that is otherwise well-covered in multiple samples.
 
 c_strain_profile_extension = "-strain_profile.tsv"
 c_tax_delim = "."
-c_epsilon = 1e-10
 c_forbidden = ["unclassified"]
 
 # ---------------------------------------------------------------
@@ -54,7 +53,7 @@ def get_args ():
     parser.add_argument( 
         "-p", "--pinterval",
         type=float,
-        default=[c_epsilon, 1.0],
+        default=[util.c_eps, 1.0],
         nargs=2,
         help="Only genes with prevalence in this interval are allowed; default=[1e-10, 1]",
         )
@@ -116,7 +115,7 @@ def partition_table( table, m, n, pinterval ):
         for i in partition.get_rows():
             values = [table.data[i][j] for j in partition.get_cols()]
             nonzero = [k for k in values if k > 0]
-            prevalence = len( nonzero ) / ( c_epsilon + float( len( values ) ) )
+            prevalence = len( nonzero ) / ( util.c_eps + float( len( values ) ) )
             # print( name, i, values, nonzero, prevalence, partition.name )
             if not pinterval[0] <= prevalence <= pinterval[1]:
                 partition.del_rows( i )

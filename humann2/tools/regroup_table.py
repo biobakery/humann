@@ -30,8 +30,6 @@ new table with group values in place of feature values.
 # constants
 # ---------------------------------------------------------------
 
-c_eps = 1e-10
-
 c_functions = {
     "sum":    np.sum,
     "mean":   np.mean,
@@ -179,7 +177,7 @@ def regroup( table, map_feature_groups, function ):
                             if len( groups ) >= 2] )
     fdict["P1"] = 100 * fdict["N1"] / float( fdict["NT"] )
     fdict["P2"] = 100 * fdict["N2"] / float( fdict["NT"] )
-    fdict["MS"] = 100 * np.mean( group_mass / (c_eps + total_mass) )
+    fdict["MS"] = 100 * np.mean( group_mass / (util.c_eps + total_mass) )
     string = ("Regrouping report:\n"
               "  Original mass regrouped (mean over samples, excludes unclassified): {MS:.1f}%\n"
               "  # of original community features: {NT:,}\n"  

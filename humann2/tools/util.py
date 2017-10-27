@@ -114,6 +114,10 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
 # constants
 # ---------------------------------------------------------------
 
+c_eps             = 1e-20
+c_many_bytes      = 1e8
+c_zip_multiplier  = 10
+
 c_strat_delim     = "|"
 c_taxon_delim     = "."
 c_name_delim      = ": "
@@ -123,8 +127,6 @@ c_ungrouped       = "UNGROUPED"
 c_unmapped        = "UNMAPPED"
 c_unintegrated    = "UNINTEGRATED"
 c_unclassified    = "unclassified"
-c_many_bytes      = 1e8
-c_zip_multiplier  = 10
 
 c_topsort = {
     c_unmapped:0,

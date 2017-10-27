@@ -28,8 +28,6 @@ corresponding total is kept/discarded.
 # constants
 # ---------------------------------------------------------------
 
-c_eps = 1e-20
-
 # ---------------------------------------------------------------
 # command-line interface
 # ---------------------------------------------------------------
@@ -57,7 +55,7 @@ def get_args( ):
         )
     parser.add_argument( 
         "-a", "--abund-detect",
-        default=c_eps,
+        default=util.c_eps,
         metavar="<float>",
         type=float,
         help="Abundance threshold for detection\n[Default: >0]",

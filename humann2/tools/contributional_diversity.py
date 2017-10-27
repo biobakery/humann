@@ -40,8 +40,6 @@ Mean beta (between-sample) diversity is calculated with the <Bray-Curtis> index.
 # constants
 # ---------------------------------------------------------------
 
-c_eps = 1e-20
-
 # ---------------------------------------------------------------
 # command-line interface
 # ---------------------------------------------------------------
@@ -61,9 +59,9 @@ def get_args( ):
         )
     parser.add_argument( 
         "-A", "--min-abundance",
-        default=c_eps,
+        default=util.c_eps,
         metavar="<float>",
-        help=("A function must exceed this abundance to be considered 'detected' in a given sample\n"
+        help=("A function must meet this abundance to be considered 'detected' in a given sample\n"
               "[Default=1e-20]")
         )
     parser.add_argument( 

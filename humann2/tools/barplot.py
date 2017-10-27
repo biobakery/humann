@@ -33,7 +33,6 @@ except ImportError:
 # global constants
 # ---------------------------------------------------------------
 
-c_epsilon = 1e-10
 c_hunits = 9
 c_other = "Other"
 
@@ -268,7 +267,7 @@ class FeatureTable:
         if method == "none":
             order = range( self.ncols )
         elif method == "similarity":
-            norm = self.data / ( self.colsums + c_epsilon * np.ones( self.ncols ) )
+            norm = self.data / ( self.colsums + util.c_eps * np.ones( self.ncols ) )
             # note: linkage assumes things to cluster = rows; we want cols
             order = sch.leaves_list( sch.linkage( norm.transpose(), metric="braycurtis" ) )
         elif method == "usimilarity":
@@ -422,7 +421,7 @@ def main( ):
         ylabel      = "log10( Relative abundance )"
         ymin        = min( [k for k in table.colsums if k > 0] ) if args.ylims[0] is None else args.ylims[0]
         floor       = math.floor( np.log10( ymin ) )
-        #floor       = floor if abs( np.log10( ymin ) - floor ) >= c_epsilon else (floor - 1)
+        #floor       = floor if abs( np.log10( ymin ) - floor ) >= util.c_eps else (floor - 1)
         floors      = floor * np.ones( table.ncols )
         crests      = np.array( [np.log10( k ) if k > 10**floor else floor for k in table.colsums] )
         heights     = crests - floors
