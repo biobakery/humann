@@ -44,21 +44,21 @@ def get_args( ):
         default=0,
         metavar="<0-1.0>",
         type=float,
-        help="Remove features that are detected in less than p (fraction) of samples",
+        help="Remove features that are detected in less than <p> (fraction) of samples",
         )
     parser.add_argument( 
         "-n", "--min-samples",
         default=0,
         metavar="<int>",
         type=int,
-        help="Remove features that are detected in less than s samples",
+        help="Remove features that are detected in less than <n> samples",
         )
     parser.add_argument( 
         "-a", "--abund-detect",
         default=util.c_eps,
         metavar="<float>",
         type=float,
-        help="Abundance threshold for detection\n[Default: >0]",
+        help="Abundance threshold for detection\n[Default: non-zero]",
         )
     parser.add_argument( 
         "-x", "--exclude-strata",
@@ -83,6 +83,11 @@ def get_args( ):
         type=str,
         metavar="<pattern>",
         help="Keep only stratified features whose species names match the specified pattern",
+        )
+    parser.add_argument( 
+        "-v", "--invert",
+        action="store_true",
+        help="Instead return rows that did NOT match the specified filters (does not affect metadata)",
         )
     args = parser.parse_args( )
     return args
@@ -131,6 +136,9 @@ def main( ):
             if fcode in allowed and not args.exclude_strata:
                 if args.strata_grep is None or re.search( args.strata_grep, stratum ):
                     data2[f] = table.data[f]
+    # invert?
+    if args.invert:
+        data2 = {k:row for k, row in table.data.items( ) if k not in data2}
     # rebuild table
     table = Table( data2, metadata=table.metadata, headers=table.headers )
     table.write( args.output, unfloat=True )
