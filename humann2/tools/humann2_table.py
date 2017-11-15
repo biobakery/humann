@@ -125,10 +125,10 @@ class Table:
                 sys.exit( "CRITICAL ERROR: could not find sample <{}> in {}.".format( s, path ) )
         new_headers = [self.headers[i] for i in order]
         new_data = {}
-        for f, row in self.data:
+        for f, row in self.data.items( ):
             new_data[f] = row[order]
         new_metadata = OrderedDict( )
-        for f, row in self.metadata:
+        for f, row in self.metadata.items( ):
             new_metadata[f] = [row[i] for i in order]
         return Table( new_data, headers=new_headers, metadata=new_metadata )
 

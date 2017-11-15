@@ -1,9 +1,17 @@
 #! /usr/bin/env python
 
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
-import argparse
+
+import os
 import sys
+import argparse
 import csv
+from math import sqrt
+
+try:
+    from scipy.stats.mstats import mquantiles
+except:
+    sys.exit( "This module requires the Python scientific stack: numpy, scipy, and matplotlib." )
 
 try:
     from humann2.tools import util
@@ -13,24 +21,28 @@ except ImportError:
               "Please check your install." )
 
 description = util.wrap( """
-HUMAnN2 utility for building strain profiles
+HUMAnN2 utility for building strain profiles from genefamilies output
 
-For well-covered species, slice out profiles of gene presence/absence 
-as a strain profile across samples. NOTE: Preferred input is a HUMAnN2 gene
-families file containing UNNORMALIZED RPK units (for coverage inference).
+The script looks for species in a given sample with a coverage "plateau",
+which is expected for well-covered pangenomes with a single, dominant strain.
+If inputting unnormalize RPK units, you can additionally enforce a height
+for this plateau. For example, 20 RPK ~ 1x coverage assuming 100 nt reads. 
 """ )
 
 # ---------------------------------------------------------------
 # constants
 # ---------------------------------------------------------------
 
-c_strain_profile_extension = "-strain_profile.tsv"
-c_tax_delim = "."
-c_forbidden = ["unclassified"]
-c_formats_help = """(You may list more than one.)
-abunds: output the strain profiles in the original abundance units
+c_formats_help = """Select an output format for the strain profiles:
+values: output the strain profiles in the original abundance units
 binary: output the strain profiles in 1/0 (presence/absence) units
-hybrid: output binary/original value pairs"""
+hybrid: output binary/original value pairs
+[Default=binary]"""
+c_binarize_help = """Select a binarization (presence/absence) method:
+nonzero: 'present (1)' defined as abund > 0                      :: very lenient
+sqrt:    'present (1)' defined as abund > sqrt( plateau height ) :: lenient
+half:    'present (1)' defined as abund > 0.5 * plateau height   :: strict
+[Default=sqrt]"""
 
 # ---------------------------------------------------------------
 # utilities 
@@ -44,125 +56,116 @@ def get_args( ):
         )
     util.attach_common_arguments( parser, no_output=True )
     parser.add_argument( 
-        "-o", "--output-directory", 
+        "-o", "--outdir", 
         metavar="<path>",
         default=".",
         help="Directory to write strain profiles\n[Default=.]",
         )
     parser.add_argument( 
-        "-g", "--minimum-nonzero-genes", 
+        "-g", "--min-nonzero-genes", 
         metavar="<int>",
         type=int,
         default=500,
         help=("To be considered, a species must recruit reads to this "
-              "many genes in a sample\n[Default=500]"),
+              "many gene families in a sample\n[Default=500]"),
         )
     parser.add_argument( 
-        "-c", "--median-coverage", 
+        "-S", "--plateau-slope", 
         type=float,
         metavar="<float>",
-        default=20.0,
-        help=("To be considered, non-zero genes must meet this median abundance\n"
-              "[Default=20.0; assuming RPK units from 100 nt reads, 20 RPK ~ 2x coverage]"),
+        default=2.0,
+        help=("To be considered, Q3/Q1 for non-zero genes cannot exceed this value\n"
+              "[Default=2.0]"),
         )
     parser.add_argument( 
-        "-s", "--minimum-samples",
+        "-H", "--plateau-height", 
+        type=float,
+        metavar="<float>",
+        default=util.c_eps,
+        help=("To be considered, non-zero genes must meet this median abundance\n"
+              "[Default=No minimum]"),
+        )
+    parser.add_argument( 
+        "-s", "--min-samples",
         type=int,
         metavar="<int>",
-        default=2,
+        default=1,
         help=("Only write strain profiles for strains detected in at least this many samples\n"
-              "[Default=2]"),
+              "[Default=1]"),
         )
     parser.add_argument( 
-        "-f", "--output-formats",
-        metavar="<abunds/hybrid/binary>",
-        #nargs="+",
-        default=["binary"],
-        choices=["abunds", "hybrid", "binary"],
+        "-b", "--binarize",
+        metavar="<choice>",
+        default="sqrt",
+        help=c_binarize_help,
+        )
+    parser.add_argument( 
+        "-f", "--format",
+        metavar="<choice>",
+        default="binary",
+        choices=["values", "hybrid", "binary"],
         help=c_formats_help,
         )
     args = parser.parse_args( )
     return args
 
-class Partition( ):
-    def __init__ ( self, name=None ):
-        self.name = name
-        self.rows = {}
-        self.cols = {}
-    def add_rows( self, *args ):
-        [self.rows.update( [[i, 1]] ) for i in args]
-    def add_cols( self, *args ):
-        [self.cols.update( [[j, 1]] ) for j in args]
-    def del_rows( self, *args ):
-        [self.rows.pop( i ) for i in args]    
-    def del_cols( self, *args ):
-        [self.cols.pop( j ) for j in args]
-    def get_rows( self ):
-        return sorted( self.rows )
-    def get_cols( self ):
-        return sorted( self.cols )
+def strainer( bug_table, args ):
+    good_samples = {}
+    for i, h in enumerate( bug_table.headers ):
+        nonzero = [row[i] for row in bug_table.data.values( )]
+        nonzero = [k for k in nonzero if k > 0]
+        GOOD = False
+        if len( nonzero ) >= args.min_nonzero_genes:
+            q1, med, q3 = mquantiles( nonzero )
+            if med >= args.plateau_height:
+                if q3 / q1 <= args.plateau_slope:
+                    good_samples[h] = med
+    return good_samples
 
-def partition_table( table, m, n, pinterval ):
-    # first build the partitions
-    partitions = {}
-    for i, rowhead in enumerate( table.rowheads ):
-        table.data[i] = list(map( float, table.data[i] ))
-        if util.c_strat_delim in rowhead:
-            gene, species = rowhead.split( util.c_strat_delim )
-            # disallow the unclassified stratum
-            if species not in c_forbidden:
-                species = species.split( c_tax_delim )[1]
-                if species not in partitions:
-                    partitions[species] = Partition( species )
-                partitions[species].add_rows( i )
-    # limit partitions to subjects with mean non-zero gene abund above threshold
-    for name, partition in partitions.items():
-        partition.add_cols( *range( len( table.colheads ) ) )
-        for j in partition.get_cols():
-            values = [table.data[i][j] for i in partition.get_rows()]
-            nonzero = [k for k in values if k > 0]
-            if len( nonzero ) < n or sum( nonzero ) / float( len( nonzero ) ) < m:
-                partition.del_cols( j )
-    # limit partitions to interesting features (if user changed f cutoff)
-    for name, partition in partitions.items():
-        for i in partition.get_rows():
-            values = [table.data[i][j] for j in partition.get_cols()]
-            nonzero = [k for k in values if k > 0]
-            prevalence = len( nonzero ) / ( util.c_eps + float( len( values ) ) )
-            # print( name, i, values, nonzero, prevalence, partition.name )
-            if not pinterval[0] <= prevalence <= pinterval[1]:
-                partition.del_rows( i )
-    return partitions
-
-def write_partition ( table, partition, outfile ):
-    matrix = [["HEADERS"] + [table.colheads[j] for j in partition.get_cols()]]
-    for i in partition.get_rows():
-        row = [table.rowheads[i]]
-        row += [table.data[i][j] for j in partition.get_cols()]
-        matrix.append( row )
-    with open( outfile, "w" ) as fh:
-        writer = csv.writer( fh, dialect='excel-tab' )
-        for row in matrix:
-            writer.writerow( row )
+def reformat( bug_table, sample_heights, args ):
+    for i, h in enumerate( bug_table.headers ):
+        crit = util.c_eps
+        if args.trimming_method == "sqrt":
+            crit = math.sqrt( sample_heights[h] )
+        elif args.trimming_method == "half":
+            crit = sample_heights[h] / 2.0
+        for f in bug_table.data:
+            # convert from array to list
+            row = bug_table.data[f] = list( bug_table.data[f] )
+            binary = "1" if row[i] >= crit else "0"
+            if args.format == "binary":
+                row[i] = binary
+            elif args.format == "hybrid":
+                row[i] = "|".join( [str( row[i] ), binary] )
+            elif args.format == "values":
+                row[i] = str( row[i] )
+    return None
 
 # ---------------------------------------------------------------
 # main
 # ---------------------------------------------------------------
 
-def main ( ):
-    args = get_args()
-    table = util.Table( args.input )
-    partitions = partition_table( 
-        table,
-        args.critical_mean,
-        args.critical_count,
-        args.pinterval,
-        )
-    for name, partition in partitions.items():
-        if len( partition.get_cols() ) >= args.critical_samples and \
-                len( partition.get_rows() ) >= 1 and \
-                ( args.limit is None or args.limit in name ):
-            write_partition( table, partition, name+c_strain_profile_extension )
+def main( ):
+    args = get_args( )
+    table = Table( args.input, last_metadata=args.last_metadata )
+    # make new tables for each bug
+    bug_tables = {}
+    for f in util.fsort( table.data ):
+        fcode, fname, bug = util.fsplit( f )
+        if bug is not None and "s__" in bug:
+            if bug not in bug_tables:
+                bug_tables[bug] = Table( {}, metadata=table.metadata, headers=table.headers )
+            bug_tables[bug].data[f] = table.data[f]
+    # process each table
+    for bug in sorted( bug_tables ):
+        filename = ".".join( [bug, "strains", args.format, "tsv"] )
+        bt = bug_tables[bug]
+        good_samples = strainer( bt, args )
+        if len( good_samples ) >= args.min_samples:
+            bt = bt.resample( good_samples )
+            reformat( bt, good_samples, args )
+            bt.write( os.path.join( args.outdir, filename ) )
+    print( "Finished successfully.", file=sys.stderr )
             
 if __name__ == "__main__":
-    main()
+    main( )
