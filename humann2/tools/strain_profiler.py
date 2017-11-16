@@ -39,10 +39,10 @@ binary: output the strain profiles in 1/0 (presence/absence) units
 hybrid: output binary/original value pairs
 [Default=binary]"""
 c_binarize_help = """Select a binarization (presence/absence) method:
-nonzero: 'present (1)' defined as abund > 0                      :: very lenient
-sqrt:    'present (1)' defined as abund > sqrt( plateau height ) :: lenient
 half:    'present (1)' defined as abund > 0.5 * plateau height   :: strict
-[Default=sqrt]"""
+sqrt:    'present (1)' defined as abund > sqrt( plateau height ) :: lenient
+nonzero: 'present (1)' defined as abund > 0                      :: very lenient
+[Default=half]"""
 
 # ---------------------------------------------------------------
 # utilities 
@@ -95,13 +95,19 @@ def get_args( ):
         )
     parser.add_argument( 
         "-b", "--binarize",
-        metavar="<choice>",
-        default="sqrt",
+        metavar="<half/sqrt/nonzero>",
+        default="half",
         help=c_binarize_help,
+        choices=["half", "sqrt", "nonzero"],
+        )
+    parser.add_argument( 
+        "-z", "--fuzzy",
+        action="store_true",
+        help="When binarizing, set non-detect, non-zero genes to '0.5'",
         )
     parser.add_argument( 
         "-f", "--format",
-        metavar="<choice>",
+        metavar="<binary/values/hybrid>",
         default="binary",
         choices=["values", "hybrid", "binary"],
         help=c_formats_help,
@@ -125,18 +131,20 @@ def strainer( bug_table, args ):
 def reformat( bug_table, sample_heights, args ):
     for i, h in enumerate( bug_table.headers ):
         crit = util.c_eps
-        if args.trimming_method == "sqrt":
-            crit = math.sqrt( sample_heights[h] )
-        elif args.trimming_method == "half":
+        if args.binarize == "sqrt":
+            crit = sqrt( sample_heights[h] )
+        elif args.binarize == "half":
             crit = sample_heights[h] / 2.0
         for f in bug_table.data:
             # convert from array to list
             row = bug_table.data[f] = list( bug_table.data[f] )
-            binary = "1" if row[i] >= crit else "0"
+            binary = 1 if row[i] >= crit else 0
+            if args.fuzzy and binary == 0 and row[i] > 0:
+                binary = 0.5
             if args.format == "binary":
                 row[i] = binary
             elif args.format == "hybrid":
-                row[i] = "|".join( [str( row[i] ), binary] )
+                row[i] = "|".join( map( str, [row[i], binary] ) )
             elif args.format == "values":
                 row[i] = str( row[i] )
     return None
@@ -148,16 +156,25 @@ def reformat( bug_table, sample_heights, args ):
 def main( ):
     args = get_args( )
     table = Table( args.input, last_metadata=args.last_metadata )
-    # make new tables for each bug
-    bug_tables = {}
+    # regroup rows by bug
+    bug_datas = {}
     for f in util.fsort( table.data ):
         fcode, fname, bug = util.fsplit( f )
-        if bug is not None and "s__" in bug:
-            if bug not in bug_tables:
-                bug_tables[bug] = Table( {}, metadata=table.metadata, headers=table.headers )
-            bug_tables[bug].data[f] = table.data[f]
+        if bug is not None and "s__" in bug and "_unknown" not in fcode:
+            inner = bug_datas.setdefault( bug, {} )
+            inner[f] = table.data[f]
+    # convert to tables
+    bug_tables = {}
+    for bug, data in bug_datas.items( ):
+        if len( data ) >= args.min_nonzero_genes:
+            bug_tables[bug] = Table( data, metadata=table.metadata, 
+                                     headers=table.headers )
     # process each table
+    total = len( bug_tables )
+    index = 0
     for bug in sorted( bug_tables ):
+        index += 1
+        print( "  Analyzing {: >3} of {}: {}".format( index, total, bug ), file=sys.stderr )
         filename = ".".join( [bug, "strains", args.format, "tsv"] )
         bt = bug_tables[bug]
         good_samples = strainer( bt, args )
