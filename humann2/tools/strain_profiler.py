@@ -38,10 +38,10 @@ values: output the strain profiles in the original abundance units
 binary: output the strain profiles in 1/0 (presence/absence) units
 hybrid: output binary/original value pairs
 [Default=binary]"""
-c_binarize_help = """Select a binarization (presence/absence) method:
-half:    'present (1)' defined as abund > 0.5 * plateau height   :: strict
-sqrt:    'present (1)' defined as abund > sqrt( plateau height ) :: lenient
-nonzero: 'present (1)' defined as abund > 0                      :: very lenient
+c_binarize_help = """Select a binarization (1=presence; 0=absence) method:
+half:    'present' defined as abund > 0.5 * plateau height   :: strict
+sqrt:    'present' defined as abund > sqrt( plateau height ) :: lenient
+nonzero: 'present' defined as abund > 0                      :: very lenient
 [Default=half]"""
 
 # ---------------------------------------------------------------
@@ -70,7 +70,7 @@ def get_args( ):
               "many gene families in a sample\n[Default=500]"),
         )
     parser.add_argument( 
-        "-S", "--plateau-slope", 
+        "-s", "--plateau-slope", 
         type=float,
         metavar="<float>",
         default=2.0,
@@ -78,7 +78,7 @@ def get_args( ):
               "[Default=2.0]"),
         )
     parser.add_argument( 
-        "-H", "--plateau-height", 
+        "-a", "--plateau-height", 
         type=float,
         metavar="<float>",
         default=util.c_eps,
@@ -86,7 +86,7 @@ def get_args( ):
               "[Default=No minimum]"),
         )
     parser.add_argument( 
-        "-s", "--min-samples",
+        "-n", "--min-samples",
         type=int,
         metavar="<int>",
         default=1,
@@ -103,7 +103,7 @@ def get_args( ):
     parser.add_argument( 
         "-z", "--fuzzy",
         action="store_true",
-        help="When binarizing, set non-detect, non-zero genes to '0.5'",
+        help="When binarizing, set non-detect:non-zero genes to '0.5'",
         )
     parser.add_argument( 
         "-f", "--format",
@@ -174,14 +174,17 @@ def main( ):
     index = 0
     for bug in sorted( bug_tables ):
         index += 1
-        print( "  Analyzing {: >3} of {}: {}".format( index, total, bug ), file=sys.stderr )
+        print( "Analyzing {: >3} of {}: {}".format( index, total, bug ), file=sys.stderr )
         filename = ".".join( [bug, "strains", args.format, "tsv"] )
         bt = bug_tables[bug]
         good_samples = strainer( bt, args )
         if len( good_samples ) >= args.min_samples:
+            print( "  Identified {} good profiles".format( len( good_samples ) ), file=sys.stderr )
             bt = bt.resample( good_samples )
             reformat( bt, good_samples, args )
             bt.write( os.path.join( args.outdir, filename ) )
+        else:
+            print( "  Not enough good profiles ({})".format( len( good_samples ) ), file=sys.stderr )
     print( "Finished successfully.", file=sys.stderr )
             
 if __name__ == "__main__":

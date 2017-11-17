@@ -76,8 +76,8 @@ class Table:
                     try:
                         self.data[row[0]] = np.array( row[1:], dtype=np.float )
                     except:
-                        sys.exit( "Died while trying to turn row <{}> into numbers;\n"
-                                  "Use --last-metadata <row> to specify end of metadata.".format( row[0] ) )
+                        sys.exit( ("Died while trying to turn row <{}> into numbers;\n"
+                                  "Use --last-metadata <row> to specify end of metadata.".format( row[0] )) )
 
         self.n = len( self.headers )
         self.check_lengths( )
@@ -115,14 +115,15 @@ class Table:
 
     def resample( self, samples ):
         """ slice columns from table as new table """
-        colmap = {s:i for i, s in enumerate( self.headers )}
-        order = []
+        samples = set( samples )
+        original = set( self.headers )
         for s in samples:
-            if s in colmap:
-                order.append( colmap[s] )
-            else:
-                path = "table" if self.source is None else "table <{}>".format( self.source )
-                sys.exit( "CRITICAL ERROR: could not find sample <{}> in {}.".format( s, path ) )
+            if s not in original:
+                print( "WARNING: Can't find sample <{}>".format( s ), file=sys.stderr )
+        order = []
+        for i, h in enumerate( self.headers ):
+            if h in samples:
+                order.append( i )
         new_headers = [self.headers[i] for i in order]
         new_data = {}
         for f, row in self.data.items( ):
