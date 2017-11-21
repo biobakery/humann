@@ -129,7 +129,6 @@ def strainer( bug_table, args ):
     return good_samples
 
 def reformat( bug_table, sample_quartiles, args ):
-    bug_table.data = {k:row for k, row in bug_table.data.items( ) if sum( row ) > 0}
     for i, h in enumerate( bug_table.headers ):
         q1, med, q3 = sample_quartiles[h]
         upper_inner_fence = q3 + 1.5 * (q3 - q1)

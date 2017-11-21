@@ -21,7 +21,6 @@ except ImportError:
 
 description = util.wrap( """
 HUMAnN2 utility for calculating contributional diversity
-========================================================
 
 Computes ecological diversity statistics for individual 
 functions in a stratified HUMAnN2 profile based on their 
