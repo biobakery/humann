@@ -129,6 +129,7 @@ def strainer( bug_table, args ):
     return good_samples
 
 def reformat( bug_table, sample_quartiles, args ):
+    bug_table.data = {k:row for k, row in bug_table.data.items( ) if sum( row ) > 0}
     for i, h in enumerate( bug_table.headers ):
         q1, med, q3 = sample_quartiles[h]
         upper_inner_fence = q3 + 1.5 * (q3 - q1)
@@ -187,8 +188,13 @@ def main( ):
         good_samples = strainer( bt, args )
         if len( good_samples ) >= args.min_samples:
             print( "  Identified {} good profiles".format( len( good_samples ) ), file=sys.stderr )
+            # restrict to good samples
             bt = bt.resample( good_samples )
+            # remove all-zero rows
+            bt.data = {k:row for k, row in bt.data.items( ) if sum( row ) > 0}
+            # change value encoding
             reformat( bt, good_samples, args )
+            # write the table
             bt.write( os.path.join( args.outdir, filename ) )
         else:
             print( "  Not enough good profiles ({})".format( len( good_samples ) ), file=sys.stderr )
