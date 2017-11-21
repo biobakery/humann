@@ -103,7 +103,7 @@ def get_args( ):
     parser.add_argument( 
         "-z", "--fuzzy",
         action="store_true",
-        help="When binarizing, set non-detect:non-zero genes to '0.5'",
+        help="When binarizing, set non-detect:non-zero genes to '0.5' and high outliers to '1.5'",
         )
     parser.add_argument( 
         "-f", "--format",
@@ -125,22 +125,29 @@ def strainer( bug_table, args ):
             q1, med, q3 = mquantiles( nonzero )
             if med >= args.plateau_height:
                 if q3 / q1 <= args.plateau_slope:
-                    good_samples[h] = med
+                    good_samples[h] = [q1, med, q3]
     return good_samples
 
-def reformat( bug_table, sample_heights, args ):
+def reformat( bug_table, sample_quartiles, args ):
     for i, h in enumerate( bug_table.headers ):
+        q1, med, q3 = sample_quartiles[h]
+        upper_inner_fence = q3 + 1.5 * (q3 - q1)
         crit = util.c_eps
         if args.binarize == "sqrt":
-            crit = sqrt( sample_heights[h] )
+            crit = sqrt( med )
         elif args.binarize == "half":
-            crit = sample_heights[h] / 2.0
+            crit = med / 2.0
         for f in bug_table.data:
             # convert from array to list
             row = bug_table.data[f] = list( bug_table.data[f] )
             binary = 1 if row[i] >= crit else 0
-            if args.fuzzy and binary == 0 and row[i] > 0:
-                binary = 0.5
+            # adjust for fuzzy binarization
+            if args.fuzzy:
+                if binary == 0 and row[i] > 0:
+                    binary = 0.5
+                elif row[i] > upper_inner_fence:
+                    binary = 1.5
+            # impose desired output format
             if args.format == "binary":
                 row[i] = binary
             elif args.format == "hybrid":

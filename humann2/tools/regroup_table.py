@@ -23,7 +23,9 @@ description = util.wrap( """
 HUMAnN2 utility for regrouping table features
 
 Given a table of feature values and a mapping of groups to component features, produce a 
-new table with group values in place of feature values.
+new table with group values in place of feature values. This is most often used to sum
+the abundance of gene families that are annotated to broader functional categories ("groups"),
+such as GO terms or Pfam domains.
 """ )
 
 # ---------------------------------------------------------------
@@ -119,9 +121,8 @@ def get_args( ):
         "-f", "--function", 
         choices=c_functions.keys( ),
         default="sum",
-        metavar="<choice>",
-        help=util.pretty_grid( c_functions.keys( ), cols=4, 
-                               desc="Select a regrouping function (default=sum):" ),
+        metavar="<" + "/".join( c_functions.keys( ) ) + ">",
+        help="Select a regrouping function\n[Default=sum]",
         )
     args = parser.parse_args()
     return args
