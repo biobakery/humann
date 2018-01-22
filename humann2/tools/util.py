@@ -414,7 +414,7 @@ def fsplit( feature ):
         name = items[1]
     elif len( items ) > 2:
         # possible name containing ": "
-        name = c_name.delim.join( items[1:] )
+        name = c_name_delim.join( items[1:] )
     return code, name, stratum
 
 def fjoin( feature, name=None, stratum=None ):
