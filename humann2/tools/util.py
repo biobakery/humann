@@ -380,12 +380,42 @@ def load_polymap( path, start=0, skip=None, allowed_keys=None, allowed_values=No
     return polymap
 
 def fsplit( feature ):
+    """
+    Expected format is:
+      CODE: NAME|STRATUM
+    As in:
+      GENE123: tRNA transferase|s__Bacteroides_dorei
+    Robust to names containing ": ":
+      GENE123: tRNA transferase: proline|s__Bacteroides_dorei
+    Not robust to names containing "|" (lethal error):
+      GENE123: tRNA transferase|proline|s__Bacteroides_dorei
+    """
+    code = None
+    name = None
+    stratum = None
+    # extract stratum
     items = feature.split( c_strat_delim )
-    stratum = None if len( items ) == 1 else items[1]
-    items = items[0].split( c_name_delim )
-    name = None if len( items ) == 1 else items[1]
-    feature = items[0]
-    return feature, name, stratum
+    if len( items ) == 1:
+        # looks like an unstratified feature
+        code = items[0]
+    elif len( items ) == 2:
+        # stratified feature
+        code = items[0]
+        stratum = items[1]
+    else:
+        # possible names with "|"
+        sys.exit( "LETHAL ERROR: bad feature name: {}".format( f ) )
+    # extract name
+    items = code.split( c_name_delim )
+    if len( items ) == 1:
+        code = items[0]
+    elif len( items ) == 2:
+        code = items[0]
+        name = items[1]
+    elif len( items ) > 2:
+        # possible name containing ": "
+        name = c_name.delim.join( items[1:] )
+    return code, name, stratum
 
 def fjoin( feature, name=None, stratum=None ):
     if name is not None:
