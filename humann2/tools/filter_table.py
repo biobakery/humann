@@ -13,15 +13,25 @@ except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package.\n" +
               "Please check your install." )
 
+try:
+    import numpy as np
+except:
+    sys.exit( "This module requires the Python scientific stack: numpy, scipy, and matplotlib." )
+
+# ---------------------------------------------------------------
+# description
+# ---------------------------------------------------------------
+
 description = util.wrap( """
 HUMAnN2 utility for filtering features from a table
 
 Includes options for filtering based on abundance/prevalence,
-feature name, and feature stratification status. Does not
-perturb table metadata if present. With the exception of stratification
-status, all other filters are carried out on community totals, and
-stratifications within that total will be kept/discarded if the
-corresponding total is kept/discarded.
+feature name, feature stratification, and dominance of a feature by
+one of its strata. Does not perturb table metadata if present. 
+With the exception of stratification status/name, all other filters 
+are carried out on community totals, and stratifications within 
+that total will be kept/discarded if the corresponding total 
+is kept/discarded.
 """ )
 
 # ---------------------------------------------------------------
@@ -41,24 +51,38 @@ def get_args( ):
     util.attach_common_arguments( parser )
     parser.add_argument( 
         "-p", "--min-prevalence",
-        default=0,
-        metavar="<0-1.0>",
         type=float,
-        help="Remove features that are detected in less than <p> (fraction) of samples",
+        default=0,
+        metavar="<0-100>",
+        help="Remove features that are detected in < p%% of samples",
         )
     parser.add_argument( 
         "-n", "--min-samples",
+        type=int,
         default=0,
         metavar="<int>",
-        type=int,
-        help="Remove features that are detected in less than <n> samples",
+        help="Remove features that are detected in < n samples",
         )
     parser.add_argument( 
         "-a", "--abund-detect",
+        type=float,
         default=util.c_eps,
         metavar="<float>",
-        type=float,
         help="Abundance threshold for detection\n[Default: non-zero]",
+        )
+    parser.add_argument( 
+        "-d", "--filter-dominated",
+        type=float,
+        default=None,
+        metavar="<0-100>",
+        help="REMOVE features that are > p%% explained by a single non-unclassified stratum in > p%% of samples\n[Default: don't do this]",
+        )
+    parser.add_argument( 
+        "-u", "--filter-unclassified",
+        type=float,
+        default=None,
+        metavar="<0-100>",
+        help="REMOVE features that are > p%% unclassified in > p%% of samples\n[Default: don't do this]",
         )
     parser.add_argument( 
         "-x", "--exclude-strata",
@@ -79,8 +103,8 @@ def get_args( ):
         )
     parser.add_argument( 
         "-G", "--strata-grep", 
-        default=None,
         type=str,
+        default=None,
         metavar="<pattern>",
         help="Keep only stratified features whose species names match the specified pattern",
         )
@@ -96,44 +120,65 @@ def get_args( ):
 # utilities
 # ---------------------------------------------------------------
 
+def is_dominated( totals, stratum_values, perc ):
+    ret = False
+    index = [i for i, v in enumerate( totals ) if v > util.c_eps]
+    if len( index ) > 0:
+        totals = totals[index]
+        stratum_values = stratum_values[index]
+        stratum_values /= totals
+        if np.percentile( 100 * stratum_values, perc ) >= perc:
+            ret = True
+    return ret
+
 # ---------------------------------------------------------------
 # main
 # ---------------------------------------------------------------
 
 def main( ):
-    args = get_args()
+    args = get_args( )
     table = Table( args.input, last_metadata=args.last_metadata )
-    # process table totals
-    allowed = set( )
+    # evaluate features (totals)
+    bad_features = set( )
     for f in util.fsort( table.data ):
-        INCLUDE = True
         fcode, fname, stratum = util.fsplit( f )
-        ffull = util.fjoin( fcode, fname )
-        if stratum is not None:
-            continue
-        values = table.data[f]
-        # check prevalence
-        abund_detect = args.abund_detect
-        n = sum( [1 for k in values if k >= abund_detect] )
-        if n < args.min_samples:
-            INCLUDE = False
-        if n / float( len( values ) ) < args.min_prevalence:
-            INCLUDE = False
-        # check pattern
-        if args.grep is not None and not re.search( args.grep, ffull ):
-            INCLUDE = False
-        # decide on this total
-        if INCLUDE:
-            allowed.add( fcode )
+        fbase = util.fjoin( fcode, fname )
+        # properties of the total that can kill the total
+        if stratum is None:
+            values = table.data[f]
+            # check prevalence
+            abund_detect = args.abund_detect
+            n = sum( [1 for k in values if k >= abund_detect] )
+            if n < args.min_samples:
+                bad_features.add( fcode )
+            if 100 * n / float( len( values ) ) < args.min_prevalence:
+                bad_features.add( fcode )
+            # check pattern
+            if args.grep is not None and not re.search( args.grep, fbase ):
+                bad_features.add( fcode )
+        # properties of a stratum that can kill the total: too much unclassified
+        elif stratum == util.c_unclassified and args.filter_unclassified is not None:
+            perc = args.filter_unclassified
+            totals = table.data[fbase]
+            stratum_values = table.data[f]
+            if is_dominated( totals, stratum_values, perc ):
+                bad_features.add( fcode )
+        # properties of a stratum that can kill the total: too much something else
+        elif args.filter_dominated is not None:
+            perc = args.filter_dominated
+            totals = table.data[fbase]
+            stratum_values = table.data[f]
+            if is_dominated( totals, stratum_values, perc ):
+                bad_features.add( fcode )
     # process strata
     data2 = {}
     for f in util.fsort( table.data ):
         fcode, fname, stratum = util.fsplit( f )
         if stratum is None:
-            if fcode in allowed and not args.exclude_totals:
+            if fcode not in bad_features and not args.exclude_totals:
                 data2[f] = table.data[f]
         else:
-            if fcode in allowed and not args.exclude_strata:
+            if fcode not in bad_features and not args.exclude_strata:
                 if args.strata_grep is None or re.search( args.strata_grep, stratum ):
                     data2[f] = table.data[f]
     # invert?

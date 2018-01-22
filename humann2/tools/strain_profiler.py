@@ -198,6 +198,6 @@ def main( ):
         else:
             print( "  Not enough good profiles ({})".format( len( good_samples ) ), file=sys.stderr )
     print( "Finished successfully.", file=sys.stderr )
-            
+
 if __name__ == "__main__":
     main( )
