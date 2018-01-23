@@ -43,7 +43,6 @@ is kept/discarded.
 # ---------------------------------------------------------------
 
 def get_args( ):
-    """ Get args from Argparse """
     parser = argparse.ArgumentParser( 
         description=description, 
         formatter_class=argparse.RawTextHelpFormatter,
@@ -75,14 +74,14 @@ def get_args( ):
         type=float,
         default=None,
         metavar="<0-100>",
-        help="REMOVE features that are > p%% explained by a single non-unclassified stratum in > p%% of samples\n[Default: don't do this]",
+        help="REMOVE features that are > p%% explained by a single non-unclassified stratum in > p%% of samples\n[Default: off]",
         )
     parser.add_argument( 
         "-u", "--filter-unclassified",
         type=float,
         default=None,
         metavar="<0-100>",
-        help="REMOVE features that are > p%% unclassified in > p%% of samples\n[Default: don't do this]",
+        help="REMOVE features that are > p%% unclassified in > p%% of samples\n[Default: off]",
         )
     parser.add_argument( 
         "-x", "--exclude-strata",
@@ -111,7 +110,7 @@ def get_args( ):
     parser.add_argument( 
         "-v", "--invert",
         action="store_true",
-        help="Instead return rows that did NOT match the specified filters (does not affect metadata)",
+        help="Return rows that failed to match one or more filters (does not affect metadata)",
         )
     args = parser.parse_args( )
     return args
@@ -138,7 +137,7 @@ def is_dominated( totals, stratum_values, perc ):
 def main( ):
     args = get_args( )
     table = Table( args.input, last_metadata=args.last_metadata )
-    # evaluate features (totals)
+    # evaluate features
     bad_features = set( )
     for f in util.fsort( table.data ):
         fcode, fname, stratum = util.fsplit( f )
@@ -157,34 +156,34 @@ def main( ):
             if args.grep is not None and not re.search( args.grep, fbase ):
                 bad_features.add( fcode )
         # properties of a stratum that can kill the total: too much unclassified
-        elif stratum == util.c_unclassified and args.filter_unclassified is not None:
+        if stratum == util.c_unclassified and args.filter_unclassified is not None:
             perc = args.filter_unclassified
             totals = table.data[fbase]
             stratum_values = table.data[f]
             if is_dominated( totals, stratum_values, perc ):
                 bad_features.add( fcode )
         # properties of a stratum that can kill the total: too much something else
-        elif args.filter_dominated is not None:
+        if stratum not in [None, util.c_unclassified] and args.filter_dominated is not None:
             perc = args.filter_dominated
             totals = table.data[fbase]
             stratum_values = table.data[f]
             if is_dominated( totals, stratum_values, perc ):
                 bad_features.add( fcode )
-    # process strata
+        # properties of a stratum that can kill the stratum: pattern
+        if stratum is not None and args.strata_grep is not None \
+                and not re.search( args.strata_grep, stratum ):
+            bad_features.add( f )
+    # rebuild table
     data2 = {}
     for f in util.fsort( table.data ):
         fcode, fname, stratum = util.fsplit( f )
-        if stratum is None:
-            if fcode not in bad_features and not args.exclude_totals:
+        if fcode not in bad_features:
+            if stratum is None and not args.exclude_totals:
                 data2[f] = table.data[f]
-        else:
-            if fcode not in bad_features and not args.exclude_strata:
-                if args.strata_grep is None or re.search( args.strata_grep, stratum ):
-                    data2[f] = table.data[f]
-    # invert?
+            if stratum is not None and not args.exclude_strata:
+                data2[f] = table.data[f]
     if args.invert:
         data2 = {k:row for k, row in table.data.items( ) if k not in data2}
-    # rebuild table
     table = Table( data2, metadata=table.metadata, headers=table.headers )
     table.write( args.output, unfloat=True )
 
