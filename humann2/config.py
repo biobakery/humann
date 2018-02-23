@@ -345,8 +345,6 @@ genefamilies_file="_genefamilies"
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]
-metaphlan_pkl_file="db_v20/mpa_v20_m200.pkl"
-metaphlan_mpa_index="db_v20/mpa_v20_m200"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
