@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import os
 import sys
@@ -114,19 +112,16 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
 # constants
 # ---------------------------------------------------------------
 
-c_eps             = 1e-20
-c_many_bytes      = 1e8
-c_zip_multiplier  = 10
-
 c_strat_delim     = "|"
 c_taxon_delim     = "."
 c_name_delim      = ": "
 c_multiname_delim = ";"
-c_no_name         = "NO_NAME"
+c_str_unknown     = "NO_NAME"
 c_ungrouped       = "UNGROUPED"
 c_unmapped        = "UNMAPPED"
 c_unintegrated    = "UNINTEGRATED"
-c_unclassified    = "unclassified"
+c_many_bytes      = 1e8
+c_zip_multiplier  = 10
 
 c_topsort = {
     c_unmapped:0,
@@ -266,29 +261,6 @@ class Ticker( ):
 # helper functions
 # ---------------------------------------------------------------
 
-def attach_common_arguments( parser, no_output=False ):
-    parser.add_argument(
-        "-i", "--input",
-        default=None,
-        metavar="<path>",
-        help="HUMAnN2 table (.tsv or .biom format)\n[Default=STDIN]",
-        )
-    parser.add_argument(
-        "-L", "--last-metadata",
-        default=None,
-        metavar="<row>",
-        help="The name (header) of the last row containing metadata, if any\n[Default=Not used]",
-        )
-    # some scripts have custom output
-    if not no_output:
-        parser.add_argument(
-            "-o", "--output",
-            default=None,
-            metavar="<path>",
-            help="Path for output table\n[Default=STDOUT]",
-        )
-    return None
-
 def size_warn( path ):
     m = 1 if ".gz" not in path else c_zip_multiplier
     if m * os.path.getsize( path ) > c_many_bytes:
@@ -355,7 +327,7 @@ def gzip_bzip2_biom_open_readlines( path ):
                 else:
                     yield line.rstrip()
 
-def load_polymap( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
+def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """
     Load a file like:
     A 1 2
@@ -367,7 +339,7 @@ def load_polymap( path, start=0, skip=None, allowed_keys=None, allowed_values=No
     Inner values are not important (set to 1)
     """
     polymap = {}
-    print( "Loading mapping file from <{}>".format( path ), file=sys.stderr )
+    print( "Loading mapping file from:", path, file=sys.stderr )
     size_warn( path )
     for line in gzip_bzip2_biom_open_readlines( path ):
         row = line.split("\t")
@@ -376,47 +348,16 @@ def load_polymap( path, start=0, skip=None, allowed_keys=None, allowed_values=No
             for i, value in enumerate( row ):
                 if i != start and (skip is None or i not in skip):
                     if allowed_values is None or value in allowed_values:
-                        polymap.setdefault( key, set( ) ).add( value )
+                        polymap.setdefault( key, {} )[value] = 1
     return polymap
 
 def fsplit( feature ):
-    """
-    Expected format is:
-      CODE: NAME|STRATUM
-    As in:
-      GENE123: tRNA transferase|s__Bacteroides_dorei
-    Robust to names containing ": ":
-      GENE123: tRNA transferase: proline|s__Bacteroides_dorei
-    Not robust to names containing "|" (lethal error):
-      GENE123: tRNA transferase|proline|s__Bacteroides_dorei
-    """
-    code = None
-    name = None
-    stratum = None
-    # extract stratum
     items = feature.split( c_strat_delim )
-    if len( items ) == 1:
-        # looks like an unstratified feature
-        code = items[0]
-    elif len( items ) == 2:
-        # stratified feature
-        code = items[0]
-        stratum = items[1]
-    else:
-        # possible names with "|"
-        sys.exit( "LETHAL ERROR: bad feature name: {}".format( f ) )
-    # extract name
-    items = code.split( c_name_delim )
-    if len( items ) == 1:
-        code = items[0]
-    elif len( items ) == 2:
-        code = items[0]
-        name = items[1]
-    elif len( items ) > 2:
-        # possible name containing ": "
-        code = items[0]
-        name = c_name_delim.join( items[1:] )
-    return code, name, stratum
+    stratum = None if len( items ) == 1 else items[1]
+    items = items[0].split( c_name_delim )
+    name = None if len( items ) == 1 else items[1]
+    feature = items[0]
+    return feature, name, stratum
 
 def fjoin( feature, name=None, stratum=None ):
     if name is not None:
@@ -432,48 +373,3 @@ def fsort( features ):
     default = 1 + max( c_topsort.values() )
     features = sorted( features, key=lambda f: c_topsort.get( fsplit( f )[0], default ) )
     return features
-
-def pretty_grid( items, cols=3, desc="Please select one of these options:" ):
-    padding = 2 + max( [len( k ) for k in items] )
-    counter = 0
-    desc += "\n"
-    desc += "-" * (len( desc ) - 1) + "\n"
-    for k in items:
-        desc += k.ljust( padding )
-        counter += 1
-        if counter == cols:
-            desc += "\n"
-            counter = 0
-    return desc
-
-def wrap( text, width=85 ):
-    # remove flanking whitespace
-    text = text.strip( )
-    lines = text.split( "\n" )
-    # title
-    rule = "=" * width
-    newlines = [rule, lines[0], rule, "\n"]
-    newline = ""
-    # description lines
-    for line in lines[2:]:
-        line = line.strip( )
-        if line == "":
-            newlines.append( newline )
-            newlines.append( "\n" )
-            newline = ""
-            continue
-        words = line.split( )
-        for word in words:
-            if len( word ) > width:
-                newlines.append( newline )
-                newlines.append( word )
-                newline = ""
-            elif len( newline + " " + word ) > width:
-                newlines.append( newline )
-                newline = word
-            else:
-                newline += (" " if newline != "" else "") + word
-    if len( newline ) > 0:
-        newlines.append( newline )
-    newlines += ["\n", rule]
-    return "\n".join( [k for k in newlines] )
