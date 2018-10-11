@@ -1,7 +1,7 @@
 
 # HUMAnN2 History #
 
-## Next ##
+## Next tool update release##
 
 * Fixed issue with insufficient default precision when applying regroup_table to relative abundance (sum=1) data.
 
