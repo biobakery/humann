@@ -48,8 +48,7 @@ metadata    : Given metadata label
 c_choices_help = """Scaling options for total bar heights (strata are always proportional to height)
 
 none        : Default
-pseudolog   : Total bar heights log10-scaled (strata are NOT log10-scaled)
-pseudosqrt  : Total bar heights sqrt-scaled (strata are NOT sqrt-scaled)
+pseudolog   : Total bar heights log-scaled (strata are NOT log scaled)
 normalize   : Bars all have height=1 (highlighting relative attribution)
 
 """
@@ -102,7 +101,7 @@ def get_args( ):
                          help="Where to save the figure", )
     parser.add_argument( "-a", "--scaling",
                          metavar="<choice>",
-                         choices=["none", "normalize", "pseudolog", "pseudosqrt"],
+                         choices=["none", "normalize", "pseudolog"],
                          default="none",
                          help=c_choices_help, )
     parser.add_argument( "-g", "--as-genera",
@@ -399,26 +398,14 @@ def main( ):
         ylabel      = "log10(Relative abundance)"
         ymin        = min( [k for k in table.colsums if k > 0] ) if args.ylims[0] is None else args.ylims[0]
         floor       = math.floor( np.log10( ymin ) )
-        #floor       = floor if abs( np.log10( ymin ) - floor ) >= c_epsilon else (floor - 1)
+        floor       = floor if abs( np.log10( ymin ) - floor ) >= c_epsilon else floor - 1
         floors      = floor * np.ones( table.ncols )
         crests      = np.array( [np.log10( k ) if k > 10**floor else floor for k in table.colsums] )
         heights     = crests - floors
         table.data  = table.data / table.colsums * heights
         ymax        = max( table.colsums ) if args.ylims[1] is None else args.ylims[1]
         ceil        = math.ceil( np.log10( ymax ) )
-        bottoms     = floors
-        main_ax.set_ylim( floor, ceil )
-    elif args.scaling == "pseudosqrt":
-        ylabel      = "sqrt(Relative abundance)"
-        ymin        = 0 if args.ylims[0] is None else args.ylims[0]
-        floor       = np.sqrt( ymin )
-        floors      = floor * np.ones( table.ncols )
-        crests      = np.array( [np.sqrt( k ) if k > floor**2 else floor for k in table.colsums] )
-        heights     = crests - floors
-        table.data  = table.data / table.colsums * heights
-        ymax        = max( table.colsums ) if args.ylims[1] is None else args.ylims[1]
-        ceil        = math.ceil( np.sqrt( ymax ) )
-        bottoms     = floors
+        bottoms = floors
         main_ax.set_ylim( floor, ceil )
         
     # add bars
@@ -481,8 +468,8 @@ def main( ):
     main_ax.tick_params( axis="y", which="major", direction="out", left="on", right="off" )
     main_ax.set_xticks( [] )
 
-    # pseudoscaling note
-    if args.scaling in ["pseudolog", "pseudosqrt"]:
+    # pseudolog note
+    if args.scaling == "pseudolog":
         xmin, xmax = main_ax.get_xlim( )
         x = xmin + 0.01 * abs( xmax - xmin )
         ymin, ymax = main_ax.get_ylim( )
