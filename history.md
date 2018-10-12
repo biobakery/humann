@@ -1,9 +1,11 @@
 
 # HUMAnN2 History #
 
-## Next ##
+## v0.11.2 10-12-2018 ##
 
-* Fixed issue with insufficient default precision when applying regroup_table to relative abundance (sum=1) data.
+* Updated MetaPhlAn2 command to be compatible with the latest version.
+* Fix executable search to allow for folders in $PATH to have the same names as executables (ie, bowtie2).
+* Fix error in header format for humann2_unpack_pathways tool.
 
 ## v0.11.1 04-13-2017 ##
 
