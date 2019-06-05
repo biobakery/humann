@@ -42,6 +42,11 @@ def alignment(input):
     exe="metaphlan2.py"
     opts=config.metaphlan_opts  
 
+    # check the metaphlan2 version to determine additional options
+    metaphlan2_version = utilities.check_software_version("metaphlan2.py",config.metaphlan_version)
+    if metaphlan2_version == "2.9":
+        opts+=config.metaphlan_opts_2p9
+
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)
  
