@@ -42,15 +42,6 @@ def alignment(input):
     exe="metaphlan2.py"
     opts=config.metaphlan_opts  
 
-    # check the metaphlan2 version to determine additional options
-    metaphlan2_version = utilities.check_software_version("metaphlan2.py",config.metaphlan_version)
-    if metaphlan2_version == "2.9":
-        opts+=config.metaphlan_opts_2p9
-        message="NOTE: Running with MetaPhlAn2 v2.9 with the LEGACY databases. Please keep an eye out for the " +\
-            "next version of HUMAnN2 (v2.9) which will use the latest MetaPhlAn2 and ChocoPhlAn databases."
-        logger.info(message)
-        print("\n"+message+"\n")    
-
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)
  

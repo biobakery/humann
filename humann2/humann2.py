@@ -694,6 +694,9 @@ def check_requirements(args):
                 sys.exit("CRITICAL ERROR: The metaphlan2.py executable can not be found. "  
                     "Please check the install.")
 
+        # Check the metaphlan2 version
+        utilities.check_software_version("metaphlan2.py",config.metaphlan_version)
+
         # Check that the bowtie2 executable can be found
         if not config.bypass_nucleotide_search:
             if not utilities.find_exe_in_path("bowtie2"): 

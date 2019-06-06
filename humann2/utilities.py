@@ -459,7 +459,6 @@ def check_software_version(exe,version):
     message="Using " + exe + " version " + current_version
     logger.info(message)
 
-    return current_version
         
 class ReportHook():
     def __init__(self):

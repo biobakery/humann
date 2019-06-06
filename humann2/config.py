@@ -344,12 +344,11 @@ pathcoverage_file="_pathcoverage"
 genefamilies_file="_genefamilies"
 
 # metaphlan options
-metaphlan_opts=["-t","rel_ab"]
-metaphlan_opts_2p9=["--legacy-output","--index","v20_m200"]
+metaphlan_opts=["-t","rel_ab","--legacy-output"]
 metaphlan_version={
     "flag" : "--version",
     "major" : 2,
-    "minor" : 6,
+    "minor" : 9,
     "line" : 0,
     "column" : 2}
 
