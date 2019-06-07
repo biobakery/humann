@@ -91,6 +91,15 @@ def create_custom_database(chocophlan_dir, bug_file):
 
         line = file_handle.readline()
         while line:
+            # check for the new metaphlan2 database
+            if line.startswith("#") and config.metaphlan_2p9_db_version in line:
+                message="The MetaPhlAn2 taxonomic profile was generated with the " +\
+                    config.metaphlan_2p9_db_version+" database. HUMANn2 is not yet "+\
+                    "compatible with this database. Please run with the legacy "+\
+                    "MetaPhlAn2 database. Also keep an eye out for HUMAnN2 v2.9 which "+\
+                    "will be compatible with the latest MetaPhlAn2 v2.9 database."
+                logger.error(message)
+                sys.exit("\n\nERROR: "+message)
 
             # if we see taxon-level we are done processing
             if re.search("t__", line):
@@ -99,7 +108,7 @@ def create_custom_database(chocophlan_dir, bug_file):
             # search for the lines that have the species-level information
             if re.search("s__", line):
                 # check threshold
-                read_percent=float(line.split("\t")[1])
+                read_percent=float(line.split("\t")[-1])
                 if read_percent >= config.prescreen_threshold:
                     total_reads_covered += read_percent
                     organism_info=line.split("\t")[0]
