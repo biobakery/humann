@@ -351,6 +351,7 @@ metaphlan_version={
     "minor" : 9,
     "line" : 0,
     "column" : 2}
+metaphlan_2p9_db_version="CHOCOPhlAn_201901"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
