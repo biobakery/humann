@@ -116,11 +116,11 @@ def create_custom_database(chocophlan_dir, bug_file):
 
             line = file_handle.readline()
    
-    if not version_found:
-        message="The MetaPhlAn2 taxonomic profile provided was not generated with the database version "+\
-            config.metaphlan_2p9_db_version+" . Please update your version of MetaPhlAn2 to v2.9."
-        logger.error(message)
-        sys.exit("\n\nERROR: "+message)
+        if not version_found:
+            message="The MetaPhlAn2 taxonomic profile provided was not generated with the database version "+\
+                config.metaphlan_2p9_db_version+" . Please update your version of MetaPhlAn2 to v2.9."
+            logger.error(message)
+            sys.exit("\n\nERROR: "+message)
  
     # compute total species found
     if not config.bypass_prescreen:
