@@ -94,7 +94,7 @@ def create_custom_database(chocophlan_dir, bug_file):
             # search for the lines that have the species-level information
             if re.search("s__", line):
                 # check threshold
-                read_percent=float(line.split("\t")[1])
+                read_percent=float(line.split("\t")[-1])
                 if read_percent >= config.prescreen_threshold:
                     total_reads_covered += read_percent
                     organism_info=line.split("\t")[0]

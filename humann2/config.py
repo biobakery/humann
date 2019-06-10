@@ -344,14 +344,14 @@ pathcoverage_file="_pathcoverage"
 genefamilies_file="_genefamilies"
 
 # metaphlan options
-metaphlan_opts=["-t","rel_ab","--legacy-output"]
+metaphlan_opts=["-t","rel_ab"]
 metaphlan_version={
     "flag" : "--version",
     "major" : 2,
     "minor" : 9,
     "line" : 0,
     "column" : 2}
-metaphlan_2p9_db_version="CHOCOPhlAn_201901"
+metaphlan_2p9_db_version="201901"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
