@@ -355,15 +355,14 @@ metaphlan_2p9_db_version="201901"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
-chocophlan_bug_index=6
-chocophlan_gene_indexes=[8]
-chocophlan_gene_indexes_uniref90_mode=[7]
-chocophlan_gene_indexes_uniref50_mode=[8]
-chocophlan_location_index=4
+chocophlan_bug_index=1
+chocophlan_gene_indexes=[3]
+chocophlan_gene_indexes_uniref90_mode=[2]
+chocophlan_gene_indexes_uniref50_mode=[3]
 chocophlan_location_delimiter="-"
 chocophlan_location_extra_characters="[:|c]"
 chocophlan_multiple_location_delimiter=","
-chocophlan_length_index=9
+chocophlan_length_index=4
 
 # uniref formatting
 uniref_delimiter="|"

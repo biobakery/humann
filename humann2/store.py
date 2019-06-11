@@ -243,7 +243,6 @@ class Alignments:
             reference_info=reference.split(config.chocophlan_delimiter)
             
             # identify bug and gene families
-            location=""
             length=0
             gene=reference
             try:
@@ -254,8 +253,8 @@ class Alignments:
                     gene_set.append(reference_info[index])
                 if gene_set:
                     gene=config.chocophlan_delimiter.join(gene_set)
-                location=reference_info[config.chocophlan_location_index]
-            except IndexError:
+                length=int(reference_info[config.chocophlan_length_index])
+            except (IndexError, ValueError):
                 # try to find gene length if present
                 bug="unclassified"
                 # check for gene|gene_length|taxonomy
@@ -272,18 +271,6 @@ class Alignments:
                         length=int(reference_info[0])
                         gene=reference_info[1]
                     
-            # look for the chocophlan gene length if length is not already found
-            # if it is provided, use it instead of the location
-            if not length:
-                try:
-                    length=int(reference_info[config.chocophlan_length_index])
-                except (IndexError, ValueError):
-                    length=0
-                                
-            # compute the length of the gene from the location provided
-            if not length and location:
-                length=self.process_chocophlan_length(location, gene)
-
         return [gene,length,bug]
 
     def add_annotated(self, query, matches, annotated_reference, read_length=None):

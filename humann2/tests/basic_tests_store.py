@@ -1003,20 +1003,6 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         self.assertEqual(expected_output,output) 
         
-    def test_Alignments_process_reference_annotation_original_chocophlan_annotations(self):
-        """
-        Test the process reference annotation function with the original chocophlan annotations
-        """
-        
-        alignments_store=store.Alignments()
-        
-        output=alignments_store.process_reference_annotation(
-            "gi|554771211|gb|ACIN03000006.1|:c1189-5|46125|g__Abiotrophia.s__Abiotrophia_defectiva|UniRef90_W1Q3F0|UniRef50_P59787")
-        
-        expected_output=["UniRef50_P59787",(1189-5+1),"g__Abiotrophia.s__Abiotrophia_defectiva"]
-        
-        self.assertEqual(expected_output,output) 
-        
     def test_Alignments_process_reference_annotation_new_chocophlan_annotations(self):
         """
         Test the process reference annotation function with the new chocophlan annotations
@@ -1025,9 +1011,9 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         alignments_store=store.Alignments()
         
         output=alignments_store.process_reference_annotation(
-            "gi|554771211|gb|ACIN03000006.1|:c1189-5|46125|g__Abiotrophia.s__Abiotrophia_defectiva|UniRef90_W1Q3F0|UniRef50_P59787|5000")
+            "357276__A0A1C7H3D7__A4V03_17250|k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae.g__Bacteroides.s__Bacteroides_dorei|UniRef90_A0A1C7H3D7|UniRef50_A0A1C7H3D7|816")
         
-        expected_output=["UniRef50_P59787",5000,"g__Abiotrophia.s__Abiotrophia_defectiva"]
+        expected_output=["UniRef50_A0A1C7H3D7",816,"k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae.g__Bacteroides.s__Bacteroides_dorei"]
         
         self.assertEqual(expected_output,output) 
         
@@ -1057,18 +1043,6 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         
         self.assertEqual(expected_output,output) 
         
-    def test_Alignments_process_reference_annotation_unknown_annotations_four_items(self):
-        """
-        Test the process reference annotation function with unknown annotations (four items)
-        """
-        
-        alignments_store=store.Alignments()
-        
-        output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|UniRef50_P59787|5000|bug")
-        
-        expected_output=["UniRef90_W1Q3F0|UniRef50_P59787|5000|bug",0,"unclassified"]
-        
-        self.assertEqual(expected_output,output) 
 
     def test_GeneScores_add(self):
         """
