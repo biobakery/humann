@@ -351,7 +351,7 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         config.translated_subject_coverage_threshold=current_coverage_threshold
         
         # there should be one bug name and the other should be unclassified
-        self.assertEqual(sorted(alignments.bug_list()),sorted(["s__Bacteroides_xylanisolvens","unclassified"]))
+        self.assertEqual(sorted(alignments.bug_list()),sorted(["g__Bacteroides.s__Bacteroides_xylanisolvens","unclassified"]))
         
                 
     def test_translated_search_unaligned_reads_annotations_gene_length(self):

@@ -246,7 +246,11 @@ class Alignments:
             length=0
             gene=reference
             try:
-                bug=reference_info[config.chocophlan_bug_index]
+                full_taxonomy=reference_info[config.chocophlan_bug_index]
+                # Limit to species/genera
+                bug_info=full_taxonomy.split(".")
+                bug=".".join([bug_info[config.chocophlan_bug_genera_index],bug_info[config.chocophlan_bug_species_index]])
+
                 # Join all genes selected
                 gene_set=[]
                 for index in config.chocophlan_gene_indexes:

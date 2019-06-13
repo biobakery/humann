@@ -1013,7 +1013,7 @@ class TestHumann2StoreFunctions(unittest.TestCase):
         output=alignments_store.process_reference_annotation(
             "357276__A0A1C7H3D7__A4V03_17250|k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae.g__Bacteroides.s__Bacteroides_dorei|UniRef90_A0A1C7H3D7|UniRef50_A0A1C7H3D7|816")
         
-        expected_output=["UniRef50_A0A1C7H3D7",816,"k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae.g__Bacteroides.s__Bacteroides_dorei"]
+        expected_output=["UniRef50_A0A1C7H3D7",816,"g__Bacteroides.s__Bacteroides_dorei"]
         
         self.assertEqual(expected_output,output) 
         

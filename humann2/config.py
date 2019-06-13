@@ -356,6 +356,8 @@ metaphlan_2p9_db_version="201901"
 # chocophlan formatting
 chocophlan_delimiter="|"
 chocophlan_bug_index=1
+chocophlan_bug_species_index=-1
+chocophlan_bug_genera_index=-2
 chocophlan_gene_indexes=[3]
 chocophlan_gene_indexes_uniref90_mode=[2]
 chocophlan_gene_indexes_uniref50_mode=[3]
