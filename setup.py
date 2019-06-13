@@ -336,14 +336,15 @@ def install_diamond(final_install_folder, build, replace_install=None):
     diamond_installed=find_exe_in_path("diamond")
     
     if not diamond_installed or replace_install:
+        diamond_version="0.9.24"
         diamond_exe="diamond"
         diamond_file="diamond-linux64.tar.gz"
-        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v0.8.22/diamond-linux64.tar.gz"
+        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v{0}/diamond-linux64.tar.gz".format(diamond_version)
         
         # download source if build selected
         if build:
-            diamond_file="v0.8.22.tar.gz"
-            diamond_url="http://github.com/bbuchfink/diamond/archive/v0.8.22.tar.gz"
+            diamond_file="v{0}.tar.gz".format(diamond_version)
+            diamond_url="http://github.com/bbuchfink/diamond/archive/v{0}.tar.gz".format(diamond_version)
 
         humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
         tempfolder=tempfile.mkdtemp(prefix="diamond_download_",dir=humann2_source_folder)
@@ -357,7 +358,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
         if build:
             # get the current directory
             current_working_directory=os.getcwd()
-            diamond_build_dir=os.path.join(tempfolder,"diamond-0.8.22","src")
+            diamond_build_dir=os.path.join(tempfolder,"diamond-{0}".format(diamond_version),"src")
             
             try:
                 os.chdir(diamond_build_dir)
@@ -390,7 +391,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
             if make_installed and cmake_installed:
                 # if make and cmake are installed, run the standard build
                 print("INFO: Installing diamond with cmake method.")
-                diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22","bin")
+                diamond_install_folder=os.path.join(tempfolder,"diamond-{0}".format(diamond_version),"bin")
                 try:
                     # make the install bin directory and change directories
                     os.mkdir(diamond_install_folder)
@@ -405,7 +406,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
                 # if make or cmake are not installed, run the simple build
                 print("INFO: Installing diamond with simple build method.")
                 
-                diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22")
+                diamond_install_folder=os.path.join(tempfolder,"diamond-{0}".format(diamond_version))
                 try:
                     # change directories to the diamond source folder
                     os.chdir(diamond_install_folder)
