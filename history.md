@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v2.8.0 07-01-2019 ##
+
+* Updated MetaPhlAn2 commands to check for software and database versions required.
+
 ## v0.11.2 10-12-2018 ##
 
 * Updated MetaPhlAn2 command to be compatible with the latest version.
