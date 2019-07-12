@@ -345,7 +345,7 @@ genefamilies_file="_genefamilies"
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]
-metaphlan_opts_2p9=["--index","v20_m200"]
+metaphlan_opts_2p9=["--index","mpa_v20_m200"]
 metaphlan_version={
     "flag" : "--version",
     "major" : 2,
