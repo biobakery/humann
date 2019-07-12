@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v2.8.1 07-12-2019 ##
+
+* Updated MetaPhlAn2 commands to use new legacy database name (to be compatible with MetaPhlAn2 v2.9.13+).
+
 ## v2.8.0 07-01-2019 ##
 
 * Updated MetaPhlAn2 commands to check for software and database versions required.
