@@ -73,6 +73,8 @@ def log_settings():
     lines.append("")
     
     lines.append("ALIGNMENT SETTINGS")
+    lines.append("bowtie2 options = " + str(" ".join(map(str,bowtie2_align_opts))))
+    lines.append("diamond options = " + str(" ".join(map(str,diamond_opts))))
     lines.append("evalue threshold = " + str(evalue_threshold))
     lines.append("prescreen threshold = " + str(prescreen_threshold))
     lines.append("translated subject coverage threshold = " + str(translated_subject_coverage_threshold))
@@ -460,8 +462,9 @@ rapsearch_version={
 
 # diamond options
 diamond_database_extension=".dmnd"
-diamond_opts_uniref50=["--max-target-seqs",20,"--sensitive","--outfmt",6]
-diamond_opts_uniref90=["--max-target-seqs",20,"--outfmt",6]
+diamond_options_custom=False
+diamond_opts_uniref50=["--max-target-seqs","20","--sensitive","--outfmt","6"]
+diamond_opts_uniref90=["--max-target-seqs","20","--outfmt","6"]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={

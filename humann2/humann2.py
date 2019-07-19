@@ -158,6 +158,16 @@ def parse_arguments(args):
         metavar="<metaphlan_options>",
         default=" ".join(config.metaphlan_opts))
     parser.add_argument(
+        "--diamond-options",
+        help="options to be provided to the diamond software\n[DEFAULT: \"" + str(" ".join(config.diamond_opts_uniref90)) + "\"]",
+        metavar="<diamond_options>",
+        default=" ".join(config.diamond_opts_uniref90))
+    parser.add_argument(
+        "--bowtie-options",
+        help="options to be provided to the bowtie software\n[DEFAULT: \"" + str(" ".join(config.bowtie2_align_opts)) + "\"]",
+        metavar="<bowtie_options>",
+        default=" ".join(config.bowtie2_align_opts))
+    parser.add_argument(
         "--o-log", 
         help="log file\n" + 
         "[DEFAULT: temp/sample.log]", 
@@ -344,6 +354,14 @@ def update_configuration(args):
     # Set the metaphlan options, removing any extra spaces
     if args.metaphlan_options:
         config.metaphlan_opts=list(filter(None,args.metaphlan_options.split(" ")))
+
+    # check for custom diamond options
+    if args.diamond_options and args.diamond_options != " ".join(config.diamond_opts_uniref90):
+        config.diamond_options_custom = True
+        config.diamond_opts=list(filter(None,args.diamond_options.split(" ")))
+
+    if args.bowtie_options:
+        config.bowtie2_align_opts=list(filter(None,args.bowtie_options.split(" ")))
  
     # Set the pathways database selection
     if args.pathways == "metacyc":
@@ -822,8 +840,9 @@ def check_requirements(args):
         else:
             config.chocophlan_gene_indexes = chocophlan_gene_indexes
                 
-        # set the diamond options
-        config.diamond_opts = config.diamond_opts_uniref90
+        # set the diamond options if custom options were not provided
+        if not config.diamond_options_custom:
+            config.diamond_opts = config.diamond_opts_uniref90
     else:
         # only change identity threshold to default if user has not provided a specific setting
         if config.identity_threshold == args.identity_threshold:  
@@ -837,8 +856,9 @@ def check_requirements(args):
         else:
             config.chocophlan_gene_indexes = chocophlan_gene_indexes
             
-        # set the diamond options
-        config.diamond_opts = config.diamond_opts_uniref50
+        # set the diamond options if custom options were not provided
+        if not config.diamond_options_custom:
+            config.diamond_opts = config.diamond_opts_uniref50
 
               
 def timestamp_message(task, start_time):
