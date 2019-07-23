@@ -392,16 +392,20 @@ bowtie2_align_opts=["--very-sensitive"]
 sam_read_name_index=0
 sam_flag_index=1
 sam_reference_index=2
+sam_pos_index=3
 sam_mapq_index=4
 sam_cigar_index=5
+sam_tlen_index=8
 sam_read_index=9
 sam_start_optional_index=11
 
 sam_read_quality=10
 sam_unmapped_flag=0x4
+sam_reverse_complement=0x10
 sam_delimiter="\t"
 
 sam_cigar_match_mismatch_indel_identifiers=["M","=","X","I","D"]
+sam_cigar_add_to_reference_identifiers=["M","D","N","=","X"]
 sam_md_field_identifier="MD:Z:"
 
 #set the locations of data in a tabulated blast formatted file

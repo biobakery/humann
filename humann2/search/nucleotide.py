@@ -168,10 +168,19 @@ def calculate_percent_identity(cigar_string, md_field):
 
     # find the index for all of the match/mismatch/insert/delete
     match_mismatch_indel_index = []
+    reference_length_index = []
     for index, cigar_identifier in enumerate(cigar_identifiers):
         if cigar_identifier in config.sam_cigar_match_mismatch_indel_identifiers:
             match_mismatch_indel_index.append(index)
+        if cigar_identifier in config.sam_cigar_add_to_reference_identifiers:
+            reference_length_index.append(index)
     
+    # get reference length
+    try:
+        reference_length = sum([float(cigar_numbers[index]) for index in reference_length_index])
+    except (IndexError, ValueError):
+        reference_length = 0.0
+
     # identify the total number of match/mismatch/indel
     try:
         match_mismatch_indel_count=sum([float(cigar_numbers[index]) for index in match_mismatch_indel_index])
@@ -194,7 +203,7 @@ def calculate_percent_identity(cigar_string, md_field):
     if match_mismatch_indel_count > 0.0:
         percent_identity = 100.0 * ( matches / ( match_mismatch_indel_count * 1.0 ) )
         
-    return percent_identity, match_mismatch_indel_count 
+    return percent_identity, match_mismatch_indel_count, reference_length 
     
 def find_md_field(info):
     """
@@ -257,20 +266,28 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 unaligned_read=True
             else:
-                    
+                # determine direction of alignment (1 = forward, -1 = reverse)
+                direction = 1
+                if int(info[config.sam_flag_index]) & config.sam_reverse_complement != 0:
+                    direction = -1
+
                 # convert the cigar string and md field to percent identity
                 cigar_string=info[config.sam_cigar_index]
                 md_field=find_md_field(info)
-                identity, alignment_length=calculate_percent_identity(cigar_string, md_field)
+                identity, alignment_length, reference_length=calculate_percent_identity(cigar_string, md_field)
                 
                 query=info[config.sam_read_name_index]
                 # write output to be blastm8-like
                 new_info=[""] * config.blast_total_columns
                 new_info[config.blast_query_index]=query
                 new_info[config.blast_reference_index]=info[config.sam_reference_index]
+                new_info[config.blast_subject_start_index]=str(info[config.sam_pos_index])
+                new_info[config.blast_subject_end_index]=str(int(info[config.sam_pos_index])+int(reference_length*direction))
                 new_info[config.blast_evalue_index]="0"
                 new_info[config.blast_identity_index]=str(identity)
                 new_info[config.blast_aligned_length_index]=str(alignment_length)
+                new_info[config.blast_query_start_index]="0"
+                new_info[config.blast_query_end_index]=str(alignment_length-1)
                 file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
                    
                 # only store alignments with identity greater than threshold
