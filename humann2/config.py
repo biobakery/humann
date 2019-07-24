@@ -79,6 +79,8 @@ def log_settings():
     lines.append("prescreen threshold = " + str(prescreen_threshold))
     lines.append("translated subject coverage threshold = " + str(translated_subject_coverage_threshold))
     lines.append("translated query coverage threshold = " + str(translated_query_coverage_threshold))
+    lines.append("nucleotide subject coverage threshold = " + str(nucleotide_subject_coverage_threshold))
+    lines.append("nucleotide query coverage threshold = " + str(nucleotide_query_coverage_threshold))
     lines.append("")
     
     lines.append("PATHWAYS SETTINGS")
@@ -253,6 +255,10 @@ identity_threshold=identity_threshold_uniref50_mode
 translated_subject_coverage_threshold=get_item(config_items, "alignment_settings", "translated_subject_coverage_threshold", "float")
 translated_query_coverage_threshold=get_item(config_items, "alignment_settings", "translated_query_coverage_threshold", "float")
     
+# nucleotide search coverage thresholds
+nucleotide_subject_coverage_threshold=get_item(config_items, "alignment_settings", "nucleotide_subject_coverage_threshold", "float")
+nucleotide_query_coverage_threshold=get_item(config_items, "alignment_settings", "nucleotide_query_coverage_threshold", "float")
+
 # output file decimal places
 output_max_decimals=get_item(config_items, "output_format", "output_max_decimals", "int")
     

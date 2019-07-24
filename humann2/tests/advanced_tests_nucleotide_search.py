@@ -24,6 +24,10 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         # set up nullhandler for logger
         logging.getLogger('humann2.search.nucleotide').addHandler(logging.NullHandler())
 
+        # record default config options (for tests that change these)
+        self.default_nucleotide_subject_coverage_threshold = config.nucleotide_subject_coverage_threshold
+        self.default_nucleotide_query_coverage_threshold = config.nucleotide_query_coverage_threshold
+
     def test_nucleotide_search_unaligned_reads_output_fasta_format(self):
         """
         Test the unaligned reads and the store alignments
@@ -35,11 +39,19 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         # create a set of alignments
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
-        
+       
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+ 
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
         
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+
         # check for fasta output file format
         file_format=utilities.determine_file_format(unaligned_reads_file_fasta)
         self.assertEqual("fasta",file_format)
@@ -60,9 +72,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -70,6 +90,64 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         
         # check the aligned reads count
         self.assertEqual(len(alignments.get_hit_list()),cfg.sam_file_unaligned_reads_total_aligned)
+        
+    def test_nucleotide_search_unaligned_reads_read_count_aligned_subject_coverage(self):
+        """
+        Test the unaligned reads and the store alignments
+        Test with a bowtie2/sam output file
+        Test for aligned read counts
+        Test with subject coverage filtering
+        """
+        
+        # create a set of alignments
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads()
+        
+        # turn off subject filtering
+        config.nucleotide_query_coverage_threshold = 0
+        
+        # read in the aligned and unaligned reads
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+            cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset subject filtering
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+        
+        # remove temp files
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+        
+        # check the aligned reads count
+        self.assertEqual(len(alignments.get_hit_list()),cfg.sam_file_unaligned_reads_total_aligned_subject_coverage)
+        
+    def test_nucleotide_search_unaligned_reads_read_count_aligned_query_coverage(self):
+        """
+        Test the unaligned reads and the store alignments
+        Test with a bowtie2/sam output file
+        Test for aligned read counts
+        Test with query coverage filtering
+        """
+        
+        # create a set of alignments
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads()
+        
+        # turn off query filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        
+        # read in the aligned and unaligned reads
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+            cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query filtering
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+        
+        # remove temp files
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+        
+        # check the aligned reads count
+        self.assertEqual(len(alignments.get_hit_list()),cfg.sam_file_unaligned_reads_total_aligned_query_coverage)
         
     def test_nucleotide_search_unaligned_reads_read_count_aligned_evalue_threshold(self):
         """
@@ -83,6 +161,10 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+
         # update the evalue threshold to a number less than those for the alignment file
         original_evalue_threshold=config.evalue_threshold
         config.evalue_threshold=1e-15
@@ -90,6 +172,10 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -114,6 +200,10 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # update the identity threshold to a number larger than those in the alignments
         original_identity_threshold=config.identity_threshold
         config.identity_threshold=101.0
@@ -122,6 +212,10 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
         
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+        
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
         utils.remove_temp_file(reduced_aligned_reads_file)
@@ -129,8 +223,8 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         # reset the identity threshold back to the original
         config.identity_threshold=original_identity_threshold
         
-        # check the aligned reads count (it should be zero as none should pass the threshold)
-        self.assertEqual(len(alignments.get_hit_list()),0)
+        # check the aligned reads count (it should be two as both should pass the threshold)
+        self.assertEqual(len(alignments.get_hit_list()),2)
 
     def test_nucleotide_search_unaligned_reads_read_count_unaligned(self):
         """
@@ -143,9 +237,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -166,9 +268,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads(minimize_memory_use=True)
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -188,9 +298,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_annotations, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -212,9 +330,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_annotations, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -235,9 +361,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_annotations, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -270,9 +404,17 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_annotations, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # remove temp files
         utils.remove_temp_file(unaligned_reads_file_fasta)
@@ -299,11 +441,19 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         alignments=store.Alignments()
         unaligned_reads_store=store.Reads()
         
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+        
         config.file_basename="TEST"
         
         # read in the aligned and unaligned reads
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             cfg.sam_file_annotations, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
         
         # test file is of the blastm8 format
         file_format=utilities.determine_file_format(reduced_aligned_reads_file)

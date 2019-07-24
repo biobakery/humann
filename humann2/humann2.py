@@ -211,12 +211,26 @@ def parse_arguments(args):
         type=float,
         default=config.translated_subject_coverage_threshold)
     parser.add_argument(
+        "--nucleotide-subject-coverage-threshold", 
+        help="subject coverage threshold for nucleotide alignments\n[DEFAULT: " 
+            + str(config.nucleotide_subject_coverage_threshold) + "]", 
+        metavar="<" + str(config.nucleotide_subject_coverage_threshold) + ">", 
+        type=float,
+        default=config.nucleotide_subject_coverage_threshold)
+    parser.add_argument(
         "--translated-query-coverage-threshold", 
         help="query coverage threshold for translated alignments\n[DEFAULT: " 
             + str(config.translated_query_coverage_threshold) + "]", 
         metavar="<" + str(config.translated_query_coverage_threshold) + ">", 
         type=float,
         default=config.translated_query_coverage_threshold)
+    parser.add_argument(
+        "--nucleotide-query-coverage-threshold", 
+        help="query coverage threshold for nucleotide alignments\n[DEFAULT: " 
+            + str(config.nucleotide_query_coverage_threshold) + "]", 
+        metavar="<" + str(config.nucleotide_query_coverage_threshold) + ">", 
+        type=float,
+        default=config.nucleotide_query_coverage_threshold)
     parser.add_argument(
         "--bowtie2",
         help="directory containing the bowtie2 executable\n[DEFAULT: $PATH]", 
@@ -428,7 +442,9 @@ def update_configuration(args):
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.translated_subject_coverage_threshold=args.translated_subject_coverage_threshold
+    config.nucleotide_subject_coverage_threshold=args.nucleotide_subject_coverage_threshold
     config.translated_query_coverage_threshold=args.translated_query_coverage_threshold
+    config.nucleotide_query_coverage_threshold=args.nucleotide_query_coverage_threshold
     
     # Update the max decimals output
     config.output_max_decimals=args.output_max_decimals

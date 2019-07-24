@@ -1249,7 +1249,7 @@ def get_length_annotation(id):
     return new_id, length    
     
 def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_filter=None,
-                            log_filter=None, unaligned_reads_store=None):
+                            log_filter=None, unaligned_reads_store=None, query_coverage_threshold=0):
     """
     Read through the alignment file, yielding filtered alignments
     Filter based on identity threshold, evalue, and coverage threshold
@@ -1357,9 +1357,9 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
                 query_coverage = ( ( abs(query_stop_index - query_start_index) + 1) / float(query_length) )* 100.0
             else:
                 # if the query length is not provided, default coverage to greater than threshold
-                query_coverage = config.translated_query_coverage_threshold + 1.0
+                query_coverage = query_coverage_threshold + 1.0
                 
-            if query_coverage < config.translated_query_coverage_threshold:
+            if query_coverage < query_coverage_threshold:
                 filter=True
                 small_query_coverage_count+=1
                 

@@ -33,6 +33,7 @@ from .. import utilities
 from .. import config
 from .. import store
 from ..search import pick_frames
+from ..search import blastx_coverage
 
 # name global logging instance
 logger=logging.getLogger(__name__)
@@ -248,20 +249,16 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     utilities.file_exists_readable(sam_alignment_file)
     file_handle_read=open(sam_alignment_file, "rt")
     
-    file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
     file_handle_write_aligned=open(reduced_aligned_reads_file, "w")
 
     # read through the file line by line
+    # generate blast-like output file of alignments
     line = file_handle_read.readline()
-    query_ids=set()
-    no_frames_found_count=0
-    small_identity_count=0
     while line:
         # ignore headers ^@ 
         unaligned_read=False
         if not re.search("^@",line):
             info=line.split(config.sam_delimiter)
-            query_ids.add(info[config.blast_query_index])
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 unaligned_read=True
@@ -289,16 +286,61 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 new_info[config.blast_query_start_index]="0"
                 new_info[config.blast_query_end_index]=str(alignment_length-1)
                 file_handle_write_aligned.write(config.blast_delimiter.join(new_info)+"\n")
+        line=file_handle_read.readline()
                    
+    file_handle_read.close()
+    file_handle_write_aligned.close()
+
+    # process alignments to determine genes for filtering
+    allowed_genes = blastx_coverage.blastx_coverage(reduced_aligned_reads_file,
+        config.nucleotide_subject_coverage_threshold, alignments, log_messages=True, apply_filter=True,
+        nucleotide=True, query_coverage_threshold=config.nucleotide_query_coverage_threshold)
+
+    file_handle_read=open(sam_alignment_file, "rt")
+    file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
+
+    # read through the file line by line
+    # capture alignments and also write out unaligned reads for next step in processing
+    line = file_handle_read.readline()
+    query_ids=set()
+    no_frames_found_count=0
+    small_identity_count=0
+    filtered_genes_count=0
+    while line:
+        # ignore headers ^@ 
+        unaligned_read=False
+        if not re.search("^@",line):
+            info=line.split(config.sam_delimiter)
+            query_ids.add(info[config.blast_query_index])
+            # check flag to determine if unaligned
+            if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
+                unaligned_read=True
+            else:
+                # convert the cigar string and md field to percent identity
+                cigar_string=info[config.sam_cigar_index]
+                md_field=find_md_field(info)
+                identity, alignment_length, reference_length=calculate_percent_identity(cigar_string, md_field)
+
                 # only store alignments with identity greater than threshold
+                # and with genes included in the filtered list
+                query=info[config.sam_read_name_index]
+
+                gene_name, gene_length, bug = alignments.process_reference_annotation(
+                info[config.sam_reference_index])
+
+                if not gene_name in allowed_genes:
+                    filtered_genes_count+=1
+                    unaligned_read=True
+
                 if identity > config.identity_threshold:
                     matches=identity/100.0*alignment_length
-                    alignments.add_annotated(query,matches,info[config.sam_reference_index],
-                        alignment_length)
+                    if not unaligned_read:
+                        alignments.add_annotated(query,matches,info[config.sam_reference_index],
+                            alignment_length)
                 else:
                     small_identity_count+=1
                     unaligned_read=True
-                    
+
             if unaligned_read:
                 annotated_sam_read_name=utilities.add_length_annotation(info[config.sam_read_name_index],
                                                                     len(info[config.sam_read_index]))
@@ -323,6 +365,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
     if write_picked_frames:
         logger.debug("Total sequences without frames found: " + str(no_frames_found_count))
+    logger.debug("Total nucleotide alignments not included based on filtered genes: " +
+        str(filtered_genes_count))
     logger.debug("Total nucleotide alignments not included based on small percent identities: " +
         str(small_identity_count))
     

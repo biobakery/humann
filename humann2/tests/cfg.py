@@ -57,6 +57,8 @@ sam_file_without_header=os.path.join(data_folder, "file_without_header.sam")
 sam_file_without_header_with_tags=os.path.join(data_folder, "file_without_header_with_tags.sam")
 sam_file_unaligned_reads=os.path.join(data_folder,"2_aligned_3_unaligned.sam")
 sam_file_unaligned_reads_total_aligned=2
+sam_file_unaligned_reads_total_aligned_subject_coverage=2
+sam_file_unaligned_reads_total_aligned_query_coverage=2
 sam_file_unaligned_reads_total_unaligned=3
 
 bam_file=os.path.join(data_folder,"file.bam")
