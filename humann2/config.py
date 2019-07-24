@@ -407,7 +407,6 @@ sam_start_optional_index=11
 
 sam_read_quality=10
 sam_unmapped_flag=0x4
-sam_reverse_complement=0x10
 sam_delimiter="\t"
 
 sam_cigar_match_mismatch_indel_identifiers=["M","=","X","I","D"]

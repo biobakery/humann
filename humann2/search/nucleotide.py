@@ -178,9 +178,9 @@ def calculate_percent_identity(cigar_string, md_field):
     
     # get reference length
     try:
-        reference_length = sum([float(cigar_numbers[index]) for index in reference_length_index])
+        reference_length = int(sum([float(cigar_numbers[index]) for index in reference_length_index]))
     except (IndexError, ValueError):
-        reference_length = 0.0
+        reference_length = 0
 
     # identify the total number of match/mismatch/indel
     try:
@@ -263,11 +263,6 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 unaligned_read=True
             else:
-                # determine direction of alignment (1 = forward, -1 = reverse)
-                direction = 1
-                if int(info[config.sam_flag_index]) & config.sam_reverse_complement != 0:
-                    direction = -1
-
                 # convert the cigar string and md field to percent identity
                 cigar_string=info[config.sam_cigar_index]
                 md_field=find_md_field(info)
@@ -279,7 +274,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                 new_info[config.blast_query_index]=query
                 new_info[config.blast_reference_index]=info[config.sam_reference_index]
                 new_info[config.blast_subject_start_index]=str(info[config.sam_pos_index])
-                new_info[config.blast_subject_end_index]=str(int(info[config.sam_pos_index])+int(reference_length*direction))
+                new_info[config.blast_subject_end_index]=str(int(info[config.sam_pos_index])+reference_length)
                 new_info[config.blast_evalue_index]="0"
                 new_info[config.blast_identity_index]=str(identity)
                 new_info[config.blast_aligned_length_index]=str(alignment_length)

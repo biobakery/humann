@@ -37,7 +37,7 @@ def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None
     # track alignments unable to compute coverage
     no_coverage=0
     # parse blast6out file, applying filtering as selected
-    for alignment_info in utilities.get_filtered_translated_alignments(blast6out, alignments, apply_filter=apply_filter, query_coverage_threshold = query_coverage_threshold):
+    for alignment_info in utilities.get_filtered_translated_alignments(blast6out, alignments, apply_filter=apply_filter, log_filter = log_messages, query_coverage_threshold = query_coverage_threshold):
         ( protein_name, gene_length, queryid, matches, bug, alignment_length,
           subject_start_index, subject_stop_index) = alignment_info
           
