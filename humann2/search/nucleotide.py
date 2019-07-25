@@ -301,6 +301,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     no_frames_found_count=0
     small_identity_count=0
     filtered_genes_count=0
+    query_coverage_count=0
     while line:
         # ignore headers ^@ 
         unaligned_read=False
@@ -325,6 +326,12 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
                 if not gene_name in allowed_genes:
                     filtered_genes_count+=1
+                    unaligned_read=True
+
+                query_start_index=0
+                query_stop_index=alignment_length-1
+                if utilities.filter_based_on_query_coverage(alignment_length, query_start_index, query_stop_index, config.nucleotide_query_coverage_threshold):
+                    query_coverage_count+=1
                     unaligned_read=True
 
                 if identity > config.identity_threshold:
@@ -364,6 +371,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
         str(filtered_genes_count))
     logger.debug("Total nucleotide alignments not included based on small percent identities: " +
         str(small_identity_count))
+    logger.debug("Total nucleotide alignments not included based on query coverage threshold: " +
+        str(query_coverage_count))
     
     file_handle_read.close()
     file_handle_write_unaligned.close()   

@@ -1247,7 +1247,25 @@ def get_length_annotation(id):
         length=1
 
     return new_id, length    
-    
+   
+def filter_based_on_query_coverage(query_length, query_start_index, query_stop_index,
+    query_coverage_threshold):
+    """
+    Determine if read should be filtered based on query coverage threshold
+    """
+
+    if query_length > 1:
+        query_coverage = ( ( abs(query_stop_index - query_start_index) + 1) / float(query_length) )* 100.0
+    else:
+        # if the query length is not provided, default coverage to greater than threshold
+        query_coverage = query_coverage_threshold + 1.0
+                
+    filter = False
+    if query_coverage < query_coverage_threshold:
+        filter = True
+
+    return filter
+ 
 def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_filter=None,
                             log_filter=None, unaligned_reads_store=None,
                             query_coverage_threshold=config.translated_query_coverage_threshold):
@@ -1352,15 +1370,9 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
             if evalue > config.evalue_threshold:
                 filter=True
                 large_evalue_count+=1
-                
-            # filter alignments based on query coverage
-            if query_length > 1:
-                query_coverage = ( ( abs(query_stop_index - query_start_index) + 1) / float(query_length) )* 100.0
-            else:
-                # if the query length is not provided, default coverage to greater than threshold
-                query_coverage = query_coverage_threshold + 1.0
-                
-            if query_coverage < query_coverage_threshold:
+            
+            # filter alignments that do not meet query coverage threshold    
+            if filter_based_on_query_coverage(query_length, query_start_index, query_stop_index, query_coverage_threshold):
                 filter=True
                 small_query_coverage_count+=1
                 
