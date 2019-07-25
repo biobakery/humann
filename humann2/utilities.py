@@ -1395,10 +1395,10 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
         logger.debug("Total alignments where E-value is not a number: " + str(evalue_convert_error))
         if log_evalue:
             logger.debug("Total alignments unable to convert rapsearch e-value: " + str(rapsearch_evalue_convert_error))
-        logger.debug("Total translated alignments not included based on large e-value: " + 
+        logger.debug("Total alignments not included based on large e-value: " + 
                      str(large_evalue_count))
-        logger.debug("Total translated alignments not included based on small percent identity: " + 
+        logger.debug("Total alignments not included based on small percent identity: " + 
                      str(small_identity_count))
-        logger.debug("Total translated alignments not included based on small query coverage: " + 
+        logger.debug("Total alignments not included based on small query coverage: " + 
                      str(small_query_coverage_count))
     
