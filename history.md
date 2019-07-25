@@ -1,6 +1,13 @@
 
 # HUMAnN2 History #
 
+## v2.9.0 (TBD) ##
+
+* Updated databases to use the latest ChocoPhlAn and corresponding UniRef50/90 (release 01/2019).
+* Added diamond options.
+* Added bowtie2 options.
+* Added gene based filtering to nucleotide search using the same method as translated search. To revert back to prior nucleotide filtering mode, run with the options "--nucleotide-subject-coverage-threshold 0 --nucleotide-query-coverage-threshold 0".
+
 ## v0.11.2 10-12-2018 ##
 
 * Updated MetaPhlAn2 command to be compatible with the latest version.
