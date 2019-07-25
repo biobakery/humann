@@ -23,7 +23,7 @@ from humann2 import store
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None, apply_filter=None, nucleotide = False, query_coverage_threshold=0):
+def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None, apply_filter=None, nucleotide = False, query_coverage_threshold=config.translated_query_coverage_threshold):
     # create alignments instance if none is passed
     if alignments is None:
         alignments=store.Alignments()
