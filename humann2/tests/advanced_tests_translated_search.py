@@ -19,6 +19,9 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
     
     def setUp(self):
         config.unnamed_temp_dir="/tmp/"
+
+        # set default identity threshold
+        config.identity_threshold = 50.0
         
         # set up nullhandler for logger
         logging.getLogger('humann2.search.translated').addHandler(logging.NullHandler())

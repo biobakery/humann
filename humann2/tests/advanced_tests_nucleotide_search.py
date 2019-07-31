@@ -20,6 +20,9 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         config.unnamed_temp_dir=tempfile.gettempdir()
         config.temp_dir=tempfile.gettempdir()
         config.file_basename="HUMAnN2_test"
+
+        # set default identity threshold
+        config.identity_threshold = 50.0
         
         # set up nullhandler for logger
         logging.getLogger('humann2.search.nucleotide').addHandler(logging.NullHandler())

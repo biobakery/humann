@@ -199,10 +199,9 @@ def parse_arguments(args):
     parser.add_argument(
         "--identity-threshold", 
         help="identity threshold for alignments\n[DEFAULT: " 
-            + str(config.identity_threshold) + "]", 
-        metavar="<" + str(config.identity_threshold) + ">", 
-        type=float,
-        default=config.identity_threshold) 
+            + "Tuned automatically (based on uniref mode) unless a custom value is specified]", 
+        metavar="<Automatically: 50.0 or 90.0, Custom: 0.0-100.0>", 
+        type=float) 
     parser.add_argument(
         "--translated-subject-coverage-threshold", 
         help="subject coverage threshold for translated alignments\n[DEFAULT: " 
@@ -845,7 +844,7 @@ def check_requirements(args):
     # set the values based on the search mode
     if config.search_mode == config.search_mode_uniref90:
         # only change identity threshold to default if user has not provided a specific setting
-        if config.identity_threshold == args.identity_threshold:  
+        if args.identity_threshold is None:  
             config.identity_threshold = config.identity_threshold_uniref90_mode
         else:
             config.identity_threshold = args.identity_threshold
@@ -861,7 +860,7 @@ def check_requirements(args):
             config.diamond_opts = config.diamond_opts_uniref90
     else:
         # only change identity threshold to default if user has not provided a specific setting
-        if config.identity_threshold == args.identity_threshold:  
+        if args.identity_threshold is None:  
             config.identity_threshold = config.identity_threshold_uniref50_mode
         else:
             config.identity_threshold = args.identity_threshold                

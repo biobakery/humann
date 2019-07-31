@@ -249,7 +249,6 @@ prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_thre
 # translated search identity threshold
 identity_threshold_uniref90_mode = 90.0
 identity_threshold_uniref50_mode = 50.0
-identity_threshold=identity_threshold_uniref50_mode
 
 # translated search coverage thresholds
 translated_subject_coverage_threshold=get_item(config_items, "alignment_settings", "translated_subject_coverage_threshold", "float")
