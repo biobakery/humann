@@ -31,4 +31,5 @@ exclude humann2/data/misc/uniref50-tol-lca.dat.gz
 exclude humann2/data/misc/uniref90-tol-lca.dat.gz
 exclude humann2/data/misc/map_eggnog_uniref50.txt.gz
 exclude humann2/data/misc/map_eggnog_uniref90.txt.gz
-exclude humann2/data/misc/uniref90-tol-lca.dat.gz
+exclude humann2/data/misc/uniref90-tol-lca.dat.bz2
+exclude humann2/data/misc/uniref50-tol-lca.dat.bz2
