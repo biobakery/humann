@@ -34,8 +34,8 @@ except EnvironmentError:
     all_mapping_files=[]
 
 databases = {
-    "uniref50": "uniref50-tol-lca.dat.gz",
-    "uniref90": "uniref90-tol-lca.dat.gz",
+    "uniref50": "uniref50-tol-lca.dat.bz2",
+    "uniref90": "uniref90-tol-lca.dat.bz2",
     }
 
 missing = False
