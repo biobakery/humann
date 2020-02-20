@@ -10,7 +10,7 @@ Franzosa EA\*, McIver LJ\*, Rahnavard G, Thompson LR, Schirmer M, Weingart G, Sc
 
 **And feel free to link to HUMAnN 2.0 in your Methods:**
 
-[http://huttenhower.sph.harvard.edu/humann2](http://huttenhower.sph.harvard.edu/humann2)
+[http://huttenhower.sph.harvard.edu/humann](http://huttenhower.sph.harvard.edu/humann)
 
 ----
 
