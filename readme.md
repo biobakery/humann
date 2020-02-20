@@ -237,9 +237,9 @@ Option 2: Development Version
 
 * Create a clone of the repository: 
     
-	``$ hg clone https://bitbucket.org/biobakery/humann2 ``
+	``$ git clone https://github.com/biobakery/humann ``
 
-	Note: Creating a clone of the repository requires [Mercurial](http://mercurial.selenic.com/) to be installed. Once the clone is created you can always update to the latest version of the repository with `` $ hg pull --update ``.
+	Note: Creating a clone of the repository requires [Github](https://github.com/) to be installed. 
 
 ----	
 	
@@ -253,7 +253,7 @@ Option 2: Development Version
     * To bypass the install of Bowtie2 and Diamond, add the option "--install-option='--bypass-dependencies-install'" to the install command.
     * To build Diamond from source during the install, add the option "--install-option='--build-diamond'" to the install command.
     * To overwite existing installs of Bowtie2 and Diamond, add the option "--install-option='--replace-dependencies-install'" to the install command.
-    * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '~/.local' on Linux. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
+    * If you do not have write permissions to '/usr/lib/', then add the option "--user" to the HUMAnN2 install command. This will install the python package into subdirectories of '\~/.local' on Linux. Please note when using the "--user" install option on some platforms, you might need to add '~\/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 
 ----	
 	
@@ -268,7 +268,7 @@ Option 2: Development Version
     * ``$ python setup.py install ``
     * This command will automatically install MinPath (and new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
     * To bypass the install of Bowtie2 and Diamond, add the option "--bypass-dependencies-install" to the install command. 
-    * If you do not have write permissions to '/usr/lib/', then add the option ``--user`` to the install command. This will install the python package into subdirectories of '~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
+    * If you do not have write permissions to '/usr/lib/', then add the option ``--user`` to the install command. This will install the python package into subdirectories of '\~/.local'. Please note when using the "--user" install option on some platforms, you might need to add '\~/.local/bin/' to your $PATH as it might not be included by default. You will know if it needs to be added if you see the following message `humann2: command not found` when trying to run HUMAnN2 after installing with the "--user" option.
 
 ----	
 	
