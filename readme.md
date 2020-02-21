@@ -1241,7 +1241,7 @@ Please note the flag ``--verbose`` can be added to all commands.
 
 ### Legacy databases ###
 
-HUMAnN 1.0 used [KEGG](http://www.genome.jp/kegg/) databases. Following changes to KEGG's licensing, new versions of KEGG sequence and gene annotation databases can no longer be downloaded *en masse* for free. The last free version of KEGG's gene annotation databases (v56) are bundled with HUMAnN 1.0 (see Step 1 below). To obtain a compatible sequence database (referred to as ``genes.pep`` below), please contact the HUMAnN user group: <humann-users@googlegroups.com>.
+HUMAnN 1.0 used [KEGG](http://www.genome.jp/kegg/) databases. Following changes to KEGG's licensing, new versions of KEGG sequence and gene annotation databases can no longer be downloaded *en masse* for free. The last free version of KEGG's gene annotation databases (v56) are bundled with HUMAnN 1.0 (see Step 1 below). To obtain a compatible sequence database (referred to as ``genes.pep`` below).
 
 You can run with the legacy Kegg databases following these steps:
 
@@ -1625,3 +1625,8 @@ optional arguments:
                         the amount of memory to use
                         [DEFAULT: minimum]
 ```
+----
+## Support ##
+ Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
+ 
+ Additionally, Google user group: <humann-users@googlegroups.com> (Read only) is available.  
