@@ -1,6 +1,10 @@
 
 # HUMAnN2 History #
 
+## v2.8.2 04-03-2020 ##
+
+* Add an option for the user to provide the location of the database.
+
 ## v2.8.1 07-12-2019 ##
 
 * Updated MetaPhlAn2 commands to use new legacy database name (to be compatible with MetaPhlAn2 v2.9.13+).
