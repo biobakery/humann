@@ -247,7 +247,7 @@ evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold"
 prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")
 
 # translated search identity threshold
-identity_threshold_uniref90_mode = 90.0
+identity_threshold_uniref90_mode = 80.0
 identity_threshold_uniref50_mode = 50.0
 
 # translated search coverage thresholds
@@ -471,8 +471,8 @@ rapsearch_version={
 # diamond options
 diamond_database_extension=".dmnd"
 diamond_options_custom=False
-diamond_opts_uniref50=["--max-target-seqs","20","--sensitive","--outfmt","6"]
-diamond_opts_uniref90=["--max-target-seqs","20","--outfmt","6"]
+diamond_opts_uniref50=["--top","1","--sensitive","--outfmt","6"]
+diamond_opts_uniref90=["--top","1","--outfmt","6"]
 diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={
