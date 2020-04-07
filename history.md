@@ -8,6 +8,18 @@
 * Added bowtie2 options.
 * Added gene based filtering to nucleotide search using the same method as translated search. To revert back to prior nucleotide filtering mode, run with the options "--nucleotide-subject-coverage-threshold 0 --nucleotide-query-coverage-threshold 0".
 
+## v2.8.2 04-03-2020 ##
+
+* Add an option for the user to provide the location of the database.
+
+## v2.8.1 07-12-2019 ##
+
+* Updated MetaPhlAn2 commands to use new legacy database name (to be compatible with MetaPhlAn2 v2.9.13+).
+
+## v2.8.0 07-01-2019 ##
+
+* Updated MetaPhlAn2 commands to check for software and database versions required.
+
 ## v0.11.2 10-12-2018 ##
 
 * Updated MetaPhlAn2 command to be compatible with the latest version.
