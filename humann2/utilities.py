@@ -1268,12 +1268,16 @@ def filter_based_on_query_coverage(query_length, query_start_index, query_stop_i
  
 def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_filter=None,
                             log_filter=None, unaligned_reads_store=None,
-                            query_coverage_threshold=config.translated_query_coverage_threshold, identity_threshold=config.identity_threshold):
+                            query_coverage_threshold=config.translated_query_coverage_threshold, identity_threshold=None):
     """
     Read through the alignment file, yielding filtered alignments
     Filter based on identity threshold, evalue, and coverage threshold
     Remove from unaligned reads store if set
     """
+
+    # if identity threshold is not set, use the config default
+    if identity_threshold is None:
+        identity_threshold = config.identity_threshold
 
     # read through the alignment file to identify ids
     # that correspond to aligned reads
