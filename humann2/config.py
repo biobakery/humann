@@ -69,7 +69,8 @@ def log_settings():
     
     lines.append("SEARCH MODE")
     lines.append("search mode = " + search_mode)
-    lines.append("identity threshold = " + str(identity_threshold))
+    lines.append("nucleotide identity threshold = " + str(nucleotide_identity_threshold))
+    lines.append("translated identity threshold = " + str(identity_threshold))
     lines.append("")
     
     lines.append("ALIGNMENT SETTINGS")
@@ -245,6 +246,9 @@ evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold"
     
 # prescreen threshold
 prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")
+
+# nucletide search identity threshold
+nucleotide_identity_threshold = 0.0
 
 # translated search identity threshold
 identity_threshold_uniref90_mode = 80.0

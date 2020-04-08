@@ -1268,7 +1268,7 @@ def filter_based_on_query_coverage(query_length, query_start_index, query_stop_i
  
 def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_filter=None,
                             log_filter=None, unaligned_reads_store=None,
-                            query_coverage_threshold=config.translated_query_coverage_threshold):
+                            query_coverage_threshold=config.translated_query_coverage_threshold, identity_threshold=config.identity_threshold):
     """
     Read through the alignment file, yielding filtered alignments
     Filter based on identity threshold, evalue, and coverage threshold
@@ -1362,7 +1362,7 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
             
             # check if percent identity is less then threshold
             filter=False
-            if identity < config.identity_threshold:
+            if identity < identity_threshold:
                 filter=True
                 small_identity_count+=1
                 

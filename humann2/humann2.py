@@ -197,11 +197,17 @@ def parse_arguments(args):
         type=float,
         default=config.prescreen_threshold) 
     parser.add_argument(
-        "--identity-threshold", 
-        help="identity threshold for alignments\n[DEFAULT: " 
+        "--nucleotide-identity-threshold",
+        help="identity threshold for nuclotide alignments\n[DEFAULT: " + str(config.nucleotide_identity_threshold) + "]",
+        metavar="<" + str(config.nucleotide_identity_threshold) + ">",
+        type=float)
+    parser.add_argument(
+        "--translated-identity-threshold", 
+        help="identity threshold for translated alignments\n[DEFAULT: " 
             + "Tuned automatically (based on uniref mode) unless a custom value is specified]", 
-        metavar="<Automatically: 50.0 or 90.0, Custom: 0.0-100.0>", 
-        type=float) 
+        metavar="<Automatically: 50.0 or 80.0, Custom: 0.0-100.0>", 
+        type=float,
+        dest="identity_threshold") 
     parser.add_argument(
         "--translated-subject-coverage-threshold", 
         help="subject coverage threshold for translated alignments\n[DEFAULT: " 
