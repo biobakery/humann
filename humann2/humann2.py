@@ -733,12 +733,12 @@ def check_requirements(args):
                 
         # Check that the metaphlan2 executable can be found
         if not config.bypass_prescreen and not config.bypass_nucleotide_index:
-            if not utilities.find_exe_in_path("metaphlan2.py"): 
-                sys.exit("CRITICAL ERROR: The metaphlan2.py executable can not be found. "  
+            if not utilities.find_exe_in_path("metaphlan.py"): 
+                sys.exit("CRITICAL ERROR: The metaphlan.py executable can not be found. "  
                     "Please check the install.")
 
             # Check the metaphlan2 version
-            utilities.check_software_version("metaphlan2.py",config.metaphlan_version)
+            utilities.check_software_version("metaphlan.py",config.metaphlan_version)
 
         # Check that the bowtie2 executable can be found
         if not config.bypass_nucleotide_search:
