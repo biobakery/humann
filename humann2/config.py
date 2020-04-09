@@ -360,7 +360,7 @@ metaphlan_version={
     "flag" : "--version",
     "major" : 2,
     "minor" : 9,
-    "line" : 0,
+    "line" : -1,
     "column" : 2}
 metaphlan_2p9_db_version="201901"
 
