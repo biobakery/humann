@@ -46,7 +46,7 @@ def alignment(input):
     metaphlan_dir=utilities.return_exe_path(exe)
  
     #determine input type as fastq or fasta
-    input_type="multi" + utilities.fasta_or_fastq(input)
+    input_type=utilities.fasta_or_fastq(input)
     
     # outfile name
     bug_file = utilities.name_temp_file(config.bugs_list_name)
@@ -84,17 +84,27 @@ def create_custom_database(chocophlan_dir, bug_file):
         version_found = False
         while line:
 
-            if line.startswith("#") and config.metaphlan_2p9_db_version in line:
+            if line.startswith("#") and config.metaphlan_3p0_db_output_version in line:
                 version_found = True
 
             # if we see taxon-level we are done processing
             if re.search("t__", line):
                 break
-        
+ 
             # search for the lines that have the species-level information
             if re.search("s__", line):
                 # check threshold
-                read_percent=float(line.split("\t")[-1])
+                try:
+                    data=line.split("\t")
+                    if data[-1].replace(".","").isdigit():
+                        read_percent=float(data[-1])
+                    else:
+                        read_percent=float(data[-2])
+                except ValueError:
+                    message="The MetaPhlAn2 taxonomic profile provided was not generated with the expected database version. Please update your version of MetaPhlAn2 to v3.0."
+                    logger.error(message)
+                    sys.exit("\n\nERROR: "+message)
+                    
                 if read_percent >= config.prescreen_threshold:
                     total_reads_covered += read_percent
                     organism_info=line.split("\t")[0]
@@ -118,10 +128,11 @@ def create_custom_database(chocophlan_dir, bug_file):
    
         if not version_found:
             message="The MetaPhlAn2 taxonomic profile provided was not generated with the database version "+\
-                config.metaphlan_2p9_db_version+" . Please update your version of MetaPhlAn2 to v2.9."
+                config.metaphlan_3p0_db_output_version+" . Please update your version of MetaPhlAn2 to v3.0."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
- 
+        
+
     # compute total species found
     if not config.bypass_prescreen:
         message="Total species selected from prescreen: " + str(len(species_found))

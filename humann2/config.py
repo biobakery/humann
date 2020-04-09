@@ -362,7 +362,9 @@ metaphlan_version={
     "minor" : 9,
     "line" : -1,
     "column" : 2}
-metaphlan_2p9_db_version="201901"
+metaphlan_3p0_db_version="v296"
+metaphlan_3p0_db_output_version="NCBI_tax_id"
+metaphlan_3p0_db_matching_uniref="201901"
 
 # chocophlan formatting
 chocophlan_delimiter="|"

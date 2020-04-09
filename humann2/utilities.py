@@ -422,7 +422,7 @@ def check_software_version(exe,version):
         
     try:
         # find the version string and remove a "v" and ":" if present
-        version_line=process_out.split("\n")[version["line"]]
+        version_line=list(filter(lambda x: x, process_out.split("\n")))[version["line"]]
         version_line_split=version_line.split(" ")
         version_string=version_line_split[version["column"]]
         current_version=version_string.replace("v","").replace(":","").split(".")
