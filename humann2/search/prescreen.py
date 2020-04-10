@@ -84,7 +84,7 @@ def create_custom_database(chocophlan_dir, bug_file):
         version_found = False
         while line:
 
-            if line.startswith("#") and config.metaphlan_3p0_db_output_version in line:
+            if line.startswith("#") and config.metaphlan_3p0_db_version in line:
                 version_found = True
 
             # if we see taxon-level we are done processing
@@ -128,7 +128,7 @@ def create_custom_database(chocophlan_dir, bug_file):
    
         if not version_found:
             message="The MetaPhlAn2 taxonomic profile provided was not generated with the database version "+\
-                config.metaphlan_3p0_db_output_version+" . Please update your version of MetaPhlAn2 to v3.0."
+                config.metaphlan_3p0_db_version+" . Please update your version of MetaPhlAn2 to v3.0."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
