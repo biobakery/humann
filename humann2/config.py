@@ -358,8 +358,8 @@ genefamilies_file="_genefamilies"
 metaphlan_opts=["-t","rel_ab"]
 metaphlan_version={
     "flag" : "--version",
-    "major" : 2,
-    "minor" : 9,
+    "major" : 3,
+    "minor" : 0,
     "line" : -1,
     "column" : 2}
 metaphlan_3p0_db_version="v296"
