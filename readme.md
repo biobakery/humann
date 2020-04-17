@@ -15,7 +15,7 @@ Franzosa EA\*, McIver LJ\*, Rahnavard G, Thompson LR, Schirmer M, Weingart G, Sc
 ----
 
 
-**For additional information, read the [HUMAnN 2.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann_v2.0)**
+**For additional information, read the [HUMAnN 2.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann2)**
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
 
@@ -880,7 +880,7 @@ log level = DEBUG
 
 ### humann2_associate ###
 
-`humann2_associate` is included as a statistical aid for the [HUMAnN 2.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann_v2.0). This script is not currently recommended for other purposes.
+`humann2_associate` is included as a statistical aid for the [HUMAnN 2.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann2). This script is not currently recommended for other purposes.
 
 ----
 
@@ -892,7 +892,7 @@ log level = DEBUG
 * `$FIGURE` = Where to save the figure
 * Run with `-h` to see additional command line options
 
-`humann2_barplot` produces plots of stratified HUMAnN 2.0 features. **Note**: unlike many other HUMAnN 2.0 utilities, `humann2_barplot` requires the Python scientific stack (notably `matplotlib`) to operate. `humann2_barplot` includes many options for sorting and scaling data, as detailed in the `--help` menu. `humann2_barplot` is also explored in greater detail in the [HUMAnN 2.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann_v2.0).
+`humann2_barplot` produces plots of stratified HUMAnN 2.0 features. **Note**: unlike many other HUMAnN 2.0 utilities, `humann2_barplot` requires the Python scientific stack (notably `matplotlib`) to operate. `humann2_barplot` includes many options for sorting and scaling data, as detailed in the `--help` menu. `humann2_barplot` is also explored in greater detail in the [HUMAnN 2.0](https://github.com/biobakery/biobakery/wiki/humann2).
 
 Here is an example of a HUMAnN 2.0 barplot for a pathway (denitrification) that was preferentially enriched in Human Microbiome Project oral samples relative to other body sites. This figure uses many options from `humann2_barplot`, including regrouping by genus, pseudolog scaling, and sorting samples by similarity and metadata:
 
