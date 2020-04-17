@@ -1,12 +1,16 @@
 
 # HUMAnN2 History #
 
-## v2.9.0 (TBD) ##
+## v3.0.0-alpha (04-17-2020) ##
 
+* Add flexibility to allow for additional MetaPhlAn output column.
+* Split "--identity-threshold" into two options, one for each search type with defaults of 0 (nucleotide) and 80/50 (translated).
+* Update diamond default options to "--id 80.0 --top 1" for UniRef90 runs and "--id 50.0 --top 1" for UniRef50 runs.
 * Updated databases to use the latest ChocoPhlAn and corresponding UniRef50/90 (release 01/2019).
 * Added diamond options.
 * Added bowtie2 options.
 * Added gene based filtering to nucleotide search using the same method as translated search. To revert back to prior nucleotide filtering mode, run with the options "--nucleotide-subject-coverage-threshold 0 --nucleotide-query-coverage-threshold 0".
+* Add flexibility to MetaPhlAn version check to allow for warning messages for numpy and biom-format.
 
 ## v2.8.2 04-03-2020 ##
 
