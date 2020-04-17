@@ -64,7 +64,7 @@ current_downloads={
         },
     "utility_mapping" :
         {
-            "full" : "http://huttenhower.sph.harvard.edu/humann2_data/full_mapping_1_1.tar.gz"
+            "full" : "http://huttenhower.sph.harvard.edu/humann2_data/full_mapping_v201901.tar.gz"
          }
 }
 
