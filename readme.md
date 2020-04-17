@@ -1,4 +1,4 @@
-# HUMAnN 2.0 User Manual #
+# HUMAnN 2.0 User Manual 
 
 HUMAnN 2.0 is the next generation of HUMAnN 1.0 (HMP Unified Metabolic Analysis Network).
 
@@ -14,9 +14,16 @@ Franzosa EA\*, McIver LJ\*, Rahnavard G, Thompson LR, Schirmer M, Weingart G, Sc
 
 ----
 
+
 **For additional information, read the [HUMAnN 2.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann_v2.0)**
 
 HUMAnN is a pipeline for efficiently and accurately profiling the presence/absence and abundance of microbial pathways in a community from metagenomic or metatranscriptomic sequencing data (typically millions of short DNA/RNA reads). This process, referred to as functional profiling, aims to describe the metabolic potential of a microbial community and its members. More generally, functional profiling answers the question "What are the microbes in my community-of-interest doing (or capable of doing)?"
+
+----
+
+**Interested in trying out the latest version?**  
+
+We're in the late-stage testing for a new version [HUMAnN 3.0 User Manual](https://github.com/biobakery/humann/tree/3.0.0-alpha)
 
 ----
 
