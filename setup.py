@@ -74,8 +74,6 @@ AUTHOR_EMAIL = "humann-users@googlegroups.com"
 MAINTAINER = "Lauren McIver"
 MAINTAINER_EMAIL = "lauren.j.mciver@gmail.com"
 
-COUNTER_URL="http://bitbucket.org/biobakery/humann2/downloads/counter.txt"
-
 def byte_to_megabyte(byte):
     """
     Convert byte value to megabyte
@@ -541,15 +539,6 @@ class Install(_install):
         _install.finalize_options(self)
     
     def run(self):
-        # try to download the bitbucket counter file to count downloads
-        # this has been added since PyPI has turned off the download stats
-        # this will be removed when PyPI Warehouse is production as it
-        # will have download stats
-        counter_file="counter.txt"
-        if not os.path.isfile(counter_file):
-            print("Downloading counter file to track humann2 downloads"+
-                  " since the global PyPI download stats are currently turned off.")
-            download(COUNTER_URL,counter_file)
         
         # install minpath if not already installed
         install_minpath(replace_install=self.replace_dependencies_install)
