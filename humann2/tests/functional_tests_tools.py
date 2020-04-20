@@ -19,7 +19,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # join the files
-        utils.run_command(["humann2_join_tables","--input",
+        utils.run_command(["humann_join_tables","--input",
                            cfg.data_folder,"--output",new_file,"--file_name",
                            cfg.multi_sample_genefamilies_split_basename,"--verbose"])
         
@@ -40,7 +40,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         temp_directory=utils.create_temp_folder("split_tables_tsv")
 
         # split the file
-        utils.run_command(["humann2_split_table","--input", input_file,
+        utils.run_command(["humann_split_table","--input", input_file,
                            "--output",temp_directory,"--verbose"])
 
         # test the split files are as expected
@@ -74,7 +74,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+        utils.run_command(["humann_regroup_table","--input",cfg.regroup_input,"--output",
                            new_file,"--groups","uniref50_rxn"])
         
         # check the output is as expected
@@ -94,7 +94,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input,"--output",
+        utils.run_command(["humann_regroup_table","--input",cfg.regroup_input,"--output",
                            new_file,"--groups","uniref50_rxn","--function","mean"])
         
         # check the output is as expected
@@ -113,7 +113,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_custom_input,"--output",
+        utils.run_command(["humann_regroup_table","--input",cfg.regroup_custom_input,"--output",
                            new_file,"--custom",cfg.regroup_custom_groups])
         
         # check the output is as expected
@@ -132,7 +132,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_input,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_input,"--output",
                            new_file,"--names","uniref50"])
         
         # check the output is as expected
@@ -151,7 +151,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_ko_input,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_ko_input,"--output",
                            new_file,"--names","kegg-orthology"])
         
         # check the output is as expected
@@ -170,7 +170,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_ec_input,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_ec_input,"--output",
                            new_file,"--names","ec"])
         
         # check the output is as expected
@@ -189,7 +189,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_rxn_input,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_rxn_input,"--output",
                            new_file,"--names","metacyc-rxn"])
         
         # check the output is as expected
@@ -208,7 +208,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_pathway_input,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_pathway_input,"--output",
                            new_file,"--names","metacyc-pwy"])
         
         # check the output is as expected
@@ -227,7 +227,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_input,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_input,"--output",
                            new_file,"--custom",cfg.rename_custom_mapping])
         
         # check the output is as expected
@@ -247,7 +247,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input,"--output",
+        utils.run_command(["humann_renorm_table","--input",cfg.renorm_input,"--output",
                            new_file,"--units","cpm"])
         
         # check the output is as expected
@@ -266,7 +266,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input,"--output",
+        utils.run_command(["humann_renorm_table","--input",cfg.renorm_input,"--output",
                            new_file,"--units","relab"])
         
         # check the output is as expected
@@ -286,7 +286,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         output_basename=os.path.join(tempdir,"rna_dna_norm")
         
         # run the command
-        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+        utils.run_command(["humann_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
                            "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
                            output_basename,"--method","laplace"])
         
@@ -308,7 +308,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         output_basename=os.path.join(tempdir,"rna_dna_norm")
         
         # run the command
-        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+        utils.run_command(["humann_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
                            "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
                            output_basename,"--method","witten_bell"])
         
@@ -330,7 +330,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         output_basename=os.path.join(tempdir,"rna_dna_norm")
         
         # run the command
-        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+        utils.run_command(["humann_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
                            "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
                            output_basename,"--log_transform"])
         
@@ -352,7 +352,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         output_basename=os.path.join(tempdir,"rna_dna_norm")
         
         # run the command
-        utils.run_command(["humann2_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
+        utils.run_command(["humann_rna_dna_norm","--input_dna",cfg.rna_dna_norm_dna_input,
                            "--input_rna",cfg.rna_dna_norm_rna_input,"--output_basename",
                            output_basename,"--log_transform", "--log_base","10"])
         
@@ -381,7 +381,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
             print("Warning: Unable to move to temp directory: " + tempdir)
         
         # run the command
-        utils.run_command(["humann2_strain_profiler","--input",cfg.strain_profile_input,
+        utils.run_command(["humann_strain_profiler","--input",cfg.strain_profile_input,
                            "--critical_mean","1","--critical_count","2"])
         
         # check the output files are as expected
@@ -404,7 +404,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_unpack_pathways","--input-genes",cfg.merge_abundance_genefamilies_input,
+        utils.run_command(["humann_unpack_pathways","--input-genes",cfg.merge_abundance_genefamilies_input,
                            "--input-pathways",cfg.merge_abundance_pathways_input,"--output",
                            new_file])
         
@@ -426,7 +426,7 @@ class TestFunctionalHumann2Tools(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_unpack_pathways","--input-genes",cfg.merge_abundance_genefamilies_input,
+        utils.run_command(["humann_unpack_pathways","--input-genes",cfg.merge_abundance_genefamilies_input,
                            "--input-pathways",cfg.merge_abundance_pathways_input,"--output",
                            new_file,"--remove-taxonomy"])
         

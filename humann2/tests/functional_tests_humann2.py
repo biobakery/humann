@@ -22,7 +22,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fastq")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir]
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -40,8 +40,8 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         # create a temp directory for output
         tempdir = utils.create_temp_folder("fasta")
         
-        # run humann2 test
-        command = ["humann2","--input",cfg.demo_fasta,"--output",tempdir]
+        # run humann test
+        command = ["humann","--input",cfg.demo_fasta,"--output",tempdir]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -60,7 +60,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("sam")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_sam,"--output",tempdir]
+        command = ["humann","--input",cfg.demo_sam,"--output",tempdir]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -79,7 +79,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("m8")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_m8,"--output",tempdir]
+        command = ["humann","--input",cfg.demo_m8,"--output",tempdir]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -98,7 +98,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("gene_families")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_gene_families,"--output",tempdir]
+        command = ["humann","--input",cfg.demo_gene_families,"--output",tempdir]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -120,7 +120,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fastq_bypass_nucleotide_search")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,"--bypass-nucleotide-search"]
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,"--bypass-nucleotide-search"]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -140,7 +140,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fasta_bypass_nucleotide_search")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fasta,"--output",tempdir,"--bypass-nucleotide-search"]
+        command = ["humann","--input",cfg.demo_fasta,"--output",tempdir,"--bypass-nucleotide-search"]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -160,7 +160,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fastq_bypass_translated_search")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,"--bypass-translated-search"]
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,"--bypass-translated-search"]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -180,7 +180,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fasta_bypass_translated_search")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fasta,"--output",tempdir,"--bypass-translated-search"]
+        command = ["humann","--input",cfg.demo_fasta,"--output",tempdir,"--bypass-translated-search"]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -200,7 +200,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fastq_bypass_prescreen")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,"--bypass-prescreen"]
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,"--bypass-prescreen"]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -220,7 +220,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fasta_bypass_prescreen")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fasta,"--output",tempdir,"--bypass-prescreen"]
+        command = ["humann","--input",cfg.demo_fasta,"--output",tempdir,"--bypass-prescreen"]
         utils.run_humann2(command)
         
         # check the output files are as expected
@@ -240,7 +240,7 @@ class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
         tempdir = utils.create_temp_folder("fastq_custom_taxonomic_profile")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,"--taxonomic-profile",
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,"--taxonomic-profile",
                    cfg.demo_bugs_list]
         utils.run_humann2(command)
         

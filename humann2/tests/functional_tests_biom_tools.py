@@ -19,7 +19,7 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # join the files
-        utils.run_command(["humann2_join_tables","--input",
+        utils.run_command(["humann_join_tables","--input",
                            cfg.data_folder,"--output",new_file,"--file_name",
                            cfg.multi_sample_genefamilies_split_basename_biom,"--verbose"])
         
@@ -40,7 +40,7 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         temp_directory=utils.create_temp_folder("split_tables_biom")
 
         # split the file
-        utils.run_command(["humann2_split_table","--input", input_file,
+        utils.run_command(["humann_split_table","--input", input_file,
                            "--output",temp_directory,"--verbose"])
 
         # test the split files are as expected
@@ -61,7 +61,7 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_regroup_table","--input",cfg.regroup_input_biom,"--output",
+        utils.run_command(["humann_regroup_table","--input",cfg.regroup_input_biom,"--output",
                            new_file,"--groups","uniref50_rxn"])
         
         # check the output is as expected
@@ -80,7 +80,7 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_rename_table","--input",cfg.rename_input_biom,"--output",
+        utils.run_command(["humann_rename_table","--input",cfg.rename_input_biom,"--output",
                            new_file,"--names","uniref50"])
         
         # check the output is as expected
@@ -99,7 +99,7 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
         
         # run the command
-        utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input_biom,"--output",
+        utils.run_command(["humann_renorm_table","--input",cfg.renorm_input_biom,"--output",
                            new_file,"--units","cpm"])
         
         # check the output is as expected
@@ -119,7 +119,7 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         file_out, new_file=tempfile.mkstemp(prefix="humann2_temp",suffix=".biom")
         
         # run the command
-        utils.run_command(["humann2_renorm_table","--input",cfg.renorm_input_biom,"--output",
+        utils.run_command(["humann_renorm_table","--input",cfg.renorm_input_biom,"--output",
                            new_file,"--units","cpm"])
         
         # check the output is as expected

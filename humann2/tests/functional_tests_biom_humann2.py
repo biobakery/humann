@@ -10,7 +10,7 @@ import utils
 
 class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
     """
-    Test humann2 with end to end functional tests
+    Test humann with end to end functional tests
     """
 
     def test_humann2_fastq_biom_output(self):
@@ -22,8 +22,8 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         # create a temp directory for output
         tempdir = utils.create_temp_folder("fastq")
         
-        # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,
+        # run humann test
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,
                    "--output-format", "biom"]
         utils.run_humann2(command)
         
@@ -45,7 +45,7 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         tempdir = utils.create_temp_folder("fastq")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_fastq,"--output",tempdir,
+        command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,
                    "--output-format", "biom", "--gap-fill", "off"]
         utils.run_humann2(command)
         
@@ -68,7 +68,7 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         tempdir = utils.create_temp_folder("gene_families")
         
         # run humann2 test
-        command = ["humann2","--input",cfg.demo_gene_families_biom,"--output",tempdir]
+        command = ["humann","--input",cfg.demo_gene_families_biom,"--output",tempdir]
         utils.run_humann2(command)
         
         # check the output files are as expected
