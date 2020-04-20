@@ -39,7 +39,7 @@ def alignment(input):
     Runs metaphlan to identify initial list of bugs
     """
    
-    exe="metaphlan.py"
+    exe="metaphlan"
     opts=config.metaphlan_opts  
 
     # find the location of the metaphlan dir
