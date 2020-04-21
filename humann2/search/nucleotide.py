@@ -289,7 +289,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     # process alignments to determine genes for filtering
     allowed_genes = blastx_coverage.blastx_coverage(reduced_aligned_reads_file,
         config.nucleotide_subject_coverage_threshold, alignments, log_messages=True, apply_filter=True,
-        nucleotide=True, query_coverage_threshold=config.nucleotide_query_coverage_threshold)
+        nucleotide=True, query_coverage_threshold=config.nucleotide_query_coverage_threshold,
+        identity_threshold = config.nucleotide_identity_threshold)
 
     file_handle_read=open(sam_alignment_file, "rt")
     file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")

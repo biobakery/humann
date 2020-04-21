@@ -23,7 +23,7 @@ from humann2 import store
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None, apply_filter=None, nucleotide = False, query_coverage_threshold=config.translated_query_coverage_threshold):
+def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None, apply_filter=None, nucleotide = False, query_coverage_threshold=config.translated_query_coverage_threshold, identity_threshold = config.nucleotide_identity_threshold):
     # create alignments instance if none is passed
     if alignments is None:
         alignments=store.Alignments()
@@ -37,7 +37,7 @@ def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None
     # track alignments unable to compute coverage
     no_coverage=0
     # parse blast6out file, applying filtering as selected
-    for alignment_info in utilities.get_filtered_translated_alignments(blast6out, alignments, apply_filter=apply_filter, log_filter = log_messages, query_coverage_threshold = query_coverage_threshold, identity_threshold = config.nucleotide_identity_threshold):
+    for alignment_info in utilities.get_filtered_translated_alignments(blast6out, alignments, apply_filter=apply_filter, log_filter = log_messages, query_coverage_threshold = query_coverage_threshold, identity_threshold = identity_threshold):
         ( protein_name, gene_length, queryid, matches, bug, alignment_length,
           subject_start_index, subject_stop_index) = alignment_info
           
