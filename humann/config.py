@@ -102,7 +102,7 @@ def log_settings():
     logger.info("\nRun config settings: \n\n" + "\n".join(lines))
 
 # User config file
-user_edit_config_file="humann2.cfg"
+user_edit_config_file="humann.cfg"
 
 full_path_user_edit_config_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),
     user_edit_config_file)
@@ -272,16 +272,16 @@ remove_stratified_output=get_item(config_items, "output_format", "remove_stratif
 remove_column_description_output=get_item(config_items, "output_format", "remove_column_description_output", "bool")
 
 # pathways files
-humann2_install_directory=os.path.dirname(os.path.abspath(__file__))
-metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_reactions_level4ec_only.uniref.bz2"))
-metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","metacyc_pathways_structured_filtered"))
+humann_install_directory=os.path.dirname(os.path.abspath(__file__))
+metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_reactions_level4ec_only.uniref.bz2"))
+metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_pathways_structured_filtered"))
     
-unipathway_database_part1=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_uniprots.uniref.bz2"))
-unipathway_database_part2=os.path.abspath(os.path.join(humann2_install_directory,"data","pathways","unipathway_pathways"))
+unipathway_database_part1=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","unipathway_uniprots.uniref.bz2"))
+unipathway_database_part2=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","unipathway_pathways"))
 
 # pathways and gene families name mapping files
-gene_family_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_uniref50_name.txt.bz2"))
-pathway_name_mapping_file=os.path.abspath(os.path.join(humann2_install_directory,"data","misc","map_metacyc-pwy_name.txt.gz"))
+gene_family_name_mapping_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","map_uniref50_name.txt.bz2"))
+pathway_name_mapping_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","map_metacyc-pwy_name.txt.gz"))
 name_mapping_file_delimiter="\t"
 name_mapping_join=": "
 
