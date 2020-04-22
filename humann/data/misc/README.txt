@@ -2,9 +2,9 @@
 ---------------------------------------------------------------
 
 misc data files for use with:
-     humann2_regroup_table
-     humann2_rename_table
-     humann2_infer_taxonomy
+     humann_regroup_table
+     humann_rename_table
+     humann_infer_taxonomy
 
 ---------------------------------------------------------------
 ---------------------------------------------------------------
