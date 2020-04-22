@@ -10,7 +10,7 @@ of short DNA/RNA reads.
 
 Dependencies: MetaPhlAn2, ChocoPhlAn, Bowtie2, and ( Diamond or Rapsearch2 or Usearch )
 
-To Run: humann2 -i <input.fastq> -o <output_dir>
+To Run: humann -i <input.fastq> -o <output_dir>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -35,7 +35,7 @@ THE SOFTWARE.
 
 import sys
     
-# Try to load one of the humann2 modules to check the installation
+# Try to load one of the humann modules to check the installation
 try:
     from . import check
 except ImportError:
@@ -75,7 +75,7 @@ def parse_arguments(args):
     parser = argparse.ArgumentParser(
         description= "HUMAnN2 : HMP Unified Metabolic Analysis Network 2\n",
         formatter_class=argparse.RawTextHelpFormatter,
-        prog="humann2")
+        prog="humann")
     parser.add_argument(
         "--version",
         action="version",
@@ -530,7 +530,7 @@ def update_configuration(args):
 
     # set the location of the temp directory
     if not args.remove_temp_output:
-        config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann2_temp")
+        config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann_temp")
         if not os.path.isdir(config.temp_dir):
             try:
                 os.mkdir(config.temp_dir)
@@ -538,7 +538,7 @@ def update_configuration(args):
                 sys.exit("Unable to create temp directory: " + config.temp_dir)
     else:
         config.temp_dir=tempfile.mkdtemp( 
-            prefix=config.file_basename+'_humann2_temp_',dir=output_dir)
+            prefix=config.file_basename+'_humann_temp_',dir=output_dir)
         
     # create the unnamed temp directory
     config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
@@ -555,7 +555,7 @@ def update_configuration(args):
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
     
     # write the version of the software to the log
-    logger.info("Running humann2 v"+VERSION)
+    logger.info("Running humann v"+VERSION)
     
     # write the location of the output files to the log
     logger.info("Output files will be written to: " + output_dir)
@@ -724,10 +724,10 @@ def check_requirements(args):
                 if input_file_size > MAX_SIZE_DEMO_INPUT_FILE:
                     sys.exit("ERROR: You are using the demo ChocoPhlAn database with "
                         + "a non-demo input file. If you have not already done so, please "
-                        + "run humann2_databases to download the full ChocoPhlAn database. "
+                        + "run humann_databases to download the full ChocoPhlAn database. "
                         + "If you have downloaded the full database, use the option "
                         + "--nucleotide-database to provide the location. "
-                        + "You can also run humann2_config to update the default "
+                        + "You can also run humann_config to update the default "
                         + "database location. For additional information, please "
                         + "see the HUMAnN2 User Manual.")
                 
@@ -816,10 +816,10 @@ def check_requirements(args):
                 if input_file_size > MAX_SIZE_DEMO_INPUT_FILE:
                     sys.exit("ERROR: You are using the demo UniRef database with "
                         + "a non-demo input file. If you have not already done so, please "
-                        + "run humann2_databases to download the full UniRef database. "
+                        + "run humann_databases to download the full UniRef database. "
                         + "If you have downloaded the full database, use the option "
                         + "--protein-database to provide the location. "
-                        + "You can also run humann2_config to update the default "
+                        + "You can also run humann_config to update the default "
                         + "database location. For additional information, please "
                         + "see the HUMAnN2 User Manual.")
 
