@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2: humann2_databases module
+HUMAnN2: humann_databases module
 Download databases an update config settings
 
 Dependencies: None
 
-To Run: humann2_databases --download <database> <build> <install_location>
+To Run: humann_databases --download <database> <build> <install_location>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 import sys
     
-# Try to load one of the humann2 src modules to check the installation
+# Try to load one of the humann src modules to check the installation
 try:
     from .. import check
 except ImportError:

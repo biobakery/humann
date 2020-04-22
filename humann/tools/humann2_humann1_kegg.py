@@ -25,7 +25,7 @@ import argparse
 #  C. kegg file with bug names: http://www.genome.jp/kegg/catalog/org_list.html             *
 #                                                                                           *
 #  The program is invoked as follows:                                                       *
-#  python humann2_humann1_kegg.py --igenels ./data/genels   --ikoc  ./data/koc   --o output_extract *
+#  python humann_humann1_kegg.py --igenels ./data/genels   --ikoc  ./data/koc   --o output_extract *
 #                                                                                            *
 #
 #  The program tries to read the Kegg translation table OrgId -->OrgName that is located in  *

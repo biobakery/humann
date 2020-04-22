@@ -5,7 +5,7 @@ This script will build a custom database, selecting organisms by genus, and usin
 id mapping if provided
 
 To Run: 
-$ ./humann2_build_custom_database.py --input genes.pep --output custom_database 
+$ ./humann_build_custom_database.py --input genes.pep --output custom_database 
   --id-mapping legacy_kegg_idmapping.tsv --format diamond --taxonomic-profile max_taxonomic_profile.tsv
 
 """
@@ -16,8 +16,8 @@ import os
 import re
 import subprocess
 
-from humann2 import config
-from humann2 import store
+from humann import config
+from humann import store
 
 FASTA_ID_START=">"
 FASTA_ID_DELIMITER=" "

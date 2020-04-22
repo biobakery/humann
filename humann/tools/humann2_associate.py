@@ -13,8 +13,8 @@ except ImportError:
     sys.exit( "This script requires the Python scientific stack: numpy and scipy." )
 
 try:
-    from humann2 import config
-    from humann2.tools import util
+    from humann import config
+    from humann.tools import util
 except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
               " Please check your install.")

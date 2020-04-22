@@ -19,7 +19,7 @@ import os
 import shutil
 import re
 
-from humann2.tools import util
+from humann.tools import util
 
 GENE_TABLE_DELIMITER="\t"
         
@@ -202,7 +202,7 @@ def main():
     # Create a temp folder for the biom conversions
     if biom_flag:
         temp_dir=tempfile.mkdtemp( 
-            prefix='humann2_split_gene_tables_', dir=output_dir)
+            prefix='humann_split_gene_tables_', dir=output_dir)
         if args.verbose:
             print("Temp folder created: " + temp_dir)
     

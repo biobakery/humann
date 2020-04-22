@@ -240,7 +240,7 @@ def write_biom( path, rows ):
         
     # write a h5py biom table
     with h5py.File(path, 'w') as file_handle:
-        table.to_hdf5(file_handle, "humann2 utility script")
+        table.to_hdf5(file_handle, "humann utility script")
         
 
 class Ticker( ):

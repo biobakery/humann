@@ -14,10 +14,10 @@ except:
 
 
 #********************************************************************************************
-#    Expand taxonomy of bugs in humann2 results                                             *
+#    Expand taxonomy of bugs in humann results                                             *
 #                                                                                           *
 #    The objective of this program is  to expand the taxonomy for bugs in the               *
-#    three humann2 results files:                                                           *
+#    three humann results files:                                                           *
 #    1. pathcoverage.tsv                                                                    *
 #    2. pathabundance.tsv                                                                   *
 #    3. pathabundance.tsv                                                                   *
@@ -25,7 +25,7 @@ except:
 #                                                                                           *
 #                                                                                           *
 #  The program is invoked as follows:                                                       *
-#  python humann2_expand_results_taxonomy.py --input   input1 --ootput o1                   *
+#  python humann_expand_results_taxonomy.py --input   input1 --ootput o1                   *
 #                                                                                           *
 #  Where input1 can be any of the three files mentioned above                               *
 #  and o1 will be the output                                                                *

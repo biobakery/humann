@@ -5,7 +5,7 @@ This script will capture the MaxRSS for a process and its children (and their ch
 It transverses the pid tree to capture all processes spawned from the command. 
 
 To run:
-$ ./humann2_benchmark.py $COMMAND
+$ ./humann_benchmark.py $COMMAND
 
 Replacing $COMMAND with the command you would like to benchmark.
 
@@ -59,7 +59,7 @@ def parse_known_args():
 
     parser = argparse.ArgumentParser(
         description= "\n".join(["HUMAnN2 Benchmark\n",
-            "To run: $ humann2_benchmark COMMAND",
+            "To run: $ humann_benchmark COMMAND",
             "Replacing COMMAND with the command to benchmark"]),
         formatter_class=argparse.RawTextHelpFormatter)
 
@@ -70,7 +70,7 @@ def main():
     known_args, unknown_args = parse_known_args()
     if not unknown_args:
         # return an error message if no command is provided
-        sys.exit("Please provide a command to benchmark: $ humann2_benchmark COMMAND")
+        sys.exit("Please provide a command to benchmark: $ humann_benchmark COMMAND")
     try:
         process = subprocess.Popen(unknown_args,shell=False)
     except (EnvironmentError, subprocess.CalledProcessError):

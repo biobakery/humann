@@ -5,7 +5,7 @@ from math import log
 import argparse
 import sys
 
-from humann2.tools import util
+from humann.tools import util
 
 description = """
 HUMAnN2 utility for normalizing combined meta'omic sequencing data

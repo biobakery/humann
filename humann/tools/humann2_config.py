@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2: humann2_config module
+HUMAnN2: humann_config module
 Configuration settings print and update
 
 Dependencies: None
 
-To Run: humann2_config --update <section> <name> <value>
+To Run: humann_config --update <section> <name> <value>
 
 Copyright (c) 2014 Harvard School of Public Health
 
@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 import sys
     
-# Try to load one of the humann2 src modules to check the installation
+# Try to load one of the humann src modules to check the installation
 try:
     from .. import check
 except ImportError:

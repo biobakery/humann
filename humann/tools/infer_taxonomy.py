@@ -8,8 +8,8 @@ import re
 import argparse
 
 try:
-    from humann2 import config
-    from humann2.tools import util
+    from humann import config
+    from humann.tools import util
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.")
@@ -49,7 +49,7 @@ if missing:
 This tool requires the HUMAnN2 utility data files.
 To add these to your installation, please execute:
 
-$ humann2_databases --download utility_mapping full $DIR
+$ humann_databases --download utility_mapping full $DIR
 
 Replacing, $DIR with the directory to install the databases.\n""" )
 

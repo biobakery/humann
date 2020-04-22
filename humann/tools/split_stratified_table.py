@@ -14,7 +14,7 @@ import argparse
 import sys
 import os
 
-from humann2.tools import util
+from humann.tools import util
 
 STRATIFICATION_DELIMITER="|"
 COLUMN_DELIMITER="\t"

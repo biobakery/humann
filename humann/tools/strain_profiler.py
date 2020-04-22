@@ -5,7 +5,7 @@ import argparse
 import sys
 import csv
 
-from humann2.tools import util
+from humann.tools import util
 
 description = """
 HUMAnN2 utility for making strain profiles

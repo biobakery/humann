@@ -17,7 +17,7 @@ import gzip
 import bz2
 import re
 
-from humann2.tools import util
+from humann.tools import util
 
 TABLE_DELIMITER="\t"
 BUG_DELIMITER="|"
@@ -25,7 +25,7 @@ GENE_NAME_DELIMITER=": "
 EC_DELIMITER=","
 
 try:
-    from humann2 import config
+    from humann import config
 except ImportError:
     sys.exit("ERROR: Unable to find the HUMAnN2 install.")
     

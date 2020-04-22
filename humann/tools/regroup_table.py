@@ -7,8 +7,8 @@ import sys
 import os
 
 try:
-    from humann2 import config
-    from humann2.tools import util
+    from humann import config
+    from humann.tools import util
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
@@ -61,7 +61,7 @@ if not larger_mapping_files_found:
     description+="""
     
 For additional group mapping files, run the following command:
-$ humann2_databases --download utility_mapping full $DIR
+$ humann_databases --download utility_mapping full $DIR
 Replacing, $DIR with the directory to download and install the databases."""
 
 c_protected = [util.c_unmapped, util.c_unintegrated]

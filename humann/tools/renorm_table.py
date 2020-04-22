@@ -5,7 +5,7 @@ import argparse
 import sys
 import re
 
-from humann2.tools import util
+from humann.tools import util
 
 description = """
 HUMAnN2 utility for renormalizing TSV files
