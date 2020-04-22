@@ -5,12 +5,12 @@ import cfg
 import utils
 import tempfile
 
-from humann2.search import nucleotide
-from humann2 import config
+from humann.search import nucleotide
+from humann import config
 
 class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.search.nucleotide
+    Test the functions found in humann.search.nucleotide
     """
     
     def setUp(self):
@@ -19,7 +19,7 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
         config.file_basename="HUMAnN2_test"
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.search.nucleotide').addHandler(logging.NullHandler())
+        logging.getLogger('humann.search.nucleotide').addHandler(logging.NullHandler())
         
     def test_calculate_percent_identity(self):
         """

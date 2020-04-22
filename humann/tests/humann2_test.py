@@ -18,9 +18,9 @@ import os
 import sys
 import unittest
 
-# Try to load one of the humann2 modules to check the installation
+# Try to load one of the humann modules to check the installation
 try:
-    from humann2 import check
+    from humann import check
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
         " Please check your install.") 
@@ -45,7 +45,7 @@ def parse_arguments(args):
     parser = argparse.ArgumentParser(
         description= "HUMAnN2 Test\n",
         formatter_class=argparse.RawTextHelpFormatter,
-        prog="humann2_test")
+        prog="humann_test")
     parser.add_argument(
         "--run-functional-tests-tools", 
         help="run the functional tests for tools\n", 
@@ -53,7 +53,7 @@ def parse_arguments(args):
         default=False)
     parser.add_argument(
         "--run-functional-tests-end-to-end", 
-        help="run the humann2 end to end functional tests\n", 
+        help="run the humann end to end functional tests\n", 
         action="store_true",
         default=False)
     parser.add_argument(
@@ -92,11 +92,11 @@ def get_funtionaltests_other(run_all_tests=None):
     
     directory_of_tests=get_testdirectory()
     
-    functional_suite = [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_humann2*.py')]
+    functional_suite = [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_humann*.py')]
     
     # if biom is installed, add the functional end to end tests with biom
     if biom_installed or run_all_tests:
-        functional_suite += [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_biom_humann2*.py')]
+        functional_suite += [unittest.TestLoader().discover(directory_of_tests,pattern='functional_tests_biom_humann*.py')]
     
     return functional_suite
 

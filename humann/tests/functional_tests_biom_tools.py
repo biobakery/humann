@@ -7,16 +7,16 @@ import utils
 
 class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
     """
-    Test humann2.tools
+    Test humann.tools
     """
 
-    def test_humann2_join_tables_biom(self):
+    def test_humann_join_tables_biom(self):
         """
-        Test joining biom files with humann2_join_tables
+        Test joining biom files with humann_join_tables
         """
         
         # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
         
         # join the files
         utils.run_command(["humann_join_tables","--input",
@@ -29,9 +29,9 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
  
-    def test_humann2_split_tables_tsv(self):
+    def test_humann_split_tables_tsv(self):
         """
-        Test splitting a tsv file with humann2_split_tables
+        Test splitting a tsv file with humann_split_tables
         """
 
         input_file=cfg.multi_sample_genefamilies_biom
@@ -51,14 +51,14 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         utils.remove_temp_folder(temp_directory)
         
 
-    def test_humann2_regroup_table_uniref50_rxn_biom(self):
+    def test_humann_regroup_table_uniref50_rxn_biom(self):
         """
-        Test regrouping the biom file with humann2_regroup_table
+        Test regrouping the biom file with humann_regroup_table
         Test with uniref50 to reactions mappings
         """
         
         # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
         
         # run the command
         utils.run_command(["humann_regroup_table","--input",cfg.regroup_input_biom,"--output",
@@ -70,14 +70,14 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
        
-    def test_humann2_rename_table_uniref50_biom(self):
+    def test_humann_rename_table_uniref50_biom(self):
         """
-        Test renaming the biom file entries with humann2_rename_table
+        Test renaming the biom file entries with humann_rename_table
         Test with uniref50 names
         """
         
         # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
         
         # run the command
         utils.run_command(["humann_rename_table","--input",cfg.rename_input_biom,"--output",
@@ -89,14 +89,14 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)     
             
-    def test_humann2_renorm_table_cpm_biom(self):
+    def test_humann_renorm_table_cpm_biom(self):
         """
-        Test renorm the biom file entries with humann2_renorm_table
+        Test renorm the biom file entries with humann_renorm_table
         Test with cpm
         """
         
         # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp")
+        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
         
         # run the command
         utils.run_command(["humann_renorm_table","--input",cfg.renorm_input_biom,"--output",
@@ -108,15 +108,15 @@ class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
         
-    def test_humann2_renorm_table_cpm_biom_output(self):
+    def test_humann_renorm_table_cpm_biom_output(self):
         """
-        Test renorm the biom file entries with humann2_renorm_table
+        Test renorm the biom file entries with humann_renorm_table
         Test with cpm
         Test with biom output
         """
         
         # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann2_temp",suffix=".biom")
+        file_out, new_file=tempfile.mkstemp(prefix="humann_temp",suffix=".biom")
         
         # run the command
         utils.run_command(["humann_renorm_table","--input",cfg.renorm_input_biom,"--output",

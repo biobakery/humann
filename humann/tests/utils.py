@@ -9,7 +9,7 @@ import cfg
 def create_temp_folder(suffix):
     """ Create a temp folder """
     
-    return tempfile.mkdtemp(prefix="humann2_test_",suffix="_"+suffix)
+    return tempfile.mkdtemp(prefix="humann_test_",suffix="_"+suffix)
 
 def remove_temp_file(file):
     """ Remove a temp file """
@@ -40,9 +40,9 @@ def return_exe_path(exe):
                 full_path=path
     return full_path
 
-def run_humann2(command):
+def run_humann(command):
     """
-    Run the humann2 command 
+    Run the humann command 
     Use the demo chocophlan and uniref databases """
     
     command+=["--nucleotide-database",cfg.chocophlan_example_demo_folder,

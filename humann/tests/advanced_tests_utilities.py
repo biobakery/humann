@@ -6,19 +6,19 @@ import tempfile
 import cfg
 import utils
 
-from humann2 import utilities
-from humann2 import config
+from humann import utilities
+from humann import config
 
 class TestAdvancedHumann2UtilitiesFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.utilities
+    Test the functions found in humann.utilities
     """
     
     def setUp(self):
         config.unnamed_temp_dir=tempfile.gettempdir()
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.utilities').addHandler(logging.NullHandler())
+        logging.getLogger('humann.utilities').addHandler(logging.NullHandler())
 
     def test_fastq_to_fasta_with_pick_frames(self):
         """

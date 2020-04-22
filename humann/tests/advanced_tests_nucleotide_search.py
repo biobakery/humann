@@ -6,14 +6,14 @@ import math
 import cfg
 import utils
 
-from humann2.search import nucleotide
-from humann2 import store
-from humann2 import config
-from humann2 import utilities
+from humann.search import nucleotide
+from humann import store
+from humann import config
+from humann import utilities
 
 class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.search.nucleotide
+    Test the functions found in humann.search.nucleotide
     """
     
     def setUp(self):
@@ -25,7 +25,7 @@ class TestAdvancedHumann2NucleotideSearchFunctions(unittest.TestCase):
         config.identity_threshold = 50.0
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.search.nucleotide').addHandler(logging.NullHandler())
+        logging.getLogger('humann.search.nucleotide').addHandler(logging.NullHandler())
 
         # record default config options (for tests that change these)
         self.default_nucleotide_subject_coverage_threshold = config.nucleotide_subject_coverage_threshold

@@ -8,19 +8,19 @@ import logging
 
 import cfg
 
-from humann2 import store
-from humann2 import config
+from humann import store
+from humann import config
 
 class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2/src/store.py
+    Test the functions found in humann/src/store.py
     """
     
     def setUp(self):
         config.unnamed_temp_dir=tempfile.gettempdir()
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.store').addHandler(logging.NullHandler())
+        logging.getLogger('humann.store').addHandler(logging.NullHandler())
         
     def test_Alignments_compute_gene_scores_single_gene_single_query(self):
         """

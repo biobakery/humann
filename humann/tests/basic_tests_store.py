@@ -8,17 +8,17 @@ import logging
 import cfg
 import utils
 
-from humann2 import store
-from humann2 import config
+from humann import store
+from humann import config
 
 class TestHumann2StoreFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.store
+    Test the functions found in humann.store
     """
     
     def setUp(self):
         # set up nullhandler for logger
-        logging.getLogger('humann2.store').addHandler(logging.NullHandler())
+        logging.getLogger('humann.store').addHandler(logging.NullHandler())
         
         config.unnamed_temp_dir=tempfile.gettempdir()
         

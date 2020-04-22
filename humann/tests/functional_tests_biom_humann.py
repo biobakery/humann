@@ -13,9 +13,9 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
     Test humann with end to end functional tests
     """
 
-    def test_humann2_fastq_biom_output(self):
+    def test_humann_fastq_biom_output(self):
         """
-        Test the standard humann2 flow on a fastq input file
+        Test the standard humann flow on a fastq input file
         Test biom output is written
         """
         
@@ -25,7 +25,7 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         # run humann test
         command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,
                    "--output-format", "biom"]
-        utils.run_humann2(command)
+        utils.run_humann(command)
         
         # check the output files are as expected
         for expression, message in utils.check_output(cfg.expected_demo_output_files_biom, tempdir):
@@ -34,9 +34,9 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         # remove the temp directory
         utils.remove_temp_folder(tempdir)
         
-    def test_humann2_fastq_biom_output_pathways(self):
+    def test_humann_fastq_biom_output_pathways(self):
         """
-        Test the standard humann2 flow on a fastq input file
+        Test the standard humann flow on a fastq input file
         Test biom output is written
         Test the expected pathways are identified
         """
@@ -44,10 +44,10 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         # create a temp directory for output
         tempdir = utils.create_temp_folder("fastq")
         
-        # run humann2 test
+        # run humann test
         command = ["humann","--input",cfg.demo_fastq,"--output",tempdir,
                    "--output-format", "biom", "--gap-fill", "off"]
-        utils.run_humann2(command)
+        utils.run_humann(command)
         
         # check the output file of pathway abundance has the expected pathways
         pathways_file_tsv=utils.read_biom_table(os.path.join(tempdir,"demo_pathabundance.biom"))
@@ -58,18 +58,18 @@ class TestFunctionalHumann2EndtoEndBiom(unittest.TestCase):
         # remove the temp directory
         utils.remove_temp_folder(tempdir)
         
-    def test_humann2_gene_families_biom_input(self):
+    def test_humann_gene_families_biom_input(self):
         """
-        Test the standard humann2 flow on a gene families output file as input
+        Test the standard humann flow on a gene families output file as input
         Test with the biom format of the gene families file
         """
         
         # create a temp directory for output
         tempdir = utils.create_temp_folder("gene_families")
         
-        # run humann2 test
+        # run humann test
         command = ["humann","--input",cfg.demo_gene_families_biom,"--output",tempdir]
-        utils.run_humann2(command)
+        utils.run_humann(command)
         
         # check the output files are as expected
         # it will include all output files except the gene families output file

@@ -32,7 +32,7 @@ small_fasta_file_single_line_sequences=os.path.join(data_folder,"file_single_lin
 
 # The pathways dat file is a test file for the script that creates the structured pathways file
 # The result of running this script should be the file named "test_pathways_results.tsv"
-# This file is in the structured format expected by the humann2 PathwaysDatabase store class
+# This file is in the structured format expected by the humann PathwaysDatabase store class
 pathways_file_dat=os.path.join(data_folder, "test_pathways.dat")
 pathways_file=os.path.join(data_folder,"test_pathways_results.tsv")
 pathways_flat_file=os.path.join(data_folder, "test_pathways_flat.tsv")

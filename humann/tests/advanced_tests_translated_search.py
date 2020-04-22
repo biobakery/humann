@@ -6,15 +6,15 @@ import math
 import cfg
 import utils
 
-from humann2.search import translated
-from humann2.search import blastx_coverage
-from humann2 import store
-from humann2 import config
-from humann2 import utilities
+from humann.search import translated
+from humann.search import blastx_coverage
+from humann import store
+from humann import config
+from humann import utilities
 
 class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.search.translated
+    Test the functions found in humann.search.translated
     """
     
     def setUp(self):
@@ -24,8 +24,8 @@ class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
         config.identity_threshold = 50.0
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.search.translated').addHandler(logging.NullHandler())
-        logging.getLogger('humann2.search.blastx_coverage').addHandler(logging.NullHandler())
+        logging.getLogger('humann.search.translated').addHandler(logging.NullHandler())
+        logging.getLogger('humann.search.blastx_coverage').addHandler(logging.NullHandler())
 
     def test_translated_search_unaligned_reads_blastm8(self):
         """

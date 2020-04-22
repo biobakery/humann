@@ -6,13 +6,13 @@ import utils
 import tempfile
 import re
 
-from humann2.search import blastx_coverage
-from humann2 import store
-from humann2 import config
+from humann.search import blastx_coverage
+from humann import store
+from humann import config
 
 class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.search.nucleotide
+    Test the functions found in humann.search.nucleotide
     """
     
     def setUp(self):
@@ -21,7 +21,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
         config.file_basename="HUMAnN2_test"
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.search.blastx_coverage').addHandler(logging.NullHandler())
+        logging.getLogger('humann.search.blastx_coverage').addHandler(logging.NullHandler())
         
     def test_blastx_coverage_gene_names_default(self):
         """

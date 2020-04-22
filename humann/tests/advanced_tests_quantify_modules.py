@@ -7,19 +7,19 @@ import cfg
 import utils
 import os
 
-from humann2.quantify import modules
-from humann2 import store
-from humann2 import config
-from humann2.quantify import chi2cdf
+from humann.quantify import modules
+from humann import store
+from humann import config
+from humann.quantify import chi2cdf
 
 class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.quantify.modules
+    Test the functions found in humann.quantify.modules
     """
     
     def setUp(self):
         # set up nullhandler for logger
-        logging.getLogger('humann2.quantify.modules').addHandler(logging.NullHandler())
+        logging.getLogger('humann.quantify.modules').addHandler(logging.NullHandler())
         
         config.unnamed_temp_dir=tempfile.gettempdir()
         

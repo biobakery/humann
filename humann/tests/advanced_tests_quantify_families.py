@@ -8,19 +8,19 @@ import logging
 import cfg
 import utils
 
-from humann2.quantify import families
-from humann2 import store
-from humann2 import config
+from humann.quantify import families
+from humann import store
+from humann import config
 
 class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.quantify.families
+    Test the functions found in humann.quantify.families
     """
     
     def setUp(self):
         # set up nullhandler for logger
-        logging.getLogger('humann2.quantify.gene_families').addHandler(logging.NullHandler())
-        logging.getLogger('humann2.store').addHandler(logging.NullHandler())
+        logging.getLogger('humann.quantify.gene_families').addHandler(logging.NullHandler())
+        logging.getLogger('humann.store').addHandler(logging.NullHandler())
 
     def test_gene_families_bug_list(self):
         """

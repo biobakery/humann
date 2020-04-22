@@ -4,12 +4,12 @@ import logging
 import cfg
 import utils
 
-from humann2.quantify import modules
-from humann2 import config
+from humann.quantify import modules
+from humann import config
 
 class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
     """
-    Test the functions found in humann2.quantify.modules
+    Test the functions found in humann.quantify.modules
     """
     
     def setUp(self):
@@ -17,7 +17,7 @@ class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
         config.gap_fill_toggle="on"
         
         # set up nullhandler for logger
-        logging.getLogger('humann2.quantify.modules').addHandler(logging.NullHandler())
+        logging.getLogger('humann.quantify.modules').addHandler(logging.NullHandler())
         
     def test_gap_fill_zero_gaps(self):
         """
