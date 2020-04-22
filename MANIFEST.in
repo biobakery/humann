@@ -8,26 +8,26 @@ include examples/demo.fastq
 include examples/demo.m8
 include examples/demo.sam
 
-include humann2/tools/README.txt
+include humann/tools/README.txt
 
-include humann2/maintenance/README.md
-include humann2/maintenance/metacyc_swissprot_trembl_reference_databases.md
+include humann/maintenance/README.md
+include humann/maintenance/metacyc_swissprot_trembl_reference_databases.md
 
-prune humann2/quantify/MinPath
+prune humann/quantify/MinPath
 
-exclude humann2/data/misc/map_EC_to_triplet_AC_U50_U90_Swissprot_and_Trembl.txt.gz
-exclude humann2/data/misc/map_infogo1000_uniref50.txt.gz
-exclude humann2/data/misc/map_infogo1000_uniref90.txt.gz
-exclude humann2/data/misc/map_uniref90_name.txt.bz2
-exclude humann2/data/misc/map_go_uniref50.txt.gz
-exclude humann2/data/misc/map_go_uniref90.txt.gz
-exclude humann2/data/misc/map_ko_uniref50.txt.gz
-exclude humann2/data/misc/map_ko_uniref90.txt.gz
-exclude humann2/data/misc/map_level4ec_uniref50.txt.gz
-exclude humann2/data/misc/map_level4ec_uniref90.txt.gz
-exclude humann2/data/misc/map_pfam_uniref50.txt.gz
-exclude humann2/data/misc/map_pfam_uniref90.txt.gz
-exclude humann2/data/misc/uniref50-tol-lca.dat.gz
-exclude humann2/data/misc/uniref90-tol-lca.dat.gz
-exclude humann2/data/misc/map_eggnog_uniref50.txt.gz
-exclude humann2/data/misc/map_eggnog_uniref90.txt.gz
+exclude humann/data/misc/map_EC_to_triplet_AC_U50_U90_Swissprot_and_Trembl.txt.gz
+exclude humann/data/misc/map_infogo1000_uniref50.txt.gz
+exclude humann/data/misc/map_infogo1000_uniref90.txt.gz
+exclude humann/data/misc/map_uniref90_name.txt.bz2
+exclude humann/data/misc/map_go_uniref50.txt.gz
+exclude humann/data/misc/map_go_uniref90.txt.gz
+exclude humann/data/misc/map_ko_uniref50.txt.gz
+exclude humann/data/misc/map_ko_uniref90.txt.gz
+exclude humann/data/misc/map_level4ec_uniref50.txt.gz
+exclude humann/data/misc/map_level4ec_uniref90.txt.gz
+exclude humann/data/misc/map_pfam_uniref50.txt.gz
+exclude humann/data/misc/map_pfam_uniref90.txt.gz
+exclude humann/data/misc/uniref50-tol-lca.dat.gz
+exclude humann/data/misc/uniref90-tol-lca.dat.gz
+exclude humann/data/misc/map_eggnog_uniref50.txt.gz
+exclude humann/data/misc/map_eggnog_uniref90.txt.gz
