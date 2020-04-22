@@ -16,9 +16,9 @@ import logging
 import argparse
 from collections import defaultdict
 
-from humann2 import config
-from humann2 import utilities
-from humann2 import store
+from humann import config
+from humann import utilities
+from humann import store
 
 # name global logging instance
 logger=logging.getLogger(__name__)
