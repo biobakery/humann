@@ -1,5 +1,5 @@
 """
-HUMAnN2 setup
+HUMAnN setup
 
 To run: python setup.py install
 
@@ -69,7 +69,7 @@ import re
 import time
 
 VERSION = "3.0.0.alpha.0"
-AUTHOR = "HUMAnN2 Development Team"
+AUTHOR = "HUMAnN Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
 MAINTAINER = "Lauren McIver"
 MAINTAINER_EMAIL = "lauren.j.mciver@gmail.com"
@@ -598,8 +598,8 @@ setuptools.setup(
     author_email=AUTHOR_EMAIL,
     version=VERSION,
     license="MIT",
-    description="HUMAnN2: The HMP Unified Metabolic Analysis Network 2",
-    long_description="HUMAnN2 is a pipeline for efficiently and accurately determining " + \
+    description="HUMAnN: The HMP Unified Metabolic Analysis Network, version 3",
+    long_description="HUMAnN v3 is a pipeline for efficiently and accurately determining " + \
         "the coverage and abundance of microbial pathways in a community " + \
         "from metagenomic data. Sequencing a metagenome typically produces millions " + \
         "of short DNA/RNA reads. This process, referred to as functional profiling, " + \
