@@ -3,10 +3,10 @@ include LICENSE
 include readme.md
 include setup.py
 
-include examples/demo.fasta
-include examples/demo.fastq
-include examples/demo.m8
-include examples/demo.sam
+exclude examples/demo.fasta.gz
+include examples/demo.fastq.gz
+exclude examples/demo.m8
+exclude examples/demo.sam
 
 include humann/tools/README.txt
 
