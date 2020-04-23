@@ -1,7 +1,7 @@
 
 # HUMAnN2 History #
 
-## v3.0.0-alpha (04-17-2020) ##
+## v3.0.0-alpha (04-23-2020) ##
 
 * Add flexibility to allow for additional MetaPhlAn output column.
 * Split "--identity-threshold" into two options, one for each search type with defaults of 0 (nucleotide) and 80/50 (translated).
