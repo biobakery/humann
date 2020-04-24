@@ -1,5 +1,5 @@
 """
-HUMAnN2: prescreen module
+HUMAnN: prescreen module
 Identify initial list of bugs from user supplied fasta/fastq
 
 Copyright (c) 2014 Harvard School of Public Health

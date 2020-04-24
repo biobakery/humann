@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2: humann_databases module
+HUMAnN: humann_databases module
 Download databases an update config settings
 
 Dependencies: None
@@ -35,7 +35,7 @@ import sys
 try:
     from .. import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -115,7 +115,7 @@ def parse_arguments(args):
     Parse the arguments from the user
     """
     parser = argparse.ArgumentParser(
-        description= "HUMAnN2 Databases\n",
+        description= "HUMAnN Databases\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         "--available", 

@@ -1,5 +1,5 @@
 """
-HUMAnN2: translated_search module
+HUMAnN: translated_search module
 Run alignment, find unused reads
 
 Copyright (c) 2014 Harvard School of Public Health

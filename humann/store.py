@@ -1,5 +1,5 @@
 """
-HUMAnN2: store module
+HUMAnN: store module
 Stores the alignments identified
 Stores the genes/reactions from the database selected
 Stores the reactions/pathways from the database selected

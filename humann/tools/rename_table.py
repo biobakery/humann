@@ -11,11 +11,11 @@ try:
     from humann import config
     from humann.tools import util
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
         " Please check your install.") 
 
 description = """
-HUMAnN2 utility for renaming table features
+HUMAnN utility for renaming table features
 ===========================================
 """
 

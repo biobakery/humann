@@ -11,11 +11,11 @@ try:
     from humann import config
     from humann.tools import util
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
         " Please check your install.")
 
 description = """
-HUMAnN2 utility for inferring "unclassified" taxonomy
+HUMAnN utility for inferring "unclassified" taxonomy
 =====================================================
 Based on the lowest common ancestor (LCA) annotation
 of each UniRef50/90 cluster, infer approximate taxonomy 
@@ -46,7 +46,7 @@ for key, value in databases.items( ):
         databases[key] = os.path.join( config.utility_mapping_database, value )
 if missing:
     sys.exit( """
-This tool requires the HUMAnN2 utility data files.
+This tool requires the HUMAnN utility data files.
 To add these to your installation, please execute:
 
 $ humann_databases --download utility_mapping full $DIR
@@ -116,7 +116,7 @@ def get_args( ):
         )
     parser.add_argument( "-i", "--input", 
                          required=True,
-                         help="HUMAnN2 output table" )
+                         help="HUMAnN output table" )
     parser.add_argument( "-o", "--output", 
                          default=None,
                          help="Destination for modified table; default=STDOUT" )

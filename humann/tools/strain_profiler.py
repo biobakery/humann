@@ -8,7 +8,7 @@ import csv
 from humann.tools import util
 
 description = """
-HUMAnN2 utility for making strain profiles
+HUMAnN utility for making strain profiles
 ==========================================
 Based on the principle of detecting variable 
 presence and absence of gene families within a species

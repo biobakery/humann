@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2 Plotting Tool
+HUMAnN Plotting Tool
 ===============================================
 Author: Eric Franzosa (eric.franzosa@gmail.com)
 """
@@ -55,13 +55,13 @@ normalize   : Bars all have height=1 (highlighting relative attribution)
 
 def get_args( ):
     parser = argparse.ArgumentParser(
-        description="HUMAnN2 plotting tool",
+        description="HUMAnN plotting tool",
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument( "-i", "--input",
                          metavar = "<input table>",
                          required = True, 
-                         help="HUMAnN2 table with optional metadata", )
+                         help="HUMAnN table with optional metadata", )
     parser.add_argument( "-f", "--focal-feature",
                          metavar = "<feature id>",
                          help="Feature ID of interest (give ID not full name)", )

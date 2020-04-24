@@ -1,5 +1,5 @@
 """
-HUMAnN2: chi2cdf module
+HUMAnN: chi2cdf module
 Computes the chi-square cumulative distribution
 
 Copyright (c) 2014 Harvard School of Public Health

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2 : HMP Unified Metabolic Analysis Network 2
+HUMAnN : HMP Unified Metabolic Analysis Network 2
 
-HUMAnN2 is a pipeline for efficiently and accurately determining 
+HUMAnN is a pipeline for efficiently and accurately determining 
 the coverage and abundance of microbial pathways in a community 
 from metagenomic data. Sequencing a metagenome typically produces millions 
 of short DNA/RNA reads.
@@ -39,7 +39,7 @@ import sys
 try:
     from . import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -73,7 +73,7 @@ def parse_arguments(args):
     Parse the arguments from the user
     """
     parser = argparse.ArgumentParser(
-        description= "HUMAnN2 : HMP Unified Metabolic Analysis Network 2\n",
+        description= "HUMAnN : HMP Unified Metabolic Analysis Network 2\n",
         formatter_class=argparse.RawTextHelpFormatter,
         prog="humann")
     parser.add_argument(
@@ -729,7 +729,7 @@ def check_requirements(args):
                         + "--nucleotide-database to provide the location. "
                         + "You can also run humann_config to update the default "
                         + "database location. For additional information, please "
-                        + "see the HUMAnN2 User Manual.")
+                        + "see the HUMAnN User Manual.")
                 
         # Check that the metaphlan2 executable can be found
         if not config.bypass_prescreen and not config.bypass_nucleotide_index:
@@ -821,7 +821,7 @@ def check_requirements(args):
                         + "--protein-database to provide the location. "
                         + "You can also run humann_config to update the default "
                         + "database location. For additional information, please "
-                        + "see the HUMAnN2 User Manual.")
+                        + "see the HUMAnN User Manual.")
 
             # Check that the translated alignment executable can be found
             if not utilities.find_exe_in_path(config.translated_alignment_selected):

@@ -8,7 +8,7 @@ import sys
 from humann.tools import util
 
 description = """
-HUMAnN2 utility for normalizing combined meta'omic sequencing data
+HUMAnN utility for normalizing combined meta'omic sequencing data
 ==================================================================
 Given a DNA table and a RNA table, produce smoothed RNA and DNA 
 values as well as relative expression values. "Smoothing" means

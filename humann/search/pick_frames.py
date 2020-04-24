@@ -1,5 +1,5 @@
 """
-HUMAnN2: pick_frames module
+HUMAnN: pick_frames module
 Screen nucleotide reads for protein-like reading frames
 
 Copyright (c) 2014 Harvard School of Public Health

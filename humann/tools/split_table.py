@@ -3,7 +3,7 @@
 """
 Split a gene/pathway table into a table per sample
 
-This module will create gene tables used as input by HUMAnN2. 
+This module will create gene tables used as input by HUMAnN. 
 
 Dependencies: Biom (only required if running with .biom files)
 
@@ -239,7 +239,7 @@ def parse_arguments(args):
     """
     
     parser = argparse.ArgumentParser(
-        description= "Split gene table to input to HUMAnN2\n",
+        description= "Split gene table to input to HUMAnN\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         "-v","--verbose", 

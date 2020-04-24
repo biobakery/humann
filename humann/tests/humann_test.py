@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2 : HMP Unified Metabolic Analysis Network 2
+HUMAnN : HMP Unified Metabolic Analysis Network
 
-HUMAnN2 is a pipeline for efficiently and accurately determining
+HUMAnN is a pipeline for efficiently and accurately determining
 the coverage and abundance of microbial pathways in a community
 from metagenomic data. Sequencing a metagenome typically produces millions
 of short DNA/RNA reads.
 
-This software is used to test the HUMAnN2 pipeline.
+This software is used to test the HUMAnN pipeline.
 
-Dependencies: HUMAnN2 (and all HUMAnN2 dependencies)
+Dependencies: HUMAnN (and all HUMAnN dependencies)
 
 """
 
@@ -22,7 +22,7 @@ import unittest
 try:
     from humann import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -43,7 +43,7 @@ def parse_arguments(args):
     Parse the arguments from the user
     """
     parser = argparse.ArgumentParser(
-        description= "HUMAnN2 Test\n",
+        description= "HUMAnN Test\n",
         formatter_class=argparse.RawTextHelpFormatter,
         prog="humann_test")
     parser.add_argument(
@@ -128,7 +128,7 @@ def main():
     if args.run_functional_tests_tools or args.run_all_tests:
         test_suites+=get_funtionaltests_tools(args.run_all_tests)
     if args.run_functional_tests_end_to_end or args.run_all_tests:
-        print("\n\nPlease note running functional end to end tests requires all dependencies of HUMAnN2.\n")
+        print("\n\nPlease note running functional end to end tests requires all dependencies of HUMAnN.\n")
         test_suites+=get_funtionaltests_other(args.run_all_tests)
 
     unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(test_suites))

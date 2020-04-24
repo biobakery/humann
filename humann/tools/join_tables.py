@@ -3,7 +3,7 @@
 """
 Join a set of gene, pathway, or taxonomy tables into a single table
 
-This module will join gene and pathway tables output by HUMAnN2. 
+This module will join gene and pathway tables output by HUMAnN. 
 
 Dependencies: Biom (only required if running with .biom files)
 

@@ -1,5 +1,5 @@
 """ 
-HUMAnN2: quantify_modules module
+HUMAnN: quantify_modules module
 Generate pathway coverage and abundance
 
 Copyright (c) 2014 Harvard School of Public Health

@@ -1,4 +1,4 @@
-# Pathway	HUMAnN2_test_Abundance
+# Pathway	HUMAnN_test_Abundance
 UNMAPPED	3.6832112
 UNINTEGRATED	664.2638293
 UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	376.0221389

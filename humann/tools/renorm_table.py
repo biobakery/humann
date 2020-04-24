@@ -8,7 +8,7 @@ import re
 from humann.tools import util
 
 description = """
-HUMAnN2 utility for renormalizing TSV files
+HUMAnN utility for renormalizing TSV files
 ===========================================
 Each level of a stratified table will be 
 normalized using the desired scheme.

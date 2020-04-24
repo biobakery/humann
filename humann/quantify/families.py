@@ -1,5 +1,5 @@
 """
-HUMAnN2: quantify_families module
+HUMAnN: quantify_families module
 Compute alignments by gene family
 
 Copyright (c) 2014 Harvard School of Public Health

@@ -1,5 +1,5 @@
 """
-HUMAnN2: check module
+HUMAnN: check module
 Check settings
 
 Copyright (c) 2014 Harvard School of Public Health

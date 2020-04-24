@@ -1,5 +1,5 @@
 """
-HUMAnN2: config module
+HUMAnN: config module
 Configuration settings
 
 Copyright (c) 2014 Harvard School of Public Health
@@ -116,7 +116,7 @@ def update_user_edit_config_file_single_item(section,name,value):
     
     update_user_edit_config_file(new_config_items)
     
-    print("HUMAnN2 configuration file updated: "+ section + " : " + name + " = " + str(value))
+    print("HUMAnN configuration file updated: "+ section + " : " + name + " = " + str(value))
 
 def update_user_edit_config_file(new_config_items):
     """
@@ -157,7 +157,7 @@ def update_user_edit_config_file(new_config_items):
         config.write(file_handle)
         file_handle.close()
     except EnvironmentError:
-        sys.exit("Unable to write to the HUMAnN2 config file.")
+        sys.exit("Unable to write to the HUMAnN config file.")
     
 def read_user_edit_config_file():
     """

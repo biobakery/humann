@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-HUMAnN2: humann_config module
+HUMAnN: humann_config module
 Configuration settings print and update
 
 Dependencies: None
@@ -35,7 +35,7 @@ import sys
 try:
     from .. import check
 except ImportError:
-    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
         " Please check your install.") 
 
 # Check the python version
@@ -50,7 +50,7 @@ def parse_arguments(args):
     Parse the arguments from the user
     """
     parser = argparse.ArgumentParser(
-        description= "HUMAnN2 Configuration\n",
+        description= "HUMAnN Configuration\n",
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         "--print", 
@@ -76,7 +76,7 @@ def main():
     if args.print_config or not args.update:
         # print the current configuration
         current_config_items=config.read_user_edit_config_file()
-        print("HUMAnN2 Configuration ( Section : Name = Value )")
+        print("HUMAnN Configuration ( Section : Name = Value )")
         for section in current_config_items:
             for name,value in current_config_items[section].items():
                 print(section+" : "+name+" = "+str(value))

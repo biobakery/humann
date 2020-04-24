@@ -3,7 +3,7 @@
 """
 Merge a gene families and pathway abundance file
 
-This module will join gene and pathway tables output by HUMAnN2. 
+This module will join gene and pathway tables output by HUMAnN. 
 
 To Run: 
 $ ./merge_abundance.py --input-genes genefamilies.tsv --input-pathways pathabundance.tsv --output merged.tsv
@@ -27,7 +27,7 @@ EC_DELIMITER=","
 try:
     from humann import config
 except ImportError:
-    sys.exit("ERROR: Unable to find the HUMAnN2 install.")
+    sys.exit("ERROR: Unable to find the HUMAnN install.")
     
 def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,additional_gene_info,remove_taxonomy):
     """

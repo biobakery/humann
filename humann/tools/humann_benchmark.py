@@ -58,7 +58,7 @@ def parse_known_args():
     """ Parse the known arguments """
 
     parser = argparse.ArgumentParser(
-        description= "\n".join(["HUMAnN2 Benchmark\n",
+        description= "\n".join(["HUMAnN Benchmark\n",
             "To run: $ humann_benchmark COMMAND",
             "Replacing COMMAND with the command to benchmark"]),
         formatter_class=argparse.RawTextHelpFormatter)

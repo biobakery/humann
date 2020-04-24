@@ -1,5 +1,5 @@
 """
-HUMAnN2: utilities module
+HUMAnN: utilities module
 Utilities relating to third party software, file permissions, and file formats
 
 Copyright (c) 2014 Harvard School of Public Health

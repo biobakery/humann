@@ -18,7 +18,7 @@ class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
     def setUp(self):
         config.unnamed_temp_dir=tempfile.gettempdir()
         config.temp_dir=tempfile.gettempdir()
-        config.file_basename="HUMAnN2_test"
+        config.file_basename="HUMAnN_test"
         
         # set up nullhandler for logger
         logging.getLogger('humann.search.blastx_coverage').addHandler(logging.NullHandler())

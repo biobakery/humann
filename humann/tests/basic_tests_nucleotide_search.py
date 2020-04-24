@@ -16,7 +16,7 @@ class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
     def setUp(self):
         config.unnamed_temp_dir=tempfile.gettempdir()
         config.temp_dir=tempfile.gettempdir()
-        config.file_basename="HUMAnN2_test"
+        config.file_basename="HUMAnN_test"
         
         # set up nullhandler for logger
         logging.getLogger('humann.search.nucleotide').addHandler(logging.NullHandler())

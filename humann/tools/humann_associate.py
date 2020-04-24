@@ -16,7 +16,7 @@ try:
     from humann import config
     from humann.tools import util
 except ImportError:
-    sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN2 python package." +
+    sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN python package." +
               " Please check your install.")
 
 # ---------------------------------------------------------------
@@ -30,7 +30,7 @@ c_allowed_impute = 0.2
 # ---------------------------------------------------------------
 
 description = """
-HUMAnN2 utility for performing metadata association
+HUMAnN utility for performing metadata association
 ===================================================
 """
 
@@ -42,7 +42,7 @@ def get_args( ):
     parser.add_argument( "-i", "--input", 
                          metavar="<path>",
                          required=True,
-                         help="HUMAnN2 table with metadata rows at the top", )
+                         help="HUMAnN table with metadata rows at the top", )
     parser.add_argument( "-m", "--focal-metadatum",
                          metavar="<str>",
                          required=True,

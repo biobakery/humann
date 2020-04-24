@@ -1,5 +1,5 @@
 """
-HUMAnN2: nucleotide_search module
+HUMAnN: nucleotide_search module
 Index database, run alignment, find unused reads
 
 Copyright (c) 2014 Harvard School of Public Health

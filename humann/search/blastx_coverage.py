@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 
 """
-This is a HUMAnN2 utility function
+This is a HUMAnN utility function
 * Do a first pass on blastx output
 * Identify proteins that were well-covered by reads
 * Return them as a dict
-* When processing blastx output in HUMAnN2, consider only these proteins
+* When processing blastx output in HUMAnN, consider only these proteins
 ===============================================
 Author: Eric Franzosa (eric.franzosa@gmail.com)
 """
