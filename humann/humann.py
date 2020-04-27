@@ -705,10 +705,10 @@ def check_requirements(args):
                 # expect most of the file names to be of the format g__*s__*
                 if re.search("^[g__][s__]",file): 
                     valid_format_count+=1
-                if not config.metaphlan_3p0_db_version in file:
+                if not config.metaphlan_3p0_db_matching_uniref in file:
                     sys.exit("\n\nCRITICAL ERROR: The directory provided for ChocoPhlAn contains files ( "+file+" )"+\
                         " that are not of the expected version. Please install the latest version"+\
-                        " of the database: "+config.metaphlan_3p0_db_version)
+                        " of the database: "+config.metaphlan_3p0_db_matching_uniref)
             if valid_format_count == 0:
                 sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
                     + "contain files of the expected format (ie \'^[g__][s__]\').")
