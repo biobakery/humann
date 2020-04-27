@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.0.0.alpha.1 (04-27-2020) ##
+
+* Change in metaphlan taxonomic profile version tag to stay in sync.
+
 ## v3.0.0.alpha (04-23-2020) ##
 
 * Add flexibility to allow for additional MetaPhlAn output column.
