@@ -1,8 +1,15 @@
+# ***ATTENTION***
+
+Before opening a new issue here, please check the appropriate help channel on the bioBakery Support Forum (https://forum.biobakery.org) and consider opening or commenting on a thread there.
+
+----
+
 # HUMAnN 2.0 User Manual 
 
 HUMAnN 2.0 is the next generation of HUMAnN 1.0 (HMP Unified Metabolic Analysis Network).
 
 ----
+
 
 **If you use HUMAnN 2.0 in your work, please cite the HUMAnN 2.0 paper:**
 
