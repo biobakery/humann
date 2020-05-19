@@ -96,7 +96,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                 # check threshold
                 try:
                     data=line.split("\t")
-                    if data[-1].replace(".","").isdigit():
+                    if data[-1].replace(".","").replace("e-","").isdigit():
                         read_percent=float(data[-1])
                     else:
                         read_percent=float(data[-2])
