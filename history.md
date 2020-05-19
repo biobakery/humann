@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.0.0.alpha.2 (05-19-2020) ##
+
+* Fix read in MetaPhlAn v3 abundances to allow for scientific notation.
+
 ## v3.0.0.alpha.1 (04-27-2020) ##
 
 * Change in metaphlan taxonomic profile version tag to stay in sync.
