@@ -396,7 +396,7 @@ def return_module_path(module):
                 return path
     return ""
 
-def check_software_version(exe,version):
+def check_software_version(exe,version,warning=False):
     """
     Determine if the software is of the correct version
     """
@@ -430,10 +430,20 @@ def check_software_version(exe,version):
         current_minor_version=int(current_version[1])
         if "second minor" in version:
             current_second_minor_version=int(current_version[2])
+        current_version=str(current_major_version)+"."+str(current_minor_version)
+        if "second minor" in version:
+            current_version+="."+str(current_second_minor_version)
     except (NameError,KeyError,ValueError,IndexError):
         message="Can not call software version for " + exe
-        logger.critical(message)
-        sys.exit("CRITICAL ERROR: " + message + "\n")       
+        if warning:
+            logger.warning(message)
+            print("WARNING: " + message + "\n") 
+            current_major_version=0
+            current_minor_version=0
+            current_version="UNK"      
+        else:
+            logger.critical(message)
+            sys.exit("CRITICAL ERROR: " + message + "\n")       
         
     prior_version=False
     if version["major"] > current_major_version:
@@ -445,15 +455,15 @@ def check_software_version(exe,version):
             and version["second minor"] > current_second_minor_version):
             prior_version=True
         
-    current_version=str(current_major_version)+"."+str(current_minor_version)
-    if "second minor" in version:
-        current_version+="."+str(current_second_minor_version)
-    
-    if prior_version: 
+    if prior_version and not current_version=="UNK": 
         message=("Please update " + exe + " from version " + current_version               
                  + " to version " + version_required)
-        logger.critical(message) 
-        sys.exit("CRITICAL ERROR: " + message)
+        if warning:
+            logger.warning(message)
+            print("WARNING: " + message + "\n") 
+        else:
+            logger.critical(message) 
+            sys.exit("CRITICAL ERROR: " + message + "\n")
         
     # log version of software
     message="Using " + exe + " version " + current_version
