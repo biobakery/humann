@@ -1,10 +1,13 @@
 
 # HUMAnN History #
 
-## v3.0.0.alpha.2 (06-24-2020) ##
+## v3.0.0.alpha.3 (06-24-2020) ##
 
 * Change bowtie2 version check from error to warning to allow for conda bowtie2 package without version information.
-* Allow for scientific notation in MetaPhlAn v3 outputs.
+
+## v3.0.0.alpha.2 (05-19-2020) ##
+
+* Fix read in MetaPhlAn v3 abundances to allow for scientific notation.
 
 ## v3.0.0.alpha.1 (04-27-2020) ##
 
