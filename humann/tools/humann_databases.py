@@ -74,7 +74,15 @@ database_type={
     "utility_mapping" : "utility_mapping"
 }
 
-def download_database(database, build, location):
+def check_user_database(original, user):
+    """ Check that the user database is of the expected version """
+
+    if original.split("/")[-1] == user.split("/")[-1]:
+        return True
+    else:
+        sys.exit("The user database selected does not match that expected: "+original.split("/")[-1])
+
+def download_database(database, build, location, database_location):
     """
     Download and decompress the selected database
     """
@@ -93,14 +101,21 @@ def download_database(database, build, location):
 
             # download the database
             downloaded_file=os.path.join(location,current_downloads[database][build].split('/')[-1])
-            utilities.download_tar_and_extract_with_progress_messages(current_downloads[database][build], 
-                downloaded_file, install_location)
-            
-            # remove the download
-            try:
-                os.unlink(downloaded_file)
-            except EnvironmentError:
-                print("Unable to remove file: " + downloaded_file)
+
+            if database_location:
+                check_user_database(current_downloads[database][build],database_location)
+                utilities.download_tar_and_extract_with_progress_messages(database_location,
+                    downloaded_file, install_location)
+            else:
+                utilities.download_tar_and_extract_with_progress_messages(current_downloads[database][build], 
+                    downloaded_file, install_location)
+
+            # remove the download (if not a local file provided by the user)
+            if not database_location or (database_location and not os.path.isfile(database_location)):
+                try:
+                    os.unlink(downloaded_file)
+                except EnvironmentError:
+                    print("Unable to remove file: " + downloaded_file)
             
             print("\nDatabase installed: " + install_location + "\n")
         else:
@@ -131,7 +146,10 @@ def parse_arguments(args):
         default="yes",
         choices=["yes","no"],
         help="update the config file to set the new database as the default [DEFAULT: yes]\n")
-    
+    parser.add_argument(
+        "--database-location",
+        help="location (local or remote) to pull the database")
+
     return parser.parse_args()
 
 def main():
@@ -152,7 +170,7 @@ def main():
             except EnvironmentError:
                 sys.exit("CRITICAL ERROR: Unable to create directory: " + location)
         
-        install_location=download_database(database,build,location)
+        install_location=download_database(database,build,location,args.database_location)
         
         if args.update_config == "yes":
             # update the config file with the installed location

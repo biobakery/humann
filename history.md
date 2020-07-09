@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.0.0.alpha.4 (07-09-2020) ##
+
+* Add option for user to provide database location (merged from v2.8 branch).
+
 ## v3.0.0.alpha.3 (06-24-2020) ##
 
 * Change bowtie2 version check from error to warning to allow for conda bowtie2 package without version information.

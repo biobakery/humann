@@ -507,16 +507,28 @@ def download_tar_and_extract_with_progress_messages(url, filename, folder):
     Download the file at the url
     """
     
-    print("Download URL: " + url) 
+    # check for local file
+    local_file = False
+    if os.path.isfile(url):
+        local_file = True   
+
+    if not local_file:
+        print("Download URL: " + url)  
 
     try:
-        url_handle = urlretrieve(url, filename, reporthook=ReportHook().report)
-            
+        if not local_file:
+￼            url_handle = urlretrieve(url, filename, reporthook=ReportHook().report)
+￼        else:
+￼            filename = url
+
         print("\nExtracting: " + filename)
         tarfile_handle=tarfile.open(filename)
         tarfile_handle.extractall(path=folder)
     except (EnvironmentError, tarfile.ReadError):
-        sys.exit("CRITICAL ERROR: Unable to download and extract from URL: " + url)
+        if local_file:
+￼            sys.exit("CRITICAL ERROR: Unable to extract from local file: " + url)
+￼        else:
+￼            sys.exit("CRITICAL ERROR: Unable to download and extract from URL: " + url)
 
 def remove_file(file):
     """
