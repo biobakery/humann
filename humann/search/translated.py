@@ -202,18 +202,154 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
                 temp_out_files.append(temp_out_file)
     
                 full_args+=["--out",temp_out_file,"--tmpdir",os.path.dirname(temp_out_file)]
-    
+
                 utilities.execute_command(exe,full_args,[input_database],[])
         
         # merge the temp output files
         utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
-            alignment_file)
+                                  alignment_file)
 
     else:
         message="Bypass"
         logger.info(message)
         print(message)
 
+    
+def diamond_pass1(alignment_file, uniref, unaligned_reads_file_fasta, exe, opts, args):
+    """
+    Diamond 1st pass: normal mode on all query sequences
+    """
+    # filter '--sensitive' (and --more-sensitive)
+    args += opts
+    args = [str(x).strip() for x in args]
+    args = [x for x in args if not x in ['--sensitive', '--more-sensitive', '']]
+
+    # diamond - fast
+    args_pass1 = args + ['--query', unaligned_reads_file_fasta]
+    temp_hits_files = []
+    temp_unal_files = []
+    for database in os.listdir(uniref):          
+        # ignore any files that are not the database files
+        if database.endswith(config.diamond_database_extension):
+            # Provide the database name without the extension
+            input_database = os.path.join(uniref, database)
+            message = "1st pass (fast): Aligning to reference database: " + database
+            logger.info(message)
+            print("\n" + message + "\n")  
+            input_database_extension_removed=re.sub(
+                config.diamond_database_extension
+                + "$", "", input_database)
+            full_args = args_pass1 + ["--db", input_database_extension_removed]
+
+            # create temp output file
+            ## diamond hits
+            temp_hits_file=utilities.unnamed_temp_file('diamond_m8_')
+            utilities.remove_file(temp_hits_file)            
+            temp_hits_files.append(temp_hits_file)
+            ## unaligned
+            temp_unal_file=utilities.unnamed_temp_file('diamond_unal_')
+            utilities.remove_file(temp_unal_file)            
+            temp_unal_files.append(temp_unal_file)
+                                         
+            # args
+            full_args += ['--out', temp_hits_file,
+                          '--tmpdir', config.unnamed_temp_dir, #tmp_file_path,
+                          '--un', temp_unal_file,
+                          '--unal', '1']
+
+            utilities.execute_command(exe, full_args, [input_database], [])
+    
+    # merge the temp output files
+    ## hits
+    temp_hits_cat_file = utilities.unnamed_temp_file('diamond_m8_cat_')    
+    utilities.execute_command("cat", temp_hits_files, temp_hits_files,
+                              [temp_hits_cat_file], temp_hits_cat_file)
+    ## unaligned
+    temp_unal_cat_file = utilities.unnamed_temp_file('diamond_unal_cat_')    
+    utilities.execute_command("cat", temp_unal_files, temp_unal_files,
+                              [temp_unal_cat_file], temp_unal_cat_file)
+
+    # number of unaligned sequences
+    num_unal = 0
+    with open(temp_unal_cat_file) as inF:
+        for line in inF:
+            if line.startswith('>'):
+                num_unal += 1
+    message = 'Number of unaligned reads after 1st pass: {}'.format(num_unal)
+    logger.info(message)
+    print(message)
+    return args, temp_hits_cat_file, temp_unal_cat_file
+    
+def diamond_pass2(alignment_file, uniref, unaligned_reads_file_fasta, exe,
+                  args, temp_hits_cat_file, temp_unal_cat_file):
+    """
+    Diamond 2nd pass: sensitive mode on all aligned query sequences from the 1st pass
+    """
+    args_pass2 = args + ['--query', temp_unal_cat_file]
+    temp_out_files = [temp_hits_cat_file]
+    for database in os.listdir(uniref):          
+        # ignore any files that are not the database files
+        if database.endswith(config.diamond_database_extension):
+            # Provide the database name without the extension
+            input_database = os.path.join(uniref, database)
+            message="2nd pass (sensitive): Aligning to reference database: " + database
+            logger.info(message)
+            print("\n" + message + "\n")  
+            input_database_extension_removed = re.sub(
+                config.diamond_database_extension + "$",
+                "", input_database)
+            full_args = args_pass2 + ["--db", input_database_extension_removed]
+
+            # create temp output file
+            temp_out_file = utilities.unnamed_temp_file("diamond_m8_")
+            utilities.remove_file(temp_out_file)            
+            temp_out_files.append(temp_out_file)
+
+            full_args += ['--out', temp_out_file,
+                          '--tmpdir', config.unnamed_temp_dir, #tmp_file_path,
+                          '--sensitive']
+
+            utilities.execute_command(exe, full_args, [input_database], [])
+    
+    # merge the temp output files
+    utilities.execute_command("cat", temp_out_files, temp_out_files,
+                              [alignment_file], alignment_file)
+            
+def diamond_2pass_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
+    """
+    Run diamond alignment on database formatted for diamond.
+    Using 2-pass approach: 1st pass is normal mode, while 2nd pass is sensitive mode on
+    all un-aligned queries from the 1st pass.
+    """
+    bypass=utilities.check_outfiles([alignment_file])
+
+    exe="diamond"
+    
+    # Select the command based on a protein or nucleotide database search
+    args=[]
+    if config.pick_frames_toggle == "on":
+        args=[config.diamond_cmmd_protein_search]
+    else:
+        args=[config.diamond_cmmd_nucleotide_search]
+        
+    opts=filter(lambda x: str(x).strip() != '--two-pass', config.diamond_opts)    
+
+    args+=["--query", unaligned_reads_file_fasta,
+           "--evalue", config.evalue_threshold]
+    args+=["--threads", config.threads]
+
+    if not bypass:
+        args, temp_hits, temp_unal = diamond_pass1(alignment_file, uniref,
+                                                   unaligned_reads_file_fasta,
+                                                   exe, opts, args)
+        diamond_pass2(alignment_file, uniref,
+                      unaligned_reads_file_fasta,
+                      exe, args, temp_hits, temp_unal)
+    else:
+        message = "Bypass"
+        logger.info(message)
+        print(message)
+    
 def alignment(uniref, unaligned_reads_file):
     """
     Run rapsearch2 or usearch for alignment
@@ -256,7 +392,10 @@ def alignment(uniref, unaligned_reads_file):
     elif config.translated_alignment_selected == "rapsearch":
         rapsearch_alignment(alignment_file, uniref, input_fasta)
     elif config.translated_alignment_selected == "diamond":
-        diamond_alignment(alignment_file, uniref, input_fasta)
+        if '--two-pass' in config.diamond_opts:
+            diamond_2pass_alignment(alignment_file, uniref, input_fasta)
+        else:
+            diamond_alignment(alignment_file, uniref, input_fasta)
     else:
         sys.exit("CRITICAL ERROR: The translated alignment software selected is not"
             + " available: " + config.translated_alignment_selected )
