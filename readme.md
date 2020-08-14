@@ -808,7 +808,7 @@ To download a database, run:
 $ humann2_databases --download $DATABASE $BUILD $INSTALL_LOCATION
 ```
 
-This will automatically update the HUMAnN 2.0 configuration. 
+This will automatically update the HUMAnN 2.0 configuration. If you do not have permissions to edit the config file run with the option `--update-config no` and then include the locations of the databases when running HUMAnN.
 
 ----
 
