@@ -235,9 +235,12 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     reduced_aligned_reads_file=utilities.name_temp_file(
         config.nucleotide_aligned_reads_name_tsv)
 
-  
-    utilities.file_exists_readable(sam_alignment_file)
-    file_handle_read=open(sam_alignment_file, "rt")
+
+    if sam_alignment_file != "-":
+        utilities.file_exists_readable(sam_alignment_file)
+        file_handle_read=open(sam_alignment_file, "rt")
+    else:
+        file_handle_read = sys.stdin
     
     file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
     file_handle_write_aligned=open(reduced_aligned_reads_file, "w")

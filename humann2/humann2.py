@@ -323,7 +323,8 @@ def update_configuration(args):
     """
     
     # Use the full path to the input file
-    args.input=os.path.abspath(args.input)
+    if args.input != "-":
+        args.input=os.path.abspath(args.input)
 
     # If set, append paths executable locations
     if args.metaphlan:
