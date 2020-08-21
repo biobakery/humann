@@ -438,8 +438,8 @@ def update_configuration(args):
         if not os.path.isfile(args.input):
             sys.exit("CRITICAL ERROR: Can not find input file selected: "+ args.input)
         
-    if not os.access(args.input, os.R_OK):
-        sys.exit("CRITICAL ERROR: Not able to read input file selected: " + args.input)
+        if not os.access(args.input, os.R_OK):
+            sys.exit("CRITICAL ERROR: Not able to read input file selected: " + args.input)
         
     # Update the output format
     config.remove_stratified_output=args.remove_stratified_output
