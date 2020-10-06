@@ -7,7 +7,7 @@ import utils
 from humann.quantify import modules
 from humann import config
 
-class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
+class TestHumannQuantifyModulesFunctions(unittest.TestCase):
     """
     Test the functions found in humann.quantify.modules
     """

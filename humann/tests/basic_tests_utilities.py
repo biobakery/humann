@@ -14,7 +14,7 @@ import utils
 from humann import utilities
 from humann import config
 
-class TestHumann2UtilitiesFunctions(unittest.TestCase):
+class TestHumannUtilitiesFunctions(unittest.TestCase):
     """
     Test the functions found in humann.utilities
     """

@@ -12,7 +12,7 @@ from humann import store
 from humann import config
 from humann import utilities
 
-class TestAdvancedHumann2TranslatedSearchFunctions(unittest.TestCase):
+class TestAdvancedHumannTranslatedSearchFunctions(unittest.TestCase):
     """
     Test the functions found in humann.search.translated
     """

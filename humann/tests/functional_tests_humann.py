@@ -8,7 +8,7 @@ import shutil
 import cfg
 import utils
 
-class TestFunctionalHumann2EndtoEnd(unittest.TestCase):
+class TestFunctionalHumannEndtoEnd(unittest.TestCase):
     """
     Test humann with end to end functional tests
     """

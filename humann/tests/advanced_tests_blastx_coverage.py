@@ -10,7 +10,7 @@ from humann.search import blastx_coverage
 from humann import store
 from humann import config
 
-class TestBasicHumann2Blastx_CoverageFunctions(unittest.TestCase):
+class TestBasicHumannBlastx_CoverageFunctions(unittest.TestCase):
     """
     Test the functions found in humann.search.nucleotide
     """

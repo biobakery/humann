@@ -9,7 +9,7 @@ import utils
 from humann import utilities
 from humann import config
 
-class TestAdvancedHumann2UtilitiesFunctions(unittest.TestCase):
+class TestAdvancedHumannUtilitiesFunctions(unittest.TestCase):
     """
     Test the functions found in humann.utilities
     """

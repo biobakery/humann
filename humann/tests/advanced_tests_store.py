@@ -11,7 +11,7 @@ import cfg
 from humann import store
 from humann import config
 
-class TestAdvancedHumann2StoreFunctions(unittest.TestCase):
+class TestAdvancedHumannStoreFunctions(unittest.TestCase):
     """
     Test the functions found in humann/src/store.py
     """

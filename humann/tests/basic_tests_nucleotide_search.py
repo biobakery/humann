@@ -8,7 +8,7 @@ import tempfile
 from humann.search import nucleotide
 from humann import config
 
-class TestBasicHumann2NucleotideSearchFunctions(unittest.TestCase):
+class TestBasicHumannNucleotideSearchFunctions(unittest.TestCase):
     """
     Test the functions found in humann.search.nucleotide
     """

@@ -12,7 +12,7 @@ from humann.quantify import families
 from humann import store
 from humann import config
 
-class TestAdvancedHumann2QuantifyFamiliesFunctions(unittest.TestCase):
+class TestAdvancedHumannQuantifyFamiliesFunctions(unittest.TestCase):
     """
     Test the functions found in humann.quantify.families
     """

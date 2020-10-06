@@ -5,7 +5,7 @@ import os
 import cfg
 import utils
 
-class TestFunctionalHumann2ToolsBiom(unittest.TestCase):
+class TestFunctionalHumannToolsBiom(unittest.TestCase):
     """
     Test humann.tools
     """

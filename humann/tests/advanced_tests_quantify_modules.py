@@ -12,7 +12,7 @@ from humann import store
 from humann import config
 from humann.quantify import chi2cdf
 
-class TestHumann2QuantifyModulesFunctions(unittest.TestCase):
+class TestHumannQuantifyModulesFunctions(unittest.TestCase):
     """
     Test the functions found in humann.quantify.modules
     """

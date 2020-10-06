@@ -11,7 +11,7 @@ import utils
 from humann import store
 from humann import config
 
-class TestHumann2StoreFunctions(unittest.TestCase):
+class TestHumannStoreFunctions(unittest.TestCase):
     """
     Test the functions found in humann.store
     """
