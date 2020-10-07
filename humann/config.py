@@ -63,7 +63,6 @@ def log_settings():
     lines.append("bypass nucleotide search = " + str(bypass_nucleotide_search))
     lines.append("bypass translated search = " + str(bypass_translated_search))
     lines.append("translated search = " + translated_alignment_selected)
-    lines.append("pick frames = " + pick_frames_toggle)
     lines.append("threads = " + str(threads))
     lines.append("")
     
@@ -317,7 +316,6 @@ log_level=log_level_choices[0]
 toggle_choices=["on","off"]
 xipe_toggle = "off"
 minpath_toggle = "on"
-pick_frames_toggle = "off"
 gap_fill_toggle = "on"
 
 # file format

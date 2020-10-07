@@ -227,12 +227,6 @@ def parse_arguments(args):
         type=float,
         default=config.evalue_threshold) 
     tier3_translated_search.add_argument(
-        "--pick-frames",
-        help="turn on/off the pick_frames computation\n[DEFAULT: " + 
-        config.pick_frames_toggle + "]",
-        default=config.pick_frames_toggle,
-        choices=config.toggle_choices)
-    tier3_translated_search.add_argument(
         "--protein-database",
         help="directory containing the protein database\n[DEFAULT: " 
             + config.protein_database + "]", 
@@ -456,11 +450,9 @@ def update_configuration(args):
         
     # if set, update the config run mode to bypass translated search step
     # set the pick_frames toggle based on the bypass
+    config.pick_frames_toggle="off"
     if args.bypass_translated_search:
         config.bypass_translated_search=True
-        config.pick_frames_toggle="off"
-    else:
-        config.pick_frames_toggle=args.pick_frames
         
     # if set, update the config run mode to bypass nucleotide search steps
     if args.bypass_nucleotide_search:
@@ -1073,8 +1065,6 @@ def main():
     
     # Process input files of sam format
     elif args.input_format in ["sam"]:
-        # Turn off frame picker if set on
-        config.pick_frames_toggle="off"
         
         # Store the sam mapping results
         message="Process the sam mapping results ..."

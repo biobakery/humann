@@ -1527,9 +1527,6 @@ optional arguments:
                         [DEFAULT: "--top 1 --outfmt 6"]
   --evalue <1.0>        the evalue threshold to use with the translated search
                         [DEFAULT: 1.0]
-  --pick-frames {on,off}
-                        turn on/off the pick_frames computation
-                        [DEFAULT: off]
   --protein-database <protein_database>
                         directory containing the protein database
                         [DEFAULT: /home/ljmciver/miniconda3/envs/humann3/lib/python3.6/site-packages/humann/data/uniref_DEMO]
