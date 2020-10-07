@@ -1416,143 +1416,184 @@ HUMAnN 3.0 frequently asked questions:
 ## Complete option list ##
 
 ```
-usage: humann [-h] [--version] [-v] [-r] [--bypass-prescreen]
-               [--bypass-nucleotide-index] [--bypass-translated-search]
-               [--bypass-nucleotide-search] -i <input.fastq> -o <output>
-               [--nucleotide-database <nucleotide_database>]
-               [--annotation-gene-index <8>]
-               [--protein-database <protein_database>] [--evalue <1.0>]
-               [--search-mode] [--metaphlan <metaphlan>]
-               [--metaphlan-options <metaphlan_options>]
-               [--o-log <sample.log>]
-               [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-               [--remove-temp-output] [--threads <1>]
-               [--prescreen-threshold <0.01>] [--identity-threshold <50.0>]
-               [--translated-subject-coverage-threshold <50.0>]
-               [--translated-query-coverage-threshold <90.0>]
-               [--bowtie2 <bowtie2>] [--usearch <usearch>]
-               [--rapsearch <rapsearch>] [--diamond <diamond>]
-               [--taxonomic-profile <taxonomic_profile.tsv>]
-               [--id-mapping <id_mapping.tsv>]
-               [--translated-alignment {usearch,rapsearch,diamond}]
-               [--xipe {on,off}] [--minpath {on,off}] [--pick-frames {on,off}]
-               [--output-format {tsv,biom}] [--output-max-decimals <10>]
-               [--output-basename <sample_name>] [--remove-stratified-output]
-               [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
-               [--pathways-database <pathways_database.tsv>]
-               [--pathways {metacyc,unipathway}]
-               [--memory-use {minimum,maximum}]
+usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
+              [-r] [--bypass-nucleotide-index] [--bypass-nucleotide-search]
+              [--bypass-prescreen] [--bypass-translated-search]
+              [--taxonomic-profile <taxonomic_profile.tsv>]
+              [--memory-use {minimum,maximum}]
+              [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
+              [--search-mode {uniref50,uniref90}] [-v]
+              [--metaphlan <metaphlan>]
+              [--metaphlan-options <metaphlan_options>]
+              [--prescreen-threshold <0.01>] [--bowtie2 <bowtie2>]
+              [--bowtie-options <bowtie_options>]
+              [--nucleotide-database <nucleotide_database>]
+              [--nucleotide-identity-threshold <0.0>]
+              [--nucleotide-query-coverage-threshold <90.0>]
+              [--nucleotide-subject-coverage-threshold <50.0>]
+              [--diamond <diamond>] [--diamond-options <diamond_options>]
+              [--evalue <1.0>] [--pick-frames {on,off}]
+              [--protein-database <protein_database>]
+              [--rapsearch <rapsearch>]
+              [--translated-alignment {usearch,rapsearch,diamond}]
+              [--translated-identity-threshold <Automatically: 50.0 or 80.0, Custom: 0.0-100.0>]
+              [--translated-query-coverage-threshold <90.0>]
+              [--translated-subject-coverage-threshold <50.0>]
+              [--usearch <usearch>] [--gap-fill {on,off}] [--minpath {on,off}]
+              [--pathways {metacyc,unipathway}]
+              [--pathways-database <pathways_database.tsv>] [--xipe {on,off}]
+              [--annotation-gene-index <3>] [--id-mapping <id_mapping.tsv>]
+              [--remove-temp-output]
+              [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+              [--o-log <sample.log>] [--output-basename <sample_name>]
+              [--output-format {tsv,biom}] [--output-max-decimals <10>]
+              [--remove-column-description-output]
+              [--remove-stratified-output]
 
-HUMAnN 3.0 : HMP Unified Metabolic Analysis Network 3
+HUMAnN : HMP Unified Metabolic Analysis Network 3
 
 optional arguments:
   -h, --help            show this help message and exit
-  --version             show program's version number and exit
-  -v, --verbose         additional output is printed
-  -r, --resume          bypass commands if the output files exist
-  --bypass-prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
-  --bypass-nucleotide-index
-                        bypass the nucleotide index step and run on the indexed ChocoPhlAn database
-  --bypass-translated-search
-                        bypass the translated search step
-  --bypass-nucleotide-search
-                        bypass the nucleotide search steps
+
+[0] Common settings:
   -i <input.fastq>, --input <input.fastq>
                         input file of type {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom} 
                         [REQUIRED]
   -o <output>, --output <output>
                         directory to write output files
                         [REQUIRED]
-  --nucleotide-database <nucleotide_database>
-                        directory containing the nucleotide database
-                        [DEFAULT: humann/data/chocophlan_DEMO]
-  --annotation-gene-index <8>
-                        the index of the gene in the sequence annotation
-                        [DEFAULT: 8]
-  --protein-database <protein_database>
-                        directory containing the protein database
-                        [DEFAULT: humann/data/uniref_DEMO]
-  --evalue <1.0>        the evalue threshold to use with the translated search
-                        [DEFAULT: 1.0]
+  --threads <1>         number of threads/processes
+                        [DEFAULT: 1]
+  --version             show program's version number and exit
+
+[1] Workflow refinement:
+  -r, --resume          bypass commands if the output files exist
+  --bypass-nucleotide-index
+                        bypass the nucleotide index step and run on the indexed ChocoPhlAn database
+  --bypass-nucleotide-search
+                        bypass the nucleotide search steps
+  --bypass-prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
+  --bypass-translated-search
+                        bypass the translated search step
+  --taxonomic-profile <taxonomic_profile.tsv>
+                        a taxonomic profile (the output file created by metaphlan)
+                        [DEFAULT: file will be created]
+  --memory-use {minimum,maximum}
+                        the amount of memory to use
+                        [DEFAULT: minimum]
+  --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
+                        the format of the input file
+                        [DEFAULT: format identified by software]
   --search-mode {uniref50,uniref90}
                         search for uniref50 or uniref90 gene families
                         [DEFAULT: based on translated database selected]
+  -v, --verbose         additional output is printed
+
+[2] Configure tier 1: prescreen:
   --metaphlan <metaphlan>
                         directory containing the MetaPhlAn software
                         [DEFAULT: $PATH]
   --metaphlan-options <metaphlan_options>
                         options to be provided to the MetaPhlAn software
                         [DEFAULT: "-t rel_ab"]
-  --o-log <sample.log>  log file
-                        [DEFAULT: temp/sample.log]
-  --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
-                        level of messages to display in log
-                        [DEFAULT: DEBUG]
-  --remove-temp-output  remove temp output files
-                        [DEFAULT: temp files are not removed]
-  --threads <1>         number of threads/processes
-                        [DEFAULT: 1]
   --prescreen-threshold <0.01>
                         minimum percentage of reads matching a species
                         [DEFAULT: 0.01]
-  --identity-threshold <50.0>
-                        identity threshold for alignments
-                        [DEFAULT: 50.0]
-  --translated-subject-coverage-threshold <50.0>
-                        subject coverage threshold for translated alignments
-                        [DEFAULT: 50.0]
-  --translated-query-coverage-threshold <90.0>
-                        query coverage threshold for translated alignments
-                        [DEFAULT: 90.0]
+
+[3] Configure tier 2: nucleotide search:
   --bowtie2 <bowtie2>   directory containing the bowtie2 executable
                         [DEFAULT: $PATH]
-  --usearch <usearch>   directory containing the usearch executable
-                        [DEFAULT: $PATH]
-  --rapsearch <rapsearch>
-                        directory containing the rapsearch executable
-                        [DEFAULT: $PATH]
+  --bowtie-options <bowtie_options>
+                        options to be provided to the bowtie software
+                        [DEFAULT: "--very-sensitive"]
+  --nucleotide-database <nucleotide_database>
+                        directory containing the nucleotide database
+                        [DEFAULT: /home/ljmciver/miniconda3/envs/humann3/lib/python3.6/site-packages/humann/data/chocophlan_DEMO]
+  --nucleotide-identity-threshold <0.0>
+                        identity threshold for nuclotide alignments
+                        [DEFAULT: 0.0]
+  --nucleotide-query-coverage-threshold <90.0>
+                        query coverage threshold for nucleotide alignments
+                        [DEFAULT: 90.0]
+  --nucleotide-subject-coverage-threshold <50.0>
+                        subject coverage threshold for nucleotide alignments
+                        [DEFAULT: 50.0]
+
+[3] Configure tier 2: translated search:
   --diamond <diamond>   directory containing the diamond executable
                         [DEFAULT: $PATH]
-  --taxonomic-profile <taxonomic_profile.tsv>
-                        a taxonomic profile (the output file created by metaphlan)
-                        [DEFAULT: file will be created]
-  --id-mapping <id_mapping.tsv>
-                        id mapping file for alignments
-                        [DEFAULT: alignment reference used]
-  --translated-alignment {usearch,rapsearch,diamond}
-                        software to use for translated alignment
-                        [DEFAULT: diamond]
-  --xipe {on,off}       turn on/off the xipe computation
-                        [DEFAULT: off]
-  --minpath {on,off}    turn on/off the minpath computation
-                        [DEFAULT: on]
+  --diamond-options <diamond_options>
+                        options to be provided to the diamond software
+                        [DEFAULT: "--top 1 --outfmt 6"]
+  --evalue <1.0>        the evalue threshold to use with the translated search
+                        [DEFAULT: 1.0]
   --pick-frames {on,off}
                         turn on/off the pick_frames computation
                         [DEFAULT: off]
+  --protein-database <protein_database>
+                        directory containing the protein database
+                        [DEFAULT: /home/ljmciver/miniconda3/envs/humann3/lib/python3.6/site-packages/humann/data/uniref_DEMO]
+  --rapsearch <rapsearch>
+                        directory containing the rapsearch executable
+                        [DEFAULT: $PATH]
+  --translated-alignment {usearch,rapsearch,diamond}
+                        software to use for translated alignment
+                        [DEFAULT: diamond]
+  --translated-identity-threshold <Automatically: 50.0 or 80.0, Custom: 0.0-100.0>
+                        identity threshold for translated alignments
+                        [DEFAULT: Tuned automatically (based on uniref mode) unless a custom value is specified]
+  --translated-query-coverage-threshold <90.0>
+                        query coverage threshold for translated alignments
+                        [DEFAULT: 90.0]
+  --translated-subject-coverage-threshold <50.0>
+                        subject coverage threshold for translated alignments
+                        [DEFAULT: 50.0]
+  --usearch <usearch>   directory containing the usearch executable
+                        [DEFAULT: $PATH]
+
+[5] Gene and pathway quantification:
+  --gap-fill {on,off}   turn on/off the gap fill computation
+                        [DEFAULT: on]
+  --minpath {on,off}    turn on/off the minpath computation
+                        [DEFAULT: on]
+  --pathways {metacyc,unipathway}
+                        the database to use for pathway computations
+                        [DEFAULT: metacyc]
+  --pathways-database <pathways_database.tsv>
+                        mapping file (or files, at most two in a comma-delimited list) to use for pathway computations
+                        [DEFAULT: metacyc database ]
+  --xipe {on,off}       turn on/off the xipe computation
+                        [DEFAULT: off]
+  --annotation-gene-index <3>
+                        the index of the gene in the sequence annotation
+                        [DEFAULT: 3]
+  --id-mapping <id_mapping.tsv>
+                        id mapping file for alignments
+                        [DEFAULT: alignment reference used]
+
+[6] More output configuration:
+  --remove-temp-output  remove temp output files
+                        [DEFAULT: temp files are not removed]
+  --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                        level of messages to display in log
+                        [DEFAULT: DEBUG]
+  --o-log <sample.log>  log file
+                        [DEFAULT: temp/sample.log]
+  --output-basename <sample_name>
+                        the basename for the output files
+                        [DEFAULT: input file basename]
   --output-format {tsv,biom}
                         the format of the output files
                         [DEFAULT: tsv]
   --output-max-decimals <10>
                         the number of decimals to output
                         [DEFAULT: 10]
-  --output-basename <sample_name>
-                        the basename for the output files
-                        [DEFAULT: input file basename]
+  --remove-column-description-output
+                        remove the description in the output column
+                        [DEFAULT: output column includes description]
   --remove-stratified-output
                         remove stratification from output
                         [DEFAULT: output is stratified]
-  --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
-                        the format of the input file
-                        [DEFAULT: format identified by software]
-  --pathways-database <pathways_database.tsv>
-                        mapping file (or files, at most two in a comma-delimited list) to use for pathway computations
-                        [DEFAULT: metacyc database ]
-  --pathways {metacyc,unipathway}
-                        the database to use for pathway computations
-                        [DEFAULT: metacyc]
-  --memory-use {minimum,maximum}
-                        the amount of memory to use
-                        [DEFAULT: minimum]
 ```
 ----
 ## Support ##
