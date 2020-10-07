@@ -70,23 +70,18 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [Databases](#databases)
 * [Configuration](#configuration)
 * [Guides to HUMAnN 3.0 utility scripts](#guides-to-humann-utility-scripts)
-	* [humann_associate](#humann_associate)
 	* [humann_barplot](#humann_barplot)
-	* [humann_build_custom_database](#humann_build_custom_database)
     * [humann_config](#humann_config)
 	* [humann_databases](#humann_databases)
 	* [humann_gene_families_genus_level](#humann_gene_families_genus_level)
-	* [humann_humann1_kegg](#humann_humann1_kegg)
 	* [humann_infer_taxonomy](#humann_infer_taxonomy)
     * [humann_join_tables](#humann_join_tables)
     * [humann_reduce_table](#humann_reduce_table)
     * [humann_regroup_table](#humann_regroup_table)
     * [humann_rename_table](#humann_rename_table)
     * [humann_renorm_table](#humann_renorm_table)
-    * [humann_rna_dna_norm](#humann_rna_dna_norm)
 	* [humann_split_stratified_table](#humann_split_stratified_table)
 	* [humann_split_table](#humann_split_table)
-    * [humann_strain_profiler](#humann_strain_profiler)
     * [humann_test](#humann_test)
     * [humann_unpack_pathways](#humann_unpack_pathways)
 * [Other HUMAnN 3.0 guides](#other-humann-guides)
@@ -94,7 +89,6 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Selecting a scope for translated search](#selecting-a-scope-for-translated-search)
     * [Paired-end reads](#humann-and-paired-end-sequencing-data)
     * [PICRUSt output](#picrust-output)
-    * [Legacy databases](#legacy-databases)
     * [Joint taxonomic profile](#joint-taxonomic-profile)
     * [Custom taxonomic profile](#custom-taxonomic-profile)
     * [Custom nucleotide reference database](#custom-nucleotide-reference-database)
@@ -879,12 +873,6 @@ log level = DEBUG
 
 ## Guides to HUMAnN 3.0 utility scripts ##
 
-### humann_associate ###
-
-`humann_associate` is included as a statistical aid for the [HUMAnN 3.0 Tutorial](https://github.com/biobakery/biobakery/wiki/humann). This script is not currently recommended for other purposes.
-
-----
-
 ### humann_barplot ###
 
 * **Basic usage:** `$ humann_barplot --input $TABLE.tsv --feature $FEATURE --outfile $FIGURE`
@@ -898,12 +886,6 @@ log level = DEBUG
 Here is an example of a HUMAnN 3.0 barplot for a pathway (denitrification) that was preferentially enriched in Human Microbiome Project oral samples relative to other body sites. This figure uses many options from `humann_barplot`, including regrouping by genus, pseudolog scaling, and sorting samples by similarity and metadata:
 
 ![page_DENITRIFICATION-PWY.png](https://bitbucket.org/repo/bAAy6o/images/731303924-page_DENITRIFICATION-PWY.png)
-
-----
-
-### humann_build_custom_database ###
-
-Used for incorporating legacy databases in HUMAnN 3.0. See the [Legacy databases](#markdown-header-legacy-databases) guide below.
 
 ----
 
@@ -922,12 +904,6 @@ Used for downloading ChocoPhlAn, translated search databases, and HUMAnN 3.0 uti
 ### humann_gene_families_genus_level ###
 
 See the [Genus level gene families and pathways](#markdown-header-genus-level-gene-families-and-pathways) guide below.
-
-----
-
-### humann_humann1_kegg ###
-
-Used for incorporating legacy databases in HUMAnN 3.0 See the [Legacy databases](#markdown-header-legacy-databases) guide below.
 
 ----
 
@@ -1092,18 +1068,6 @@ By default, this script normalizes all stratification levels to the sum of all c
 
 ----
 
-### humann_rna_dna_norm ###
-
-* **Basic usage:** `$ humann_rna_dna_norm --input_dna $TABLE_DNA --input_rna $TABLE_RNA --output_basename $OUTPUT_BASENAME`
-* `$TABLE_DNA` = gene families output for sample DNA (tsv format)
-* `$TABLE_RNA` = gene families output for sample RNA (tsv format)
-* `$OUTPUT_BASENAME` = Basename for the three output files (smoothed DNA, smoothed RNA, normalized RNA)
-* Run with `-h` to see additional command line options
-
-`humann_rna_dna_norm` is a script for performing metagenomic normalization of metatranscriptomic data (both derived from the same biosample). This method helps to correct for the strong dependence of microbial community transcript number on underlying genomic copy number, producing "relative expression" measurements. See [Metatranscriptome analysis with HUMAnN](#markdown-header-metatranscriptome-analysis-with-humann) for further details.
-
-----
-
 ### humann_split_stratified_table ###
 
 * **Basic usage:** `` $ humann_split_stratified_table --input $TABLE --output $OUTPUT_DIR ``
@@ -1123,22 +1087,6 @@ This utility will split a table into two files (one stratified and one unstratif
 * Run with `-h` to see additional command line options
 
 This utility will split a merged feature table (multiple samples) into one file per sample. Some analyses can only accept one sample at a time.
-
-----
-
-### humann_strain_profiler ###
-
-**This script is currently at an experimental stage. Please use with caution.**
-
-* **Basic usage:** `$ humann_strain_profiler --input $TABLE`
-* `$TABLE` = merged gene families output for two or more samples (tsv format)
-* Run with `-h` to see additional command line options
-
-The HUMAnN 3.0 script ``humann_strain_profiler`` can help explore strain-level variation in your data. This approach assumes you have run HUMAnN 3.0 on a series of samples and then merged the resulting ``*_genefamilies.tsv`` tables with ``humann_merge_tables``. Cases will arise in which the same species was detected in two or more samples, but gene families within that species were not consistently present across samples. For example, four samples may contain the species *Dialister invisus*, but only two samples contain the gene family ``UniRef50_Q5WII6`` within *Dialister invisus*. This is a form of strain-level variation in the *Dialister invisus* species: one which we can connect directly to function based on annotations of the ``UniRef50_Q5WII6`` gene family.
-
-``humann_strain_profiler`` first looks for (species, sample) pairs where (i) a large number of gene families within the species were identified (default: 500) and (ii) the mean abundance of detected genes was high (default: mean > 10 RPK). For species that meet these criteria, we can infer that absent gene families are likely to be truly absent, as opposed to undersampled. Simulations suggest that the cutoff of 10 RPK results in a false negative rate below 0.001 (i.e. for every 1000 genes identified as absent, at most one would be present but missed due to undersampling). For a given species, if at least two samples pass these criteria, the species and passing samples are sliced from the merged table and saved as a strain profile.
-
-Strain profiles can be additionally restricted to a subset of species (e.g. those from a particular genus) or to gene families with a high level of variability in the population (e.g. present in fewer than 80% of samples but more than 20% of samples). Additional thresholds (e.g. the minimum non-zero mean) can be configured with command line parameters.
 
 ----
 
@@ -1244,33 +1192,6 @@ If you are running HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) 
     * If the files being joined in this step are biom format, the ouput file will also be in biom format.
 
 Please note the flag ``--verbose`` can be added to all commands.
-
-----
-
-### Legacy databases ###
-
-HUMAnN 1.0 used [KEGG](http://www.genome.jp/kegg/) databases. Following changes to KEGG's licensing, new versions of KEGG sequence and gene annotation databases can no longer be downloaded *en masse* for free. The last free version of KEGG's gene annotation databases (v56) are bundled with HUMAnN 1.0 (see Step 1 below). To obtain a compatible sequence database (referred to as ``genes.pep`` below).
-
-You can run with the legacy Kegg databases following these steps:
-
-1. Download the legacy kegg databases included in [HUMAnN 1.0](https://github.com/biobakery/humann_legacy/archive/0.99b.tar.gz)
-    * The databases will be referred to in steps that follow with the path "humann1/data/*".
-    
-2. Create an idmapping file formatted for HUMAnN 3.0 using the legacy kegg databases and adding full names for the Kegg organisms
-    * `` $ humann_humann1_kegg --ikoc humann1/data/koc --igenels humann1/data/genels --o legacy_kegg_idmapping.tsv ``
-   
-3.  Create a joint taxonomic profile from all of the samples in your set (see guide [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile))
-
-4. Create a custom Kegg database for your data set, with genus-specific taxonomic limitation, using your joint taxonomic profile
-    * `` $ humann_build_custom_database --input genes.pep --output custom_database --id-mapping legacy_kegg_idmapping.tsv --format diamond --taxonomic-profile max_taxonomic_profile.tsv ``
-
-5. Run HUMAnN 3.0 on your quality-controlled metagenome files using the custom database with results written to $OUTPUT_DIR
-    * for $SAMPLE.fastq in samples
-        * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc --protein-database custom_database --bypass-nucleotide-search``
-        * To run with the kegg modules instead of the kegg pathways provide the file ``humann1/data/modulec`` to the pathways database option.
-    * If you would like both the kegg modules and kegg pathways output files, first run all samples with the command above. Then run again providing the kegg modules file along with the gene families output file from each run (ie foreach $SAMPLE_genefamilies.tsv run "$ humann --input $SAMPLE_genefamilies.tsv --output $MODULES_OUTPUT_DIR --pathways-database humann1/data/modulec"). These runs will only compute the kegg modules and will not run the translated search portion again which was already done in the first set of runs. This will save compute time and disk space.
-
-Alternatively, blastx-like output, created from running translated search of your quality-controlled metagenome files against the kegg database, can be provided as input to HUMAnN 3.0. For a demo run, provide the demo input file included with the original version of HUMAnN 3.0. ``humann1/input/mock_even_lc.tsv`` using the command ``$ humann --input humann1/input/mock_even_lc.tsv --output $OUTPUT_DIR --id-mapping legacy_kegg_idmapping.tsv --pathways-database humann1/data/keggc``. 
 
 ----
 
@@ -1440,7 +1361,7 @@ The more categories in your mapping file, the more options you have to see if yo
 
 The recommended HUMAnN 3.0 metatranscriptome (RNA) analysis protocol differs depending on whether or not you have metagenomic (DNA) reads available from the same biological sample.
 
-**Analyzing a metatranscriptome with a paired metagenome.** In this case, we recommend analyzing the metagenome first. Then, rather than constructing a taxonomic profile directly from the metatranscriptome, use the taxonomic profile of the corresponding metagenome as an additional input to HUMAnN 3.0 via the ``--taxonomic-profile`` flag. This will guarantee that RNA reads are mapped to any species' pangenomes detected in the metagenome. RNA reads are otherwise provided as input to HUMAnN 3.0 just as DNA reads are. HUMAnN 3.0 RNA-level outputs (e.g. transcript family abundance) can then be normalized by corresponding DNA-level outputs to quantify microbial expression independent of gene copy number. **CAVEAT:** For low-abundance species, random sampling may lead to detection of transcripts for undetected genes. In these cases, we recommend smoothing DNA-level features to avoid divide-by-zero errors during normalization. The HUMAnN 3.0 utility script `humann_rna_dna_norm` will Laplace (or Witten-Bell) smooth paired RNA and DNA output files and then return the smoothed DNA, smoothed RNA, and relative expression. The relative expression of gene *i* in sample *j* is the smoothed value of RNA(*i*,*j*) divided by the smoothed value of DNA(*i*,*j*) and adjusted for differences in sequencing depth. The `humann_rna_dna_norm` script assumes that DNA/RNA sample columns are in the same order.
+**Analyzing a metatranscriptome with a paired metagenome.** In this case, we recommend analyzing the metagenome first. Then, rather than constructing a taxonomic profile directly from the metatranscriptome, use the taxonomic profile of the corresponding metagenome as an additional input to HUMAnN 3.0 via the ``--taxonomic-profile`` flag. This will guarantee that RNA reads are mapped to any species' pangenomes detected in the metagenome. RNA reads are otherwise provided as input to HUMAnN 3.0 just as DNA reads are. HUMAnN 3.0 RNA-level outputs (e.g. transcript family abundance) can then be normalized by corresponding DNA-level outputs to quantify microbial expression independent of gene copy number. **CAVEAT:** For low-abundance species, random sampling may lead to detection of transcripts for undetected genes. In these cases, we recommend smoothing DNA-level features to avoid divide-by-zero errors during normalization.
 
 **Analyzing an isolated metatranscriptome (without a paired metagenome).** In this case, analyze RNA read data just as you would DNA data (provided as a fasta/fastq file). **CAVEAT 1:** Note that species are quantified in HUMAnN 3.0 based on recruitment of reads to species-specific marker genes. While each genome copy is assumed to donate ~1 copy of each marker to metagenome (DNA) data, the same assumption cannot be made for RNA data (markers may be more or less transcribed within a species compared to the species average). As long as a non-trivial fraction of a species' markers are expressed, HUMAnN 3.0 will still detect that species in the transcript pool. However, species relative abundance estimates from the taxonomic profile must be interpretted carefully: these values reflect species' relative contributions to the pool of species-specific transcripts, and not the overall transcript pool. **CAVEAT 2:** Transcript abundance inferred from a lone metatranscriptome is confounded with underlying gene copy number. For example, transcript X may be more abundant in sample A relative to sample B because (i) the same number of underlying X genes are more highly expressed in sample A relative to sample B or (ii) there are more copies of gene X in sample A relative to sample B (all of which are equally expressed). This is a general challenge in analyzing isolated metatranscriptomes (not specific to HUMAnN 3.0).
 
