@@ -11,6 +11,8 @@ import bz2
 # utilities used by the split and join tables scripts
 # ---------------------------------------------------------------
 
+c_unclassified="unclassified"
+
 # indicator of a comment line or the header
 # the last line in the file with this indicator is the header
 GENE_TABLE_COMMENT_LINE="#"
@@ -276,7 +278,7 @@ def try_zip_open( path, write=None ):
     if write:
         open_mode = "w"
     elif path.endswith(".bz2"):
-        open_mode = "r"
+        open_mode = "rt"
     else:
         open_mode = "rt"
 
@@ -284,7 +286,7 @@ def try_zip_open( path, write=None ):
         if path.endswith(".gz"):
             fh = gzip.open( path, open_mode )
         elif path.endswith(".bz2"):
-            fh = bz2.BZ2File( path, open_mode )
+            fh = bz2.open( path, open_mode )
         else:
             fh = open( path, open_mode )
     except EnvironmentError:
