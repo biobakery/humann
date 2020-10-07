@@ -317,6 +317,7 @@ toggle_choices=["on","off"]
 xipe_toggle = "off"
 minpath_toggle = "on"
 gap_fill_toggle = "on"
+pick_frames_toggle = "off"
 
 # file format
 output_format_choices=["tsv", "biom"]
