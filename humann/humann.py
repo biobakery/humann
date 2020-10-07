@@ -76,273 +76,297 @@ def parse_arguments(args):
         description= "HUMAnN : HMP Unified Metabolic Analysis Network 3\n",
         formatter_class=argparse.RawTextHelpFormatter,
         prog="humann")
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s v"+VERSION)
-    parser.add_argument(
-        "-v","--verbose", 
-        help="additional output is printed\n", 
-        action="store_true",
-        default=config.verbose)
-    parser.add_argument(
-        "-r","--resume", 
-        help="bypass commands if the output files exist\n", 
-        action="store_true",
-        default=config.resume)
-    parser.add_argument(
-        "--bypass-prescreen", 
-        help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
-        action="store_true",
-        default=config.bypass_prescreen)
-    parser.add_argument(
-        "--bypass-nucleotide-index", 
-        help="bypass the nucleotide index step and run on the indexed ChocoPhlAn database\n", 
-        action="store_true",
-        default=config.bypass_nucleotide_index)
-    parser.add_argument(
-        "--bypass-translated-search", 
-        help="bypass the translated search step\n", 
-        action="store_true",
-        default=config.bypass_translated_search)
-    parser.add_argument(
-        "--bypass-nucleotide-search", 
-        help="bypass the nucleotide search steps\n", 
-        action="store_true",
-        default=config.bypass_nucleotide_search)
-    parser.add_argument(
+
+    common_settings=parser.add_argument_group("[0] Common settings")
+
+    common_settings.add_argument(
         "-i", "--input", 
         help="input file of type {" +",".join(config.input_format_choices)+ "} \n[REQUIRED]", 
         metavar="<input.fastq>", 
         required=True)
-    parser.add_argument(
+    common_settings.add_argument(
         "-o", "--output", 
         help="directory to write output files\n[REQUIRED]", 
         metavar="<output>", 
         required=True)
-    parser.add_argument(
-        "--nucleotide-database",
-        help="directory containing the nucleotide database\n[DEFAULT: " 
-            + config.nucleotide_database + "]", 
-        metavar="<nucleotide_database>")
-    parser.add_argument(
-        "--annotation-gene-index",
-        help="the index of the gene in the sequence annotation\n[DEFAULT: " 
-            + ",".join(str(i) for i in config.chocophlan_gene_indexes) + "]", 
-        metavar="<"+",".join(str(i) for i in config.chocophlan_gene_indexes)+">",
-        default=",".join(str(i) for i in config.chocophlan_gene_indexes))
-    parser.add_argument(
-        "--protein-database",
-        help="directory containing the protein database\n[DEFAULT: " 
-            + config.protein_database + "]", 
-        metavar="<protein_database>")
-    parser.add_argument(
-        "--evalue", 
-        help="the evalue threshold to use with the translated search\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
-        metavar="<" + str(config.evalue_threshold) + ">", 
-        type=float,
-        default=config.evalue_threshold) 
-    parser.add_argument(
-        "--search-mode",
-        help="search for uniref50 or uniref90 gene families\n" + 
-        "[DEFAULT: based on translated database selected]",
-        choices=[config.search_mode_uniref50, config.search_mode_uniref90],
-        default=None)
-    parser.add_argument(
-        "--metaphlan",
-        help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
-        metavar="<metaphlan>")
-    parser.add_argument(
-        "--metaphlan-options",
-        help="options to be provided to the MetaPhlAn software\n[DEFAULT: \"" + str(" ".join(config.metaphlan_opts)) + "\"]",
-        metavar="<metaphlan_options>",
-        default=" ".join(config.metaphlan_opts))
-    parser.add_argument(
-        "--diamond-options",
-        help="options to be provided to the diamond software\n[DEFAULT: \"" + str(" ".join(config.diamond_opts_uniref90)) + "\"]",
-        metavar="<diamond_options>",
-        default=" ".join(config.diamond_opts_uniref90))
-    parser.add_argument(
-        "--bowtie-options",
-        help="options to be provided to the bowtie software\n[DEFAULT: \"" + str(" ".join(config.bowtie2_align_opts)) + "\"]",
-        metavar="<bowtie_options>",
-        default=" ".join(config.bowtie2_align_opts))
-    parser.add_argument(
-        "--o-log", 
-        help="log file\n" + 
-        "[DEFAULT: temp/sample.log]", 
-        metavar="<sample.log>")
-    parser.add_argument(
-        "--log-level", 
-        help="level of messages to display in log\n" + 
-        "[DEFAULT: " + config.log_level + "]", 
-        default=config.log_level,
-        choices=config.log_level_choices)
-    parser.add_argument(
-        "--remove-temp-output", 
-        help="remove temp output files\n" + 
-            "[DEFAULT: temp files are not removed]", 
-        action="store_true")
-    parser.add_argument(
+    common_settings.add_argument(
         "--threads", 
         help="number of threads/processes\n[DEFAULT: " + str(config.threads) + "]", 
         metavar="<" + str(config.threads) + ">", 
         type=int,
         default=config.threads) 
-    parser.add_argument(
+    common_settings.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s v"+VERSION)
+
+    workflow_refinement=parser.add_argument_group("[1] Workflow refinement")
+
+    workflow_refinement.add_argument(
+        "-r","--resume", 
+        help="bypass commands if the output files exist\n", 
+        action="store_true",
+        default=config.resume)
+    workflow_refinement.add_argument(
+        "--bypass-nucleotide-index", 
+        help="bypass the nucleotide index step and run on the indexed ChocoPhlAn database\n", 
+        action="store_true",
+        default=config.bypass_nucleotide_index)
+    workflow_refinement.add_argument(
+        "--bypass-nucleotide-search", 
+        help="bypass the nucleotide search steps\n", 
+        action="store_true",
+        default=config.bypass_nucleotide_search)
+    workflow_refinement.add_argument(
+        "--bypass-prescreen", 
+        help="bypass the prescreen step and run on the full ChocoPhlAn database\n", 
+        action="store_true",
+        default=config.bypass_prescreen)
+    workflow_refinement.add_argument(
+        "--bypass-translated-search", 
+        help="bypass the translated search step\n", 
+        action="store_true",
+        default=config.bypass_translated_search)
+    workflow_refinement.add_argument(
+        "--taxonomic-profile", 
+        help="a taxonomic profile (the output file created by metaphlan)\n[DEFAULT: file will be created]", 
+        metavar="<taxonomic_profile.tsv>")
+    workflow_refinement.add_argument(
+        "--memory-use",
+        help="the amount of memory to use\n[DEFAULT: " +
+        config.memory_use + "]",
+        default=config.memory_use,
+        choices=config.memory_use_options)
+    workflow_refinement.add_argument(
+        "--input-format",
+        help="the format of the input file\n[DEFAULT: format identified by software]",
+        choices=config.input_format_choices)
+    workflow_refinement.add_argument(
+        "--search-mode",
+        help="search for uniref50 or uniref90 gene families\n" + 
+        "[DEFAULT: based on translated database selected]",
+        choices=[config.search_mode_uniref50, config.search_mode_uniref90],
+        default=None)
+    workflow_refinement.add_argument(
+        "-v","--verbose", 
+        help="additional output is printed\n", 
+        action="store_true",
+        default=config.verbose)
+
+    tier1_prescreen=parser.add_argument_group("[2] Configure tier 1: prescreen")
+
+    tier1_prescreen.add_argument(
+        "--metaphlan",
+        help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
+        metavar="<metaphlan>")
+    tier1_prescreen.add_argument(
+        "--metaphlan-options",
+        help="options to be provided to the MetaPhlAn software\n[DEFAULT: \"" + str(" ".join(config.metaphlan_opts)) + "\"]",
+        metavar="<metaphlan_options>",
+        default=" ".join(config.metaphlan_opts))
+    tier1_prescreen.add_argument(
         "--prescreen-threshold", 
         help="minimum percentage of reads matching a species\n[DEFAULT: "
             + str(config.prescreen_threshold) + "]", 
         metavar="<" + str(config.prescreen_threshold) + ">", 
         type=float,
         default=config.prescreen_threshold) 
-    parser.add_argument(
+
+    tier2_nucleotide_search=parser.add_argument_group("[3] Configure tier 2: nucleotide search")
+
+    tier2_nucleotide_search.add_argument(
+        "--bowtie2",
+        help="directory containing the bowtie2 executable\n[DEFAULT: $PATH]", 
+        metavar="<bowtie2>") 
+    tier2_nucleotide_search.add_argument(
+        "--bowtie-options",
+        help="options to be provided to the bowtie software\n[DEFAULT: \"" + str(" ".join(config.bowtie2_align_opts)) + "\"]",
+        metavar="<bowtie_options>",
+        default=" ".join(config.bowtie2_align_opts))
+    tier2_nucleotide_search.add_argument(
+        "--nucleotide-database",
+        help="directory containing the nucleotide database\n[DEFAULT: " 
+            + config.nucleotide_database + "]", 
+        metavar="<nucleotide_database>")
+    tier2_nucleotide_search.add_argument(
         "--nucleotide-identity-threshold",
         help="identity threshold for nuclotide alignments\n[DEFAULT: " + str(config.nucleotide_identity_threshold) + "]",
         metavar="<" + str(config.nucleotide_identity_threshold) + ">",
         type=float)
-    parser.add_argument(
-        "--translated-identity-threshold", 
-        help="identity threshold for translated alignments\n[DEFAULT: " 
-            + "Tuned automatically (based on uniref mode) unless a custom value is specified]", 
-        metavar="<Automatically: 50.0 or 80.0, Custom: 0.0-100.0>", 
-        type=float,
-        dest="identity_threshold") 
-    parser.add_argument(
-        "--translated-subject-coverage-threshold", 
-        help="subject coverage threshold for translated alignments\n[DEFAULT: " 
-            + str(config.translated_subject_coverage_threshold) + "]", 
-        metavar="<" + str(config.translated_subject_coverage_threshold) + ">", 
-        type=float,
-        default=config.translated_subject_coverage_threshold)
-    parser.add_argument(
-        "--nucleotide-subject-coverage-threshold", 
-        help="subject coverage threshold for nucleotide alignments\n[DEFAULT: " 
-            + str(config.nucleotide_subject_coverage_threshold) + "]", 
-        metavar="<" + str(config.nucleotide_subject_coverage_threshold) + ">", 
-        type=float,
-        default=config.nucleotide_subject_coverage_threshold)
-    parser.add_argument(
-        "--translated-query-coverage-threshold", 
-        help="query coverage threshold for translated alignments\n[DEFAULT: " 
-            + str(config.translated_query_coverage_threshold) + "]", 
-        metavar="<" + str(config.translated_query_coverage_threshold) + ">", 
-        type=float,
-        default=config.translated_query_coverage_threshold)
-    parser.add_argument(
+    tier2_nucleotide_search.add_argument(
         "--nucleotide-query-coverage-threshold", 
         help="query coverage threshold for nucleotide alignments\n[DEFAULT: " 
             + str(config.nucleotide_query_coverage_threshold) + "]", 
         metavar="<" + str(config.nucleotide_query_coverage_threshold) + ">", 
         type=float,
         default=config.nucleotide_query_coverage_threshold)
-    parser.add_argument(
-        "--bowtie2",
-        help="directory containing the bowtie2 executable\n[DEFAULT: $PATH]", 
-        metavar="<bowtie2>") 
-    parser.add_argument(
-        "--usearch", 
-        help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
-        metavar="<usearch>")
-    parser.add_argument(
-        "--rapsearch", 
-        help="directory containing the rapsearch executable\n[DEFAULT: $PATH]", 
-        metavar="<rapsearch>")
-    parser.add_argument(
+    tier2_nucleotide_search.add_argument(
+        "--nucleotide-subject-coverage-threshold", 
+        help="subject coverage threshold for nucleotide alignments\n[DEFAULT: " 
+            + str(config.nucleotide_subject_coverage_threshold) + "]", 
+        metavar="<" + str(config.nucleotide_subject_coverage_threshold) + ">", 
+        type=float,
+        default=config.nucleotide_subject_coverage_threshold)
+
+
+    tier3_translated_search=parser.add_argument_group("[3] Configure tier 2: translated search")
+
+    tier3_translated_search.add_argument(
         "--diamond", 
         help="directory containing the diamond executable\n[DEFAULT: $PATH]", 
         metavar="<diamond>")
-    parser.add_argument(
-        "--taxonomic-profile", 
-        help="a taxonomic profile (the output file created by metaphlan)\n[DEFAULT: file will be created]", 
-        metavar="<taxonomic_profile.tsv>")
-    parser.add_argument(
-        "--id-mapping", 
-        help="id mapping file for alignments\n[DEFAULT: alignment reference used]", 
-        metavar="<id_mapping.tsv>")
-    parser.add_argument(
-        "--translated-alignment", 
-        help="software to use for translated alignment\n[DEFAULT: " + 
-            config.translated_alignment_selected + "]", 
-        default=config.translated_alignment_selected,
-        choices=config.translated_alignment_choices)
-    parser.add_argument(
-        "--xipe",
-        help="turn on/off the xipe computation\n[DEFAULT: " +
-        config.xipe_toggle + "]",
-        default=config.xipe_toggle,
-        choices=config.toggle_choices)
-    parser.add_argument(
-        "--minpath",
-        help="turn on/off the minpath computation\n[DEFAULT: " + 
-        config.minpath_toggle + "]",
-        default=config.minpath_toggle,
-        choices=config.toggle_choices)
-    parser.add_argument(
+    tier3_translated_search.add_argument(
+        "--diamond-options",
+        help="options to be provided to the diamond software\n[DEFAULT: \"" + str(" ".join(config.diamond_opts_uniref90)) + "\"]",
+        metavar="<diamond_options>",
+        default=" ".join(config.diamond_opts_uniref90))
+    tier3_translated_search.add_argument(
+        "--evalue", 
+        help="the evalue threshold to use with the translated search\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
+        metavar="<" + str(config.evalue_threshold) + ">", 
+        type=float,
+        default=config.evalue_threshold) 
+    tier3_translated_search.add_argument(
         "--pick-frames",
         help="turn on/off the pick_frames computation\n[DEFAULT: " + 
         config.pick_frames_toggle + "]",
         default=config.pick_frames_toggle,
         choices=config.toggle_choices)
-    parser.add_argument(
+    tier3_translated_search.add_argument(
+        "--protein-database",
+        help="directory containing the protein database\n[DEFAULT: " 
+            + config.protein_database + "]", 
+        metavar="<protein_database>")
+    tier3_translated_search.add_argument(
+        "--rapsearch", 
+        help="directory containing the rapsearch executable\n[DEFAULT: $PATH]", 
+        metavar="<rapsearch>")
+    tier3_translated_search.add_argument(
+        "--translated-alignment", 
+        help="software to use for translated alignment\n[DEFAULT: " + 
+            config.translated_alignment_selected + "]", 
+        default=config.translated_alignment_selected,
+        choices=config.translated_alignment_choices)
+    tier3_translated_search.add_argument(
+        "--translated-identity-threshold", 
+        help="identity threshold for translated alignments\n[DEFAULT: " 
+            + "Tuned automatically (based on uniref mode) unless a custom value is specified]", 
+        metavar="<Automatically: 50.0 or 80.0, Custom: 0.0-100.0>", 
+        type=float,
+        dest="identity_threshold") 
+    tier3_translated_search.add_argument(
+        "--translated-query-coverage-threshold", 
+        help="query coverage threshold for translated alignments\n[DEFAULT: " 
+            + str(config.translated_query_coverage_threshold) + "]", 
+        metavar="<" + str(config.translated_query_coverage_threshold) + ">", 
+        type=float,
+        default=config.translated_query_coverage_threshold)
+    tier3_translated_search.add_argument(
+        "--translated-subject-coverage-threshold", 
+        help="subject coverage threshold for translated alignments\n[DEFAULT: " 
+            + str(config.translated_subject_coverage_threshold) + "]", 
+        metavar="<" + str(config.translated_subject_coverage_threshold) + ">", 
+        type=float,
+        default=config.translated_subject_coverage_threshold)
+    tier3_translated_search.add_argument(
+        "--usearch", 
+        help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
+        metavar="<usearch>")
+
+
+    gene_and_pathway=parser.add_argument_group("[5] Gene and pathway quantification")
+
+    gene_and_pathway.add_argument(
         "--gap-fill",
         help="turn on/off the gap fill computation\n[DEFAULT: " + 
         config.gap_fill_toggle + "]",
         default=config.gap_fill_toggle,
         choices=config.toggle_choices)
-    parser.add_argument(
+    gene_and_pathway.add_argument(
+        "--minpath",
+        help="turn on/off the minpath computation\n[DEFAULT: " + 
+        config.minpath_toggle + "]",
+        default=config.minpath_toggle,
+        choices=config.toggle_choices)
+    gene_and_pathway.add_argument(
+        "--pathways",
+        help="the database to use for pathway computations\n[DEFAULT: " +
+        config.pathways_database + "]",
+        default=config.pathways_database,
+        choices=config.pathways_database_choices)
+    gene_and_pathway.add_argument(
+        "--pathways-database",
+        help="mapping file (or files, at most two in a comma-delimited list) to use for pathway computations\n[DEFAULT: " +
+        config.pathways_database + " database ]",
+        metavar=("<pathways_database.tsv>"),
+        nargs=1)
+    gene_and_pathway.add_argument(
+        "--xipe",
+        help="turn on/off the xipe computation\n[DEFAULT: " +
+        config.xipe_toggle + "]",
+        default=config.xipe_toggle,
+        choices=config.toggle_choices)
+    gene_and_pathway.add_argument(
+        "--annotation-gene-index",
+        help="the index of the gene in the sequence annotation\n[DEFAULT: " 
+            + ",".join(str(i) for i in config.chocophlan_gene_indexes) + "]", 
+        metavar="<"+",".join(str(i) for i in config.chocophlan_gene_indexes)+">",
+        default=",".join(str(i) for i in config.chocophlan_gene_indexes))
+    gene_and_pathway.add_argument(
+        "--id-mapping", 
+        help="id mapping file for alignments\n[DEFAULT: alignment reference used]", 
+        metavar="<id_mapping.tsv>")
+
+
+    more_output_config=parser.add_argument_group("[6] More output configuration")
+
+    more_output_config.add_argument(
+        "--remove-temp-output", 
+        help="remove temp output files\n" + 
+            "[DEFAULT: temp files are not removed]", 
+        action="store_true")
+    more_output_config.add_argument(
+        "--log-level", 
+        help="level of messages to display in log\n" + 
+        "[DEFAULT: " + config.log_level + "]", 
+        default=config.log_level,
+        choices=config.log_level_choices)
+    more_output_config.add_argument(
+        "--o-log", 
+        help="log file\n" + 
+        "[DEFAULT: temp/sample.log]", 
+        metavar="<sample.log>")
+    more_output_config.add_argument(
+        "--output-basename",
+        help="the basename for the output files\n[DEFAULT: " +
+        "input file basename]",
+        default=config.file_basename,
+        metavar="<sample_name>")
+    more_output_config.add_argument(
         "--output-format",
         help="the format of the output files\n[DEFAULT: " +
         config.output_format + "]",
         default=config.output_format,
         choices=config.output_format_choices)
-    parser.add_argument(
+    more_output_config.add_argument(
         "--output-max-decimals",
         help="the number of decimals to output\n[DEFAULT: " +
         str(config.output_max_decimals) + "]",
         metavar="<" + str(config.output_max_decimals) + ">", 
         type=int,
         default=config.output_max_decimals)
-    parser.add_argument(
-        "--output-basename",
-        help="the basename for the output files\n[DEFAULT: " +
-        "input file basename]",
-        default=config.file_basename,
-        metavar="<sample_name>")
-    parser.add_argument(
-        "--remove-stratified-output", 
-        help="remove stratification from output\n" + 
-            "[DEFAULT: output is stratified]", 
-        action="store_true",
-        default=config.remove_stratified_output)
-    parser.add_argument(
+    more_output_config.add_argument(
         "--remove-column-description-output", 
         help="remove the description in the output column\n" + 
             "[DEFAULT: output column includes description]", 
         action="store_true",
         default=config.remove_column_description_output)
-    parser.add_argument(
-        "--input-format",
-        help="the format of the input file\n[DEFAULT: format identified by software]",
-        choices=config.input_format_choices)
-    parser.add_argument(
-        "--pathways-database",
-        help="mapping file (or files, at most two in a comma-delimited list) to use for pathway computations\n[DEFAULT: " +
-        config.pathways_database + " database ]",
-        metavar=("<pathways_database.tsv>"),
-        nargs=1)
-    parser.add_argument(
-        "--pathways",
-        help="the database to use for pathway computations\n[DEFAULT: " +
-        config.pathways_database + "]",
-        default=config.pathways_database,
-        choices=config.pathways_database_choices)
-    parser.add_argument(
-        "--memory-use",
-        help="the amount of memory to use\n[DEFAULT: " +
-        config.memory_use + "]",
-        default=config.memory_use,
-        choices=config.memory_use_options)
+    more_output_config.add_argument(
+        "--remove-stratified-output", 
+        help="remove stratification from output\n" + 
+            "[DEFAULT: output is stratified]", 
+        action="store_true",
+        default=config.remove_stratified_output)
 
     return parser.parse_args()
 	 
