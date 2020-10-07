@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-HUMAnN : HMP Unified Metabolic Analysis Network 2
+HUMAnN : HMP Unified Metabolic Analysis Network 3
 
 HUMAnN is a pipeline for efficiently and accurately determining 
 the coverage and abundance of microbial pathways in a community 
@@ -73,7 +73,7 @@ def parse_arguments(args):
     Parse the arguments from the user
     """
     parser = argparse.ArgumentParser(
-        description= "HUMAnN : HMP Unified Metabolic Analysis Network 2\n",
+        description= "HUMAnN : HMP Unified Metabolic Analysis Network 3\n",
         formatter_class=argparse.RawTextHelpFormatter,
         prog="humann")
     parser.add_argument(
