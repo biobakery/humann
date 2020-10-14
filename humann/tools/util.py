@@ -323,11 +323,7 @@ def gzip_bzip2_biom_open_readlines( path ):
     else:
         with try_zip_open( path ) as file_handle:
             for line in file_handle:
-                if path.endswith(".bz2"):
-                    # convert the line to text from binary
-                    yield line.decode('utf-8').rstrip()
-                else:
-                    yield line.rstrip()
+                yield line.rstrip()
 
 def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """
