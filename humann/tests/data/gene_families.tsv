@@ -1,0 +1,18 @@
+# Gene Family	HUMAnN_test_Abundance-RPKs
+UNMAPPED	0.0000000
+gene1	1913.4639345
+gene1|unclassified	711.9991798
+gene1|bug1	652.3282992
+gene1|bug2	549.1364555
+gene2	1382.9243884
+gene2|unclassified	549.5627435
+gene2|bug3	545.3608247
+gene2|bug1	288.0008202
+UniRef50_unknown	1253.1744206
+UniRef50_unknown|bug3	1253.1744206
+gene4	1000.0000000
+gene4|bug1	1000.0000000
+gene5	1000.0000000
+gene5|bug2	1000.0000000
+gene3	450.4372565
+gene3|bug1	450.4372565

@@ -1,0 +1,12 @@
+read1	bug1|UniRef50_Q197D8	60.0	25	10	0	3	77	1	155	1.0	50.4
+read2	bug1|UniRef50_Q197D8	84.0	25	3	1	28	99	1	415	1.0	41.6
+read3	bug1|UniRef50_Q6GZS7	63.6	22	8	0	1	66	1	350	1.0	52.8
+read4	bug1|UniRef50_Q6GZW6	67.9	28	9	0	17	100	1	539	1.0	40.9
+read5	bug1|UniRef50_Q6GZS1	59.3	27	11	0	3	83	1	285	1.0	33.2
+read6	bug2|UniRef50_Q6GZS3	95.8	24	1	0	28	99	1	196	1.0	58.7
+read1	bug2|UniRef50_Q197D8	100.0	20	0	0	41	100	1	53	2.0	42.9
+read2	bug3|UniRef50_Q6GZS7	92.0	25	2	0	26	100	1	949	2.0	53.8
+read3	unclassified|UniRef50_Q197D8	100.0	27	0	0	3	83	1	58	2.0	42.7
+read4	unclassified|UniRef50_Q6GZS7	75.0	24	6	0	3	74	1	410	2.0	53.2
+read7	bug3|UniRef50_unknown	67.9	28	9	0	17	100	1	539	1.0	48.5
+read1	bug3|UniRef50_unknown	67.9	28	9	0	17	100	1	539	1.0	49.7

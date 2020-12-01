@@ -1,0 +1,106 @@
+# Pathway	demo_Abundance
+1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis	2.4612648808
+ASPASN-PWY: superpathway of L-aspartate and L-asparagine biosynthesis	1.1294704465
+ASPASN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9865581453
+ASPASN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q9HTD7: Aspartate ammonia-lyase	0.7788161994
+ASPASN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+ASPASN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R7NRS3: Aminotransferase	0.9689922481
+CALVIN-PWY: Calvin-Benson-Bassham cycle	1.3078911428
+DTDPRHAMSYN-PWY: dTDP-L-rhamnose biosynthesis I	1.7397022780
+GALACTUROCAT-PWY: D-galacturonate degradation I	1.1181930001
+GLUCUROCAT-PWY: superpathway of &beta;-D-glucuronide and D-glucuronate degradation	1.3972479991
+HOMOSER-METSYN-PWY: L-methionine biosynthesis I	1.7513134851
+HOMOSER-METSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3149243918
+HOMOSER-METSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_D3R5Q5: O-acetyl-L-homoserine sulfhydrolase	0.8795074758
+HOMOSER-METSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_A3QG19: Homoserine O-succinyltransferase	1.3020833333
+HOMOSER-METSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R5S1C6: 5-methyltetrahydrofolate-homocysteine methyltransferase	2.6560424967
+HSERMETANA-PWY: L-methionine biosynthesis III	1.9821605550
+HSERMETANA-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.1318619128
+HSERMETANA-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R5S1C6: 5-methyltetrahydrofolate-homocysteine methyltransferase	2.6560424967
+HSERMETANA-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_D3R5Q5: O-acetyl-L-homoserine sulfhydrolase	0.8795074758
+PWY-3781: aerobic respiration I (cytochrome c)	0.8865248227
+PWY-3841: folate transformations II	2.9270446651
+PWY-5030: L-histidine degradation III	1.4962071452
+PWY-5100: pyruvate fermentation to acetate and lactate II	2.4191007832
+PWY-5100|g__Bacteroides.s__Bacteroides_stercoris	1.6860746138
+PWY-5100|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_Q5LI41: Acetate kinase	1.9102196753
+PWY-5100|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_C7N794: 2-oxoacid:ferredoxin oxidoreductase, beta subunit	1.6260162602
+PWY-5100|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_P71103: Phosphate acetyltransferase	1.1534025375
+PWY-5100|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_R7ESL0	0.4675081814
+PWY-5505: L-glutamate and L-glutamine biosynthesis	2.0179030384
+PWY-5505|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.8604040064
+PWY-5505|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-5505|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R5NVH9	1.4781966001
+PWY-5505|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_B2RKJ1: NAD-specific glutamate dehydrogenase	1.6856326983
+PWY-5505|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R5JJP2	0.4411317895
+PWY-5659: GDP-mannose biosynthesis	1.2407272550
+PWY-5659|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8912655971
+PWY-5659|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q04IA2: Glucose-6-phosphate isomerase	0.8417508418
+PWY-5659|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R5BYQ9: Mannose-6-phosphate isomerase class I	1.2165450122
+PWY-5659|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_I0K5J6: Phosphomannomutase	0.807102502
+PWY-6125: superpathway of guanosine nucleotides de novo biosynthesis II	1.0399014143
+PWY-6507: 4-deoxy-L-threo-hex-4-enopyranuronate degradation	1.6117113393
+PWY-7208: superpathway of pyrimidine nucleobases salvage	3.1634460239
+PWY-7208|g__Bacteroides.s__Bacteroides_thetaiotaomicron	2.4482393111
+PWY-7208|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7208|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R6Z2N6	2.0576131687
+PWY-7208|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-7208|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q8UEY5: CTP synthase	0.6830601093
+PWY-7220: adenosine deoxyribonucleotides de novo biosynthesis II	1.1098779134
+PWY-7220|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5892751915
+PWY-7220|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7220|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.418760469
+PWY-7220|g__Bacteroides.s__Bacteroides_stercoris	0.4387889425
+PWY-7220|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_F9D614: Anaerobic ribonucleoside-triphosphate reductase	0.4852013586
+PWY-7220|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.418760469
+PWY-7221: guanosine ribonucleotides de novo biosynthesis	2.5901918184
+PWY-7221|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.2068085186
+PWY-7221|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7221|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-7221|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q4FMW8: GMP synthase [glutamine-hydrolyzing]	0.7278020378
+PWY-7221|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R6LK37: Inosine-5'-monophosphate dehydrogenase	0.7524454477
+PWY-7222: guanosine deoxyribonucleotides de novo biosynthesis II	1.1098779134
+PWY-7222|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.5892751915
+PWY-7222|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7222|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.418760469
+PWY-7222|g__Bacteroides.s__Bacteroides_stercoris	0.4387889425
+PWY-7222|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_F9D614: Anaerobic ribonucleoside-triphosphate reductase	0.4852013586
+PWY-7222|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.418760469
+PWY-7228: superpathway of guanosine nucleotides de novo biosynthesis I	1.5775328499
+PWY-7228|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8478734825
+PWY-7228|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_A6LCB6: Nucleoside diphosphate kinase	3.1746031746
+PWY-7228|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_P10172: Glutaminase-asparaginase	2.200220022
+PWY-7228|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q4FMW8: GMP synthase [glutamine-hydrolyzing]	0.7278020378
+PWY-7228|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R6LK37: Inosine-5'-monophosphate dehydrogenase	0.7524454477
+PWY-7228|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_T2KHY1: Ribonucleoside-diphosphate reductase	0.418760469
+PWY-7242: D-fructuronate degradation	1.5273004964
+PWY66-422: D-galactose degradation V (Leloir pathway)	1.6096242991
+PWY66-422|g__Bacteroides.s__Bacteroides_stercoris	1.1023839052
+PWY66-422|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_A0A024GWJ3: Uridine diphosphate galacturonate 4-epimerase	1.1074197121
+PWY66-422|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_R6LJY6: Aldose 1-epimerase	1.0162601626
+PWY66-422|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_A6LCK4: Galactokinase	1.9900497512
+PWY66-422|g__Bacteroides.s__Bacteroides_stercoris|UniRef50_I0K5J6: Phosphomannomutase	0.807102502
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	2.0882763520
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.5309785395
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_G4QII0: D-isomer specific 2-hydroxyacid dehydrogenase, NAD-binding protein	1.1737089202
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_B2GCF9: 1-deoxy-D-xylulose-5-phosphate synthase	0.6218905473
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q8A2E4: Erythronate-4-phosphate dehydrogenase	1.1111111111
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q5LFJ5: Pyridoxine/pyridoxamine 5'-phosphate oxidase	2.0325203252
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R7JJL0: 4-phosphoerythronate dehydrogenase	1.2970168612
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q8A0V3: Pyridoxine 5'-phosphate synthase	5.1020408163
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_B2RID6: Phosphoserine aminotransferase	1.0893246187
+RHAMCAT-PWY: L-rhamnose degradation I	1.1337868481
+SER-GLYSYN-PWY: superpathway of L-serine and glycine biosynthesis I	1.6836788383
+SER-GLYSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0124019236
+SER-GLYSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_R7JJL0: 4-phosphoerythronate dehydrogenase	1.2970168612
+SER-GLYSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_B2RID6: Phosphoserine aminotransferase	1.0893246187
+SER-GLYSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q73WG1: Serine hydroxymethyltransferase	0.884173298
+UNINTEGRATED	778.4041770541
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	440.0004428300
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_stercoris	379.1331776970
+UNMAPPED	34.9620985021
+VALSYN-PWY: L-valine biosynthesis	1.4019863838
+VALSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.8652390223
+VALSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_P38674: Ketol-acid reductoisomerase, mitochondrial	2.2371364653
+VALSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_F4KN33: Branched-chain amino acid aminotransferase	1.1494252874
+VALSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron|UniRef50_Q9JS61: Dihydroxy-acid dehydratase	0.6049606776

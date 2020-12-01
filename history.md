@@ -1,5 +1,32 @@
 
-# HUMAnN2 History #
+# HUMAnN History #
+
+## v3.0.0.alpha.4 (07-09-2020) ##
+
+* Add option for user to provide database location (merged from v2.8 branch).
+
+## v3.0.0.alpha.3 (06-24-2020) ##
+
+* Change bowtie2 version check from error to warning to allow for conda bowtie2 package without version information.
+
+## v3.0.0.alpha.2 (05-19-2020) ##
+
+* Fix read in MetaPhlAn v3 abundances to allow for scientific notation.
+
+## v3.0.0.alpha.1 (04-27-2020) ##
+
+* Change in metaphlan taxonomic profile version tag to stay in sync.
+
+## v3.0.0.alpha (04-23-2020) ##
+
+* Add flexibility to allow for additional MetaPhlAn output column.
+* Split "--identity-threshold" into two options, one for each search type with defaults of 0 (nucleotide) and 80/50 (translated).
+* Update diamond default options to "--id 80.0 --top 1" for UniRef90 runs and "--id 50.0 --top 1" for UniRef50 runs.
+* Updated databases to use the latest ChocoPhlAn and corresponding UniRef50/90 (release 01/2019).
+* Added diamond options.
+* Added bowtie2 options.
+* Added gene based filtering to nucleotide search using the same method as translated search. To revert back to prior nucleotide filtering mode, run with the options "--nucleotide-subject-coverage-threshold 0 --nucleotide-query-coverage-threshold 0".
+* Add flexibility to MetaPhlAn version check to allow for warning messages for numpy and biom-format.
 
 ## v2.8.2 04-03-2020 ##
 
@@ -39,11 +66,11 @@
 
 ### Other Changes ###
 
-* HUMAnN2 submitted as of this release.
+* HUMAnN submitted as of this release.
 * Renamed executable humann2_merge_abundance_tables to humann2_unpack_pathways.
 * Removed executable blastx_coverage because only module is currently used.
 * humann2_associate is now more robust to user-provided/misspecified/missing metadata.
-* Descriptions of HUMAnN2 utility scripts and "tutorials" in the manual have been standardized as "Guides to HUMAnN2 utility scripts" and "Other HUMAnN2 guides." These include several new guides for previously available scripts, e.g. humann2_barplot.
+* Descriptions of HUMAnN utility scripts and "tutorials" in the manual have been standardized as "Guides to HUMAnN utility scripts" and "Other HUMAnN guides." These include several new guides for previously available scripts, e.g. humann2_barplot.
 
 ## v0.9.8 11-29-2016 ##
 
@@ -76,7 +103,7 @@
 
 ### New Features ###
 
-* The script humann2_infer_taxonomy has been updated to enable assignment of approximate taxonomic annotations to a greater proportion of unclassified UniRef90 and UniRef50 stratifications. To use the updated script, please also update your HUMAnN2 utility mapping files (humann2_databases --download utility_mapping full $DIR).
+* The script humann2_infer_taxonomy has been updated to enable assignment of approximate taxonomic annotations to a greater proportion of unclassified UniRef90 and UniRef50 stratifications. To use the updated script, please also update your HUMAnN utility mapping files (humann2_databases --download utility_mapping full $DIR).
 * The script split stratified table has been updated to be compatible with gzip, bzip2, and biom formats.
 
 ## v0.9.4 10-04-2016 ##
@@ -110,20 +137,20 @@
 
 ### Bug Fix ###
 
-* Informative GO now uses bare GO identifiers to avoid a conflict with HUMAnN2's stratification syntax. Names can be attached to Informative GO identifiers using humann2_rename_table.
+* Informative GO now uses bare GO identifiers to avoid a conflict with HUMAnN's stratification syntax. Names can be attached to Informative GO identifiers using humann2_rename_table.
 * Remove requirement of future package for python2.
 
 ## v0.9.1 08-26-2016 ##
 
 ### New Features ###
 
-* HUMAnN2 is now wheel compatible. 
+* HUMAnN is now wheel compatible. 
 
 ## v0.9.0 08-23-2016 ##
 
 ### New Features ###
 
-* HUMAnN2 is now python3 compatible. 
+* HUMAnN is now python3 compatible. 
 
 ### Bug Fix ###
 
@@ -174,7 +201,7 @@
 
 ### New Features ###
 
-* HUMAnN2 is now pip installable. The documentation has been updated to reflect this new feature.
+* HUMAnN is now pip installable. The documentation has been updated to reflect this new feature.
 * New options were added, to add names to kegg pathways and modules, to the humann2_rename_table script.
 * A new tool was added to build a custom diamond database with taxonomic limitation. Adding this tool expands the Kegg legacy flow tutorial to start with quality controlled metagenome files and to include MetaPhlAn2 output.
 

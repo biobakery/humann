@@ -1,0 +1,7 @@
+#HEADERS	Sample1	Sample2
+GO:0000287:MF:05:magnesium ion binding	30.0	50.0
+GO:0000287:MF:05:magnesium ion binding|bug1	15.0	25.0
+GO:0000287:MF:05:magnesium ion binding|bug2	15.0	25.0
+GO:0016868:MF:04:intramolecular transferase activity, phosphotransferases	30.0	50.0
+GO:0016868:MF:04:intramolecular transferase activity, phosphotransferases|bug1	15.0	25.0
+GO:0016868:MF:04:intramolecular transferase activity, phosphotransferases|bug2	15.0	25.0

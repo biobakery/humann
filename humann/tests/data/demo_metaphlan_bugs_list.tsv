@@ -1,0 +1,14 @@
+#v30_CHOCOPhlAn_201901
+#SampleID       Metaphlan2_Analysis
+#clade_name     NCBI_tax_id     relative_abundance
+UNKNOWN -1      51.49048
+k__Bacteria	1	100.0
+k__Bacteria|p__Bacteroidetes	1	100.0
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia	1	100.0
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	1	100.0
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	1	100.0
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides	1	100.0
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_stercoris	1	65.22463
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_thetaiotaomicron	1	34.77537
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_stercoris|t__Bacteroides_stercoris_unclassified	1	65.22463
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_thetaiotaomicron|t__Bacteroides_thetaiotaomicron_unclassified	1	34.77537

@@ -1,0 +1,19 @@
+# Pathway	HUMAnN_test_Abundance
+UNMAPPED: NO_NAME	3.6832112
+UNINTEGRATED: NO_NAME	664.2638293
+UNINTEGRATED: NO_NAME|g__Bacteroides.s__Bacteroides_thetaiotaomicron	376.0221389
+UNINTEGRATED: NO_NAME|g__Bacteroides.s__Bacteroides_stercoris	263.6613299
+PWY-7208: superpathway of pyrimidine nucleobases salvage	2.4101467
+PWY-7208: superpathway of pyrimidine nucleobases salvage|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.8729224
+PWY-3841: folate transformations II	2.3673883
+PWY-7221: guanosine ribonucleotides de novo biosynthesis	2.1708068
+PWY-7221: guanosine ribonucleotides de novo biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0482271
+PWY-5100: pyruvate fermentation to acetate and lactate II	2.1016073
+PWY-5100: pyruvate fermentation to acetate and lactate II|g__Bacteroides.s__Bacteroides_stercoris	1.4121063
+1CMET2-PWY: N10-formyl-tetrahydrofolate biosynthesis	1.9762145
+PWY-5505: L-glutamate and L-glutamine biosynthesis	1.7880465
+PWY-5505: L-glutamate and L-glutamine biosynthesis|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.6524997
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I	1.7357698
+PYRIDOXSYN-PWY: pyridoxal 5'-phosphate biosynthesis I|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3083903
+HSERMETANA-PWY: L-methionine biosynthesis III	1.7256255
+HSERMETANA-PWY: L-methionine biosynthesis III|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9915716

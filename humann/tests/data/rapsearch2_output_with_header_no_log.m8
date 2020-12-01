@@ -1,0 +1,10 @@
+# RAPSearch
+# Job submitted: Mon Nov 24 20:00:59 2014
+# Query : test_gzip_catch_rapsearch/abunRef_stool_fir_HUMAnN_temp/abunRef_stool_fir_bowtie2_unaligned.fa
+# Subject : ../DEVEL_DEMO/minichoco_demo/reduced_uniref50/rapsearch/reduced_uniref50_database_for_minichoco_example_RAPSEARCH2
+# Fields: Query	Subject	identity	aln-len	mismatch	gap-openings	q.start	q.end	s.start	s.end	e-value	bit-score
+r10|650377910.fna|4489199|4489350|_from_	UniRef50_Q8A0V3	92.3	26	2	0	73	150	1	26	1e-08	50.4
+r109|643886111.fna|8976|9127|_from_	UniRef50_B6YRK7	56.7	15	8	0	21	65	269	283	0.973	21.2
+r161|641380447.fna|295075|295226|_from_	UniRef50_P0C938	63.6	11	4	0	71	39	269	279	-1	21.9
+r161|641380447.fna|295075|295226|_from_	UniRef50_Q3V0E1	61.5	13	5	0	57	19	224	236	0.571	21.9
+r163|642979319.fna|18139|18290|_from_	UniRef50_P10738	52.4	33	19	0	149	51	211	243	7e-06	41.6

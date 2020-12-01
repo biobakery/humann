@@ -1,0 +1,19 @@
+# Pathway	HUMAnN_test_Abundance
+UNMAPPED	3.6832112
+UNINTEGRATED	664.2638293
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_thetaiotaomicron	376.0221389
+UNINTEGRATED|g__Bacteroides.s__Bacteroides_stercoris	263.6613299
+PWY-7208	2.4101467
+PWY-7208|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.8729224
+PWY-3841	2.3673883
+PWY-7221	2.1708068
+PWY-7221|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.0482271
+PWY-5100	2.1016073
+PWY-5100|g__Bacteroides.s__Bacteroides_stercoris	1.4121063
+1CMET2-PWY	1.9762145
+PWY-5505	1.7880465
+PWY-5505|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.6524997
+PYRIDOXSYN-PWY	1.7357698
+PYRIDOXSYN-PWY|g__Bacteroides.s__Bacteroides_thetaiotaomicron	1.3083903
+HSERMETANA-PWY	1.7256255
+HSERMETANA-PWY	|g__Bacteroides.s__Bacteroides_thetaiotaomicron	0.9915716

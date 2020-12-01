@@ -1,5 +1,5 @@
 """
-HUMAnN2 setup
+HUMAnN setup
 
 To run: python setup.py install
 
@@ -68,13 +68,11 @@ import tempfile
 import re
 import time
 
-VERSION = "2.8.2"
-AUTHOR = "HUMAnN2 Development Team"
+VERSION = "3.0.0.alpha.4"
+AUTHOR = "HUMAnN Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
 MAINTAINER = "Lauren McIver"
 MAINTAINER_EMAIL = "lauren.j.mciver@gmail.com"
-
-COUNTER_URL="http://bitbucket.org/biobakery/humann2/downloads/counter.txt"
 
 def byte_to_megabyte(byte):
     """
@@ -209,8 +207,8 @@ def install_glpk(install_directory, replace_install=None):
         install_directory=os.path.abspath(install_directory)
         prefix=os.path.abspath(os.path.join(install_directory,os.path.pardir))
         
-        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
-        tempfolder=tempfile.mkdtemp(prefix="glpk_download_",dir=humann2_source_folder)
+        humann_source_folder=os.path.dirname(os.path.abspath(__file__))        
+        tempfolder=tempfile.mkdtemp(prefix="glpk_download_",dir=humann_source_folder)
  
         # install the most recent gplk software
         glpk_download=os.path.join(tempfolder,glpk_url.split('/')[-1])
@@ -269,7 +267,7 @@ def install_minpath(replace_install=None):
     # Download the minpath software v1.2
     # Check to see if already downloaded
     
-    fullpath_scripts=os.path.join(os.path.dirname(os.path.abspath(__file__)),"humann2","quantify")
+    fullpath_scripts=os.path.join(os.path.dirname(os.path.abspath(__file__)),"humann","quantify")
 
     minpath_file="minpath1.2.tar.gz"
     minpath_url="http://omics.informatics.indiana.edu/mg/get.php?" + \
@@ -336,17 +334,18 @@ def install_diamond(final_install_folder, build, replace_install=None):
     diamond_installed=find_exe_in_path("diamond")
     
     if not diamond_installed or replace_install:
+        diamond_version="0.9.24"
         diamond_exe="diamond"
         diamond_file="diamond-linux64.tar.gz"
-        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v0.8.22/diamond-linux64.tar.gz"
+        diamond_url="http://github.com/bbuchfink/diamond/releases/download/v{0}/diamond-linux64.tar.gz".format(diamond_version)
         
         # download source if build selected
         if build:
-            diamond_file="v0.8.22.tar.gz"
-            diamond_url="http://github.com/bbuchfink/diamond/archive/v0.8.22.tar.gz"
+            diamond_file="v{0}.tar.gz".format(diamond_version)
+            diamond_url="http://github.com/bbuchfink/diamond/archive/v{0}.tar.gz".format(diamond_version)
 
-        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))        
-        tempfolder=tempfile.mkdtemp(prefix="diamond_download_",dir=humann2_source_folder)
+        humann_source_folder=os.path.dirname(os.path.abspath(__file__))        
+        tempfolder=tempfile.mkdtemp(prefix="diamond_download_",dir=humann_source_folder)
         
         # install the diamond software
         print("Installing diamond.")
@@ -357,7 +356,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
         if build:
             # get the current directory
             current_working_directory=os.getcwd()
-            diamond_build_dir=os.path.join(tempfolder,"diamond-0.8.22","src")
+            diamond_build_dir=os.path.join(tempfolder,"diamond-{0}".format(diamond_version),"src")
             
             try:
                 os.chdir(diamond_build_dir)
@@ -390,7 +389,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
             if make_installed and cmake_installed:
                 # if make and cmake are installed, run the standard build
                 print("INFO: Installing diamond with cmake method.")
-                diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22","bin")
+                diamond_install_folder=os.path.join(tempfolder,"diamond-{0}".format(diamond_version),"bin")
                 try:
                     # make the install bin directory and change directories
                     os.mkdir(diamond_install_folder)
@@ -405,7 +404,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
                 # if make or cmake are not installed, run the simple build
                 print("INFO: Installing diamond with simple build method.")
                 
-                diamond_install_folder=os.path.join(tempfolder,"diamond-0.8.22")
+                diamond_install_folder=os.path.join(tempfolder,"diamond-{0}".format(diamond_version))
                 try:
                     # change directories to the diamond source folder
                     os.chdir(diamond_install_folder)
@@ -477,8 +476,8 @@ def install_bowtie2(final_install_folder, mac_os, replace_install=None):
             
         bowtie2_folder="bowtie2-2.2.3"
     
-        humann2_source_folder=os.path.dirname(os.path.abspath(__file__))
-        tempfolder=tempfile.mkdtemp(prefix="bowtie2_download_",dir=humann2_source_folder)
+        humann_source_folder=os.path.dirname(os.path.abspath(__file__))
+        tempfolder=tempfile.mkdtemp(prefix="bowtie2_download_",dir=humann_source_folder)
 
         # install the bowtie2 software
         print("Installing bowtie2.")
@@ -540,15 +539,6 @@ class Install(_install):
         _install.finalize_options(self)
     
     def run(self):
-        # try to download the bitbucket counter file to count downloads
-        # this has been added since PyPI has turned off the download stats
-        # this will be removed when PyPI Warehouse is production as it
-        # will have download stats
-        counter_file="counter.txt"
-        if not os.path.isfile(counter_file):
-            print("Downloading counter file to track humann2 downloads"+
-                  " since the global PyPI download stats are currently turned off.")
-            download(COUNTER_URL,counter_file)
         
         # install minpath if not already installed
         install_minpath(replace_install=self.replace_dependencies_install)
@@ -560,7 +550,7 @@ class Install(_install):
         for item in os.listdir(self.install_lib):
             full_path_item=os.path.join(self.install_lib, item)
             if os.path.isdir(full_path_item):
-                if "humann2" == item:
+                if "humann" == item:
                     current_install_folder=full_path_item
         
         # find all glpsol executables
@@ -603,21 +593,21 @@ class Install(_install):
         
     
 setuptools.setup(
-    name="humann2",
+    name="humann",
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     version=VERSION,
     license="MIT",
-    description="HUMAnN2: The HMP Unified Metabolic Analysis Network 2",
-    long_description="HUMAnN2 is a pipeline for efficiently and accurately determining " + \
+    description="HUMAnN: The HMP Unified Metabolic Analysis Network, version 3",
+    long_description="HUMAnN v3 is a pipeline for efficiently and accurately determining " + \
         "the coverage and abundance of microbial pathways in a community " + \
         "from metagenomic data. Sequencing a metagenome typically produces millions " + \
         "of short DNA/RNA reads. This process, referred to as functional profiling, " + \
         "aims to describe the metabolic potential of a microbial community and its " + \
         "members. More generally, functional profiling answers the question: What " + \
         "are the microbes in my community-of-interest doing (or capable of doing)?",
-    url="http://huttenhower.sph.harvard.edu/humann2",
-    keywords=['microbial','microbiome','bioinformatics','microbiology','metagenomic','metatranscriptomic','humann','humann2'],
+    url="http://huttenhower.sph.harvard.edu/humann",
+    keywords=['microbial','microbiome','bioinformatics','microbiology','metagenomic','metatranscriptomic','humann','humann'],
     platforms=['Linux','MacOS'],
     classifiers=[
         "Programming Language :: Python",
@@ -632,8 +622,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     cmdclass={'install': Install},
     package_data={
-        'humann2' : [
-            'humann2.cfg',
+        'humann' : [
+            'humann.cfg',
             'data/pathways/*',
             'data/misc/*',
             'data/uniref_DEMO/*',
@@ -646,28 +636,26 @@ setuptools.setup(
         ]},
     entry_points={
         'console_scripts': [
-            'humann2 = humann2.humann2:main',
-            'humann2_databases = humann2.tools.humann2_databases:main',
-            'humann2_config = humann2.tools.humann2_config:main',
-            'humann2_join_tables = humann2.tools.join_tables:main',
-            'humann2_split_table = humann2.tools.split_table:main',
-            'humann2_rename_table = humann2.tools.rename_table:main',
-            'humann2_renorm_table = humann2.tools.renorm_table:main',
-            'humann2_regroup_table = humann2.tools.regroup_table:main',
-            'humann2_infer_taxonomy = humann2.tools.infer_taxonomy:main',
-            'humann2_humann1_kegg = humann2.tools.humann2_humann1_kegg:main',
-            'humann2_rna_dna_norm = humann2.tools.rna_dna_norm:main',
-            'humann2_strain_profiler = humann2.tools.strain_profiler:main',
-            'humann2_reduce_table = humann2.tools.reduce_table:main',
-            'humann2_unpack_pathways = humann2.tools.merge_abundance:main',
-            'humann2_test = humann2.tests.humann2_test:main',
-            'humann2_build_custom_database = humann2.tools.build_custom_database:main',
-            'humann2_genefamilies_genus_level = humann2.tools.genefamilies_genus_level:main',
-            'humann2_split_stratified_table = humann2.tools.split_stratified_table:main',
-            'humann2_associate = humann2.tools.humann2_associate:main',
-            'humann2_barplot = humann2.tools.humann2_barplot:main',
-            'humann2_benchmark = humann2.tools.humann2_benchmark:main'
+            'humann = humann.humann:main',
+            'humann3 = humann.humann:main',
+            'humann_databases = humann.tools.humann_databases:main',
+            'humann3_databases = humann.tools.humann_databases:main',
+            'humann_config = humann.tools.humann_config:main',
+            'humann_join_tables = humann.tools.join_tables:main',
+            'humann_split_table = humann.tools.split_table:main',
+            'humann_rename_table = humann.tools.rename_table:main',
+            'humann_renorm_table = humann.tools.renorm_table:main',
+            'humann_regroup_table = humann.tools.regroup_table:main',
+            'humann_infer_taxonomy = humann.tools.infer_taxonomy:main',
+            'humann_reduce_table = humann.tools.reduce_table:main',
+            'humann_unpack_pathways = humann.tools.merge_abundance:main',
+            'humann_test = humann.tests.humann_test:main',
+            'humann_build_custom_database = humann.tools.build_custom_database:main',
+            'humann_genefamilies_genus_level = humann.tools.genefamilies_genus_level:main',
+            'humann_split_stratified_table = humann.tools.split_stratified_table:main',
+            'humann_barplot = humann.tools.humann_barplot:main',
+            'humann_benchmark = humann.tools.humann_benchmark:main'
         ]},
-    test_suite= 'humann2.tests.humann2_test.unittests_suite_only',
+    test_suite= 'humann.tests.humann_test.unittests_suite_only',
     zip_safe = False
  )
