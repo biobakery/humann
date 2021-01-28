@@ -72,7 +72,7 @@ def main():
         # return an error message if no command is provided
         sys.exit("Please provide a command to benchmark: $ humann_benchmark COMMAND")
     try:
-        process = subprocess.Popen(unknown_args,shell=False)
+        process = subprocess.Popen(" ".join(unknown_args),shell=True)
     except (EnvironmentError, subprocess.CalledProcessError):
         sys.exit("Unable to execute command: " + " ".join(unknown_args))
     pid=str(process.pid)
