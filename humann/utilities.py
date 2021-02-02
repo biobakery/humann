@@ -258,30 +258,12 @@ def gunzip_file(gzip_file):
         
     return new_file
 
-def double_sort(pathways_dictionary):
+def double_sort(d):
     """
-    Return the keys to a dictionary sorted with top values first
-    then for duplicate values sorted alphabetically by key
+    Return the keys to a dictionary of floats
+    sorted by decreasing rounded value, then alphabetically by key
     """
-
-    sorted_keys=[]
-    prior_value=""
-    store=[]
-    for pathway in sorted(pathways_dictionary, key=pathways_dictionary.get, reverse=True):
-        if prior_value == pathways_dictionary[pathway]:
-            if not store:
-                store.append(sorted_keys.pop())
-            store.append(pathway)
-        else:
-            if store:
-                sorted_keys+=sorted(store)
-                store=[]
-            prior_value=pathways_dictionary[pathway]
-            sorted_keys.append(pathway)
-
-    if store:
-        sorted_keys+=sorted(store)
-    return sorted_keys
+    return [t[1] for t in sorted([(-round(d[k],config.output_max_decimals), k) for k in d])]
 
 def unnamed_temp_file(prefix=None):
     """
@@ -872,13 +854,7 @@ def estimate_unaligned_reads_stored(input_fastq, unaligned_store):
     Calculate an estimate of the percent of reads unaligned and stored
     """
 
-    # check if the total number of reads from the input file is stored
-    if not unaligned_store.get_initial_read_count():
-        # check files exist and are readable
-        file_exists_readable(input_fastq)
-        unaligned_store.set_initial_read_count(count_reads(input_fastq))
-
-    percent=unaligned_store.count_reads()/float(unaligned_store.get_initial_read_count()) * 100
+    percent=unaligned_store.count_reads()/float(count_reads(input_fastq)) * 100
 
     return format_float_to_string(percent)
 

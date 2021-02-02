@@ -2,7 +2,7 @@ import unittest
 import re
 import tempfile
 import os
-import filecmp
+import io
 import logging
 
 import cfg
@@ -125,8 +125,9 @@ class TestAdvancedHumannQuantifyFamiliesFunctions(unittest.TestCase):
         gene_families_file=families.gene_families(alignments,gene_scores,0)
         
         # check the gene families output is as expected
-        self.assertTrue(filecmp.cmp(gene_families_file,
-            cfg.gene_familes_file, shallow=False))
+        self.assertListEqual(
+            list(io.open(gene_families_file)),
+            list(io.open(cfg.gene_familes_file)))
         
         # reset the mapping file
         config.gene_family_name_mapping_file=original_gene_family_mapping_file
@@ -183,9 +184,10 @@ class TestAdvancedHumannQuantifyFamiliesFunctions(unittest.TestCase):
         gene_families_file=families.gene_families(alignments,gene_scores,1)
         
         # check the gene families output is as expected
-        self.assertTrue(filecmp.cmp(gene_families_file,
-            cfg.gene_familes_uniref50_with_names_file, shallow=False))
-        
+        self.assertListEqual(
+            list(io.open(gene_families_file)),
+            list(io.open(cfg.gene_familes_uniref50_with_names_file)))
+
         # reset the mapping file
         config.gene_family_name_mapping_file=original_gene_family_mapping_file
         
