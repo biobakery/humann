@@ -1,6 +1,12 @@
 
 # HUMAnN History #
 
+## v3.0.0.alpha.5 (02-02-2021) ##
+
+* Update pathways from v19 to Metacyc v24.
+* Allow for shell in benchmark subprocess to allow for more commands.
+* Use string instead of set to reduce memory usage by blastx_coverage.
+
 ## v3.0.0.alpha.4 (07-09-2020) ##
 
 * Add option for user to provide database location (merged from v2.8 branch).
