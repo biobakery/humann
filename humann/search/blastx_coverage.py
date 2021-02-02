@@ -31,7 +31,7 @@ def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None
     # store protein lengths
     protein_lengths = {}
     # store unique positions hit in each protein as sets
-    protein_hits = defaultdict( set )
+    protein_hits = defaultdict( str )
     # track proteins with sufficient coverage
     allowed = set()
     # track alignments unable to compute coverage
@@ -52,16 +52,24 @@ def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None
         protein_range=range(subject_start_index, subject_stop_index)
         if protein_range:
             # keep track of unique hit positions in this protein
-            protein_hits[protein_name].update(protein_range)
+            protein_hits[protein_name]+="{0}-{1};".format(subject_start_index, subject_stop_index)
         else:
             no_coverage+=1
     # track proteins without lengths
     no_length=0
     # compute coverage
     for protein_name, hit_positions in protein_hits.items():
+
+        # compile the hit positions
+        range_hit_positions = set()
+        for alignment_hit in hit_positions.split(";")[:-1]:
+             start_index, stop_index = alignment_hit.split("-")
+             new_range = range(int(start_index), int(stop_index))
+             range_hit_positions.update(new_range)
+
         try:
             # compute coverage, with 50 indicating that 50% of the protein is covered
-            coverage = len( hit_positions ) / float( protein_lengths[protein_name] ) * 100
+            coverage = len( range_hit_positions ) / float( protein_lengths[protein_name] ) * 100
         except ZeroDivisionError:
             coverage = 0
             no_length+=1
