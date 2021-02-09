@@ -356,12 +356,22 @@ class Alignments(SqliteStore):
         
         # calculate the score per bug and gene
         # for a single query result, it is 1/a.length
+        
+        query=None
+        try:
+            # by default, bowtie2 and diamond are ran to report the best alignment
+            # try create a unique index and use a simpler query
+            self.do('create unique index query_uix on alignment(query)')
+            query= '''
+              select a.bug, a.reference, sum(1/a.length) as score from alignment a
+                group by bug, reference
+                order by bug, reference
+            '''
+        except sqlite3.IntegrityError:
         # if a query matches multiple bugs and genes, its score is distributed by weighted average
         # scores from multiple queries are added up per bug and gene
         # see unit tests for examples
-        result={}
-        resultAll={}
-        for bug, gene, score in self.query('''
+            query='''
               select bug, reference, sum(normalized_score_partial) as score from (
                   select
                     a.query,
@@ -377,7 +387,10 @@ class Alignments(SqliteStore):
                   group by a.bug, a.reference, a.query
                ) group by bug, reference
                order by bug, reference
-            '''):
+            '''
+        result={}
+        resultAll={}
+        for bug, gene, score in self.query(query):
             if bug not in result:
                 result[bug]={}
             result[bug][gene]=score
