@@ -105,7 +105,7 @@ class SqliteStore:
         self.__dbpath = None
         self.__conn = None
         self.__is_within_transaction = False
-        self.__stateful_ops_since_commit = None
+        self.__stateful_ops_in_bulk_write = None
 
 
     def connect(self):
@@ -133,8 +133,8 @@ class SqliteStore:
         """
         self.__conn.execute(*args)
         if self.__is_within_transaction:
-            self.__stateful_ops_since_commit +=1
-            if self.__stateful_ops_since_commit % 100000 == 0:
+            self.__stateful_ops_in_bulk_write +=1
+            if self.__stateful_ops_in_bulk_write % 100000 == 0:
                 self.__conn.execute("commit transaction")
                 self.__conn.execute("begin transaction")
 
@@ -154,13 +154,13 @@ class SqliteStore:
 
     def start_bulk_write(self):
         self.__is_within_transaction = True
-        self.__stateful_ops_since_commit = 0
+        self.__stateful_ops_in_bulk_write = 0
         self.__conn.execute("begin transaction")
 
     def end_bulk_write(self):
         self.__conn.execute("commit transaction")
         self.__is_within_transaction = False
-        self.__stateful_ops_since_commit = None
+        self.__stateful_ops_in_bulk_write = None
 
 
 class Alignments(SqliteStore):
