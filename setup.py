@@ -334,7 +334,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
     diamond_installed=find_exe_in_path("diamond")
     
     if not diamond_installed or replace_install:
-        diamond_version="0.9.24"
+        diamond_version="0.9.36"
         diamond_exe="diamond"
         diamond_file="diamond-linux64.tar.gz"
         diamond_url="http://github.com/bbuchfink/diamond/releases/download/v{0}/diamond-linux64.tar.gz".format(diamond_version)
@@ -439,7 +439,8 @@ def install_diamond(final_install_folder, build, replace_install=None):
                 shutil.copy(diamond_exe_full_path, final_install_folder)
                 # add executable permissions
                 os.chmod(os.path.join(final_install_folder,diamond_exe), 0o755)
-            except (EnvironmentError, shutil.Error):
+            except (EnvironmentError, shutil.Error) as e:
+                print(e)
                 error_during_install=True
             
         # remove the local diamond install

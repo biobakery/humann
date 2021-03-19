@@ -483,7 +483,7 @@ diamond_version={
     "flag" : "--version",
     "major" : 0,
     "minor" : 9,
-    "second minor" : 24,
+    "second minor" : 36,
     "line" : 0,
     "column" : 2}
 
