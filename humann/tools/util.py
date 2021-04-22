@@ -325,7 +325,7 @@ def gzip_bzip2_biom_open_readlines( path ):
             for line in file_handle:
                 yield line.rstrip()
 
-def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
+def load_polymap( path, start=0, skip=None, allowed_keys=None, allowed_values=None ):
     """
     Load a file like:
     A 1 2
@@ -350,12 +350,43 @@ def load_polymap ( path, start=0, skip=None, allowed_keys=None, allowed_values=N
     return polymap
 
 def fsplit( feature ):
+    """
+    Expected format is:
+      CODE: NAME|STRATUM
+    As in:
+      GENE123: tRNA transferase|s__Bacteroides_dorei
+    Robust to names containing ": ":
+      GENE123: tRNA transferase: proline|s__Bacteroides_dorei
+    Not robust to names containing "|" (lethal error):
+      GENE123: tRNA transferase|proline|s__Bacteroides_dorei
+    """
+    code = None
+    name = None
+    stratum = None
+    # extract stratum
     items = feature.split( c_strat_delim )
-    stratum = None if len( items ) == 1 else items[1]
-    items = items[0].split( c_name_delim )
-    name = None if len( items ) == 1 else items[1]
-    feature = items[0]
-    return feature, name, stratum
+    if len( items ) == 1:
+        # looks like an unstratified feature
+        code = items[0]
+    elif len( items ) == 2:
+        # stratified feature
+        code = items[0]
+        stratum = items[1]
+    else:
+        # possible names with "|"
+        sys.exit( "LETHAL ERROR: bad feature name: {}".format( f ) )
+    # extract name
+    items = code.split( c_name_delim )
+    if len( items ) == 1:
+        code = items[0]
+    elif len( items ) == 2:
+        code = items[0]
+        name = items[1]
+    elif len( items ) > 2:
+        # possible name containing ": "
+        code = items[0]
+        name = c_name_delim.join( items[1:] )
+    return code, name, stratum
 
 def fjoin( feature, name=None, stratum=None ):
     if name is not None:
@@ -371,3 +402,85 @@ def fsort( features ):
     default = 1 + max( c_topsort.values() )
     features = sorted( features, key=lambda f: c_topsort.get( fsplit( f )[0], default ) )
     return features
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# new code from the tools branch
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+
+def say( *args ):
+    print( " ".join( [str( k ) for k in args] ), file=sys.stderr )
+    
+def die( *args ):
+    args = ["LETHAL ERROR:"] + list( args )
+    say( *args )
+    sys.exit( "EXITED" )
+
+def attach_common_arguments( parser, no_output=False ):
+    parser.add_argument(
+        "-i", "--input",
+        default=None,
+        metavar="<path>",
+        help="HUMAnN table (.tsv or .biom format) [stdin]",
+        )
+    parser.add_argument(
+        "-l", "--last-metadata",
+        default=None,
+        metavar="<row>",
+        help="The name (header) of the last row containing metadata, if any [none]",
+        )
+    # some scripts have custom output
+    if not no_output:
+        parser.add_argument(
+            "-o", "--output",
+            default=None,
+            metavar="<path>",
+            help="Path for output table [stdout]",
+        )
+    return None
+
+def pretty_grid( items, cols=3, desc="Please select one of these options:" ):
+    padding = 2 + max( [len( k ) for k in items] )
+    counter = 0
+    desc += "\n"
+    desc += "-" * (len( desc ) - 1) + "\n"
+    for k in items:
+        desc += k.ljust( padding )
+        counter += 1
+        if counter == cols:
+            desc += "\n"
+            counter = 0
+    return desc
+
+def wrap( text, width=85 ):
+    # remove flanking whitespace
+    text = text.strip( )
+    lines = text.split( "\n" )
+    # title
+    rule = "=" * width
+    newlines = [rule, lines[0], rule, "\n"]
+    newline = ""
+    # description lines
+    for line in lines[2:]:
+        line = line.strip( )
+        if line == "":
+            newlines.append( newline )
+            newlines.append( "\n" )
+            newline = ""
+            continue
+        words = line.split( )
+        for word in words:
+            if len( word ) > width:
+                newlines.append( newline )
+                newlines.append( word )
+                newline = ""
+            elif len( newline + " " + word ) > width:
+                newlines.append( newline )
+                newline = word
+            else:
+                newline += (" " if newline != "" else "") + word
+    if len( newline ) > 0:
+        newlines.append( newline )
+    newlines += ["\n", rule]
+    return "\n".join( [k for k in newlines] )
