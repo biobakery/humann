@@ -1,6 +1,14 @@
 
 # HUMAnN History #
 
+## v3.0.0 (04-22-2021) ##
+
+* ChocoPhlAn updated to include an additional 600 pangenomes.
+* Updated to support the latest diamond version v0.+ (including default diamond install version plus databases).
+* Utility mapping databases have been expanded to include additional EC mappings.
+* Custom nucleotide database selection has been updated to only include pangenomes based on strict matching.
+* Updates to the barplot script including support for matplotlib v3. 
+
 ## v3.0.0.alpha.5 (02-02-2021) ##
 
 * Update pathways from v19 to Metacyc v24.
