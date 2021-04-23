@@ -316,3 +316,26 @@ class TestFunctionalHumannTools(unittest.TestCase):
 
         # remove the temp file
         utils.remove_temp_file(new_file)
+
+    def test_genefamilies_genus_level(self):
+        """
+        Test creating a genus level gene families table
+        """
+        
+        # create a temp file
+        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
+        
+        # run the command
+        utils.run_command([
+            "humann_genefamilies_genus_level",
+            "--input",
+            cfg.genefamilies_genus_level_input,
+            "--output",
+            new_file])
+        
+        # check the output file is as expected
+        # allow for varying precision in the calculations with almost equal
+        self.assertTrue(utils.files_almost_equal(new_file, cfg.genefamilies_genus_level_output))
+
+        # remove the temp file
+        utils.remove_temp_file(new_file)
