@@ -875,7 +875,7 @@ log level = DEBUG
 
 ### humann_barplot ###
 
-* **Basic usage:** `$ humann_barplot --input $TABLE.tsv --feature $FEATURE --outfile $FIGURE`
+* **Basic usage:** `$ humann_barplot --input $TABLE.tsv --focal-feature $FEATURE --outfile $FIGURE`
 * `$TABLE.tsv` = a stratified HUMAnN 3.0 output file
 * `$FEATURE` = Feature from the table to plot (defaults to first feature)
 * `$FIGURE` = Where to save the figure
