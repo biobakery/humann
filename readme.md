@@ -1227,7 +1227,7 @@ An alterative to step 4, which will save computing time, is to first run a singl
 
 A custom taxonomic profile can be created to specify the taxa included in your samples. This file is used by HUMAnN 3.0 to create the custom ChocoPhlAn database for your samples.
 
-The custom taxonomic profile must be in a tab-demilited format and contain two columns (taxon and percent abundance). An example follows:
+The custom taxonomic profile must be in a tab-demilited format and contain two columns (taxon, with both genus and species, and percent abundance). An example follows:
 ```
 g__Bacteroides|s__Bacteroides_thetaiotaomicron	12.16326
 g__Bacteroides|s__Bacteroides_cellulosilyticus	12.02768
