@@ -180,7 +180,7 @@ def main():
     if args.available or not args.download:
         # print the available databases
         current_config_items=config.read_user_edit_config_file()
-        print("HUMANnN2 Databases ( database : build = location )")
+        print("HUMAnN Databases ( database : build = location )")
         for database in current_downloads:
             for build, location in current_downloads[database].items():
                 print(database+" : "+build+" = "+location)
