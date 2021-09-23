@@ -52,7 +52,7 @@ c_sort_help = """Sample sorting methods (can use more than one; will evaluate in
 none         : Maintains sample order from input file [default]
 sum          : Sort on decreasing sum of stratified values
 dominant     : Sort on samples' greatest taxon stratification
-brawcurtis   : Sort on by Bray-Curtis agreement of taxon stratifications, unweighted
+braycurtis   : Sort on Bray-Curtis agreement of taxon stratifications, unweighted
 braycurtis_w : Sort on Bray-Curtis agreement of taxon stratifications, abundance-weighted
 metadata     : Sort on specified metadata label
 file         : Apply sorting order read in from a file
@@ -702,7 +702,7 @@ def main( ):
 
     # define the legend
     L = BarplotLegend( anno_ax, cols=args.legend_cols, rows=args.legend_rows )
-    L.group( "Contributions (linear scaling within total bar height):" )
+    L.group( "Stratified contributions:" )
     for i in range( len( T.rowheads ) ):
         i = -(i+1)
         value = T.rowheads[i]
