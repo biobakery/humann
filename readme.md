@@ -13,8 +13,17 @@ HUMAnN 3.0 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Netw
 
 **If you use HUMAnN 3.0 in your work, please cite the HUMAnN 3.0 paper:**
 
-TBD
+Francesco Beghini<sup>1</sup> ,Lauren J McIver<sup>2</sup> ,Aitor Blanco-Mìguez<sup>1</sup> ,Leonard Dubois<sup>1</sup> ,Francesco Asnicar<sup>1</sup> ,Sagun Maharjan<sup>2,3</sup> ,Ana Mailyan<sup>2,3</sup> ,Andrew Maltez Thomas<sup>1</sup> ,Paolo Manghi<sup>1</sup> ,Mireia Valles-Colomer<sup>1</sup> ,George Weingart<sup>2,3</sup> ,Yancong Zhang<sup>2,3</sup> ,Moreno Zolfo<sup>1</sup> ,Curtis Huttenhower<sup>2,3</sup> ,Eric A Franzosa<sup>2,3</sup> ,Nicola Segata<sup>1,4</sup>
 
+[Integrating taxonomic, functional, and strain-level profiling of diverse microbial communities with bioBakery 3](https://doi.org/10.7554/eLife.65088)
+
+[eLife 2021;10:e65088](https://doi.org/10.7554/eLife.65088)
+```
+1 Department CIBIO, University of Trento, Italy
+2 Harvard T. H. Chan School of Public Health, Boston, MA, USA
+3 The Broad Institute of MIT and Harvard, Cambridge, MA, USA
+4 IEO, European Institute of Oncology IRCCS, Milan, Italy
+```
 **And feel free to link to HUMAnN 3.0 in your Methods:**
 
 [http://huttenhower.sph.harvard.edu/humann](http://huttenhower.sph.harvard.edu/humann)
