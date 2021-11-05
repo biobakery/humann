@@ -1,6 +1,13 @@
 
 # HUMAnN History #
 
+## v3.0.1 (TBD) ##
+
+* Update default to point to MetaCyc v24 pathways database.
+* Reduce the length of the legend and fix two typos in humann_barplot script.
+* Fix humann case and version in humann_databases script stdout.
+* Update humann_barplot options in readme.
+
 ## v3.0.0 (04-22-2021) ##
 
 * ChocoPhlAn updated to include an additional 600 pangenomes.
