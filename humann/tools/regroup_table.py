@@ -175,7 +175,7 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
             for j in range( len( table.colheads ) ):
                 try:
                     newrow[j].append( float( table.data[i][j] ) )
-                except IndexError:
+                except ( IndexError, ValueError ):
                     print("WARNING: Unexpected truncated input file")
         # collapse groups
         newrow = [function( block ) for block in newrow]
