@@ -173,7 +173,10 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
         newrow = [[] for j in range( len( table.colheads ) )]
         for i in oldrow_index:
             for j in range( len( table.colheads ) ):
-                newrow[j].append( float( table.data[i][j] ) )
+                try:
+                    newrow[j].append( float( table.data[i][j] ) )
+                except IndexError:
+                    print("WARNING: Unexpected truncated input file")
         # collapse groups
         newrow = [function( block ) for block in newrow]
         if precision is not None:
