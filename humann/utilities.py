@@ -427,7 +427,12 @@ def check_software_version(exe,version,warning=False):
         version_string=version_line_split[version["column"]]
         current_version=version_string.replace("v","").replace(":","").split(".")
         current_major_version=int(current_version[0])
-        current_minor_version=int(current_version[1])
+        if current_version[1].isdecimal():
+            current_minor_version=int(current_version[1])
+        elif len(current_version)> 2:
+            current_minor_version=int(current_version[2])
+        else:
+            current_minor_version=int(current_version[1])
         if "second minor" in version:
             current_second_minor_version=int(current_version[2])
         current_version=str(current_major_version)+"."+str(current_minor_version)

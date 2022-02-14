@@ -84,7 +84,7 @@ def create_custom_database(chocophlan_dir, bug_file):
         version_found = False
         while line:
 
-            if line.startswith("#") and config.metaphlan_3p0_db_version in line:
+            if line.startswith("#") and (config.metaphlan_3p0_db_version in line or config.metaphlan_4p0_db_version in line):
                 version_found = True
 
             # if we see taxon-level we are done processing
@@ -101,7 +101,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                     else:
                         read_percent=float(data[-2])
                 except ValueError:
-                    message="The MetaPhlAn2 taxonomic profile provided was not generated with the expected database version. Please update your version of MetaPhlAn2 to v3.0."
+                    message="The MetaPhlAn taxonomic profile provided was not generated with the expected database version. Please update your version of MetaPhlAn to at least v3.0."
                     logger.error(message)
                     sys.exit("\n\nERROR: "+message)
                     
@@ -127,8 +127,8 @@ def create_custom_database(chocophlan_dir, bug_file):
             line = file_handle.readline()
    
         if not version_found:
-            message="The MetaPhlAn2 taxonomic profile provided was not generated with the database version "+\
-                config.metaphlan_3p0_db_version+" . Please update your version of MetaPhlAn2 to v3.0."
+            message="The MetaPhlAn taxonomic profile provided was not generated with the database version "+\
+                config.metaphlan_3p0_db_version+" or "+metaphlan_4p0_db_version+" . Please update your version of MetaPhlAn to at least v3.0."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
