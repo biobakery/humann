@@ -1602,6 +1602,9 @@ optional arguments:
                         [DEFAULT: output is stratified]
 ```
 ----
+## Contributions ##
+Thanks go to these wonderful people:
+	
 ## Support ##
  Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
  
