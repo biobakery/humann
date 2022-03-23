@@ -645,9 +645,11 @@ r940	gi|423245752|ref|NZ_JH724135.1|:381614-382081|357276|g__Bacteroides.s__Bact
     * Column 2: Reference sequence name
     * Column 3: Percent identity
     * Column 4: Alignment length
-    * Column 5-10: Empty column
-    * Column 11: E-value
-    * Column 12: Empty column
+    * Column 5-7: Empty or always 0 column
+    * Column 8: Alignment length - 1
+    * Column 9: Subject start index
+    * Column 10: Subject end index
+    * Column 11-12: Empty or always 0 column
 
 ----	
 	
