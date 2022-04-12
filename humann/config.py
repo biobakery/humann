@@ -361,8 +361,8 @@ metaphlan_version={
     "minor" : 0,
     "line" : -1,
     "column" : 2}
-metaphlan_3p0_db_version="v30"
-metaphlan_3p0_db_matching_uniref="201901b"
+metaphlan_3p0_db_version="v3"
+metaphlan_3p0_db_matching_uniref="v201901_v31"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
