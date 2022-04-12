@@ -1,6 +1,12 @@
 
 # HUMAnN History #
 
+## v3.1.0 (TBD) ##
+
+* Update to sync with the latest MetaPhlAn database (v3.1).
+  - Detection of MetaPhlAn v3+ versions.
+  - ChocoPhlAn updated to include latest pangenomes.
+
 ## v3.0.1 (11-18-2021) ##
 
 * Update default to point to MetaCyc v24 pathways database.
