@@ -343,6 +343,8 @@ Download a translated search database providing $INSTALL_LOCATION as the locatio
    
 **NOTE:** The humann config file will be updated to point to this location for the default uniref database. If you move this database, please use the `humann_config` command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the `--protein-database <uniref>` option to humann.
 
+**Note:** Please make sure that all the databases in the directory are of same version. Different versions of database must be separated in different directory. 
+
 **NOTE:** By default HUMAnN 3.0 runs DIAMOND for translated alignment. If you would like to use RAPSearch2 for translated alignment, first download the RAPSearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
 
 ----
@@ -1275,6 +1277,7 @@ Please see the [Custom reference database annotations](#markdown-header-custom-r
 
 To run HUMAnN 3.0 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN 3.0 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN 3.0, add the option "--bypass-nucleotide-search".  
 
+**Note:** Please make sure that all the databases in the directory are of same version. Different versions of database must be separated in different directory. 
 ----
 
 ### Custom reference database annotations ###
