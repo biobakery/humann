@@ -1277,7 +1277,8 @@ Please see the [Custom reference database annotations](#markdown-header-custom-r
 
 To run HUMAnN 3.0 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN 3.0 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN 3.0, add the option "--bypass-nucleotide-search".  
 
-**Note:** Please make sure that all the databases in the directory are of same version. Different versions of database must be separated in different directory. 
+**Note:** HUMAnN can work with a protein database that's been split into chunks for computational efficiency (mapping the reads to them serially). Therefore HUMAnN models a protein database as a folder with one or more database chunks in it (derived from the same input set of protein sequences). If you mix unrelated chunks in the same folder HUMAnN will (correctly) complain at you. Hence if you want to have two separate DBs, even if each is only represented by a single chunk, they should be in separate folders.
+
 ----
 
 ### Custom reference database annotations ###
