@@ -88,11 +88,11 @@ def create_custom_database(chocophlan_dir, bug_file):
                 version_found = True
 
             # if we see taxon-level we are done processing
-            if re.search("t__", line):
+            elif re.search("t__", line):
                 break
  
             # search for the lines that have the species-level information
-            if re.search("s__", line):
+            elif re.search("s__", line):
                 # check threshold
                 try:
                     data=line.split("\t")
