@@ -608,7 +608,7 @@ setuptools.setup(
         "members. More generally, functional profiling answers the question: What " + \
         "are the microbes in my community-of-interest doing (or capable of doing)?",
     url="http://huttenhower.sph.harvard.edu/humann",
-    keywords=['microbial','microbiome','bioinformatics','microbiology','metagenomic','metatranscriptomic','humann','humann'],
+    keywords=['microbial','microbiome','bioinformatics','microbiology','metagenomic','metatranscriptomic','humann'],
     platforms=['Linux','MacOS'],
     classifiers=[
         "Programming Language :: Python",
