@@ -181,7 +181,10 @@ def space_in_identifier(file):
     
     space_found = False
     try:
-        file_handle = open(file, "rt")
+        if file.endswith(".gz"):
+            file_handle = gzip.open(file, "rt")
+        else:
+            file_handle = open(file, "rt")
         line = file_handle.readline()
         if " " in line:
             space_found = True
@@ -800,7 +803,10 @@ def fasta_or_fastq(file):
     file_exists_readable(file)
 	
     # read in first 2 lines of file to check format
-    file_handle = open(file, "rt")
+    if file.endswith(".gz"):
+        file_handle = gzip.open(file, "rt")
+    else:
+        file_handle = open(file, "rt")
 	
     first_line = file_handle.readline()
     second_line = file_handle.readline()
@@ -809,10 +815,10 @@ def fasta_or_fastq(file):
     if re.search("^[A-Z|a-z]+$", second_line):
         # check first line to determine fasta or fastq format
         if re.search("^@",first_line):
-            format="fastq"		
-        if re.search("^>",first_line):
+            format="fastq"
+        elif re.search("^>",first_line):
             format="fasta"
-			
+
     file_handle.close()
 
     return format
@@ -822,7 +828,10 @@ def count_reads(file):
     Count the total number of reads in a file
     """
 
-    file_handle_read=open(file,"rt")
+    if file.endswith(".gz"):
+        file_handle_read=gzip.open(file, "rt")
+    else:
+        file_handle_read=open(file,"rt")
 
     line=file_handle_read.readline()
 
@@ -957,8 +966,11 @@ def fastq_to_fasta(file, apply_pick_frames=None, length_annotation=None):
 	
     # check file exists
     file_exists_readable(file)
-	
-    file_handle_read = open(file, "rt")
+    
+    if file.endswith(".gz"):
+        file_handle_read = gzip.open(file, "rt")
+    else:
+        file_handle_read = open(file, "rt")
 	
     line = file_handle_read.readline()
 	
@@ -1016,7 +1028,10 @@ def pick_frames_from_fasta(file, length_annotation=None):
     # check file exists
     file_exists_readable(file)
     
-    file_handle_read = open(file, "rt")
+    if file.endswith(".gz"):
+        file_handle_read = gzip.open(file, "rt")
+    else:
+        file_handle_read = open(file, "rt")
     
     line = file_handle_read.readline()
     
@@ -1064,7 +1079,10 @@ def length_annotate_fasta(file):
     # check file exists
     file_exists_readable(file)
     
-    file_handle_read = open(file, "rt")
+    if file.endswith(".gz"):
+        file_handle_read = gzip.open(file, "rt")
+    else:
+        file_handle_read = open(file, "rt")
     
     line = file_handle_read.readline()
     

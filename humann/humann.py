@@ -545,19 +545,20 @@ def update_configuration(args):
             config.output_format)
 
     # set the location of the temp directory
-    if not args.remove_temp_output:
-        config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann_temp")
-        if not os.path.isdir(config.temp_dir):
-            try:
-                os.mkdir(config.temp_dir)
-            except EnvironmentError:
-                sys.exit("Unable to create temp directory: " + config.temp_dir)
-    else:
-        config.temp_dir=tempfile.mkdtemp( 
-            prefix=config.file_basename+'_humann_temp_',dir=output_dir)
-        
+    config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann_temp")
+    if not os.path.isdir(config.temp_dir):
+        try:
+            os.mkdir(config.temp_dir)
+        except EnvironmentError:
+            sys.exit("Unable to create temp directory: " + config.temp_dir)
+ 
     # create the unnamed temp directory
-    config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
+    config.unnamed_temp_dir=os.path.join(config.temp_dir, "temp")
+    if not os.path.isdir(config.unnamed_temp_dir):
+        try:
+            os.mkdir(config.unnamed_temp_dir)
+        except EnvironmentError:
+            sys.exit("Unable to create temp directory: " + config.unnamed_temp_dir)
 
     # set the name of the log file 
     log_file=os.path.join(config.temp_dir,config.file_basename+".log")
@@ -631,46 +632,46 @@ def check_requirements(args):
     config.input_format = args.input_format
         
     # If the input file is compressed, then decompress
-    if args.input_format.endswith(".gz"):
-        new_file=utilities.gunzip_file(args.input)
-        
-        if new_file:
-            args.input=new_file
-            args.input_format=args.input_format.split(".")[0]
-        else:
-            sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
-                " Please check the format of the input file.")
+    #if args.input_format.endswith(".gz"):
+    #    new_file=utilities.gunzip_file(args.input)
+    #    
+    #    if new_file:
+    #        args.input=new_file
+    #        args.input_format=args.input_format.split(".")[0]
+    #    else:
+    #        sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
+    #            " Please check the format of the input file.")
             
     # check if the input file has sequence identifiers of the new illumina casava v1.8+ format
     # these have spaces causing the paired end reads to have the same identifier after
     # delimiting by space (causing bowtie2/diamond to label the reads with the same identifier)
-    if args.input_format in ["fasta","fastq"]:
-        if utilities.space_in_identifier(args.input):
-            message="Removing spaces from identifiers in input file"
-            print(message+" ...\n")
-            logger.info(message)
-            new_file = utilities.remove_spaces_from_file(args.input)
-            
-            if new_file:
-                args.input=new_file
-            else:
-                sys.exit("CRITICAL ERROR: Unable to remove spaces from identifiers in input file.")
+    #if args.input_format in ["fasta","fastq", "fasta.gz", "fastq.gz"]:
+    #    if utilities.space_in_identifier(args.input):
+    #        message="Removing spaces from identifiers in input file"
+    #        print(message+" ...\n")
+    #        logger.info(message)
+    #        new_file = utilities.remove_spaces_from_file(args.input)
+    #        
+    #        if new_file:
+    #            args.input=new_file
+    #        else:
+    #            sys.exit("CRITICAL ERROR: Unable to remove spaces from identifiers in input file.")
             
     # If the input format is in binary then convert to sam (tab-delimited text)
-    if args.input_format == "bam":
+    #if args.input_format == "bam":
         
-        # Check for the samtools software
-        if not utilities.find_exe_in_path("samtools"):
-            sys.exit("CRITICAL ERROR: The samtools executable can not be found. "
-            "Please check the install or select another input format.")
+    #    # Check for the samtools software
+    #    if not utilities.find_exe_in_path("samtools"):
+    #        sys.exit("CRITICAL ERROR: The samtools executable can not be found. "
+    #        "Please check the install or select another input format.")
         
-        new_file=utilities.bam_to_sam(args.input)
+    #    new_file=utilities.bam_to_sam(args.input)
         
-        if new_file:
-            args.input=new_file
-            args.input_format="sam"
-        else:
-            sys.exit("CRITICAL ERROR: Unable to convert bam input file to sam.")
+    #    if new_file:
+    #        args.input=new_file
+    #        args.input_format="sam"
+    #    else:
+    #        sys.exit("CRITICAL ERROR: Unable to convert bam input file to sam.")
 
     # If the input format is in biom then convert to tsv
     if args.input_format == "biom":
@@ -702,7 +703,7 @@ def check_requirements(args):
                 " This software is required since the output file is a biom file.")
      
     # If the file is fasta/fastq check for requirements   
-    if args.input_format in ["fasta","fastq"]:
+    if args.input_format in ["fasta","fastq", "fasta.gz", "fastq.gz"]:
         # Check that the chocophlan directory exists
         if not config.bypass_nucleotide_index:
             if not os.path.isdir(config.nucleotide_database):
@@ -959,7 +960,7 @@ def main():
     start_time=time.time()
 
     # Process fasta or fastq input files
-    if args.input_format in ["fasta","fastq"]:
+    if args.input_format in ["fasta","fastq", "fastq.gz", "fasta.gz"]:
         # Run prescreen to identify bugs
         bug_file = "Empty"
         if args.taxonomic_profile:
@@ -987,6 +988,10 @@ def main():
                 
             nucleotide_alignment_file = nucleotide.alignment(args.input, 
                 nucleotide_index_file)
+
+            # remove file early
+            if args.remove_temp_output and not config.bypass_nucleotide_index:
+                subprocess.run(f"rm -rf {nucleotide_index_file}*", shell=True)
     
             start_time=timestamp_message("nucleotide alignment",start_time)
     
@@ -994,6 +999,11 @@ def main():
             # Remove the alignment_file as we only need the reduced aligned reads file
             [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide.unaligned_reads(
                 nucleotide_alignment_file, alignments, unaligned_reads_store, keep_sam=True)
+
+            # remove file early
+            if not config.resume and args.remove_temp_output:
+                utilities.remove_file(nucleotide_alignment_file)
+                utilities.remove_file(reduced_aligned_reads_file)
             
             start_time=timestamp_message("nucleotide alignment post-processing",start_time)
     
@@ -1027,13 +1037,18 @@ def main():
             if unaligned_reads_store.count_reads()>0:
                 translated_alignment_file = translated.alignment(config.protein_database, 
                     unaligned_reads_file_fasta)
-        
+
                 start_time=timestamp_message("translated alignment",start_time)
         
                 # Determine which reads are unaligned
-                translated_unaligned_reads_file_fastq = translated.unaligned_reads(
+                translated_unaligned_reads_file_fasta = translated.unaligned_reads(
                     unaligned_reads_store, translated_alignment_file, alignments)
-                
+
+                if not config.resume and args.remove_temp_output:
+                    utilities.remove_file(translated_unaligned_reads_file_fasta)
+                    utilities.remove_file(translated_alignment_file)
+                    utilities.remove_file(unaligned_reads_file_fasta)
+ 
                 start_time=timestamp_message("translated alignment post-processing",start_time)
         
                 # Print out total alignments per bug
@@ -1073,7 +1088,12 @@ def main():
             
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             args.input, alignments, unaligned_reads_store, keep_sam=True)
-        
+
+        # remove file early
+        if not config.resume and args.remove_temp_output:
+            utilities.remove_file(unaligned_reads_file_fasta)
+            utilities.remove_file(reduced_aligned_reads_file)
+ 
         start_time=timestamp_message("alignment post-processing",start_time)
             
     # Process input files of tab-delimited blast format
@@ -1084,9 +1104,12 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        translated_unaligned_reads_file_fastq = translated.unaligned_reads(
+        translated_unaligned_reads_file_fasta = translated.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
-        
+
+        if not config.resume and args.remove_temp_output:
+            utilities.remove_file(translated_unaligned_reads_file_fasta)
+ 
         start_time=timestamp_message("alignment post-processing",start_time)
         
     # Get the number of remaining unaligned reads
@@ -1097,7 +1120,7 @@ def main():
         
     # Compute or load in gene families
     output_files=[]
-    if args.input_format in ["fasta","fastq","sam","blastm8"]:
+    if args.input_format in ["fasta","fastq","fasta.gz", "fastq.gz","sam","blastm8"]:
         # Compute the gene families
         message="Computing gene families ..."
         logger.info(message)
@@ -1148,6 +1171,5 @@ def main():
     utilities.remove_directory(config.unnamed_temp_dir)
 
     # Remove named temp directory
-    if args.remove_temp_output:
+    if not config.resume and args.remove_temp_output:
         utilities.remove_directory(config.temp_dir)
-        
