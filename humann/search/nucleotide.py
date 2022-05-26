@@ -88,6 +88,8 @@ def index(custom_database):
   
     exe="bowtie2-build"
     opts=config.bowtie2_build_opts
+    if config.threads > 1:
+        opts += ["--threads", str(config.threads)]
 
     args=["-f",custom_database,index_name]
 
