@@ -181,7 +181,10 @@ def space_in_identifier(file):
     
     space_found = False
     try:
-        file_handle = open(file, "rt")
+        if file.endswith(".gz"):
+            file_handle = gzip.open(file, "rt")
+        else:
+            file_handle = open(file, "rt")
         line = file_handle.readline()
         if " " in line:
             space_found = True
@@ -800,7 +803,10 @@ def fasta_or_fastq(file):
     file_exists_readable(file)
 	
     # read in first 2 lines of file to check format
-    file_handle = open(file, "rt")
+    if file.endswith(".gz"):
+        file_handle = gzip.open(file, "rt")
+    else:
+        file_handle = open(file, "rt")
 	
     first_line = file_handle.readline()
     second_line = file_handle.readline()
