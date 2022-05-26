@@ -24,6 +24,7 @@ THE SOFTWARE.
 """
 
 import os
+import sys
 import re
 import numbers
 import logging
@@ -216,7 +217,7 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
 
 def alignment(uniref, unaligned_reads_file):
     """
-    Run rapsearch2 or usearch for alignment
+    Run diamond or rapsearch2 or usearch for alignment
     """
 
     alignment_file = utilities.name_temp_file( 
@@ -237,19 +238,22 @@ def alignment(uniref, unaligned_reads_file):
             input_fasta=utilities.fastq_to_fasta(unaligned_reads_file, length_annotation=True)
         # set the file as a temp to be removed later
         temp_file=input_fasta
-    elif unaligned_reads_file_format == "fasta" and config.bypass_nucleotide_search:
-        if config.pick_frames_toggle == "on":
-            # Process the fasta file to pick frames
-            logger.debug("Applying pick frames")
-            input_fasta=utilities.pick_frames_from_fasta(unaligned_reads_file, length_annotation=True)
-            # set the file as a temp to be removed later
-            temp_file=input_fasta
+    elif unaligned_reads_file_format == "fasta":
+        if config.bypass_nucleotide_search:
+            if config.pick_frames_toggle == "on":
+                # Process the fasta file to pick frames
+                logger.debug("Applying pick frames")
+                input_fasta=utilities.pick_frames_from_fasta(unaligned_reads_file, length_annotation=True)
+                # set the file as a temp to be removed later
+                temp_file=input_fasta
+            else:
+                input_fasta=utilities.length_annotate_fasta(unaligned_reads_file)
+                # set the file as a temp to be removed later
+                temp_file=input_fasta
         else:
-            input_fasta=utilities.length_annotate_fasta(unaligned_reads_file)
-            # set the file as a temp to be removed later
-            temp_file=input_fasta
+            input_fasta=unaligned_reads_file
     else:
-        input_fasta=unaligned_reads_file
+        sys.exit("CRITICAL ERROR: The input file format is unknown")
 
     if config.translated_alignment_selected == "usearch":
         usearch_alignment(alignment_file, uniref, input_fasta)

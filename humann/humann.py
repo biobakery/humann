@@ -988,6 +988,10 @@ def main():
                 
             nucleotide_alignment_file = nucleotide.alignment(args.input, 
                 nucleotide_index_file)
+
+            # remove file early
+            if args.remove_temp_output and not config.bypass_nucleotide_index:
+                subprocess.run(f"rm -rf {nucleotide_index_file}*", shell=True)
     
             start_time=timestamp_message("nucleotide alignment",start_time)
     
@@ -995,6 +999,11 @@ def main():
             # Remove the alignment_file as we only need the reduced aligned reads file
             [ unaligned_reads_file_fasta, reduced_aligned_reads_file ] = nucleotide.unaligned_reads(
                 nucleotide_alignment_file, alignments, unaligned_reads_store, keep_sam=True)
+
+            # remove file early
+            if not config.resume and args.remove_temp_output:
+                utilities.remove_file(nucleotide_alignment_file)
+                utilities.remove_file(reduced_aligned_reads_file)
             
             start_time=timestamp_message("nucleotide alignment post-processing",start_time)
     
@@ -1028,12 +1037,19 @@ def main():
             if unaligned_reads_store.count_reads()>0:
                 translated_alignment_file = translated.alignment(config.protein_database, 
                     unaligned_reads_file_fasta)
+
+                if not config.resume and args.remove_temp_output:
+                    utilities.remove_file(unaligned_reads_file_fasta)
         
                 start_time=timestamp_message("translated alignment",start_time)
         
                 # Determine which reads are unaligned
-                translated_unaligned_reads_file_fastq = translated.unaligned_reads(
+                translated_unaligned_reads_file_fasta = translated.unaligned_reads(
                     unaligned_reads_store, translated_alignment_file, alignments)
+
+                if not config.resume and args.remove_temp_output:
+                    utilities.remove_file(translated_unaligned_reads_file_fasta)
+                    utilities.remove_file(translated_alignment_file)
                 
                 start_time=timestamp_message("translated alignment post-processing",start_time)
         
@@ -1074,7 +1090,12 @@ def main():
             
         [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
             args.input, alignments, unaligned_reads_store, keep_sam=True)
-        
+
+        # remove file early
+        if not config.resume and args.remove_temp_output:
+            utilities.remove_file(unaligned_reads_file_fasta)
+            utilities.remove_file(reduced_aligned_reads_file)
+ 
         start_time=timestamp_message("alignment post-processing",start_time)
             
     # Process input files of tab-delimited blast format
@@ -1085,9 +1106,12 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        translated_unaligned_reads_file_fastq = translated.unaligned_reads(
+        translated_unaligned_reads_file_fasta = translated.unaligned_reads(
             unaligned_reads_store, args.input, alignments)
-        
+
+        if not config.resume and args.remove_temp_output:
+            utilities.remove_file(translated_unaligned_reads_file_fasta)
+ 
         start_time=timestamp_message("alignment post-processing",start_time)
         
     # Get the number of remaining unaligned reads
@@ -1098,7 +1122,7 @@ def main():
         
     # Compute or load in gene families
     output_files=[]
-    if args.input_format in ["fasta","fastq","sam","blastm8"]:
+    if args.input_format in ["fasta","fastq","fasta.gz", "fastq.gz","sam","blastm8"]:
         # Compute the gene families
         message="Computing gene families ..."
         logger.info(message)
@@ -1149,6 +1173,5 @@ def main():
     utilities.remove_directory(config.unnamed_temp_dir)
 
     # Remove named temp directory
-    if args.remove_temp_output:
+    if not config.resume and args.remove_temp_output:
         utilities.remove_directory(config.temp_dir)
-        
