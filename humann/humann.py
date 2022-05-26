@@ -632,46 +632,46 @@ def check_requirements(args):
     config.input_format = args.input_format
         
     # If the input file is compressed, then decompress
-    if args.input_format.endswith(".gz"):
-        new_file=utilities.gunzip_file(args.input)
-        
-        if new_file:
-            args.input=new_file
-            args.input_format=args.input_format.split(".")[0]
-        else:
-            sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
-                " Please check the format of the input file.")
+    #if args.input_format.endswith(".gz"):
+    #    new_file=utilities.gunzip_file(args.input)
+    #    
+    #    if new_file:
+    #        args.input=new_file
+    #        args.input_format=args.input_format.split(".")[0]
+    #    else:
+    #        sys.exit("CRITICAL ERROR: Unable to use gzipped input file. " + 
+    #            " Please check the format of the input file.")
             
     # check if the input file has sequence identifiers of the new illumina casava v1.8+ format
     # these have spaces causing the paired end reads to have the same identifier after
     # delimiting by space (causing bowtie2/diamond to label the reads with the same identifier)
-    if args.input_format in ["fasta","fastq"]:
-        if utilities.space_in_identifier(args.input):
-            message="Removing spaces from identifiers in input file"
-            print(message+" ...\n")
-            logger.info(message)
-            new_file = utilities.remove_spaces_from_file(args.input)
-            
-            if new_file:
-                args.input=new_file
-            else:
-                sys.exit("CRITICAL ERROR: Unable to remove spaces from identifiers in input file.")
+    #if args.input_format in ["fasta","fastq", "fasta.gz", "fastq.gz"]:
+    #    if utilities.space_in_identifier(args.input):
+    #        message="Removing spaces from identifiers in input file"
+    #        print(message+" ...\n")
+    #        logger.info(message)
+    #        new_file = utilities.remove_spaces_from_file(args.input)
+    #        
+    #        if new_file:
+    #            args.input=new_file
+    #        else:
+    #            sys.exit("CRITICAL ERROR: Unable to remove spaces from identifiers in input file.")
             
     # If the input format is in binary then convert to sam (tab-delimited text)
-    if args.input_format == "bam":
+    #if args.input_format == "bam":
         
-        # Check for the samtools software
-        if not utilities.find_exe_in_path("samtools"):
-            sys.exit("CRITICAL ERROR: The samtools executable can not be found. "
-            "Please check the install or select another input format.")
+    #    # Check for the samtools software
+    #    if not utilities.find_exe_in_path("samtools"):
+    #        sys.exit("CRITICAL ERROR: The samtools executable can not be found. "
+    #        "Please check the install or select another input format.")
         
-        new_file=utilities.bam_to_sam(args.input)
+    #    new_file=utilities.bam_to_sam(args.input)
         
-        if new_file:
-            args.input=new_file
-            args.input_format="sam"
-        else:
-            sys.exit("CRITICAL ERROR: Unable to convert bam input file to sam.")
+    #    if new_file:
+    #        args.input=new_file
+    #        args.input_format="sam"
+    #    else:
+    #        sys.exit("CRITICAL ERROR: Unable to convert bam input file to sam.")
 
     # If the input format is in biom then convert to tsv
     if args.input_format == "biom":
@@ -703,7 +703,7 @@ def check_requirements(args):
                 " This software is required since the output file is a biom file.")
      
     # If the file is fasta/fastq check for requirements   
-    if args.input_format in ["fasta","fastq"]:
+    if args.input_format in ["fasta","fastq", "fasta.gz", "fastq.gz"]:
         # Check that the chocophlan directory exists
         if not config.bypass_nucleotide_index:
             if not os.path.isdir(config.nucleotide_database):
@@ -960,7 +960,7 @@ def main():
     start_time=time.time()
 
     # Process fasta or fastq input files
-    if args.input_format in ["fasta","fastq"]:
+    if args.input_format in ["fasta","fastq", "fastq.gz", "fasta.gz"]:
         # Run prescreen to identify bugs
         bug_file = "Empty"
         if args.taxonomic_profile:
