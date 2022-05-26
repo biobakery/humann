@@ -545,19 +545,20 @@ def update_configuration(args):
             config.output_format)
 
     # set the location of the temp directory
-    if not args.remove_temp_output:
-        config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann_temp")
-        if not os.path.isdir(config.temp_dir):
-            try:
-                os.mkdir(config.temp_dir)
-            except EnvironmentError:
-                sys.exit("Unable to create temp directory: " + config.temp_dir)
-    else:
-        config.temp_dir=tempfile.mkdtemp( 
-            prefix=config.file_basename+'_humann_temp_',dir=output_dir)
-        
+    config.temp_dir=os.path.join(output_dir,config.file_basename+"_humann_temp")
+    if not os.path.isdir(config.temp_dir):
+        try:
+            os.mkdir(config.temp_dir)
+        except EnvironmentError:
+            sys.exit("Unable to create temp directory: " + config.temp_dir)
+ 
     # create the unnamed temp directory
-    config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
+    config.unnamed_temp_dir=os.path.join(config.temp_dir, "temp")
+    if not os.path.isdir(config.unnamed_temp_dir):
+        try:
+            os.mkdir(config.unnamed_temp_dir)
+        except EnvironmentError:
+            sys.exit("Unable to create temp directory: " + config.unnamed_temp_dir)
 
     # set the name of the log file 
     log_file=os.path.join(config.temp_dir,config.file_basename+".log")
