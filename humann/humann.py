@@ -1038,9 +1038,6 @@ def main():
                 translated_alignment_file = translated.alignment(config.protein_database, 
                     unaligned_reads_file_fasta)
 
-                if not config.resume and args.remove_temp_output:
-                    utilities.remove_file(unaligned_reads_file_fasta)
-        
                 start_time=timestamp_message("translated alignment",start_time)
         
                 # Determine which reads are unaligned
@@ -1050,7 +1047,8 @@ def main():
                 if not config.resume and args.remove_temp_output:
                     utilities.remove_file(translated_unaligned_reads_file_fasta)
                     utilities.remove_file(translated_alignment_file)
-                
+                    utilities.remove_file(unaligned_reads_file_fasta)
+ 
                 start_time=timestamp_message("translated alignment post-processing",start_time)
         
                 # Print out total alignments per bug
