@@ -301,6 +301,9 @@ pathway_AND="+"
 pathway_OR=","
 pathway_reaction_optional="-"
 
+# sgb association file
+sgb_to_species_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","mpa_vJan21_CHOCOPhlAnSGB_202103.tsv"))
+
 # query annotation
 query_length_annotation_delimiter="|"
 

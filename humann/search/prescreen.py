@@ -64,6 +64,50 @@ def alignment(input):
     
     return bug_file
 
+def read_sgb_mapping_file():
+    """
+    Read in the file mapping SGB to species names
+    """
+
+    sgbs_to_species={}
+    with open(config.sgb_to_species_file) as file_handle:
+        header=file_handle.readline()
+
+        for line in file_handle:
+            data=line.rstrip().split("\t")
+            sgb="t__"+data[0]
+            species=["s__"+data[1]]
+
+            # add additional species if included
+            try:
+                species+=[ "s__"+name for name in filter(lambda x: x, data[3].split(","))]
+            except IndexError:
+                pass
+
+            if not sgb in sgbs_to_species:
+                sgbs_to_species[sgb]=species
+            else:
+                sgbs_to_species[sgb]+=species
+    return sgbs_to_species
+
+def get_abundance(line):
+    """
+    Read in the abundance value from the taxonomy file
+    """
+    try:
+        data=line.split("\t")
+        if data[-1].replace(".","").replace("e-","").isdigit():
+            read_percent=float(data[-1])
+        else:
+            read_percent=float(data[-2])
+    except ValueError:
+        message="The MetaPhlAn taxonomic profile provided was not generated with the expected database version. Please update your version of MetaPhlAn to at least v3.0."
+        logger.error(message)
+        sys.exit("\n\nERROR: "+message)
+
+    return read_percent
+                    
+
 def create_custom_database(chocophlan_dir, bug_file):
     """
     Using ChocoPhlAn creates a custom database based on the bug_file
@@ -74,11 +118,17 @@ def create_custom_database(chocophlan_dir, bug_file):
         config.chocophlan_custom_database_name)
     
     species_found = []
+    sgb_species_found = []
+    abundances = {}
+    sgb_abundances = {}
     total_reads_covered = 0
     if bug_file != "Empty":
         # Identify the species that pass the threshold
         utilities.file_exists_readable(bug_file)
         file_handle = open(bug_file, "rt")
+
+        # read in the sgb file
+        sgb_to_species=read_sgb_mapping_file()
 
         line = file_handle.readline()
         version_found = False
@@ -87,26 +137,36 @@ def create_custom_database(chocophlan_dir, bug_file):
             if line.startswith("#") and (config.metaphlan_v3_db_version in line or config.metaphlan_v4_db_version in line):
                 version_found = True
 
-            # if we see taxon-level we are done processing
-            if re.search("t__", line):
-                break
+            # if we see taxon-level, look for possible SGBs
+            if re.search("t__", line) and re.search("s__", line):
+                if "SGB" in line:
+                    # check threshold
+                    read_percent=get_abundance(line)
+                    
+                    if read_percent >= config.prescreen_threshold:
+                        organism_info=line.split("\t")[0]
+
+                        # get the species from the sgb mapping file
+                        sgb=organism_info.split("|")[-1]
+                        try:
+                            species=sgb_to_species[sgb]
+                        except KeyError:
+                            species=""
+                            logger.debug("Unable to process species: " + line)
+
+                        if species:
+                            sgb_abundances[sgb]=read_percent
+                            sgb_species_found+=species
+
+                else:
+                    break
  
             # search for the lines that have the species-level information
             if re.search("s__", line):
                 # check threshold
-                try:
-                    data=line.split("\t")
-                    if data[-1].replace(".","").replace("e-","").isdigit():
-                        read_percent=float(data[-1])
-                    else:
-                        read_percent=float(data[-2])
-                except ValueError:
-                    message="The MetaPhlAn taxonomic profile provided was not generated with the expected database version. Please update your version of MetaPhlAn to at least v3.0."
-                    logger.error(message)
-                    sys.exit("\n\nERROR: "+message)
+                read_percent=get_abundance(line)
                     
                 if read_percent >= config.prescreen_threshold:
-                    total_reads_covered += read_percent
                     organism_info=line.split("\t")[0]
                     # use the genus and species
                     try:
@@ -118,10 +178,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                         logger.debug("Unable to process species: " + line)
                         
                     if species and genus:
-                        message=("Found " + genus + "." + species + " : " +
-                            "{:.2f}".format(read_percent) + "% of mapped reads")
-                        logger.info(message)
-                        print(message)
+                        abundances[genus + "." + species]=read_percent
                         species_found.append(genus + "." + species)
 
             line = file_handle.readline()
@@ -132,6 +189,20 @@ def create_custom_database(chocophlan_dir, bug_file):
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
+    # if sgbs are provided, use those instead of species
+    if sgb_species_found:
+        species_found=sgb_species_found
+        for sgb in sgb_abundances:
+            total_reads_covered += sgb_abundances[sgb]
+            message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+",".join(sgb_to_species[sgb])+" )")
+            logger.info(message)
+            print(message)
+    else:
+        for species_genus in abundances:
+            total_reads_covered += abundances[species_genus]
+            message=("Found " + species_genus + " : " + "{:.2f}".format(abundances[species_genus]) + "% of mapped reads")
+            logger.info(message)
+            print(message)
 
     # compute total species found
     if not config.bypass_prescreen:
@@ -147,8 +218,9 @@ def create_custom_database(chocophlan_dir, bug_file):
         for species_file in os.listdir(chocophlan_dir):
             for species in species_found:
                 # match the exact genus and species from the MetaPhlAn (or custom) list
-                if re.search(species.lower()+"\.", species_file.lower()): 
-                    species_file_list.append(os.path.join(chocophlan_dir,species_file))
+                new_database_file=os.path.join(chocophlan_dir,species_file)
+                if re.search(species.lower()+"\.", species_file.lower()) and not new_database_file in species_file_list: 
+                    species_file_list.append(new_database_file)
                     logger.debug("Adding file to database: " + species_file)   
     else:
         for species_file in os.listdir(chocophlan_dir):
