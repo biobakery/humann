@@ -158,9 +158,6 @@ def create_custom_database(chocophlan_dir, bug_file):
                             sgb_abundances[sgb]=read_percent
                             sgb_species_found+=species
 
-                else:
-                    break
- 
             # search for the lines that have the species-level information
             if re.search("s__", line):
                 # check threshold
