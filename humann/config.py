@@ -363,6 +363,7 @@ metaphlan_version={
     "column" : 2}
 metaphlan_db_version="v3"
 metaphlan_db_matching_uniref="v201901_v31"
+matching_uniref="201901b"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
