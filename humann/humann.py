@@ -789,10 +789,10 @@ def check_requirements(args):
             database_files=os.listdir(config.protein_database)
             valid_format_database_files=[]
             for file in database_files:
-                if not config.metaphlan_v3_db_matching_uniref in file:
+                if not config.matching_uniref in file:
                     sys.exit("\n\nCRITICAL ERROR: The directory provided for the translated database contains files ( "+file+" )"+\
                         " that are not of the expected version. Please install the latest version"+\
-                        " of the database: "+config.metaphlan_v3_db_matching_uniref)
+                        " of the database: "+config.matching_uniref)
                 
                 if file.endswith(expected_database_extension):
                     # if rapsearch check for the second database file
