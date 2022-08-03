@@ -106,7 +106,25 @@ def get_abundance(line):
         sys.exit("\n\nERROR: "+message)
 
     return read_percent
-                    
+                   
+def get_species_name(line, sgb=False):
+    """
+    Parse the line for the genus.species name
+    """
+ 
+    offset=0
+    if sgb:
+        offset=-1
+
+    try:
+        species=line.split("|")[-1+offset]
+        genus=line.split("|")[-2+offset]
+        name=genus + "." + species
+    except IndexError:
+        name=""
+        logger.debug("Unable to process species: " + line)
+
+    return name                        
 
 def create_custom_database(chocophlan_dir, bug_file):
     """
@@ -139,24 +157,38 @@ def create_custom_database(chocophlan_dir, bug_file):
 
             # if we see taxon-level, look for possible SGBs
             if re.search("t__", line) and re.search("s__", line):
-                if "SGB" in line:
-                    # check threshold
-                    read_percent=get_abundance(line)
-                    
-                    if read_percent >= config.prescreen_threshold:
-                        organism_info=line.split("\t")[0]
+                # check threshold
+                read_percent=get_abundance(line)
 
-                        # get the species from the sgb mapping file
-                        sgb=organism_info.split("|")[-1]
-                        try:
-                            species=sgb_to_species[sgb]
-                        except KeyError:
-                            species=""
-                            logger.debug("Unable to process species: " + line)
+                if read_percent >= config.prescreen_threshold:
+                    organism_info=line.split("\t")[0]
 
-                        if species:
-                            sgb_abundances[sgb]=read_percent
-                            sgb_species_found+=species
+                    try:
+                        additional_species=list(filter(lambda x: "s__" in x,line.rstrip().split("\t")[-1].split(",")))
+                    except AttributeError:
+                        additional_species=[]
+
+
+                    # get the species from the sgb mapping file
+                    sgb=organism_info.split("|")[-1]
+                    species=[]
+                    try:
+                        species=sgb_to_species[sgb]
+                    except KeyError:
+                        species=[]
+                        logger.debug("Unable to process species: " + line)
+
+                    # also include the genus and species listed in the abundance file
+                    genus_species=get_species_name(organism_info, sgb=True)
+                    additional_taxa=list(filter(None,[get_species_name(info) for info in additional_species]))
+
+                    if species:
+                        sgb_abundances[sgb]=read_percent
+                        sgb_species_found+=species
+                    else:
+                        sgb_abundances[genus_species]=read_percent
+                    sgb_species_found+=[genus_species]
+                    sgb_species_found+=additional_taxa
 
             # search for the lines that have the species-level information
             if re.search("s__", line):
@@ -166,17 +198,11 @@ def create_custom_database(chocophlan_dir, bug_file):
                 if read_percent >= config.prescreen_threshold:
                     organism_info=line.split("\t")[0]
                     # use the genus and species
-                    try:
-                        species=organism_info.split("|")[-1]
-                        genus=organism_info.split("|")[-2]
-                    except IndexError:
-                        species=""
-                        genus=""
-                        logger.debug("Unable to process species: " + line)
+                    genus_species=get_species_name(organism_info)
                         
-                    if species and genus:
-                        abundances[genus + "." + species]=read_percent
-                        species_found.append(genus + "." + species)
+                    if genus_species:
+                        abundances[genus_species]=read_percent
+                        species_found.append(genus_species)
 
             line = file_handle.readline()
    
@@ -191,7 +217,11 @@ def create_custom_database(chocophlan_dir, bug_file):
         species_found=sgb_species_found
         for sgb in sgb_abundances:
             total_reads_covered += sgb_abundances[sgb]
-            message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+",".join(sgb_to_species[sgb])+" )")
+            if sgb in sgb_to_species:
+                message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+",".join(sgb_to_species[sgb])+" )")
+            else:
+                message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads")
+                
             logger.info(message)
             print(message)
     else:
