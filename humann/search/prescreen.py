@@ -139,6 +139,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     sgb_species_found = []
     abundances = {}
     sgb_abundances = {}
+    additional_species_found = {}
     total_reads_covered = 0
     if bug_file != "Empty":
         # Identify the species that pass the threshold
@@ -155,7 +156,7 @@ def create_custom_database(chocophlan_dir, bug_file):
             if line.startswith("#") and (config.metaphlan_v3_db_version in line or config.metaphlan_v4_db_version in line):
                 version_found = True
 
-            # if we see taxon-level, look for possible SGBs
+            # if we see strain-level, look for possible SGBs
             if re.search("t__", line) and re.search("s__", line):
                 # check threshold
                 read_percent=get_abundance(line)
@@ -176,7 +177,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                         species=sgb_to_species[sgb]
                     except KeyError:
                         species=[]
-                        logger.debug("Unable to process species: " + line)
+                        logger.debug("Taxon not in mapping file: " + line)
 
                     # also include the genus and species listed in the abundance file
                     genus_species=get_species_name(organism_info, sgb=True)
@@ -185,8 +186,10 @@ def create_custom_database(chocophlan_dir, bug_file):
                     if species:
                         sgb_abundances[sgb]=read_percent
                         sgb_species_found+=species
+                        additional_species_found[sgb]=additional_taxa
                     else:
                         sgb_abundances[genus_species]=read_percent
+                        additional_species_found[genus_species]=additional_taxa
                     sgb_species_found+=[genus_species]
                     sgb_species_found+=additional_taxa
 
@@ -217,10 +220,8 @@ def create_custom_database(chocophlan_dir, bug_file):
         species_found=sgb_species_found
         for sgb in sgb_abundances:
             total_reads_covered += sgb_abundances[sgb]
-            if sgb in sgb_to_species:
-                message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+",".join(sgb_to_species[sgb])+" )")
-            else:
-                message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads")
+            extra_species = sgb_to_species.get(sgb,[]) + additional_species_found[sgb]
+            message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+",".join(extra_species)+" )")
                 
             logger.info(message)
             print(message)
@@ -246,7 +247,7 @@ def create_custom_database(chocophlan_dir, bug_file):
             for species in species_found:
                 # match the exact genus and species from the MetaPhlAn (or custom) list
                 new_database_file=os.path.join(chocophlan_dir,species_file)
-                if re.search(species.lower()+"\.", species_file.lower()) and not new_database_file in species_file_list: 
+                if ( re.search(species.lower()+"\.", species_file.lower()) or re.search(species.lower()+"_group\.", species_file.lower()) ) and not new_database_file in species_file_list: 
                     species_file_list.append(new_database_file)
                     logger.debug("Adding file to database: " + species_file)   
     else:
