@@ -343,6 +343,8 @@ Download a translated search database providing $INSTALL_LOCATION as the locatio
    
 **NOTE:** The humann config file will be updated to point to this location for the default uniref database. If you move this database, please use the `humann_config` command to update the default location of this database. Alternatively you can always provide the location of the uniref database you would like to use with the `--protein-database <uniref>` option to humann.
 
+**Note:** Please make sure that all the databases in the directory are of same version. Different versions of database must be separated in different directory. 
+
 **NOTE:** By default HUMAnN 3.0 runs DIAMOND for translated alignment. If you would like to use RAPSearch2 for translated alignment, first download the RAPSearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
 
 ----
@@ -645,9 +647,11 @@ r940	gi|423245752|ref|NZ_JH724135.1|:381614-382081|357276|g__Bacteroides.s__Bact
     * Column 2: Reference sequence name
     * Column 3: Percent identity
     * Column 4: Alignment length
-    * Column 5-10: Empty column
-    * Column 11: E-value
-    * Column 12: Empty column
+    * Column 5-7: Empty or always 0 column
+    * Column 8: Alignment length - 1
+    * Column 9: Subject start index
+    * Column 10: Subject end index
+    * Column 11-12: Empty or always 0 column
 
 ----	
 	
@@ -1273,6 +1277,8 @@ Please see the [Custom reference database annotations](#markdown-header-custom-r
 
 To run HUMAnN 3.0 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN 3.0 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN 3.0, add the option "--bypass-nucleotide-search".  
 
+**Note:** HUMAnN can work with a protein database that's been split into chunks for computational efficiency (mapping the reads to them serially). Therefore HUMAnN models a protein database as a folder with one or more database chunks in it (derived from the same input set of protein sequences). If you mix unrelated chunks in the same folder HUMAnN will (correctly) complain at you. Hence if you want to have two separate DBs, even if each is only represented by a single chunk, they should be in separate folders.
+
 ----
 
 ### Custom reference database annotations ###
@@ -1602,6 +1608,9 @@ optional arguments:
                         [DEFAULT: output is stratified]
 ```
 ----
+## Contributions ##
+Thanks go to these wonderful people:
+	
 ## Support ##
  Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
  

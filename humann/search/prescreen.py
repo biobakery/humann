@@ -153,6 +153,7 @@ def create_custom_database(chocophlan_dir, bug_file):
         version_found = False
         while line:
 
+
             if line.startswith("#") and (config.metaphlan_v3_db_version in line or config.metaphlan_v4_db_version in line):
                 version_found = True
 

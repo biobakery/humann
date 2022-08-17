@@ -1,7 +1,11 @@
 
 # HUMAnN History #
 
-## v3.1.0 (TBD) ##
+## v3.1.1 (07-27-2022) ##
+
+* Small fix to config to check for protein database.
+
+## v3.1.0 (07-26-2022) ##
 
 * Update to sync with the latest MetaPhlAn database (v3.1).
   - Detection of MetaPhlAn v3+ versions.
