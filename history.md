@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.5 (08-22-2022) ##
+
+* Updated to run with MetaPhlAn v4.0 (includes mapping of SGBs to species plus uses additional species column).
+
 ## v3.1.1 (07-27-2022) ##
 
 * Small fix to config to check for protein database.
