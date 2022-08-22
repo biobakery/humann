@@ -67,9 +67,14 @@ def store_id_mapping(file):
                 reference=data[config.id_mapping_reference_index]
                 gene=data[config.id_mapping_gene_index]
                 length=data[config.id_mapping_gene_length_index]
-                bug=data[config.id_mapping_bug_index]  
             except IndexError:
                 logger.debug("Unable to read full mapping for id")
+
+            # allow for unclassified bugs by default
+            try:
+                bug=data[config.id_mapping_bug_index]  
+            except IndexError:
+                pass
                     
             try:
                 length=int(length)
