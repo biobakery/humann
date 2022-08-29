@@ -66,7 +66,7 @@ from .quantify import modules
 logger=logging.getLogger(__name__)
 
 
-VERSION="3.5"
+VERSION="4.0"
 
 MAX_SIZE_DEMO_INPUT_FILE=10
 
@@ -721,17 +721,17 @@ def check_requirements(args):
             valid_format_count=0
             for file in os.listdir(config.nucleotide_database):
                 # expect most of the file names to be of the format g__*s__*
-                if re.search("^[g__][s__]",file): 
+                if re.search("^SGB",file): 
                     valid_format_count+=1
 
-                if not config.metaphlan_v3_db_matching_uniref in file:
+                if not config.metaphlan_v4_db_matching_uniref in file:
                     sys.exit("\n\nCRITICAL ERROR: The directory provided for ChocoPhlAn contains files ( "+file+" )"+\
                         " that are not of the expected version. Please install the latest version"+\
-                        " of the database: "+config.metaphlan_v3_db_matching_uniref)
+                        " of the database: "+config.metaphlan_v4_db_matching_uniref)
 
             if valid_format_count == 0:
                 sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
-                    + "contain files of the expected format (ie \'^[g__][s__]\').")
+                    + "contain files of the expected format (ie \'^SGB\').")
                 
         # Check if running with the demo database
         if not config.bypass_nucleotide_index:

@@ -250,12 +250,19 @@ class Alignments:
             # identify bug and gene families
             length=0
             gene=reference
+
             try:
                 full_taxonomy=reference_info[config.chocophlan_bug_index]
-                # Limit to species/genera
-                bug_info=full_taxonomy.split(".")
-                bug=".".join([bug_info[config.chocophlan_bug_genera_index],bug_info[config.chocophlan_bug_species_index]])
+                # Limit to species/genera unless sgb
+                if full_taxonomy.startswith("SGB"):
+                    bug=full_taxonomy
+                else:
+                    bug_info=full_taxonomy.split(".")
+                    bug=".".join([bug_info[config.chocophlan_bug_genera_index],bug_info[config.chocophlan_bug_species_index]])
+            except (IndexError, ValueError):
+                bug="unclassified"
 
+            try:
                 # Join all genes selected
                 gene_set=[]
                 for index in config.chocophlan_gene_indexes:
@@ -265,7 +272,6 @@ class Alignments:
                 length=int(reference_info[config.chocophlan_length_index])
             except (IndexError, ValueError):
                 # try to find gene length if present
-                bug="unclassified"
                 # check for gene|gene_length|taxonomy
                 if (len(reference_info)==3 and re.search("^[0-9]+$",reference_info[1])
                     and not re.search("^[0-9]+$",reference_info[2])):
@@ -279,7 +285,7 @@ class Alignments:
                     elif re.search("^[0-9]+$",reference_info[0]):
                         length=int(reference_info[0])
                         gene=reference_info[1]
-                    
+
         return [gene,length,bug]
 
     def add_annotated(self, query, matches, annotated_reference, read_length=None):

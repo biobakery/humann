@@ -360,14 +360,13 @@ genefamilies_file="_genefamilies"
 metaphlan_opts=["-t","rel_ab"]
 metaphlan_version={
     "flag" : "--version",
-    "major" : 3,
+    "major" : 4,
     "minor" : 0,
     "line" : -1,
     "column" : 2}
 
-metaphlan_v3_db_version="v3"
 metaphlan_v4_db_version="vJan21"
-metaphlan_v3_db_matching_uniref="v201901_v31"
+metaphlan_v4_db_matching_uniref="SGB"
 
 matching_uniref="201901b"
 

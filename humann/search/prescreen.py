@@ -64,32 +64,6 @@ def alignment(input):
     
     return bug_file
 
-def read_sgb_mapping_file():
-    """
-    Read in the file mapping SGB to species names
-    """
-
-    sgbs_to_species={}
-    with open(config.sgb_to_species_file) as file_handle:
-        header=file_handle.readline()
-
-        for line in file_handle:
-            data=line.rstrip().split("\t")
-            sgb="t__"+data[0]
-            species=["s__"+data[1]]
-
-            # add additional species if included
-            try:
-                species+=[ "s__"+name for name in filter(lambda x: x, data[3].split(","))]
-            except IndexError:
-                pass
-
-            if not sgb in sgbs_to_species:
-                sgbs_to_species[sgb]=species
-            else:
-                sgbs_to_species[sgb]+=species
-    return sgbs_to_species
-
 def get_abundance(line):
     """
     Read in the abundance value from the taxonomy file
@@ -135,29 +109,24 @@ def create_custom_database(chocophlan_dir, bug_file):
     custom_database = utilities.name_temp_file( 
         config.chocophlan_custom_database_name)
     
-    species_found = []
     sgb_species_found = []
-    abundances = {}
     sgb_abundances = {}
-    additional_species_found = {}
+    species_found = {}
     total_reads_covered = 0
     if bug_file != "Empty":
         # Identify the species that pass the threshold
         utilities.file_exists_readable(bug_file)
         file_handle = open(bug_file, "rt")
 
-        # read in the sgb file
-        sgb_to_species=read_sgb_mapping_file()
-
         line = file_handle.readline()
         version_found = False
         while line:
 
 
-            if line.startswith("#") and (config.metaphlan_v3_db_version in line or config.metaphlan_v4_db_version in line):
+            if line.startswith("#") and config.metaphlan_v4_db_version in line:
                 version_found = True
 
-            # if we see strain-level, look for possible SGBs
+            # look for SGBs
             if re.search("t__", line) and re.search("s__", line):
                 # check threshold
                 read_percent=get_abundance(line)
@@ -165,77 +134,33 @@ def create_custom_database(chocophlan_dir, bug_file):
                 if read_percent >= config.prescreen_threshold:
                     organism_info=line.split("\t")[0]
 
-                    try:
-                        additional_species=list(filter(lambda x: "s__" in x,line.rstrip().split("\t")[-1].split(",")))
-                    except AttributeError:
-                        additional_species=[]
-
-
-                    # get the species from the sgb mapping file
-                    sgb=organism_info.split("|")[-1]
-                    species=[]
-                    try:
-                        species=sgb_to_species[sgb]
-                    except KeyError:
-                        species=[]
-                        logger.debug("Taxon not in mapping file: " + line)
-
                     # also include the genus and species listed in the abundance file
+                    sgb=organism_info.split("|")[-1].split("__")[-1]
                     genus_species=get_species_name(organism_info, sgb=True)
-                    additional_taxa=list(filter(None,[get_species_name(info) for info in additional_species]))
 
-                    if species:
-                        sgb_abundances[sgb]=read_percent
-                        sgb_species_found+=species
-                        additional_species_found[sgb]=additional_taxa
-                    else:
-                        sgb_abundances[genus_species]=read_percent
-                        additional_species_found[genus_species]=additional_taxa
-                    sgb_species_found+=[genus_species]
-                    sgb_species_found+=additional_taxa
-
-            # search for the lines that have the species-level information
-            if re.search("s__", line):
-                # check threshold
-                read_percent=get_abundance(line)
-                    
-                if read_percent >= config.prescreen_threshold:
-                    organism_info=line.split("\t")[0]
-                    # use the genus and species
-                    genus_species=get_species_name(organism_info)
-                        
-                    if genus_species:
-                        abundances[genus_species]=read_percent
-                        species_found.append(genus_species)
+                    sgb_abundances[sgb]=read_percent
+                    species_found[sgb]=sgb
+                    sgb_species_found+=[sgb]
 
             line = file_handle.readline()
    
         if not version_found:
             message="The MetaPhlAn taxonomic profile provided was not generated with the database version "+\
-                config.metaphlan_v3_db_version+" or "+metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v3.0."
+                +metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v4.0."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
     # if sgbs are provided, use those instead of species
-    if sgb_species_found:
-        species_found=sgb_species_found
-        for sgb in sgb_abundances:
-            total_reads_covered += sgb_abundances[sgb]
-            extra_species = sgb_to_species.get(sgb,[]) + additional_species_found[sgb]
-            message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+",".join(extra_species)+" )")
+    for sgb in sgb_abundances:
+        total_reads_covered += sgb_abundances[sgb]
+        message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+species_found[sgb]+" )")
                 
-            logger.info(message)
-            print(message)
-    else:
-        for species_genus in abundances:
-            total_reads_covered += abundances[species_genus]
-            message=("Found " + species_genus + " : " + "{:.2f}".format(abundances[species_genus]) + "% of mapped reads")
-            logger.info(message)
-            print(message)
+        logger.info(message)
+        print(message)
 
     # compute total species found
     if not config.bypass_prescreen:
-        message="Total species selected from prescreen: " + str(len(species_found))
+        message="Total species selected from prescreen: " + str(len(sgb_species_found))
         logger.info(message)
         print("\n"+message+"\n")
         message="Selected species explain " + "{:.2f}".format(total_reads_covered) + "% of predicted community composition"
@@ -245,10 +170,10 @@ def create_custom_database(chocophlan_dir, bug_file):
     species_file_list = []
     if not config.bypass_prescreen:
         for species_file in os.listdir(chocophlan_dir):
-            for species in species_found:
+            for species in sgb_species_found:
                 # match the exact genus and species from the MetaPhlAn (or custom) list
                 new_database_file=os.path.join(chocophlan_dir,species_file)
-                if ( re.search(species.lower()+"\.", species_file.lower()) or re.search(species.lower()+"_group\.", species_file.lower()) ) and not new_database_file in species_file_list: 
+                if re.search(species.lower()+"_", species_file.lower()) and not new_database_file in species_file_list: 
                     species_file_list.append(new_database_file)
                     logger.debug("Adding file to database: " + species_file)   
     else:
@@ -260,7 +185,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     # create new fasta file containing only those species found
     if not species_file_list:
         message="\n\n"
-        if len(species_found) > 0:
+        if len(sgb_species_found) > 0:
             message+="None of the species selected from the prescreen were found in the ChocoPhlAn database.\n"
         elif config.bypass_prescreen:
             message+="The ChocoPhlAn database is empty.\n"
