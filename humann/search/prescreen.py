@@ -111,7 +111,6 @@ def create_custom_database(chocophlan_dir, bug_file):
     
     sgb_species_found = []
     sgb_abundances = {}
-    species_found = {}
     total_reads_covered = 0
     if bug_file != "Empty":
         # Identify the species that pass the threshold
@@ -139,7 +138,7 @@ def create_custom_database(chocophlan_dir, bug_file):
                     genus_species=get_species_name(organism_info, sgb=True)
 
                     sgb_abundances[sgb]=read_percent
-                    species_found[sgb]=sgb
+                    config.sgb_to_species_mapping[sgb]=genus_species
                     sgb_species_found+=[sgb]
 
             line = file_handle.readline()
@@ -153,7 +152,7 @@ def create_custom_database(chocophlan_dir, bug_file):
     # if sgbs are provided, use those instead of species
     for sgb in sgb_abundances:
         total_reads_covered += sgb_abundances[sgb]
-        message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+species_found[sgb]+" )")
+        message=("Found " + sgb + " : " + "{:.2f}".format(sgb_abundances[sgb]) + "% of mapped reads ( "+config.sgb_to_species_mapping[sgb]+" )")
                 
         logger.info(message)
         print(message)

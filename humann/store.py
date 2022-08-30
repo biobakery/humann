@@ -255,7 +255,8 @@ class Alignments:
                 full_taxonomy=reference_info[config.chocophlan_bug_index]
                 # Limit to species/genera unless sgb
                 if full_taxonomy.startswith("SGB"):
-                    bug=full_taxonomy
+                    # get the sgb to species mapping
+                    bug=config.sgb_to_species_mapping.get(full_taxonomy,"unclassified")+".t__"+full_taxonomy
                 else:
                     bug_info=full_taxonomy.split(".")
                     bug=".".join([bug_info[config.chocophlan_bug_genera_index],bug_info[config.chocophlan_bug_species_index]])

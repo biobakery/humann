@@ -367,6 +367,7 @@ metaphlan_version={
 
 metaphlan_v4_db_version="vJan21"
 metaphlan_v4_db_matching_uniref="SGB"
+sgb_to_species_mapping={}
 
 matching_uniref="201901b"
 
