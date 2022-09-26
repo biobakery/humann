@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.6 (09-26-2022) ##
+
+* Updated to require diamond v2.0+.
+
 ## v3.5 (08-22-2022) ##
 
 * Updated to run with MetaPhlAn v4.0 (includes mapping of SGBs to species plus uses additional species column).

@@ -488,9 +488,9 @@ diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={
     "flag" : "--version",
-    "major" : 0,
-    "minor" : 9,
-    "second minor" : 36,
+    "major" : 2,
+    "minor" : 0,
+    "second minor" : 15,
     "line" : 0,
     "column" : 2}
 

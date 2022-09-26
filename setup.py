@@ -69,7 +69,7 @@ import re
 import time
 
 
-VERSION = "3.5"
+VERSION = "3.6"
 
 AUTHOR = "HUMAnN Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
@@ -336,7 +336,7 @@ def install_diamond(final_install_folder, build, replace_install=None):
     diamond_installed=find_exe_in_path("diamond")
     
     if not diamond_installed or replace_install:
-        diamond_version="0.9.36"
+        diamond_version="2.0.15"
         diamond_exe="diamond"
         diamond_file="diamond-linux64.tar.gz"
         diamond_url="http://github.com/bbuchfink/diamond/releases/download/v{0}/diamond-linux64.tar.gz".format(diamond_version)
