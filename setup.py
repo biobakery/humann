@@ -69,7 +69,7 @@ import re
 import time
 
 
-VERSION = "3.6"
+VERSION = "3.6.1"
 
 AUTHOR = "HUMAnN Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
@@ -657,7 +657,8 @@ setuptools.setup(
             'humann_genefamilies_genus_level = humann.tools.genefamilies_genus_level:main',
             'humann_split_stratified_table = humann.tools.split_stratified_table:main',
             'humann_barplot = humann.tools.humann_barplot:main',
-            'humann_benchmark = humann.tools.humann_benchmark:main'
+            'humann_benchmark = humann.tools.humann_benchmark:main',
+            'humann_expand_cluster = humann.tools.expand_cluster:main'
         ]},
     test_suite= 'humann.tests.humann_test.unittests_suite_only',
     zip_safe = False

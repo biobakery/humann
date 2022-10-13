@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.6.1 (TBD) ##
+
+* Added a new utility script to expand a UniRef90 gene family to all those included in its associated UniRef50 clusters.
+
 ## v3.6 (09-26-2022) ##
 
 * Updated to require diamond v2.0+.
