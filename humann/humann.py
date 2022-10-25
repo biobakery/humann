@@ -330,7 +330,7 @@ def parse_arguments(args):
     more_output_config.add_argument(
         "--o-log", 
         help="log file\n" + 
-        "[DEFAULT: temp/sample.log]", 
+        "[DEFAULT: sample.log]", 
         metavar="<sample.log>")
     more_output_config.add_argument(
         "--output-basename",
@@ -562,7 +562,7 @@ def update_configuration(args):
     config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
 
     # set the name of the log file 
-    log_file=os.path.join(config.temp_dir,config.file_basename+".log")
+    log_file=os.path.join(output_dir,config.file_basename+".log")
     
     # change file name if set
     if args.o_log:

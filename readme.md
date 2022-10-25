@@ -390,11 +390,12 @@ $ humann --input $SAMPLE --output $OUTPUT_DIR
 
 `$OUTPUT_DIR` = the output directory
 
-**Three output files will be created:**
+**Four main output files will be created:**
 
 1. `$OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv`
 2. `$OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv`
 3. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
+4. `$OUTPUT_DIR/$SAMPLENAME.log`
 
 where `$SAMPLENAME` is the basename of `$SAMPLE`
 
@@ -420,8 +421,6 @@ where `$SAMPLENAME` is the basename of `$SAMPLE`
 	* the alignment results from the translated alignment step
 9. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa`
 	* a fasta file of unaligned reads after the translated alignment step
-10. `$DIR/$SAMPLENAME.log`
-	* a log of the run
 	
 * `$DIR=$OUTPUT_DIR/$SAMPLENAME_humann_temp/`
 * `$SAMPLENAME` is the basename of the fastq/fasta input file
@@ -782,7 +781,7 @@ nucleotide database folder = data/chocophlan_DEMO
 protein database folder = data/uniref_DEM
 ```
 
-*   File name: `` $DIR/$SAMPLENAME.log ``
+*   File name: `` $SAMPLENAME.log ``
 *   This file is a log of the run.
 *   Timestamps for each step in the flow are benchmarked in the log. Look for these as lines containing "TIMESTAMP".
 *   The percent unaligned reads after each alignment step is included in the log. Look for these as lines containing the phrase "Unaligned reads after". 
@@ -1590,7 +1589,7 @@ optional arguments:
                         level of messages to display in log
                         [DEFAULT: DEBUG]
   --o-log <sample.log>  log file
-                        [DEFAULT: temp/sample.log]
+                        [DEFAULT: sample.log]
   --output-basename <sample_name>
                         the basename for the output files
                         [DEFAULT: input file basename]
