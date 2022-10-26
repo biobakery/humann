@@ -72,10 +72,12 @@ def get_abundance(line):
         data=line.split("\t")
         if data[-1].replace(".","").replace("e-","").isdigit():
             read_percent=float(data[-1])
-        else:
+        elif data[-2].replace(".","").replace("e-","").isdigit():
             read_percent=float(data[-2])
+        else:
+            read_percent=float(data[-3])
     except ValueError:
-        message="The MetaPhlAn taxonomic profile provided was not generated with the expected database version. Please update your version of MetaPhlAn to at least v3.0."
+        message="The relative abundances were not found in the MetaPhlAn taxonomic profile in the last three columns."
         logger.error(message)
         sys.exit("\n\nERROR: "+message)
 
@@ -144,8 +146,8 @@ def create_custom_database(chocophlan_dir, bug_file):
             line = file_handle.readline()
    
         if not version_found:
-            message="The MetaPhlAn taxonomic profile provided was not generated with the database version "+\
-                +metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v4.0."
+            message="The MetaPhlAn taxonomic profile provided does not contain the database version "+\
+                config.metaphlan_v4_db_version+" in any of its header lines."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
