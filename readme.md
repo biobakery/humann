@@ -711,16 +711,17 @@ r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140
 #### 7. MetaPhlAn bugs list ####
 
 ```
-k__Bacteria	100.0
-k__Bacteria|p__Bacteroidetes	73.86802
-k__Bacteria|p__Firmicutes	26.13198
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	51.32768
+#clade_name     NCBI_tax_id     relative_abundance      additional_species
+k__Bacteria	2	100.0
+k__Bacteria|p__Bacteroidetes	2|11	73.86802
+k__Bacteria|p__Firmicutes	2|22	26.13198
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia	2|11|111	73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia		2|22|222	15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes	2|22|333	10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	2|11|111|1111	73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	2|22|222|4444	15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	2|22|333|5555	10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	2|11|111|1111|77777	51.32768
 ```
 
 *   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
