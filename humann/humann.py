@@ -545,6 +545,9 @@ def update_configuration(args):
     config.genefamilies_file=os.path.join(output_dir,
             config.file_basename + config.genefamilies_file + "." + 
             config.output_format)
+    config.profile_file=os.path.join(output_dir,
+            config.file_basename + config.profile_file + "." + 
+            config.output_format)
 
     # set the location of the temp directory
     if not args.remove_temp_output:

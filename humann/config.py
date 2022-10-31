@@ -338,7 +338,6 @@ unnamed_temp_dir=""
 file_basename=""
 fasta_extension=".fa"
 
-bugs_list_name="_metaphlan_bugs_list.tsv"
 metaphlan_bowtie2_name="_metaphlan_bowtie2.txt"
 
 chocophlan_custom_database_name="_custom_chocophlan_database.ffn"
@@ -355,6 +354,7 @@ translated_unaligned_reads_name_no_ext="_unaligned"
 pathabundance_file="_pathabundance"
 pathcoverage_file="_pathcoverage"
 genefamilies_file="_genefamilies"
+profile_file="_metaphlan_profile"
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]

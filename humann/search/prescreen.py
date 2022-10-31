@@ -49,10 +49,9 @@ def alignment(input):
     input_type=utilities.fasta_or_fastq(input)
     
     # outfile name
-    bug_file = utilities.name_temp_file(config.bugs_list_name)
     bowtie2_out = utilities.name_temp_file(config.metaphlan_bowtie2_name) 
 
-    args=[input]+opts+["-o",bug_file,"--input_type",input_type, "--bowtie2out",bowtie2_out]
+    args=[input]+opts+["-o",config.profile_file,"--input_type",input_type, "--bowtie2out",bowtie2_out]
     
     if config.threads >1:
         args+=["--nproc",config.threads]
@@ -60,9 +59,9 @@ def alignment(input):
     message="Running " + exe + " ........"
     logger.info(message)
     print("\n"+message+"\n")
-    utilities.execute_command(exe, args, [input], [bug_file, bowtie2_out])
+    utilities.execute_command(exe, args, [input], [config.profile_file, bowtie2_out])
     
-    return bug_file
+    return config.profile_file
 
 def get_abundance(line):
     """
@@ -102,9 +101,9 @@ def get_species_name(line, sgb=False):
 
     return name                        
 
-def create_custom_database(chocophlan_dir, bug_file):
+def create_custom_database(chocophlan_dir, profile_file):
     """
-    Using ChocoPhlAn creates a custom database based on the bug_file
+    Using ChocoPhlAn creates a custom database based on the profile_file
     """
 
     # outfile name
@@ -114,10 +113,10 @@ def create_custom_database(chocophlan_dir, bug_file):
     sgb_species_found = []
     sgb_abundances = {}
     total_reads_covered = 0
-    if bug_file != "Empty":
+    if profile_file != "Empty":
         # Identify the species that pass the threshold
-        utilities.file_exists_readable(bug_file)
-        file_handle = open(bug_file, "rt")
+        utilities.file_exists_readable(profile_file)
+        file_handle = open(profile_file, "rt")
 
         line = file_handle.readline()
         version_found = False
