@@ -599,8 +599,8 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
         gene_abundance_in_pathways, remaining_gene_abundance, unaligned_reads_count, pathways_abundance)
     
     # Compute coverage for all pathways
-    pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
-        pathways_database)
+    #pathways_coverage=compute_pathways_coverage(pathways_and_reactions_store,
+    #    pathways_database)
 
     # Get the sorted list of pathways and bugs from the abundance values
     # This same sorting will be used for both the abundance and coverage output files
@@ -616,9 +616,10 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     unintegrated_all=1
     unintegrated_per_bug={bug:1 for bug in unintegrated_per_bug.keys()}
     
+    # For now, don't print the pathways coverage data
     # Print the pathways coverage data to file
-    print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", 
-                   pathway_names, sorted_pathways_and_bugs, unmapped_all,
-                   unintegrated_all, unintegrated_per_bug)
+    #print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", 
+    #               pathway_names, sorted_pathways_and_bugs, unmapped_all,
+    #               unintegrated_all, unintegrated_per_bug)
 
     return config.pathabundance_file, config.pathcoverage_file

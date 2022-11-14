@@ -64,7 +64,6 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 * [Output files](#output-files)
     1. [Gene families file](#1-gene-families-file)
     2. [Pathway abundance file](#2-pathway-abundance-file)
-    3. [Pathway coverage file](#3-pathway-coverage-file)
     4. [Intermediate temp output files](#4-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#2-bowtie2-reduced-alignment-results)
@@ -178,7 +177,7 @@ Bypass options:
     *   bypasses all of the alignment steps before the translated search
 *   --bypass-prescreen 
     *   bypasses the taxomonic profiling step and uses the full ChocoPhlAn database
-*   --taxonomic-profile bugs_list.tsv 
+*   --taxonomic-profile file.tsv 
     *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
 *   --bypass-nucleotide-index
     *   starts the workflow with the nucleotide alignment step using the indexed database from "--nucleotide-database $DIR"
@@ -390,11 +389,11 @@ $ humann --input $SAMPLE --output $OUTPUT_DIR
 
 `$OUTPUT_DIR` = the output directory
 
-**Four main output files will be created:**
+**Three main output files will be created:**
 
 1. `$OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv`
-2. `$OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv`
-3. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
+2. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
+3. `$OUTPUT_DIR/$SAMPLENAME_metaphlan_profile.tsv`
 4. `$OUTPUT_DIR/$SAMPLENAME.log`
 
 where `$SAMPLENAME` is the basename of `$SAMPLE`
@@ -415,11 +414,9 @@ where `$SAMPLENAME` is the basename of `$SAMPLE`
 	* a custom chocophlan database of fasta sequences
 6. `$DIR/$SAMPLENAME_metaphlan_bowtie2.txt`
 	* the bowtie2 output from metaphlan
-7. `$DIR/$SAMPLENAME_metaphlan_bugs_list.tsv` 
-	* the bugs list output from metaphlan
-8. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv` 
+7. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv` 
 	* the alignment results from the translated alignment step
-9. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa`
+8. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa`
 	* a fasta file of unaligned reads after the translated alignment step
 	
 * `$DIR=$OUTPUT_DIR/$SAMPLENAME_humann_temp/`
@@ -470,7 +467,7 @@ To run the standard workflow, follow these steps:
             * Replace `$SAMPLE.fastq` with the name of the fastq input file
             * Replace `$OUTPUT_DIR` with the full path to the folder to write output
         * If you have paired-end reads, please see the guide [Paired-end reads](#markdown-header-humann-and-paired-end-sequencing-data)
-    * The results will be three main output files for each input file named `$SAMPLE_genefamilies.tsv`, `$SAMPLE_pathabundance.tsv`, and `$SAMPLE_pathcoverage.tsv`. 
+    * The results will be three main output files for each input file named `$SAMPLE_genefamilies.tsv` and `$SAMPLE_pathabundance.tsv`. 
 
 2. Normalize the abundance output files
     * We recommend normalizing the abundance data based on the statistical tests you will perform.
@@ -482,12 +479,11 @@ To run the standard workflow, follow these steps:
     * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#markdown-header-10-log).
     * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the guide to [humann_regroup_table](#markdown-header-humann_regroup_table) for detailed information. 
     
-3. Join the output files (gene families, coverage, and abundance) from the HUMAnN 3.0 runs from all samples into three files
+3. Join the output files (gene families and abundance) from the HUMAnN 3.0 runs from all samples into three files
     * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_genefamilies.tsv --file_name genefamilies_relab ``
-    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_pathcoverage.tsv --file_name pathcoverage ``
     * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_pathabundance.tsv --file_name pathabundance_relab ``
     * For each command, replace `$OUTPUT_DIR` with the full path to the folder containing the HUMAnN 3.0 output files.
-    * The resulting files from these commands are named `humann_genefamilies.tsv`, `humann_pathabundance.tsv`, and `humann_pathcoverage.tsv`.
+    * The resulting files from these commands are named `humann_genefamilies.tsv` and `humann_pathabundance.tsv`.
 
 ----	
 	
@@ -557,34 +553,25 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 
 ----
 
-### 3. Pathway coverage file ###
+#### 3. MetaPhlAn profile ####
 
-``` 
-# Pathway	$SAMPLENAME_Coverage
-UNMAPPED	1.0
-UNINTEGRATED	1.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	1.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	1.0
-UNINTEGRATED|unclassified	1.0
-PWY0-1301: melibiose degradation	1.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	1.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	1.0
-PWY0-1301: melibiose degradation|unclassified	1.0
-PWY-5484: glycolysis II (from fructose-6P)	1.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	0.7
-PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
+```
+#clade_name     NCBI_tax_id     relative_abundance      additional_species
+k__Bacteria     2       100.0
+k__Bacteria|p__Bacteroidetes    2|11    73.86802
+k__Bacteria|p__Firmicutes       2|22    26.13198
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia     2|11|111        73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia         2|22|222        15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes      2|22|333        10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales    2|11|111|1111   73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales        2|22|222|4444   15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales   2|22|333|5555   10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae  2|11|111|1111|77777     51.32768
 ```
 
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
-*   Pathway coverage provides an alternative description of the presence (1) and absence (0) of pathways in a community, independent of their quantitative abundance.
-*   More specifically, HUMAnN 3.0 assigns a confidence score to each reaction detected in the community. Reactions with abundance greater than the median reaction abundance are considered to be more confidently detected than those below the median abundance.
-*   HUMAnN 3.0 then computes pathway coverage using the same algorithms described above in the context of pathway abundance, but substituting reaction confidence for reaction abundance.
-*   A pathway with coverage = 1 is considered to be confidently detected (independent of its abundance), as this implies that all of its member reactions were also confidently detected. A pathway with coverage = 0 is considered to less confidently detected (independent of its abundance), as this implies that some of its member reactions were not confidently detected.
-*   Like pathway abundance, pathway coverage is computed for the community as a whole, as well as for each detected species and the unclassified stratum.
-*   Much as community-level pathway abundance is not the strict sum of species-level contributions, **it is possible for a pathway to be confidently covered at the community level but never confidently detected from any single species**.
-*   Pathway coverage is reported for any non-zero pathway abundance computed at the community-level or for an individual stratum (species or "unclassified").
-*   The pathway coverage file follows the same order for pathways and species as the abundance file. Entries for "UNMAPPED" and "UNINTEGRATED" are included and set to 1.0 to further maintain this ordering, although the "coverage" of these features is not meaningful.
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_metaphlan_profile.tsv ``
+*   This file is the taxonomic profile output from MetaPhlAn.
+
 
 ----
 
@@ -708,28 +695,7 @@ r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140
 
 ----
 
-#### 7. MetaPhlAn bugs list ####
-
-```
-#clade_name     NCBI_tax_id     relative_abundance      additional_species
-k__Bacteria	2	100.0
-k__Bacteria|p__Bacteroidetes	2|11	73.86802
-k__Bacteria|p__Firmicutes	2|22	26.13198
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia	2|11|111	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia		2|22|222	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes	2|22|333	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	2|11|111|1111	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	2|22|222|4444	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	2|22|333|5555	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	2|11|111|1111|77777	51.32768
-```
-
-*   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
-*   This file is the bugs list output from MetaPhlAn.
-
-----
-
-#### 8. Translated alignment results ####
+#### 7. Translated alignment results ####
 
 ```
 r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
@@ -758,7 +724,7 @@ r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
 
 ----	
 	
-#### 9. Translated alignment unaligned reads ####
+#### 8. Translated alignment unaligned reads ####
 
 ```
 >r4370
@@ -772,7 +738,7 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 
 ----
 
-#### 10. Log ####
+#### 9. Log ####
 
 ```
 03/16/2015 01:09:52 PM - humann.utilities - INFO: File ( demo.fastq ) is of format:  fastq
@@ -972,7 +938,7 @@ UniRef50_O67749|unclassified                     25
 
 In the last example, the LCA for the UniRef50\_O67749 family is insufficient to infer a genus, however the genus-level assignment from the pangenome search (i.e. to g\_\_Aquifex.s\_\_Aquifex_pyrophilus) is carried through.
 
-The modified gene families output files can then be reprocessed through HUMAnN 3.0 to compute pathway abundance/coverage using the inferred taxonomic stratifications.
+The modified gene families output files can then be reprocessed through HUMAnN 3.0 to compute pathway abundance using the inferred taxonomic stratifications.
 
 **Note:** ``humann_infer_taxonomy`` requires a data file to link UniRef families to LCAs and infer taxonomic relationships. Users can download these files using the HUMAnN 3.0 databases script:
 
@@ -1010,7 +976,7 @@ Used for collapsing joined MetaPhlAn taxonomic profiles to a single joint profil
 * `$TABLE2` = regrouped gene/pathway table
 * Run with `-h` to see additional command line options
 
-HUMAnN 3.0 `genefamilies.tsv` output can contain a very large number of features depending on the complexity of your underlying sample. One way to explore this information in a simplified manner is via HUMAnN 3.0's own pathway coverage and abundance, which summarize the values of their member genes. However, this approach does not apply to gene families that are not associated with metabolic pathways.
+HUMAnN 3.0 `genefamilies.tsv` output can contain a very large number of features depending on the complexity of your underlying sample. One way to explore this information in a simplified manner is via HUMAnN 3.0's own pathway abundance, which summarize the values of their member genes. However, this approach does not apply to gene families that are not associated with metabolic pathways.
 
 To further simplify the exploration of gene family abundance data, users can regroup gene families into other functional categories using `humann_regroup_table`. This script takes as arguments a gene family abundance table and a mapping (groups) file that indicates which gene families belong to which groups. Out of the box, HUMAnN 3.0 can regroup gene families to MetaCyc reactions (a step which is also used internally as part of MetaCyc pathway quantification). Users can download additional mapping files using the HUMAnN 3.0 databases script:
 
@@ -1198,10 +1164,8 @@ If you are running HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) 
     * To run with the kegg modules instead of kegg pathways provide the modules file ``--pathways-database humann1/data/modulec``.
     * The input file can be in biom or tsv format.
 
-4. Join the pathways data (coverage and abundance) files from the HUMAnN 3.0 runs from all samples into two files
-    * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_pathcoverage.tsv --file_name pathcoverage ``
+4. Join the pathways data files from the HUMAnN 3.0 runs from all samples into two files
     * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_pathabundance.tsv --file_name pathabundance ``
-    * The resulting files from these commands are named humann_pathcoverage.tsv and humann_pathabundance.tsv .
     * If the files being joined in this step are biom format, the ouput file will also be in biom format.
 
 Please note the flag ``--verbose`` can be added to all commands.
@@ -1343,23 +1307,20 @@ To run this analysis, run the following steps:
 1. Run HUMAnN 3.0 on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
     * For each $SAMPLE.fastq in the set of all samples
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR --output-format biom --remove-stratified-output --output-max-decimals 0 ``
-        * Each sample will have three main output files ($SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv, and $SAMPLE_pathcoverage.tsv) in biom format.
+        * Each sample will have two main output files ($SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv) in biom format.
 
 2. Merge the three output files for each sample into three output files for all samples using [QIIME's merge_otu_tables.py](http://qiime.org/scripts/merge_otu_tables.html)
     * For this example, assume there are 3 samples named $SAMPLE1.fastq, $SAMPLE2.fastq, and $SAMPLE3.fastq
         * `` $ merge_otu_tables.py -i $SAMPLE1_genefamilies.biom,$SAMPLE2_genefamilies.biom,$SAMPLE3_genefamilies.biom -o genefamilies_all.biom ``
         * `` $ merge_otu_tables.py -i $SAMPLE1_pathabundance.biom,$SAMPLE2_pathabundance.biom,$SAMPLE3_pathabundance.biom -o pathabundance_all.biom ``
-        * `` $ merge_otu_tables.py -i $SAMPLE1_pathcoverage.biom,$SAMPLE2_pathcoverage.biom,$SAMPLE3_pathcoverage.biom -o pathcoverage_all.biom ``
 
-3. For each of the three merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
+3. For each of the merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
     * `` $ biom summarize-table -i genefamilies_all.biom -o genefamilies_summary.txt ``
     * `` $ biom summarize-table -i pathabundance_all.biom -o pathabundance_summary.txt ``
-    * `` $ biom summarize-table -i pathcoverage_all.biom -o pathcoverage_summary.txt ``
 
 4. Next run each merged biom file through [QIIME's core_diversity_analyses.py](http://qiime.org/scripts/core_diversity_analyses.html), providing the e-value from the prior step (replacing $EVALUE for each input file) and the [QIIME mapping file](http://qiime.org/documentation/file_formats.html#mapping-file-overview) you created (replacing $MAPPING_FILE with the full path to the mapping file).
     * `` $ core_diversity_analyses.py -i genefamilies_all.biom -o core_diversity_genefamilies -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
     * `` $ core_diversity_analyses.py -i pathabundance_all.biom -o core_diversity_pathabundance -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
-    * `` $ core_diversity_analyses.py -i pathcoverage_all.biom -o core_diversity_pathcoverage -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
 
 The output of [QIIME's core_diversity_analyses.py](http://qiime.org/scripts/core_diversity_analyses.html) will include PCoA plots of beta diversity analyses which can be viewed in the beta diversity folder, in the bray_curtis_emperor_pcoa_plot folder. Click on index.html, which will open a web browser with the plot. Using the tools on the right side, it is possible to change the colors by which the samples are labeled. 
 
@@ -1411,7 +1372,7 @@ HUMAnN 3.0 frequently asked questions:
 5.  Can I provide an alternative location for the UniRef database?
     *   Yes, use the ``--protein-database $DIR`` option
 6.  I already have MetaPhlAn output. Can I start HUMAnN 3.0 with the MetaPhlAn output?
-    *   Yes, use the ``--taxonomic-profile bugs_list.tsv`` option
+    *   Yes, use the ``--taxonomic-profile file.tsv`` option
 7.  Is there a way to change $SAMPLENAME in the output file names?
     *   Yes, use the ``--output-basename $NAME`` option
 8.  How do I remove the stratification by bug from the output files?

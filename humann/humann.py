@@ -1133,7 +1133,7 @@ def main():
     alignments.clear()
     
     # Identify reactions and then pathways from the alignments
-    message="Computing pathways abundance and coverage ..."
+    message="Computing pathways abundance ..."
     logger.info(message)
     print("\n"+message)
     pathways_and_reactions_store=modules.identify_reactions_and_pathways(
@@ -1143,7 +1143,7 @@ def main():
     abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
         gene_scores, reactions_database, pathways_and_reactions_store, pathways_database, unaligned_reads_count)
     output_files.append(abundance_file)
-    output_files.append(coverage_file)
+    #output_files.append(coverage_file)
 
     start_time=timestamp_message("computing pathways",start_time)
 
