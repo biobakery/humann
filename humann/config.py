@@ -353,6 +353,7 @@ translated_unaligned_reads_name_no_ext="_unaligned"
 
 pathabundance_file="_pathabundance"
 pathcoverage_file="_pathcoverage"
+reactions_file="_reactions"
 genefamilies_file="_genefamilies"
 profile_file="_metaphlan_profile"
 

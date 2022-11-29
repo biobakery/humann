@@ -79,7 +79,7 @@ def xipe_command(infile):
     return stdout_file, stderr_file, command
     
 
-def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database):
+def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_database, unaligned_reads_count):
     """
     Identify the reactions and then pathways from the hits found
     """
@@ -95,7 +95,11 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
     # Create a store for the pathways and reactions by bug
     pathways_and_reactions_store=store.PathwaysAndReactions()
     reactions={}
-    
+    reactions_store=store.Reactions()
+
+    # set unmapped as unaligned reads count
+    reactions_store.unmapped=unaligned_reads_count
+
     minpath_results={}
     minpath_commands=[]
     # Run through each of the score sets by bug
@@ -105,16 +109,20 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
         # Merge the gene scores to reaction scores   
         message="Compute reaction scores for bug: " + bug
         logger.info(message)
-        
-        reactions[bug]={}
+    
+        reactions[bug]={}    
         reactions_file_lines=[]
+        integrated_genes=set()
         if reactions_database:
             for reaction in sorted(reactions_database.reaction_list()):
                 genes_list=reactions_database.find_genes(reaction)
                 abundance=0
                 # Add the scores for each gene to the total score for the reaction
                 for gene in genes_list:
-                    abundance+=gene_scores_for_bug.get(gene,0)  
+                    new_score=gene_scores_for_bug.get(gene,0)  
+                    if new_score > 0:
+                        abundance+=new_score
+                        integrated_genes.add(gene)
                 
                 # Only write out reactions where the abundance is greater than 0
                 if abundance>0: 
@@ -122,6 +130,7 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
                         +str(abundance)+"\n")
                     # Store the abundance data to compile with the minpath pathways
                     reactions[bug][reaction]=abundance
+                    reactions_store.add(bug,reaction,abundance)
         else:
             for gene in gene_scores_for_bug:
                 score=gene_scores_for_bug[gene]
@@ -131,7 +140,13 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
                         +str(score)+"\n")
                     # Store the abundance data to compile with the minpath pathways
                     reactions[bug][gene]=score
-    
+                    reactions_store.add(bug,reaction,score)
+
+        # sum the abundances from genes that were not used in reactions
+        for gene_name in gene_scores_for_bug.keys():
+            if not gene_name in integrated_genes:
+                reactions_store.unintegrated[bug]=reactions_store.unintegrated.get(bug,0)+gene_scores_for_bug.get(gene_name,0)
+   
         pathways={}
         # Run minpath if toggle on and also if there is more than one reaction   
         if config.minpath_toggle == "on" and len(reactions_file_lines)>3:   
@@ -149,6 +164,19 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
             minpath_results[bug]=tmpfile
             minpath_commands.append(command)
             
+    # add the unintegrated reaction abundance for this bug to the total
+    reactions_store.unintegrated_total=reactions_store.unintegrated["all"]
+    del reactions_store.unintegrated["all"]
+
+    # write out the final reactions file
+    reaction_names=store.Names()
+    sorted_reactions=reactions_store.get_reactions_and_bugs_nonzero_sorted()
+
+        
+    print_pathways_and_reactions(reactions_store,config.reactions_file,"",
+        reaction_names, sorted_reactions, reactions_store.unmapped, 
+        reactions_store.unintegrated_total, reactions_store.unintegrated)
+
     # Run through the minpath commands if minpath is to be run
     if minpath_commands:
         utilities.command_threading(config.threads,minpath_commands)
@@ -456,7 +484,7 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     return pathways_abundance_store, reactions_in_pathways_present
     
     
-def print_pathways(pathways, file, header, pathway_names, sorted_pathways_and_bugs,
+def print_pathways_and_reactions(pathways, file, header, pathway_names, sorted_pathways_and_bugs,
                    unmapped_all, unintegrated_all, unintegrated_per_bug):
     """
     Print the pathways data to a file organized by pathway
@@ -607,7 +635,7 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     sorted_pathways_and_bugs=pathways_abundance.get_pathways_and_bugs_nonzero_sorted()
 
     # Print the pathways abundance data to file
-    print_pathways(pathways_abundance, config.pathabundance_file, "_Abundance", 
+    print_pathways_and_reactions(pathways_abundance, config.pathabundance_file, "_Abundance", 
                    pathway_names, sorted_pathways_and_bugs, unmapped_all,
                    unintegrated_all, unintegrated_per_bug)
     
@@ -618,7 +646,7 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     
     # For now, don't print the pathways coverage data
     # Print the pathways coverage data to file
-    #print_pathways(pathways_coverage, config.pathcoverage_file, "_Coverage", 
+    #print_pathways_and_reactions(pathways_coverage, config.pathcoverage_file, "_Coverage", 
     #               pathway_names, sorted_pathways_and_bugs, unmapped_all,
     #               unintegrated_all, unintegrated_per_bug)
 

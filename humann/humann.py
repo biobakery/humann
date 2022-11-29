@@ -548,6 +548,9 @@ def update_configuration(args):
     config.profile_file=os.path.join(output_dir,
             config.file_basename + config.profile_file + "." + 
             config.output_format)
+    config.reactions_file=os.path.join(output_dir,
+            config.file_basename + config.reactions_file + "." + 
+            config.output_format)
 
     # set the location of the temp directory
     if not args.remove_temp_output:
@@ -1137,7 +1140,7 @@ def main():
     logger.info(message)
     print("\n"+message)
     pathways_and_reactions_store=modules.identify_reactions_and_pathways(
-        gene_scores, reactions_database, pathways_database)
+        gene_scores, reactions_database, pathways_database, unaligned_reads_count)
 
     # Compute pathway abundance and coverage
     abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(

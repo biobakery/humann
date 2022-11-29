@@ -756,7 +756,7 @@ class PathwaysAndReactions:
         """
         
         return len(self.__pathways.get(bug,{}).keys())
-    
+
 class Pathways:
     """
     Holds the pathways coverage or abundance data for a bug
@@ -877,6 +877,18 @@ class Pathways:
             
         return sorted_pathways_and_bugs
     
+class Reactions(Pathways):
+
+    def __init__(self):
+        self.unmapped=0
+        self.unintegrated_total=0
+        self.unintegrated={}
+
+        return super(Reactions, self).__init__()
+
+    def get_reactions_and_bugs_nonzero_sorted(self):
+        return super(Reactions, self).get_pathways_and_bugs_nonzero_sorted()
+
 class ReactionsDatabase:
     """
     Holds all of the genes/reactions data from the file provided
