@@ -171,11 +171,11 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
     # write out the final reactions file
     reaction_names=store.Names()
     sorted_reactions=reactions_store.get_reactions_and_bugs_nonzero_sorted()
-
         
     print_pathways_and_reactions(reactions_store,config.reactions_file,"",
         reaction_names, sorted_reactions, reactions_store.unmapped, 
-        reactions_store.unintegrated_total, reactions_store.unintegrated)
+        reactions_store.unintegrated_total, reactions_store.unintegrated,
+        header_type="# Reaction", unintegrated_name=config.ungrouped_reaction_name)
 
     # Run through the minpath commands if minpath is to be run
     if minpath_commands:
@@ -485,7 +485,8 @@ def compute_pathways_abundance(pathways_and_reactions_store, pathways_database):
     
     
 def print_pathways_and_reactions(pathways, file, header, pathway_names, sorted_pathways_and_bugs,
-                   unmapped_all, unintegrated_all, unintegrated_per_bug):
+                   unmapped_all, unintegrated_all, unintegrated_per_bug, header_type="# Pathway",
+                   unintegrated_name=config.unintegrated_pathway_name):
     """
     Print the pathways data to a file organized by pathway
     """
@@ -499,15 +500,15 @@ def print_pathways_and_reactions(pathways, file, header, pathway_names, sorted_p
     column_name=config.file_basename + header
     if config.remove_column_description_output:
         column_name=config.file_basename
-    tsv_output=["# Pathway"+ delimiter + column_name]
+    tsv_output=[header_type + delimiter + column_name]
     
     # Add the unmapped and unintegrated values
     tsv_output.append(config.unmapped_pathway_name+delimiter+utilities.format_float_to_string(unmapped_all))
-    tsv_output.append(config.unintegrated_pathway_name+delimiter+utilities.format_float_to_string(unintegrated_all))
+    tsv_output.append(unintegrated_name+delimiter+utilities.format_float_to_string(unintegrated_all))
     # Process and print per bug if selected
     if not config.remove_stratified_output:
         for bug in utilities.double_sort(unintegrated_per_bug):
-            tsv_output.append(config.unintegrated_pathway_name+category_delimiter+bug
+            tsv_output.append(unintegrated_name+category_delimiter+bug
                               +delimiter+utilities.format_float_to_string(unintegrated_per_bug[bug]))
             
     # Print out all pathways sorted

@@ -517,6 +517,7 @@ match_power=2
 unmapped_gene_name = "UNMAPPED"
 unmapped_pathway_name = "UNMAPPED"
 unintegrated_pathway_name = "UNINTEGRATED"
+ungrouped_reaction_name = "UNGROUPED"
 
 # Max arguments
 max_arguments=500
