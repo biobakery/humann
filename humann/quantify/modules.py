@@ -650,4 +650,4 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     #               pathway_names, sorted_pathways_and_bugs, unmapped_all,
     #               unintegrated_all, unintegrated_per_bug)
 
-    return config.pathabundance_file, config.pathcoverage_file
+    return config.pathabundance_file, config.pathcoverage_file, config.reactions_file

@@ -590,6 +590,8 @@ def update_configuration(args):
     if config.verbose: 
         print("\n"+message+"\n")    
 
+    return log_file
+
 def parse_chocophlan_gene_indexes(annotation_gene_index):
     """ Parse the chocophlan gene index input """
     
@@ -927,7 +929,7 @@ def main():
     args=parse_arguments(sys.argv)
     
     # Update the configuration settings based on the arguments
-    update_configuration(args)
+    log_file=update_configuration(args)
     
     # Check for required files, software, databases, and also permissions
     check_requirements(args)
@@ -1136,16 +1138,18 @@ def main():
     alignments.clear()
     
     # Identify reactions and then pathways from the alignments
-    message="Computing pathways abundance ..."
+    message="Computing reaction and pathway abundance ..."
     logger.info(message)
     print("\n"+message)
     pathways_and_reactions_store=modules.identify_reactions_and_pathways(
         gene_scores, reactions_database, pathways_database, unaligned_reads_count)
 
     # Compute pathway abundance and coverage
-    abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
+    abundance_file, coverage_file, reaction_file=modules.compute_pathways_abundance_and_coverage(
         gene_scores, reactions_database, pathways_and_reactions_store, pathways_database, unaligned_reads_count)
+    output_files.append(reaction_file)
     output_files.append(abundance_file)
+    output_files.append(log_file)
     #output_files.append(coverage_file)
 
     start_time=timestamp_message("computing pathways",start_time)
