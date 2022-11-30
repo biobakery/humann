@@ -971,6 +971,7 @@ def main():
     start_time=time.time()
 
     # Process fasta or fastq input files
+    output_files=[]
     if args.input_format in ["fasta","fastq"]:
         # Run prescreen to identify bugs
         bug_file = "Empty"
@@ -979,6 +980,7 @@ def main():
         else:
             if not config.bypass_prescreen:
                 bug_file = prescreen.alignment(args.input)
+                output_files.append(bug_file)
                 start_time=timestamp_message("prescreen",start_time)
     
         # Create the custom database from the bugs list
@@ -1108,7 +1110,6 @@ def main():
     unaligned_reads_store.clear()
         
     # Compute or load in gene families
-    output_files=[]
     if args.input_format in ["fasta","fastq","sam","blastm8"]:
         # Compute the gene families
         message="Computing gene families ..."
