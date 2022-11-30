@@ -63,7 +63,8 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Standard workflow](#standard-workflow)
 * [Output files](#output-files)
     1. [Gene families file](#1-gene-families-file)
-    2. [Pathway abundance file](#2-pathway-abundance-file)
+    2. [Reactions file](#2-reactions-file)
+    3. [Pathway abundance file](#3-pathway-abundance-file)
     4. [Intermediate temp output files](#4-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#2-bowtie2-reduced-alignment-results)
@@ -389,12 +390,13 @@ $ humann --input $SAMPLE --output $OUTPUT_DIR
 
 `$OUTPUT_DIR` = the output directory
 
-**Three main output files will be created:**
+**Five main output files will be created:**
 
 1. `$OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv`
-2. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
-3. `$OUTPUT_DIR/$SAMPLENAME_metaphlan_profile.tsv`
-4. `$OUTPUT_DIR/$SAMPLENAME.log`
+2. `$OUTPUT_DIR/$SAMPLENAME_reactions.tsv`
+3. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
+4. `$OUTPUT_DIR/$SAMPLENAME_metaphlan_profile.tsv`
+5. `$OUTPUT_DIR/$SAMPLENAME.log`
 
 where `$SAMPLENAME` is the basename of `$SAMPLE`
 
@@ -519,7 +521,27 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 
 ----
 
-### 2. Pathway abundance file ###
+### 2. Reactions file ###
+
+```
+# Reaction      $SAMPLENAME_Abundance
+UNMAPPED        7573721.0000000000
+UNGROUPED    22978726.4009404778
+UNGROUPED|g__Bacteroides.s__Bacteroides_vulgatus     1961355.5951347812
+UNGROUPED|g__Bacteroides.s__Bacteroides_uniformis    1579305.9455720731
+UNGROUPED|unclassified       5100980.1244789278
+2.7.13.3-RXN    75608.6164459985
+2.7.13.3-RXN|g__Bacteroides.s__Bacteroides_uniformis    7962.2303221576
+2.7.13.3-RXN|g__Faecalibacterium.s__Faecalibacterium_prausnitzii        5371.8462336209
+2.7.13.3-RXN|unclassified       12529.4324849206
+```
+         
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_reactions.tsv ``
+*   This file details the abundance of each reaction in the community from regrouping gene families to reactions. 
+*   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+
+
+### 3. Pathway abundance file ###
 
 ```
 # Pathway	$SAMPLENAME_Abundance
@@ -553,7 +575,7 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 
 ----
 
-#### 3. MetaPhlAn profile ####
+#### 4. MetaPhlAn profile ####
 
 ```
 #clade_name     NCBI_tax_id     relative_abundance      additional_species
@@ -575,7 +597,7 @@ k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae  
 
 ----
 
-### 4. Intermediate temp output files ###
+### 5. Intermediate temp output files ###
 
 Ten intermediate temp output files will be created where:
 
