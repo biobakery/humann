@@ -123,7 +123,6 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
                     if new_score > 0:
                         abundance+=new_score
                         integrated_genes.add(gene)
-                
                 # Only write out reactions where the abundance is greater than 0
                 if abundance>0: 
                     reactions_file_lines.append(reaction+config.output_file_column_delimiter
@@ -165,8 +164,11 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
             minpath_commands.append(command)
             
     # add the unintegrated reaction abundance for this bug to the total
-    reactions_store.unintegrated_total=reactions_store.unintegrated["all"]
-    del reactions_store.unintegrated["all"]
+    try:
+        reactions_store.unintegrated_total=reactions_store.unintegrated["all"]
+        del reactions_store.unintegrated["all"]
+    except KeyError:
+        reactions_store.unintegrated_total=0
 
     # write out the final reactions file
     reaction_names=store.Names()
@@ -234,6 +236,7 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
     xipe_stdout_results={}
     xipe_stderr_results={}
     xipe_commands=[]
+
     for bug in pathways_and_reactions_store.bug_list():
     
         logger.debug("Compute pathway coverage for bug: " + bug)
@@ -252,6 +255,7 @@ def compute_pathways_coverage(pathways_and_reactions_store,pathways_database):
                 key_reactions=pathways_database.get_key_reactions_for_pathway(pathway)
                 # Apply gap fill
                 reaction_scores=gap_fill(key_reactions, reaction_scores)
+
                 # Compute the structured pathway coverage
                 coverage=compute_structured_pathway_abundance_or_coverage(structure,
                     key_reactions,reaction_scores,True,median_score_value)
