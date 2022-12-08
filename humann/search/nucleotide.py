@@ -89,7 +89,7 @@ def index(custom_database):
     exe="bowtie2-build"
     opts=config.bowtie2_build_opts
 
-    args=["-f",custom_database,index_name]
+    args=["-f",custom_database,index_name,"--threads",config.threads]
 
     outfiles=[index_name + ext for ext in config.bowtie2_index_ext_list] 
 

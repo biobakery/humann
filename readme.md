@@ -205,7 +205,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 ### Software ###
 
 1. [MetaPhlAn 3.0](https://bitbucket.org/biobakery/metaphlan)
-2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2) (automatically installed)
+2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2.9) (automatically installed)
 3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.9.24) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 3.7)
 5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically installed)
