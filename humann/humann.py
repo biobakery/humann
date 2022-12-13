@@ -273,6 +273,12 @@ def parse_arguments(args):
     gene_and_pathway=parser.add_argument_group("[5] Gene and pathway quantification")
 
     gene_and_pathway.add_argument(
+        "--count-normalization",
+        help="normalization mode for results from both nucleotide and translated search\n[DEFAULT: " + 
+        config.count_normalization + "]",
+        default=config.count_normalization,
+        choices=config.count_normalization_choices)
+    gene_and_pathway.add_argument(
         "--gap-fill",
         help="turn on/off the gap fill computation\n[DEFAULT: " + 
         config.gap_fill_toggle + "]",
@@ -488,6 +494,7 @@ def update_configuration(args):
     config.xipe_toggle=args.xipe
     config.minpath_toggle=args.minpath
     config.gap_fill_toggle=args.gap_fill
+    config.count_normalization=args.count_normalization
     
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):

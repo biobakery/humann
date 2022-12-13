@@ -101,7 +101,12 @@ def normalized_gene_length(gene_length, read_length):
     if read_length < 1:
         read_length = 1
 
-    return (abs(gene_length - read_length)+1)/1000.0
+    if config.count_normalization == "RPKs":
+        new_gene_length=gene_length/1000.0
+    else:
+        new_gene_length=(abs(gene_length - read_length)+1)/1000.0
+
+    return new_gene_length
 
 class Alignments:
     """
@@ -338,7 +343,12 @@ class Alignments:
         
         # Store the scores by bug and gene
         normalized_reference_length=normalized_gene_length(reference_length, read_length)
-        normalized_score=1/normalized_reference_length
+
+        # Apply different normalization if set
+        normalized_score=1
+        if config.count_normalization != "Counts":
+            normalized_score=1/normalized_reference_length
+
         if bug in self.__scores_by_bug_gene:
             self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_score
         else:
@@ -448,7 +458,7 @@ class Alignments:
         self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
         
     
-    def convert_alignments_to_gene_scores(self,gene_scores_store):
+    def convert_alignments_to_gene_scores(self,gene_scores_store,count_normalization):
         """
         Computes the scores for all genes per bug
         Add to the gene_scores store
@@ -480,13 +490,23 @@ class Alignments:
              
         # add all gene scores to structure
         gene_scores_store.add(all_gene_scores,"all")
-        
+       
+        # apply normalization if set
+        total_all_scores_normalization=1
+        if count_normalization == "Adjusted CPMs":
+            total_all_scores=0
+            for gene in gene_scores_store.gene_list_sorted_by_score("all"):
+                total_all_scores+=gene_scores_store.get_score("all",gene) 
+            total_all_scores_normalization=1/total_all_scores*1e6
+ 
         # print messages if in verbose mode
         message="\n".join(messages)
         message="Total gene families  : " +str(len(all_gene_scores))+"\n"+message
         if config.verbose:
             print(message)
         logger.info("\n"+message)
+
+        return total_all_scores_normalization
         
     def clear(self):
         """

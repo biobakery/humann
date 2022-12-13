@@ -92,6 +92,7 @@ def log_settings():
     lines.append("INPUT AND OUTPUT FORMATS")
     lines.append("input file format = " + input_format)
     lines.append("output file format = " + output_format)
+    lines.append("normalization mode = " + count_normalization)
     lines.append("output max decimals = " + str(output_max_decimals))
     lines.append("remove stratified output = " + str(remove_stratified_output))
     lines.append("remove column description output = " + str(remove_column_description_output))
@@ -321,6 +322,10 @@ xipe_toggle = "off"
 minpath_toggle = "on"
 gap_fill_toggle = "on"
 pick_frames_toggle = "off"
+
+# normalization options
+count_normalization_choices=["Adjusted CPMs","Adjusted RPKs","RPKs","Counts"]
+count_normalization=count_normalization_choices[0]
 
 # file format
 output_format_choices=["tsv", "biom"]
