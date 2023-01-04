@@ -408,7 +408,7 @@ bowtie2_version={
     "column" : 2}
 
 bowtie2_build_opts=[]
-bowtie2_align_opts=["--very-sensitive"]
+bowtie2_align_opts=["--very-sensitive","--no-hd","--no-sq"]
 
 #set the locations of data in the sam file
 sam_read_name_index=0

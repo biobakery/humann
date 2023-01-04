@@ -257,7 +257,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     while line:
         # ignore headers ^@ 
         unaligned_read=False
-        if not re.search("^@",line):
+        if line[0] != "@":
             info=line.split(config.sam_delimiter)
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
