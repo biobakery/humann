@@ -497,7 +497,7 @@ When HUMAnN 3.0 is run, three main output files will be created (where `` $SAMPL
 
 ``` 
 # Gene Family	$SAMPLENAME_Abundance-RPKs
-UNMAPPED        187.0
+READS_UNMAPPED        187.0
 UniRef50_unknown        150.0
 UniRef50_unknown|g__Bacteroides.s__Bacteroides_fragilis 150.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon	67.0
@@ -516,7 +516,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 *   HUMAnN 3.0 uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
 *   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
 *   Please note the gene families file will not be created if the input file type is a gene table.
-*   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+*   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 * The UniRef50_unknown values represent the total abundance of reads which map to ChocoPhlAn nucleotide sequences which do not have a UniRef50 annotation.
 
 ----
@@ -525,7 +525,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 
 ```
 # Reaction      $SAMPLENAME_Abundance
-UNMAPPED        7573721.0000000000
+READS_UNMAPPED      7573721.0000000000
 UNGROUPED    22978726.4009404778
 UNGROUPED|g__Bacteroides.s__Bacteroides_vulgatus     1961355.5951347812
 UNGROUPED|g__Bacteroides.s__Bacteroides_uniformis    1579305.9455720731
@@ -538,7 +538,7 @@ UNGROUPED|unclassified       5100980.1244789278
          
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_reactions.tsv ``
 *   This file details the abundance of each reaction in the community from regrouping gene families to reactions. 
-*   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+*   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 
 
 ### 3. Pathway abundance file ###

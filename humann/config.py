@@ -519,7 +519,7 @@ default_reference_length=1000
 match_power=2
 
 # Output file tags
-unmapped_gene_name = "UNMAPPED"
+unmapped_gene_name = "READS_UNMAPPED"
 unmapped_pathway_name = "UNMAPPED"
 unintegrated_pathway_name = "UNINTEGRATED"
 ungrouped_reaction_name = "UNGROUPED"
