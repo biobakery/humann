@@ -356,11 +356,11 @@ nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
 
-pathabundance_file="_pathabundance"
-pathcoverage_file="_pathcoverage"
-reactions_file="_reactions"
-genefamilies_file="_genefamilies"
-profile_file="_metaphlan_profile"
+pathabundance_file="_4_pathabundance"
+pathcoverage_file="_5_pathcoverage"
+reactions_file="_3_reactions"
+genefamilies_file="_2_genefamilies"
+profile_file="_1_metaphlan_profile"
 
 # metaphlan options
 metaphlan_opts=["-t","rel_ab"]

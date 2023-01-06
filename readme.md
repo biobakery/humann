@@ -392,11 +392,11 @@ $ humann --input $SAMPLE --output $OUTPUT_DIR
 
 **Five main output files will be created:**
 
-1. `$OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv`
-2. `$OUTPUT_DIR/$SAMPLENAME_reactions.tsv`
-3. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
-4. `$OUTPUT_DIR/$SAMPLENAME_metaphlan_profile.tsv`
-5. `$OUTPUT_DIR/$SAMPLENAME.log`
+1. `$OUTPUT_DIR/$SAMPLENAME_0.log`
+2. `$OUTPUT_DIR/$SAMPLENAME_1_metaphlan_profile.tsv`
+3. `$OUTPUT_DIR/$SAMPLENAME_2_genefamilies.tsv`
+4. `$OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv`
+5. `$OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv`
 
 where `$SAMPLENAME` is the basename of `$SAMPLE`
 
@@ -469,23 +469,23 @@ To run the standard workflow, follow these steps:
             * Replace `$SAMPLE.fastq` with the name of the fastq input file
             * Replace `$OUTPUT_DIR` with the full path to the folder to write output
         * If you have paired-end reads, please see the guide [Paired-end reads](#markdown-header-humann-and-paired-end-sequencing-data)
-    * The results will be three main output files for each input file named `$SAMPLE_genefamilies.tsv` and `$SAMPLE_pathabundance.tsv`. 
+    * The results will be three main output files for each input file named `$SAMPLE_2_genefamilies.tsv` and `$SAMPLE_4_pathabundance.tsv`. 
 
 2. Normalize the abundance output files
     * We recommend normalizing the abundance data based on the statistical tests you will perform.
     * Prior to nomalization, select the scheme to use (copies per million or relative abundance). For example, if using [MaAsLin](http://huttenhower.sph.harvard.edu/maaslin), select relative abundance.
     * Use the HUMAnN 3.0 tool renorm table, to compute the normalized abundances (relative abundance is selected in the example command below)
-        * for `$SAMPLE_genefamilies.tsv` in `$OUTPUT_DIR`
-            * `` $ humann_renorm_table --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_relab.tsv --units relab ``
+        * for `$SAMPLE_2_genefamilies.tsv` in `$OUTPUT_DIR`
+            * `` $ humann_renorm_table --input $SAMPLE_2_genefamilies.tsv --output $SAMPLE_2_genefamilies_relab.tsv --units relab ``
     * Please note, gene family abundance is reported in RPK (reads per kilobase). This is computed as the sum of the scores for all alignments for a gene family. An alignment score is based on the number of matches to the reference gene for a specific sequence. It is divided by the length of the reference gene in kilobases to normalize for gene length. Each alignment score is also normalized to account for alignments for a single sequence to multiple reference genes. Alignments are not considered if they do not pass the e-value, identity, and coverage thresholds.
     * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#markdown-header-10-log).
     * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the guide to [humann_regroup_table](#markdown-header-humann_regroup_table) for detailed information. 
     
 3. Join the output files (gene families and abundance) from the HUMAnN 3.0 runs from all samples into three files
-    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_genefamilies.tsv --file_name genefamilies_relab ``
-    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_pathabundance.tsv --file_name pathabundance_relab ``
+    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_2_genefamilies.tsv --file_name genefamilies_relab ``
+    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_4_pathabundance.tsv --file_name pathabundance_relab ``
     * For each command, replace `$OUTPUT_DIR` with the full path to the folder containing the HUMAnN 3.0 output files.
-    * The resulting files from these commands are named `humann_genefamilies.tsv` and `humann_pathabundance.tsv`.
+    * The resulting files from these commands are named `humann_2_genefamilies.tsv` and `humann_4_pathabundance.tsv`.
 
 ----	
 	
@@ -510,7 +510,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_vu
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	22.0
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_stercoris	7.0
 ```
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_2_genefamilies.tsv ``
 *   This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
 *   Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance.
 *   HUMAnN 3.0 uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
@@ -536,7 +536,7 @@ UNGROUPED|unclassified       5100980.1244789278
 2.7.13.3-RXN|unclassified       12529.4324849206
 ```
          
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_reactions.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv ``
 *   This file details the abundance of each reaction in the community from regrouping gene families to reactions. 
 *   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 
@@ -560,7 +560,7 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegol
 PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 ```
          
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv ``
 *   This file details the abundance of each pathway in the community as a function of the abundances of the pathway's component reactions, with each reaction's abundance computed as the sum over abundances of genes catalyzing the reaction. 
 *   Pathway abundance is computed once at the community level and again for each species (plus the "unclassified" stratum) using community- and species-level gene abundances along with the structure of the pathway.
 *   The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
@@ -591,7 +591,7 @@ k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales   2|22|333|5555   
 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae  2|11|111|1111|77777     51.32768
 ```
 
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_metaphlan_profile.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_1_metaphlan_profile.tsv ``
 *   This file is the taxonomic profile output from MetaPhlAn.
 
 
@@ -770,7 +770,7 @@ nucleotide database folder = data/chocophlan_DEMO
 protein database folder = data/uniref_DEM
 ```
 
-*   File name: `` $SAMPLENAME.log ``
+*   File name: `` $SAMPLENAME_0.log ``
 *   This file is a log of the run.
 *   Timestamps for each step in the flow are benchmarked in the log. Look for these as lines containing "TIMESTAMP".
 *   The percent unaligned reads after each alignment step is included in the log. Look for these as lines containing the phrase "Unaligned reads after". 
@@ -1187,7 +1187,7 @@ If you are running HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) 
     * The input file can be in biom or tsv format.
 
 4. Join the pathways data files from the HUMAnN 3.0 runs from all samples into two files
-    * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_pathabundance.tsv --file_name pathabundance ``
+    * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_4_pathabundance.tsv --file_name pathabundance ``
     * If the files being joined in this step are biom format, the ouput file will also be in biom format.
 
 Please note the flag ``--verbose`` can be added to all commands.
@@ -1329,12 +1329,12 @@ To run this analysis, run the following steps:
 1. Run HUMAnN 3.0 on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
     * For each $SAMPLE.fastq in the set of all samples
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR --output-format biom --remove-stratified-output --output-max-decimals 0 ``
-        * Each sample will have two main output files ($SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv) in biom format.
+        * Each sample will have two main output files ($SAMPLE_2_genefamilies.tsv, $SAMPLE_4_pathabundance.tsv) in biom format.
 
 2. Merge the three output files for each sample into three output files for all samples using [QIIME's merge_otu_tables.py](http://qiime.org/scripts/merge_otu_tables.html)
     * For this example, assume there are 3 samples named $SAMPLE1.fastq, $SAMPLE2.fastq, and $SAMPLE3.fastq
-        * `` $ merge_otu_tables.py -i $SAMPLE1_genefamilies.biom,$SAMPLE2_genefamilies.biom,$SAMPLE3_genefamilies.biom -o genefamilies_all.biom ``
-        * `` $ merge_otu_tables.py -i $SAMPLE1_pathabundance.biom,$SAMPLE2_pathabundance.biom,$SAMPLE3_pathabundance.biom -o pathabundance_all.biom ``
+        * `` $ merge_otu_tables.py -i $SAMPLE1_2_genefamilies.biom,$SAMPLE2_2_genefamilies.biom,$SAMPLE3_2_genefamilies.biom -o genefamilies_all.biom ``
+        * `` $ merge_otu_tables.py -i $SAMPLE1_4_pathabundance.biom,$SAMPLE2_4_pathabundance.biom,$SAMPLE3_4_pathabundance.biom -o pathabundance_all.biom ``
 
 3. For each of the merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
     * `` $ biom summarize-table -i genefamilies_all.biom -o genefamilies_summary.txt ``
@@ -1370,8 +1370,8 @@ The recommended HUMAnN 3.0 metatranscriptome (RNA) analysis protocol differs dep
 By default, the gene families and pathways output files from HUMAnN 3.0 are species level. To obtain genus level gene families and pathways, follow these steps.
 
 1. Create a genus level gene families file
-    * `` $ humann_gene_families_genus_level --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_genus_level.tsv ``
-    * In this command, replace ``$SAMPLE_genefamilies.tsv`` with the species level gene families file created by default by HUMAnN 3.0 and ``$SAMPLE_genefamilies_genus_level.tsv`` with the name of the gene families genus level file that will be created.
+    * `` $ humann_gene_families_genus_level --input $SAMPLE_2_genefamilies.tsv --output $SAMPLE_genefamilies_genus_level.tsv ``
+    * In this command, replace ``$SAMPLE_2_genefamilies.tsv`` with the species level gene families file created by default by HUMAnN 3.0 and ``$SAMPLE_genefamilies_genus_level.tsv`` with the name of the gene families genus level file that will be created.
 
 2. Run HUMAnN 3.0, with the genus level gene families file as input, to get genus level pathways output files
     * `` $ humann --input $SAMPLE_genefamilies_genus_level.tsv --output humann_genus_level_output ``
@@ -1443,7 +1443,7 @@ usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [--annotation-gene-index <3>] [--id-mapping <id_mapping.tsv>]
               [--remove-temp-output]
               [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-              [--o-log <sample.log>] [--output-basename <sample_name>]
+              [--o-log <sample_0.log>] [--output-basename <sample_name>]
               [--output-format {tsv,biom}] [--output-max-decimals <10>]
               [--remove-column-description-output]
               [--remove-stratified-output]
@@ -1572,8 +1572,8 @@ optional arguments:
   --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         level of messages to display in log
                         [DEFAULT: DEBUG]
-  --o-log <sample.log>  log file
-                        [DEFAULT: sample.log]
+  --o-log <sample_0.log>  log file
+                        [DEFAULT: sample_0.log]
   --output-basename <sample_name>
                         the basename for the output files
                         [DEFAULT: input file basename]
