@@ -93,13 +93,11 @@ def get_species_name(line, sgb=False):
 
     try:
         species=line.split("|")[-1+offset]
-        genus=line.split("|")[-2+offset]
-        name=genus + "." + species
     except IndexError:
-        name=""
+        species=""
         logger.debug("Unable to process species: " + line)
 
-    return name                        
+    return species                        
 
 def create_custom_database(chocophlan_dir, profile_file):
     """
@@ -136,10 +134,10 @@ def create_custom_database(chocophlan_dir, profile_file):
 
                     # also include the genus and species listed in the abundance file
                     sgb=organism_info.split("|")[-1].split("__")[-1]
-                    genus_species=get_species_name(organism_info, sgb=True)
+                    species_name=get_species_name(organism_info, sgb=True)
 
                     sgb_abundances[sgb]=read_percent
-                    config.sgb_to_species_mapping[sgb]=genus_species
+                    config.sgb_to_species_mapping[sgb]=species_name
                     sgb_species_found+=[sgb]
 
             line = file_handle.readline()
