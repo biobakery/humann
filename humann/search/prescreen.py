@@ -212,7 +212,8 @@ def create_custom_database(chocophlan_dir, bug_file):
    
         if not version_found:
             message="The MetaPhlAn taxonomic profile provided was not generated with the database version "+\
-                config.metaphlan_v3_db_version+" or "+metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v3.0."
+                config.metaphlan_v3_db_version+" or "+config.metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v3.0 or if you are using MetaPhlAn v4 please use the database "+\
+                config.metaphlan_v4_db_version+"."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
