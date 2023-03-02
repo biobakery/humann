@@ -1,9 +1,10 @@
 
 # HUMAnN History #
 
-## v3.6.1 (TBD) ##
+## v3.6.1 (03-02-2023) ##
 
 * Added a new utility script to expand a UniRef90 gene family to all those included in its associated UniRef50 clusters.
+* Improve error message that checks MetaPhlAn version.
 
 ## v3.6 (09-26-2022) ##
 
