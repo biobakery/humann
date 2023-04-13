@@ -1,7 +1,7 @@
 
 # HUMAnN History #
 
-## v3.7 (TBD) ##
+## v3.7 (03-13-2023) ##
 
 * Updated mapping file to be compatible with the latest MetaPhlAn database (vOct22).
 
