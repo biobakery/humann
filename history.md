@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v3.7 (03-13-2023) ##
+
+* Updated mapping file to be compatible with the latest MetaPhlAn database (vOct22).
+
 ## v3.6.1 (03-02-2023) ##
 
 * Added a new utility script to expand a UniRef90 gene family to all those included in its associated UniRef50 clusters.

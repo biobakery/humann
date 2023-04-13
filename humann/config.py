@@ -302,7 +302,7 @@ pathway_OR=","
 pathway_reaction_optional="-"
 
 # sgb association file
-sgb_to_species_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","mpa_vJan21_CHOCOPhlAnSGB_202103.tsv"))
+sgb_to_species_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","vOct22_SGB_mapping.tsv"))
 
 # query annotation
 query_length_annotation_delimiter="|"
@@ -366,7 +366,7 @@ metaphlan_version={
     "column" : 2}
 
 metaphlan_v3_db_version="v3"
-metaphlan_v4_db_version="vJan21"
+metaphlan_v4_db_version="vOct22"
 metaphlan_v3_db_matching_uniref="v201901_v31"
 
 matching_uniref="201901b"

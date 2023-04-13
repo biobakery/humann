@@ -76,13 +76,7 @@ def read_sgb_mapping_file():
         for line in file_handle:
             data=line.rstrip().split("\t")
             sgb="t__"+data[0]
-            species=["s__"+data[1]]
-
-            # add additional species if included
-            try:
-                species+=[ "s__"+name for name in filter(lambda x: x, data[3].split(","))]
-            except IndexError:
-                pass
+            species=[data[1].split(".")[-1]]
 
             if not sgb in sgbs_to_species:
                 sgbs_to_species[sgb]=species
