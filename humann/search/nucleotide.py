@@ -287,6 +287,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     file_handle_write_aligned.close()
 
     # process alignments to determine genes for filtering
+    unaligned_reads_store.start_bulk_write()
     allowed_genes = blastx_coverage.blastx_coverage(reduced_aligned_reads_file,
         config.nucleotide_subject_coverage_threshold, alignments, log_messages=True, apply_filter=True,
         nucleotide=True, query_coverage_threshold=config.nucleotide_query_coverage_threshold,
@@ -297,8 +298,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
     # read through the file line by line
     # capture alignments and also write out unaligned reads for next step in processing
+    alignments.start_bulk_write()
     line = file_handle_read.readline()
-    query_ids=set()
     no_frames_found_count=0
     small_identity_count=0
     filtered_genes_count=0
@@ -308,7 +309,6 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
         unaligned_read=False
         if not re.search("^@",line):
             info=line.split(config.sam_delimiter)
-            query_ids.add(info[config.blast_query_index])
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
                 unaligned_read=True
@@ -378,12 +378,8 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     file_handle_read.close()
     file_handle_write_unaligned.close()   
     file_handle_write_aligned.close()
-    
-    # set the total number of queries
-    unaligned_reads_store.set_initial_read_count(len(query_ids))
-    
-    # set the unaligned reads file to read sequences from
-    unaligned_reads_store.set_file(unaligned_reads_file_fasta)
+    alignments.end_bulk_write()
+    unaligned_reads_store.end_bulk_write()
     
     if write_picked_frames:
         file_handle_write_unaligned_frames.close()

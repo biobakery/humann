@@ -57,7 +57,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test the total number of expected ids are loaded
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file)
+        reads_store=store.Reads()
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check that the total number of expected reads are loaded
         self.assertEqual(len(reads_store.id_list()), cfg.small_fasta_file_total_sequences)
@@ -68,7 +69,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test the total number of expected reads counted
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file)
+        reads_store=store.Reads()
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check that the total number of expected reads are counted
         self.assertEqual(reads_store.count_reads(), cfg.small_fasta_file_total_sequences)
@@ -80,7 +82,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test with minimize memory use
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        reads_store=store.Reads(minimize_memory_use=True)
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check that the total number of expected reads are counted
         self.assertEqual(reads_store.count_reads(), cfg.small_fasta_file_total_sequences)            
@@ -92,7 +95,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test the expected ids are loaded
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file)
+        reads_store=store.Reads()
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check the reads are printed correctly
         stored_fasta=[]
@@ -139,7 +143,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test with minimize memory use
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        reads_store=store.Reads(minimize_memory_use=True)
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check the reads are printed correctly
         stored_fasta=[]
@@ -185,7 +190,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test the sequences are loaded
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file)
+        reads_store=store.Reads()
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check the reads are printed correctly
         stored_fasta=[]
@@ -229,7 +235,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test with minimize memory use
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        reads_store=store.Reads(minimize_memory_use=True)
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # Check the reads are printed correctly
         stored_fasta=[]
@@ -271,7 +278,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Read class: Test the deleting of ids
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file)
+        reads_store=store.Reads()
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # delete all but one of the reads and check structure is empty
         id_list=reads_store.id_list()
@@ -288,7 +296,8 @@ class TestHumannStoreFunctions(unittest.TestCase):
         Test with minimial memory use
         """
         
-        reads_store=store.Reads(cfg.small_fasta_file, minimize_memory_use=True)
+        reads_store=store.Reads(minimize_memory_use=True)
+        reads_store.add_from_fasta(cfg.small_fasta_file)
         
         # delete all but one of the reads and check structure is empty
         id_list=reads_store.id_list()
@@ -778,7 +787,7 @@ class TestHumannStoreFunctions(unittest.TestCase):
         
         # test median score for an even number of values
         self.assertEqual(pathways_and_reactions.max_median_score("bug"),2.5)       
-        
+
     def test_Alignments_add_bug_count(self):
         """
         Alignments class: Test add function
@@ -881,52 +890,6 @@ class TestHumannStoreFunctions(unittest.TestCase):
         # test the lengths are correct
         stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
         self.assertEqual(sorted(stored_lengths),sorted([1/1000.0,91/1000.0,901/1000.0,901/1000.0]))   
-              
-    def test_Alignments_add_gene_lengths_with_temp_alignment_file(self):
-        """
-        Alignments class: Test add function
-        Test the gene lengths
-        Test using the temp alignment file instead of storing data in memory
-        """             
-        
-        alignments_store=store.Alignments(minimize_memory_use=True)
-        
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",1)
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",1)
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",1)
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",1)
-        
-        # test the lengths are correct
-        stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
-        
-        # delete the temp alignment file
-        alignments_store.delete_temp_alignments_file()
-        
-        self.assertEqual(sorted(stored_lengths),sorted([10/1000.0,100/1000.0,1000/1000.0,1000/1000.0])) 
-        
-    def test_Alignments_add_gene_lengths_with_read_length_normalization(self):
-        """
-        Alignments class: Test add function
-        Test the gene lengths with read length normalization
-        """             
-        
-        alignments_store=store.Alignments(minimize_memory_use=True)
-        
-        # set the average read length
-        average_read_length=100
-        
-        alignments_store.add("gene2", 10, "Q3", 0.01, "bug1",average_read_length)
-        alignments_store.add("gene1", 100, "Q1", 0.01, "bug2",average_read_length)
-        alignments_store.add("gene3", 1000, "Q2", 0.01, "bug3",average_read_length)
-        alignments_store.add("gene1", 0, "Q1", 0.01, "bug1",average_read_length)
-        
-        # test the lengths are correct
-        stored_lengths=[item[-1] for item in alignments_store.get_hit_list()]
-        
-        # delete the temp alignment file
-        alignments_store.delete_temp_alignments_file()
-        
-        self.assertEqual(sorted(stored_lengths),sorted([1/1000.0,91/1000.0,901/1000.0,901/1000.0]))    
         
     def test_Alignments_process_chocophlan_length(self):
         """
@@ -1168,3 +1131,48 @@ class TestHumannStoreFunctions(unittest.TestCase):
             self.assertDictEqual(cfg.genetable_file_bug_scores[bug],gene_scores.scores_for_bug(bug))
             
         
+    def test_Alignments_clear(self):
+        """
+        Alignments class: test clear function
+        Test a cleared used store is like a cleared new store
+        """
+        alignments_store=store.Alignments()
+        alignments_store.add("gene2", 1, "Q3", 0.01, "bug1",1)
+
+        second_alignments_store=store.Alignments()
+
+        self.assertNotEqual(vars(alignments_store), vars(second_alignments_store))
+
+        alignments_store.clear()
+        second_alignments_store.clear()
+
+        self.assertEqual(vars(alignments_store), vars(second_alignments_store))
+            
+    def test_Alignments_bulk(self):
+        with self.subTest():
+            self._test_Alignments_bulk(minimize_memory_use = True)
+            self._test_Alignments_bulk(minimize_memory_use = False)
+
+    def _test_Alignments_bulk(self, **kwargs):
+        """
+        Alignments class: test transaction management
+        Try select within transaction, rollback, begin and end, and end without begin
+        """
+        with self.subTest("Checking transactions", **kwargs):
+            alignments_store=store.Alignments(**kwargs)
+            alignments_store.add("gene1", 1, "Q1", 0.01, "bug1",1)
+            hits=alignments_store.get_hit_list()
+
+            alignments_store.start_bulk_write()
+            alignments_store.add("gene2", 2, "Q2", 0.02, "bug2",2)
+            self.assertNotEqual(alignments_store.get_hit_list(), hits)
+            alignments_store.do("rollback transaction")
+            self.assertEqual(alignments_store.get_hit_list(), hits)
+
+            second_alignments_store=store.Alignments(**kwargs)
+            second_alignments_store.start_bulk_write()
+            second_alignments_store.add("gene1", 1, "Q1", 0.01, "bug1",1)
+            second_alignments_store.end_bulk_write()
+            self.assertEqual(alignments_store.get_hit_list(), hits)
+
+            self.assertRaises(BaseException, alignments_store.end_bulk_write)

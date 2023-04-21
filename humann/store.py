@@ -34,6 +34,7 @@ import math
 import sys
 import gzip
 import bz2
+import sqlite3
 
 from . import config
 from . import utilities
@@ -103,103 +104,87 @@ def normalized_gene_length(gene_length, read_length):
 
     return (abs(gene_length - read_length)+1)/1000.0
 
-class Alignments:
+class SqliteStore:
+    def __init__(self, minimize_memory_use = None):
+        self.__minimize_memory_use=minimize_memory_use
+        self.__dbpath = None
+        self.__conn = None
+        self.__is_within_transaction = False
+        self.__stateful_ops_in_bulk_write = None
+
+
+    def connect(self):
+        """
+        Open the sqlite3 connection
+        """
+        if self.__conn:
+            return
+
+        if not self.__dbpath:
+            store_name=type(self).__name__
+            if self.__minimize_memory_use:
+                self.__dbpath = utilities.unnamed_temp_file(store_name + ".sqlite")
+                logger.debug("Initializing {0} store backed by a temporary file to minimize memory use".format(store_name))
+            else:
+                self.__dbpath = ":memory:"
+                logger.debug("Initializing {0} store in-memory".format(store_name))
+        
+        self.__conn = sqlite3.connect(self.__dbpath, isolation_level=None)
+        
+    def do(self, *args):
+        """
+        Run a stateful statement like add or delete
+        If within a transaction, commit and reopen every 100k operations
+        """
+        self.__conn.execute(*args)
+        if self.__is_within_transaction:
+            self.__stateful_ops_in_bulk_write +=1
+            if self.__stateful_ops_in_bulk_write % 100000 == 0:
+                self.__conn.execute("commit transaction")
+                self.__conn.execute("begin transaction")
+
+    def query(self, *args):
+        """
+        Use the sqlite3 connection
+        """
+        return self.__conn.execute(*args)
+
+    def clear(self):
+        """
+        Clear all of the stored data
+        """
+        
+        self.__conn.close()
+        self.__conn = None
+
+    def start_bulk_write(self):
+        self.__is_within_transaction = True
+        self.__stateful_ops_in_bulk_write = 0
+        self.__conn.execute("begin transaction")
+
+    def end_bulk_write(self):
+        self.__conn.execute("commit transaction")
+        self.__is_within_transaction = False
+        self.__stateful_ops_in_bulk_write = None
+
+
+class Alignments(SqliteStore):
+
     """
     Holds all of the alignments for all bugs
     """
     
-    def __init__(self,minimize_memory_use=None):
-        self.__total_scores_by_query={}
-        self.__multiple_hits_queries={}
-        self.__hits_by_query={}
-        self.__scores_by_bug_gene={}
-        self.__gene_counts={}
-        self.__bug_counts={}
-        self.__id_mapping={}   
-        
-        self.__temp_alignments_file=None
-        self.__temp_alignments_file_handle=None
-        self.__delimiter="\t"
-        
-        if minimize_memory_use:
-            self.__minimize_memory_use=True
-            logger.debug("Initialize Alignments class instance to minimize memory use")
-        else:
-            self.__minimize_memory_use=False
-            logger.debug("Initialize Alignments class instance to maximize memory use")
-        
-    def write_temp_alignments_file(self,query,bug,reference,score,normalized_reference_length):
-        """
-        Write an alignment to the temp alignments file, first create if needed
-        """
-        
-        if not self.__temp_alignments_file:
-            self.create_temp_alignments_file()
-        
-        line=self.__delimiter.join([query,bug,reference,str(score),str(normalized_reference_length)])
-        
-        try:
-            self.__temp_alignments_file_handle.write(line+"\n")
-        except EnvironmentError:
-            logger.warning("Unable to write to temp alignments file")
-            
-    def read_temp_alignments_file(self, queries):
-        """
-        Read in those alignments which are included in queries
-        """
-        
-        # close and reopen the temp alignments file
-        line=""
-        try:
-            self.__temp_alignments_file_handle.close()
-            self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "rt")
-        
-            line=self.__temp_alignments_file_handle.readline()
-        except (EnvironmentError, AttributeError):
-            pass
-            
-        while line:
-            # lines should be of the format query \t bug \t reference \t score \t length
-            (query,bug,reference,score,length)=line.rstrip().split(self.__delimiter)
-            if query in queries:
-                yield (query,bug,reference,float(score),float(length))
-                
-            line=self.__temp_alignments_file_handle.readline()
-            
-        try:
-            self.__temp_alignments_file_handle.close()
-        except (EnvironmentError, AttributeError):
-            pass
-        
-    def create_temp_alignments_file(self):
-        """
-        Create and open a temp alignments file
-        """
-        
-        self.__temp_alignments_file=utilities.unnamed_temp_file("temp_alignments")
-        
-        try:
-            self.__temp_alignments_file_handle=open(self.__temp_alignments_file, "w")
-        except EnvironmentError:
-            sys.exit("CRITICAL ERROR: Unable to open temp alignments file")
-        
-    def delete_temp_alignments_file(self):
-        """
-        Delete the temp alignments file
-        """
-        
-        try:
-            self.__temp_alignments_file_handle.close()
-        except EnvironmentError:
-            pass
-        
-        try:
-            os.unlink(self.__temp_alignments_file)
-        except EnvironmentError:
-            logger.warning("Unable to delete the temp alignments file")
-        
-        self.__temp_alignments_file=None
-        self.__temp_alignments_file_handle=None
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.connect()
+        self.do('''create table alignment (
+              query text not null,
+              bug text not null,
+              reference text not null,
+              score real not null,
+              length real not null
+            );''')
+        self.__id_mapping={}
         
     def process_id_mapping(self,file):
         """
@@ -312,134 +297,61 @@ class Alignments:
         except ValueError:
             logger.debug("Could not convert the number of matches to score: " +  str(matches))
             score=0.0
-            
-        # Increase the counts for gene and bug
-        self.__bug_counts[bug]=self.__bug_counts.get(bug,0)+1
-        self.__gene_counts[reference]=self.__gene_counts.get(reference,0)+1
-            
-        # Add to the scores by query and store if query has multiple scores
-        if query in self.__total_scores_by_query:
-            current_query_total=self.__total_scores_by_query[query]
-            if query in self.__multiple_hits_queries:
-                self.__multiple_hits_queries[query]=self.__multiple_hits_queries[query]+[score]
-            else:
-                self.__multiple_hits_queries[query]=[current_query_total,score]
-                
-            self.__total_scores_by_query[query]=current_query_total+score
-        else:
-            self.__total_scores_by_query[query]=score
-        
+
         # Store the scores by bug and gene
         normalized_reference_length=normalized_gene_length(reference_length, read_length)
-        normalized_score=1/normalized_reference_length
-        if bug in self.__scores_by_bug_gene:
-            self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_score
-        else:
-            self.__scores_by_bug_gene[bug]={reference:normalized_score}
             
-        # write the information for the hit to the temp alignments file
-        # or store in memory depending on the memory use setting
-        if self.__minimize_memory_use:
-            self.write_temp_alignments_file(query, bug, reference, score, normalized_reference_length)
-        else:
-            hit=(bug,reference,score,normalized_reference_length)
-            if query in self.__hits_by_query:
-                self.__hits_by_query[query].append(hit)
-            else:
-                self.__hits_by_query[query]=[hit]
-            
+        # write the information for the hit
+        self.do('insert into alignment (query, bug, reference, score, length) values (?,?,?,?,?)', [query, bug, reference, score, normalized_reference_length])
+
     def count_bugs(self):
         """ 
         Return total number of bugs
         """
-        return len(self.__bug_counts)
+
+        return self.query("select count (distinct bug) from alignment").fetchone()[0]
     
     def count_genes(self):
         """ 
         Return total number of genes
         """
-        return len(self.__gene_counts)      
+
+        return self.query("select count (distinct reference) from alignment").fetchone()[0]
             
     def counts_by_bug(self):
         """
         Return each bug and the total number of hits
         """
-        lines=[]
-        for bug in self.__bug_counts:
-            lines.append(bug + ": " + str(self.__bug_counts.get(bug,0)) + " hits")
-            
-        return "\n".join(lines)
+ 
+        return "\n".join(["{0}: {1} hits".format(row[0], row[1]) for row in self.query('select bug, count(*) as c from alignment group by bug order by -c')])
             
     def gene_list(self):
         """
         Return a list of all of the gene families
         """
         
-        return list(self.__gene_counts.keys())
+        return [row[0] for row in self.query('select distinct reference from alignment')]
     
     def bug_list(self):
         """
         Return a list of all of the bugs
         """
-        
-        return list(self.__bug_counts.keys())
+
+        return [row[0] for row in self.query('select distinct bug from alignment')]
     
     def get_hit_list(self):
         """
         Return a list of all of the hits
         """
-        
-        # Add the query to the hits
-        list=[]
-        # if the hits are stored in memory use the dictionary
-        if self.__hits_by_query:
-            for query in self.__hits_by_query:
-                for (bug,reference,score,length) in self.__hits_by_query[query]:
-                    list.append([query]+[bug,reference,score,length])
-        else:
-            # else read through the temp file for the hits
-            for (query,bug,reference,score,length) in self.read_temp_alignments_file(self.__total_scores_by_query):
-                list.append([query,bug,reference,score,length])
-                
-        return list
+
+        return [row for row in self.query('select query, bug, reference, score, length from alignment')]
     
     def hits_for_gene(self,gene):
         """
         Return a list of all of the hits for a specific gene
         """
         
-        # Add the query to the hits
-        list=[]
-        # if the hits are stored in memory use the dictionary
-        if self.__hits_by_query:
-            for query in self.__hits_by_query:
-                for (bug,reference,score,length) in self.__hits_by_query[query]:
-                    if reference==gene:
-                        list.append([query]+[bug,reference,score,length])
-        else:
-            # else read through the temp file for the hits
-            for (query,bug,reference,score,length) in self.read_temp_alignments_file(self.__total_scores_by_query):
-                if reference==gene:
-                    list.append([query,bug,reference,score,length])
-                
-        return list
-    
-    def add_query_normalization_to_alignment_score(self,query,bug,reference,score,length):
-        """
-        Update the gene score added for the single alignment provided
-        This update adds the query normalization
-        """
-        
-        # Normalize by query hits for all queries with multiple hits
-        # Hits where it is the only match per query will have scores of 1
-        # as this is the result of normalizing (ie score/score)
-        
-        query_normalize=self.__total_scores_by_query[query]
-        
-        original_score=1/length
-        updated_score=score/query_normalize*original_score
-        self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
-        
+        return [row for row in self.query('select query, bug, reference, score, length from alignment where reference=?', [gene])]
     
     def convert_alignments_to_gene_scores(self,gene_scores_store):
         """
@@ -447,53 +359,62 @@ class Alignments:
         Add to the gene_scores store
         """
         
-        # Normalize by query hits for all queries with multiple hits
+        # calculate the score per bug and gene
+        # for a single query result, it is 1/a.length
         
-        # process through the temp alignments file if the data is not stored in memory
-        if not self.__hits_by_query:
-            for (query,bug,reference,score,length) in self.read_temp_alignments_file(self.__multiple_hits_queries):
-                self.add_query_normalization_to_alignment_score(query,bug,reference,score,length)
-        # use the hits stored in memory
-        else:
-            for query in self.__multiple_hits_queries:
-                for (bug,reference,score,length) in self.__hits_by_query[query]:
-                    self.add_query_normalization_to_alignment_score(query, bug, reference, score, length)
-        
-        # compute the scores for the genes
-        all_gene_scores={}
-        messages=[]
-        for bug in self.__scores_by_bug_gene:
-            # Add up all genes scores for each bug
-            for gene in self.__scores_by_bug_gene[bug]:
-                all_gene_scores[gene]=all_gene_scores.get(gene,0)+self.__scores_by_bug_gene[bug][gene]
-            # Add to the gene scores structure
-            gene_scores_store.add(self.__scores_by_bug_gene[bug],bug)
-            total_gene_families_for_bug=len(self.__scores_by_bug_gene[bug])
-            messages.append(bug + " : " + str(total_gene_families_for_bug) + " gene families")
-             
-        # add all gene scores to structure
-        gene_scores_store.add(all_gene_scores,"all")
-        
-        # print messages if in verbose mode
-        message="\n".join(messages)
-        message="Total gene families  : " +str(len(all_gene_scores))+"\n"+message
+        query=None
+        try:
+            # by default, bowtie2 and diamond are ran to report the best alignment
+            # try create a unique index and use a simpler query
+            self.do('create unique index query_uix on alignment(query)')
+            query= '''
+              select a.bug, a.reference, sum(1/a.length) as score from alignment a
+                group by bug, reference
+                order by bug, reference
+            '''
+        except sqlite3.IntegrityError:
+        # if a query matches multiple bugs and genes, its score is distributed by weighted average
+        # scores from multiple queries are added up per bug and gene
+        # see unit tests for examples
+            query='''
+              select bug, reference, sum(normalized_score_partial) as score from (
+                  select
+                    a.query,
+                    a.bug,
+                    a.reference,
+                    sum(a.score / a.length ) / (total_score_for_query) as normalized_score_partial
+                  from
+                  alignment a join (
+                    select query, sum(score) as total_score_for_query
+                    from alignment group by query
+                    ) as m
+                  where a.query = m.query
+                  group by a.bug, a.reference, a.query
+               ) group by bug, reference
+               order by bug, reference
+            '''
+        result={}
+        resultAll={}
+        for bug, gene, score in self.query(query):
+            if bug not in result:
+                result[bug]={}
+            result[bug][gene]=score
+            if gene not in resultAll:
+                resultAll[gene]=0
+            resultAll[gene]+=score
+
+        # Add to the store
+        for bug in result:
+            gene_scores_store.add(result[bug], bug)
+        gene_scores_store.add(resultAll, "all")
+
+        # Log a summary, and print if in verbose mode
+        message="\n".join(["{0} : {1} gene families".format(bug, len(result[bug])) for bug in result])
+        message="Total gene families  : " +str(sum([len(result[bug]) for bug in result]))+"\n"+message
         if config.verbose:
             print(message)
         logger.info("\n"+message)
-        
-    def clear(self):
-        """
-        Clear all of the stored data
-        """
-        
-        self.__total_scores_by_query.clear()
-        self.__multiple_hits_queries.clear()
-        self.__hits_by_query.clear()
-        self.__scores_by_bug_gene.clear()
-        self.__gene_counts.clear()
-        self.__bug_counts.clear()
 
-        
 class GeneScores:
     """
     Holds scores for all of the genes
@@ -1239,10 +1160,17 @@ class PathwaysDatabase:
                 config.pathways_database_delimiter.join(self.__pathways_to_reactions[pathway]))
         return "\n".join(data)
     
-class Reads:
+class Reads(SqliteStore):
     """
     Holds all of the reads data to create a fasta file
     """
+    def __init__(self, file=None, **kwargs):
+        super().__init__(**kwargs)
+        self.connect()
+        self.do('''create table read (
+              id text not null primary key,
+              sequence text not null
+            );''')
     
     def add(self, id, sequence):
         """
@@ -1250,11 +1178,7 @@ class Reads:
         >id
         sequence
         """
-        
-        if self.__minimize_memory_use:
-            self.__ids.add(id)
-        else:
-            self.__reads[id]=sequence
+        self.do('insert or ignore into read (id, sequence) values (?,?)', [id, sequence])
             
     def process_file(self, file):
         """
@@ -1299,104 +1223,36 @@ class Reads:
         # Remove the temp fasta file if exists
         if temp_file:
             utilities.remove_file(temp_file)
-    
-    def __init__(self, file=None, minimize_memory_use=None):
-        """
-        Create initial data structures and load if file name provided
-        """
-        self.__reads={}
-        self.__ids=set()
-        self.__initial_read_count=0
-        self.__file=file
-        
-        if minimize_memory_use:
-            self.__minimize_memory_use=True
-            logger.debug("Initialize Reads class instance to minimize memory use")
-        else:
-            self.__minimize_memory_use=False
-            logger.debug("Initialize Reads class instance to maximize memory use")
               
-        if self.__file:
-            for (id,sequence) in self.process_file(file):
-                self.add(id, sequence)
-                self.__initial_read_count+=1
-                
-    def set_file(self, file):
-        """
-        Set the file to read sequences from
-        """
-        
-        self.__file=file
+    def add_from_fasta(self, fasta_path):
+        for (id,sequence) in self.process_file(fasta_path):
+            self.add(id, sequence)
 
     def remove_id(self, id):
         """
         Remove the id and sequence from the read structure
         """
-        if id in self.__reads:
-            del self.__reads[id]
-        elif id in self.__ids:
-            self.__ids.discard(id)
-                
-    def get_fasta(self, file=None):
+        self.do('delete from read where id = ? or id = ?', [id, utilities.remove_length_annotation(id)])
+
+    def get_fasta(self):
         """ 
-        Return a string of the fasta file sequences stored or read from a file
+        Return a string of the fasta file sequences stored
         """
-        
-        if not file:
-            file=self.__file
-            
-        # use the stored reads if present
-        if self.__reads:
-            for id, sequence in self.__reads.items():
-                yield ">"+id+"\n"+sequence
-        else:
-            if file:
-                for id, sequence in self.process_file(file):
-                    # check for the id or the id without the length annotation
-                    if utilities.remove_length_annotation(id) in self.__ids or id in self.__ids:
-                        yield ">"+id+"\n"+sequence
-    
+        for row in self.query('select id, sequence from read'):
+            yield ">{0}\n{1}".format(*row)
+
     def id_list(self):
         """
         Return a list of all of the fasta ids
         """
-        
-        if self.__reads:
-            return list(self.__reads.keys())
-        else:
-            return list(self.__ids)
+        return [row[0] for row in self.query('select id from read')]
     
     def count_reads(self):
         """
         Return the total number of reads stored
         """
         
-        if self.__reads:
-            return len(self.__reads.keys())
-        else:
-            return len(self.__ids)
-    
-    def clear(self):
-        """
-        Clear all of the stored reads and ids
-        """
-        
-        self.__reads.clear()
-        self.__ids.clear()
-        
-    def set_initial_read_count(self,total):
-        """
-        Set the total number of reads from the original input file
-        """
-        
-        self.__initial_read_count=total
-        
-    def get_initial_read_count(self):
-        """
-        Get the total number of reads from the original input file
-        """
-        
-        return self.__initial_read_count
+        return self.query("select count(*) from read").fetchone()[0]
          
 class Names:
     """ 

@@ -294,6 +294,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
 
     # run through final filter of alignment by allowed proteins
     small_coverage_count=0
+    alignments.start_bulk_write()
+    unaligned_reads_store.start_bulk_write()
     for alignment_info in utilities.get_filtered_translated_alignments(alignment_file_tsv, alignments,
                                                   apply_filter=True, log_filter=True, identity_threshold=config.identity_threshold):
         (protein_name, gene_length, queryid, matches, bug, alignment_length,
@@ -308,6 +310,8 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
             unaligned_reads_store.remove_id(queryid)
         else:
             small_coverage_count+=1
+    alignments.end_bulk_write()
+    unaligned_reads_store.end_bulk_write()
 
     logger.debug("Total translated alignments not included based on small subject coverage value: " + 
         str(small_coverage_count))
