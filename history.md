@@ -1,7 +1,11 @@
 
 # HUMAnN History #
 
-## v3.7 (03-13-2023) ##
+## v3.8 (TBD) ##
+
+* Updated pathways file to include sub-reaction branches.
+
+## v3.7 (04-13-2023) ##
 
 * Updated mapping file to be compatible with the latest MetaPhlAn database (vOct22).
 
