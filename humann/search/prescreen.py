@@ -73,7 +73,7 @@ def get_abundance_coverage(line):
         coverage=float(data[-2])
     except (KeyError, ValueError):
         message="The relative abundance and coverage were not found in the MetaPhlAn taxonomic profile. "
-        message+="Please run MetaPhlAn with the option(s): "+"\t".join(config.metaphlan_opts)+"."
+        message+="Please run MetaPhlAn with the option(s): "+" ".join(config.metaphlan_opts)+"."
         logger.error(message)
         sys.exit("\n\nERROR: "+message)
 
@@ -158,7 +158,7 @@ def create_custom_database(chocophlan_dir, profile_file):
         if not columns_found:
             message="The MetaPhlAn taxonomic profile provided does not contain the expected columns "+\
                 "in any of its header lines: "+"\t".join(config.metaphlan_columns)+". Please run MetaPhlAn "+\
-                "with the option(s): "+"\t".join(config.metaphlan_opts)+"."
+                "with the option(s): "+" ".join(config.metaphlan_opts)+"."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
