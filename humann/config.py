@@ -77,6 +77,7 @@ def log_settings():
     lines.append("diamond options = " + str(" ".join(map(str,diamond_opts))))
     lines.append("evalue threshold = " + str(evalue_threshold))
     lines.append("prescreen threshold = " + str(prescreen_threshold))
+    lines.append("average read length = " + str(average_read_length))
     lines.append("translated subject coverage threshold = " + str(translated_subject_coverage_threshold))
     lines.append("translated query coverage threshold = " + str(translated_query_coverage_threshold))
     lines.append("nucleotide subject coverage threshold = " + str(nucleotide_subject_coverage_threshold))
@@ -247,6 +248,9 @@ evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold"
 # prescreen threshold
 prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")
 
+# read length
+average_read_length=get_item(config_items, "alignment_settings", "average_read_length", "float")
+
 # nucletide search identity threshold
 nucleotide_identity_threshold = 0.0
 
@@ -363,7 +367,8 @@ genefamilies_file="_2_genefamilies"
 profile_file="_1_metaphlan_profile"
 
 # metaphlan options
-metaphlan_opts=["-t","rel_ab"]
+metaphlan_opts=["-t","rel_ab_w_read_stats"]
+metaphlan_columns=["#clade_name","clade_taxid","relative_abundance","coverage","estimated_number_of_reads_from_the_clade"]
 metaphlan_version={
     "flag" : "--version",
     "major" : 4,

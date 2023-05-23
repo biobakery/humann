@@ -173,6 +173,13 @@ def parse_arguments(args):
         metavar="<" + str(config.prescreen_threshold) + ">", 
         type=float,
         default=config.prescreen_threshold) 
+    tier1_prescreen.add_argument(
+        "--average-read-length", 
+        help="average read length for input file\n[DEFAULT: "
+            + str(config.average_read_length) + "]", 
+        metavar="<" + str(config.average_read_length) + ">", 
+        type=float,
+        default=config.average_read_length) 
 
     tier2_nucleotide_search=parser.add_argument_group("[3] Configure tier 2: nucleotide search")
 
@@ -467,7 +474,10 @@ def update_configuration(args):
         config.bypass_prescreen=True
         config.bypass_nucleotide_index=True
         config.bypass_nucleotide_search=True
-        
+
+    # update the average read length        
+    config.average_read_length=args.average_read_length
+
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.translated_subject_coverage_threshold=args.translated_subject_coverage_threshold

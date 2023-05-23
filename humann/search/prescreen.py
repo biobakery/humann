@@ -63,24 +63,21 @@ def alignment(input):
     
     return config.profile_file
 
-def get_abundance(line):
+def get_abundance_coverage(line):
     """
     Read in the abundance value from the taxonomy file
     """
     try:
         data=line.split("\t")
-        if data[-1].replace(".","").replace("e-","").isdigit():
-            read_percent=float(data[-1])
-        elif data[-2].replace(".","").replace("e-","").isdigit():
-            read_percent=float(data[-2])
-        else:
-            read_percent=float(data[-3])
-    except ValueError:
-        message="The relative abundances were not found in the MetaPhlAn taxonomic profile in the last three columns."
+        read_percent=float(data[-3])
+        coverage=float(data[-2])
+    except (KeyError, ValueError):
+        message="The relative abundance and coverage were not found in the MetaPhlAn taxonomic profile. "
+        message+="Please run MetaPhlAn with the option(s): "+"\t".join(config.metaphlan_opts)+"."
         logger.error(message)
         sys.exit("\n\nERROR: "+message)
 
-    return read_percent
+    return read_percent, coverage
                    
 def get_species_name(line, sgb=False):
     """
@@ -118,18 +115,28 @@ def create_custom_database(chocophlan_dir, profile_file):
 
         line = file_handle.readline()
         version_found = False
+        columns_found = False
         while line:
 
 
             if line.startswith("#") and config.metaphlan_v4_db_version in line:
                 version_found = True
 
+            if line.startswith("#") and line.startswith("\t".join(config.metaphlan_columns)):
+                columns_found = True
+
             # look for SGBs
             if re.search("t__", line) and re.search("s__", line):
                 # check threshold
-                read_percent=get_abundance(line)
+                read_percent, coverage=get_abundance_coverage(line)
 
-                if read_percent >= config.prescreen_threshold:
+                try:
+                    norm_coverage=int(config.average_read_length)*coverage
+                except ValueError:
+                    norm_coverage=0
+                    logger.warning("Unable to compute coverage for line: "+line)
+
+                if read_percent >= config.prescreen_threshold and norm_coverage >= config.prescreen_threshold:
                     organism_info=line.split("\t")[0]
 
                     # also include the genus and species listed in the abundance file
@@ -145,6 +152,13 @@ def create_custom_database(chocophlan_dir, profile_file):
         if not version_found:
             message="The MetaPhlAn taxonomic profile provided does not contain the database version "+\
                 config.metaphlan_v4_db_version+" in any of its header lines."
+            logger.error(message)
+            sys.exit("\n\nERROR: "+message)
+
+        if not columns_found:
+            message="The MetaPhlAn taxonomic profile provided does not contain the expected columns "+\
+                "in any of its header lines: "+"\t".join(config.metaphlan_columns)+". Please run MetaPhlAn "+\
+                "with the option(s): "+"\t".join(config.metaphlan_opts)+"."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
