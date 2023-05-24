@@ -387,6 +387,9 @@ def update_configuration(args):
     # Use the full path to the input file
     args.input=os.path.abspath(args.input)
 
+    # set the version header
+    config.version_header=config.version_header+VERSION
+
     # If set, append paths executable locations
     if args.metaphlan:
         utilities.add_exe_to_path(os.path.abspath(args.metaphlan))    

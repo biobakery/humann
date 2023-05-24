@@ -177,7 +177,7 @@ def identify_reactions_and_pathways(gene_scores, reactions_database, pathways_da
     print_pathways_and_reactions(reactions_store,config.reactions_file,"",
         reaction_names, sorted_reactions, reactions_store.unmapped, 
         reactions_store.unintegrated_total, reactions_store.unintegrated,
-        header_type="# Reaction", unintegrated_name=config.ungrouped_reaction_name)
+        header_type="# Reaction "+config.version_header, unintegrated_name=config.ungrouped_reaction_name)
 
     # Run through the minpath commands if minpath is to be run
     if minpath_commands:
@@ -642,7 +642,7 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     # Print the pathways abundance data to file
     print_pathways_and_reactions(pathways_abundance, config.pathabundance_file, "_Abundance", 
                    pathway_names, sorted_pathways_and_bugs, unmapped_all,
-                   unintegrated_all, unintegrated_per_bug)
+                   unintegrated_all, unintegrated_per_bug, header_type="# Pathway "+config.version_header)
     
     # Set the unmapped and unintegrated to one for coverage output
     unmapped_all=1
@@ -653,6 +653,6 @@ def compute_pathways_abundance_and_coverage(gene_scores, reactions_database,
     # Print the pathways coverage data to file
     #print_pathways_and_reactions(pathways_coverage, config.pathcoverage_file, "_Coverage", 
     #               pathway_names, sorted_pathways_and_bugs, unmapped_all,
-    #               unintegrated_all, unintegrated_per_bug)
+    #               unintegrated_all, unintegrated_per_bug, header_type="# Pathway "+config.version_header)
 
     return config.pathabundance_file, config.pathcoverage_file, config.reactions_file

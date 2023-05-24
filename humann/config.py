@@ -221,6 +221,9 @@ def get_item(config_items, section, name, type=None):
         
     return value
 
+# set the version header
+version_header="HUMAnN v"
+
 # get the base settings from the user edit config file
 config_items=read_user_edit_config_file()
 

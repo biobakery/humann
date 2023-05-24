@@ -51,7 +51,7 @@ def gene_families(alignments,gene_scores,unaligned_reads_count):
     column_name=config.file_basename
     if config.remove_column_description_output:
         column_name=config.file_basename
-    tsv_output=["# Gene Family "+config.count_normalization+delimiter+column_name]
+    tsv_output=["# Gene Family "+config.version_header+" "+config.count_normalization+delimiter+column_name]
     
     # Add the unaligned reads count
     tsv_output.append(config.unmapped_gene_name+delimiter+utilities.format_float_to_string(unaligned_reads_count))  
