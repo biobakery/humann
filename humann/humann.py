@@ -168,7 +168,7 @@ def parse_arguments(args):
         default=" ".join(config.metaphlan_opts))
     tier1_prescreen.add_argument(
         "--prescreen-threshold", 
-        help="minimum percentage of reads matching a species\n[DEFAULT: "
+        help="minimum estimated genome coverage for inclusion in pangenome search\n[DEFAULT: "
             + str(config.prescreen_threshold) + "]", 
         metavar="<" + str(config.prescreen_threshold) + ">", 
         type=float,

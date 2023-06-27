@@ -811,7 +811,7 @@ $ humann_config --print
 HUMAnN Configuration ( Section : Name = Value )
 output_format : remove_stratified_output = False
 output_format : output_max_decimals = 10
-alignment_settings : prescreen_threshold = 0.01
+alignment_settings : prescreen_threshold = 0.5
 alignment_settings : evalue_threshold = 1.0
 alignment_settings : identity_threshold = 50.0
 database_folders : nucleotide = data/chocophlan_DEMO
@@ -855,7 +855,7 @@ threads = 4
 
 ALIGNMENT SETTINGS
 evalue threshold = 1.0
-prescreen threshold = 0.01
+prescreen threshold = 0.5
 identity threshold = 50.0
 
 PATHWAYS SETTINGS
@@ -1423,7 +1423,7 @@ usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [--search-mode {uniref50,uniref90}] [-v]
               [--metaphlan <metaphlan>]
               [--metaphlan-options <metaphlan_options>]
-              [--prescreen-threshold <0.01>] [--bowtie2 <bowtie2>]
+              [--prescreen-threshold <0.5>] [--bowtie2 <bowtie2>]
               [--bowtie-options <bowtie_options>]
               [--nucleotide-database <nucleotide_database>]
               [--nucleotide-identity-threshold <0.0>]
@@ -1494,9 +1494,9 @@ optional arguments:
   --metaphlan-options <metaphlan_options>
                         options to be provided to the MetaPhlAn software
                         [DEFAULT: "-t rel_ab"]
-  --prescreen-threshold <0.01>
-                        minimum percentage of reads matching a species
-                        [DEFAULT: 0.01]
+  --prescreen-threshold <0.5>
+                        minimum estimated genome coverage for inclusion in pangenome search
+                        [DEFAULT: 0.5]
 
 [3] Configure tier 2: nucleotide search:
   --bowtie2 <bowtie2>   directory containing the bowtie2 executable
