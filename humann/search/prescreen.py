@@ -136,7 +136,7 @@ def create_custom_database(chocophlan_dir, profile_file):
                     norm_coverage=0
                     logger.warning("Unable to compute coverage for line: "+line)
 
-                if read_percent >= config.prescreen_threshold and norm_coverage >= config.prescreen_threshold:
+                if norm_coverage >= config.prescreen_threshold:
                     organism_info=line.split("\t")[0]
 
                     # also include the genus and species listed in the abundance file
