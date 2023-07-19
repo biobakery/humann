@@ -66,7 +66,7 @@ from .quantify import modules
 logger=logging.getLogger(__name__)
 
 
-VERSION="3.5"
+VERSION="3.8"
 
 MAX_SIZE_DEMO_INPUT_FILE=10
 

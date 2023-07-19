@@ -273,7 +273,7 @@ remove_column_description_output=get_item(config_items, "output_format", "remove
 # pathways files
 humann_install_directory=os.path.dirname(os.path.abspath(__file__))
 metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_reactions_level4ec_only.uniref.bz2"))
-metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_pathways_structured_filtered_v24"))
+metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_pathways_structured_filtered_v24_subreactions"))
     
 unipathway_database_part1=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","unipathway_uniprots.uniref.bz2"))
 unipathway_database_part2=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","unipathway_pathways"))
@@ -302,7 +302,7 @@ pathway_OR=","
 pathway_reaction_optional="-"
 
 # sgb association file
-sgb_to_species_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","mpa_vJan21_CHOCOPhlAnSGB_202103.tsv"))
+sgb_to_species_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","vOct22_SGB_mapping.tsv"))
 
 # query annotation
 query_length_annotation_delimiter="|"
@@ -366,7 +366,7 @@ metaphlan_version={
     "column" : 2}
 
 metaphlan_v3_db_version="v3"
-metaphlan_v4_db_version="vJan21"
+metaphlan_v4_db_version="vOct22"
 metaphlan_v3_db_matching_uniref="v201901_v31"
 
 matching_uniref="201901b"
@@ -488,9 +488,9 @@ diamond_cmmd_protein_search="blastp"
 diamond_cmmd_nucleotide_search="blastx"
 diamond_version={
     "flag" : "--version",
-    "major" : 0,
-    "minor" : 9,
-    "second minor" : 36,
+    "major" : 2,
+    "minor" : 0,
+    "second minor" : 15,
     "line" : 0,
     "column" : 2}
 

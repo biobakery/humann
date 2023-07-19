@@ -76,13 +76,7 @@ def read_sgb_mapping_file():
         for line in file_handle:
             data=line.rstrip().split("\t")
             sgb="t__"+data[0]
-            species=["s__"+data[1]]
-
-            # add additional species if included
-            try:
-                species+=[ "s__"+name for name in filter(lambda x: x, data[3].split(","))]
-            except IndexError:
-                pass
+            species=[data[1].split(".")[-1]]
 
             if not sgb in sgbs_to_species:
                 sgbs_to_species[sgb]=species
@@ -212,7 +206,8 @@ def create_custom_database(chocophlan_dir, bug_file):
    
         if not version_found:
             message="The MetaPhlAn taxonomic profile provided was not generated with the database version "+\
-                config.metaphlan_v3_db_version+" or "+config.metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v3.0."
+                config.metaphlan_v3_db_version+" or "+config.metaphlan_v4_db_version+" . Please update your version of MetaPhlAn to at least v3.0 or if you are using MetaPhlAn v4 please use the database "+\
+                config.metaphlan_v4_db_version+"."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
         
