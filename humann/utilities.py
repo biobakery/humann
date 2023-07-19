@@ -1241,9 +1241,18 @@ def add_length_annotation(id, length):
     """
     Add the length to the query id
     """
-    
+    # create annotation with length
+    length_annotation=config.query_length_annotation_delimiter+str(length)
+
     # add the length and handle spaces as translated search will split on spaces
-    return id.split(" ")[0]+config.query_length_annotation_delimiter+str(length)
+    new_id=id.split(" ")[0]
+
+    if not new_id.endswith(length_annotation):
+        new_id=new_id+length_annotation
+
+    return new_id
+
+    
 
 def remove_length_annotation(id):
     """
