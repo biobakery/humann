@@ -48,7 +48,7 @@ class TestAdvancedHumannStoreFunctions(unittest.TestCase):
         gene_scores_store=store.GeneScores()
         
         # compute gene scores
-        alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
+        alignments_store.convert_alignments_to_gene_scores(gene_scores_store,1)
         
         # convert lengths to per kb
         gene3_length=gene3_length/1000.0
@@ -88,7 +88,7 @@ class TestAdvancedHumannStoreFunctions(unittest.TestCase):
         gene_scores_store=store.GeneScores()
         
         # compute gene scores
-        alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
+        alignments_store.convert_alignments_to_gene_scores(gene_scores_store,1)
         
         # convert lengths to per kb
         gene1_length=gene1_length/1000.0
@@ -129,7 +129,7 @@ class TestAdvancedHumannStoreFunctions(unittest.TestCase):
         gene_scores_store=store.GeneScores()
         
         # compute gene scores
-        alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
+        alignments_store.convert_alignments_to_gene_scores(gene_scores_store,1)
         
         # gene1
         hit1_score=math.pow(matches1, config.match_power)
@@ -258,7 +258,7 @@ class TestAdvancedHumannStoreFunctions(unittest.TestCase):
         gene_scores_store=store.GeneScores()
         
         # compute gene scores
-        alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
+        alignments_store.convert_alignments_to_gene_scores(gene_scores_store,1)
         
         # convert lengths to per kb
         gene3_length=gene3_length/1000.0
@@ -304,7 +304,7 @@ class TestAdvancedHumannStoreFunctions(unittest.TestCase):
         gene_scores_store=store.GeneScores()
         
         # compute gene scores
-        alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
+        alignments_store.convert_alignments_to_gene_scores(gene_scores_store,1)
         
         # convert lengths to per kb
         gene1_length=gene1_length/1000.0
@@ -351,7 +351,7 @@ class TestAdvancedHumannStoreFunctions(unittest.TestCase):
         gene_scores_store=store.GeneScores()
         
         # compute gene scores
-        alignments_store.convert_alignments_to_gene_scores(gene_scores_store)
+        alignments_store.convert_alignments_to_gene_scores(gene_scores_store,1)
         
         # gene1
         hit1_score=math.pow(matches1, config.match_power)

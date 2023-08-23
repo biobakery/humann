@@ -1330,7 +1330,7 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
     evalue_convert_error=0
     rapsearch_evalue_convert_error=0
     while line:
-        if re.search("^#",line):
+        if line[0] == "#":
             # Check for the rapsearch2 header to determine if these are log(e-value)
             if re.search(config.blast_delimiter,line):
                 data=line.split(config.blast_delimiter)

@@ -42,38 +42,34 @@ def gene_families(alignments,gene_scores,unaligned_reads_count):
     logger.debug("Compute gene families")
     
     # Compute scores for each gene family for each bug set
-    alignments.convert_alignments_to_gene_scores(gene_scores)
+    total_all_scores_normalization=alignments.convert_alignments_to_gene_scores(gene_scores,config.count_normalization)
         
-    # Process the gene id to names mappings
-    gene_names=store.Names(config.gene_family_name_mapping_file)
-     
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter     
 
     # Write the scores ordered with the top first
-    column_name=config.file_basename+"_Abundance-RPKs"
+    column_name=config.file_basename
     if config.remove_column_description_output:
         column_name=config.file_basename
-    tsv_output=["# Gene Family"+delimiter+column_name]
+    tsv_output=["# Gene Family "+config.version_header+" "+config.count_normalization+delimiter+column_name]
     
     # Add the unaligned reads count
     tsv_output.append(config.unmapped_gene_name+delimiter+utilities.format_float_to_string(unaligned_reads_count))  
 
     # Print out the gene families with those with the highest scores first
     for gene in gene_scores.gene_list_sorted_by_score("all"):
-        all_score=gene_scores.get_score("all",gene)
+        all_score=gene_scores.get_score("all",gene)*total_all_scores_normalization
         if all_score>0:
-            gene_name=gene_names.get_name(gene)
             # Print the computation of all bugs for gene family
-            tsv_output.append(gene_name+delimiter+utilities.format_float_to_string(all_score))
+            tsv_output.append(gene+delimiter+utilities.format_float_to_string(all_score))
             # Process and print per bug if selected
             if not config.remove_stratified_output:
                 # Print scores per bug for family ordered with those with the highest values first
                 scores_by_bug=gene_scores.get_scores_for_gene_by_bug(gene)
                 for bug in utilities.double_sort(scores_by_bug):
                     if scores_by_bug[bug]>0:
-                        tsv_output.append(gene_name+category_delimiter+bug+delimiter
-                            +utilities.format_float_to_string(scores_by_bug[bug]))       
+                        tsv_output.append(gene+category_delimiter+bug+delimiter
+                            +utilities.format_float_to_string(scores_by_bug[bug]*total_all_scores_normalization))       
         
     if config.output_format=="biom":
         # Open a temp file if a conversion to biom is selected

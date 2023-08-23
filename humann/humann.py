@@ -66,7 +66,7 @@ from .quantify import modules
 logger=logging.getLogger(__name__)
 
 
-VERSION="3.8"
+VERSION="4.0"
 
 MAX_SIZE_DEMO_INPUT_FILE=10
 
@@ -168,11 +168,18 @@ def parse_arguments(args):
         default=" ".join(config.metaphlan_opts))
     tier1_prescreen.add_argument(
         "--prescreen-threshold", 
-        help="minimum percentage of reads matching a species\n[DEFAULT: "
+        help="minimum estimated genome coverage for inclusion in pangenome search\n[DEFAULT: "
             + str(config.prescreen_threshold) + "]", 
         metavar="<" + str(config.prescreen_threshold) + ">", 
         type=float,
         default=config.prescreen_threshold) 
+    tier1_prescreen.add_argument(
+        "--average-read-length", 
+        help="average read length for input file\n[DEFAULT: "
+            + str(config.average_read_length) + "]", 
+        metavar="<" + str(config.average_read_length) + ">", 
+        type=float,
+        default=config.average_read_length) 
 
     tier2_nucleotide_search=parser.add_argument_group("[3] Configure tier 2: nucleotide search")
 
@@ -273,6 +280,12 @@ def parse_arguments(args):
     gene_and_pathway=parser.add_argument_group("[5] Gene and pathway quantification")
 
     gene_and_pathway.add_argument(
+        "--count-normalization",
+        help="normalization mode for results from both nucleotide and translated search\n[DEFAULT: " + 
+        config.count_normalization + "]",
+        default=config.count_normalization,
+        choices=config.count_normalization_choices)
+    gene_and_pathway.add_argument(
         "--gap-fill",
         help="turn on/off the gap fill computation\n[DEFAULT: " + 
         config.gap_fill_toggle + "]",
@@ -330,8 +343,8 @@ def parse_arguments(args):
     more_output_config.add_argument(
         "--o-log", 
         help="log file\n" + 
-        "[DEFAULT: temp/sample.log]", 
-        metavar="<sample.log>")
+        "[DEFAULT: sample_0.log]", 
+        metavar="<sample_0.log>")
     more_output_config.add_argument(
         "--output-basename",
         help="the basename for the output files\n[DEFAULT: " +
@@ -373,6 +386,9 @@ def update_configuration(args):
     
     # Use the full path to the input file
     args.input=os.path.abspath(args.input)
+
+    # set the version header
+    config.version_header=config.version_header+VERSION
 
     # If set, append paths executable locations
     if args.metaphlan:
@@ -461,7 +477,10 @@ def update_configuration(args):
         config.bypass_prescreen=True
         config.bypass_nucleotide_index=True
         config.bypass_nucleotide_search=True
-        
+
+    # update the average read length        
+    config.average_read_length=args.average_read_length
+
     # Update thresholds
     config.prescreen_threshold=args.prescreen_threshold
     config.translated_subject_coverage_threshold=args.translated_subject_coverage_threshold
@@ -488,6 +507,7 @@ def update_configuration(args):
     config.xipe_toggle=args.xipe
     config.minpath_toggle=args.minpath
     config.gap_fill_toggle=args.gap_fill
+    config.count_normalization=args.count_normalization
     
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):
@@ -545,6 +565,12 @@ def update_configuration(args):
     config.genefamilies_file=os.path.join(output_dir,
             config.file_basename + config.genefamilies_file + "." + 
             config.output_format)
+    config.profile_file=os.path.join(output_dir,
+            config.file_basename + config.profile_file + "." + 
+            config.output_format)
+    config.reactions_file=os.path.join(output_dir,
+            config.file_basename + config.reactions_file + "." + 
+            config.output_format)
 
     # set the location of the temp directory
     if not args.remove_temp_output:
@@ -562,7 +588,7 @@ def update_configuration(args):
     config.unnamed_temp_dir=tempfile.mkdtemp(dir=config.temp_dir)
 
     # set the name of the log file 
-    log_file=os.path.join(config.temp_dir,config.file_basename+".log")
+    log_file=os.path.join(output_dir,config.file_basename+"_0.log")
     
     # change file name if set
     if args.o_log:
@@ -583,6 +609,8 @@ def update_configuration(args):
     logger.info(message)
     if config.verbose: 
         print("\n"+message+"\n")    
+
+    return log_file
 
 def parse_chocophlan_gene_indexes(annotation_gene_index):
     """ Parse the chocophlan gene index input """
@@ -721,17 +749,17 @@ def check_requirements(args):
             valid_format_count=0
             for file in os.listdir(config.nucleotide_database):
                 # expect most of the file names to be of the format g__*s__*
-                if re.search("^[g__][s__]",file): 
+                if re.search("^SGB",file): 
                     valid_format_count+=1
 
-                if not config.metaphlan_v3_db_matching_uniref in file:
+                if not config.metaphlan_v4_db_matching_uniref in file:
                     sys.exit("\n\nCRITICAL ERROR: The directory provided for ChocoPhlAn contains files ( "+file+" )"+\
                         " that are not of the expected version. Please install the latest version"+\
-                        " of the database: "+config.metaphlan_v3_db_matching_uniref)
+                        " of the database: "+config.metaphlan_v4_db_matching_uniref)
 
             if valid_format_count == 0:
                 sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
-                    + "contain files of the expected format (ie \'^[g__][s__]\').")
+                    + "contain files of the expected format (ie \'^SGB\').")
                 
         # Check if running with the demo database
         if not config.bypass_nucleotide_index:
@@ -921,7 +949,7 @@ def main():
     args=parse_arguments(sys.argv)
     
     # Update the configuration settings based on the arguments
-    update_configuration(args)
+    log_file=update_configuration(args)
     
     # Check for required files, software, databases, and also permissions
     check_requirements(args)
@@ -963,6 +991,7 @@ def main():
     start_time=time.time()
 
     # Process fasta or fastq input files
+    output_files=[]
     if args.input_format in ["fasta","fastq"]:
         # Run prescreen to identify bugs
         bug_file = "Empty"
@@ -971,6 +1000,7 @@ def main():
         else:
             if not config.bypass_prescreen:
                 bug_file = prescreen.alignment(args.input)
+                output_files.append(bug_file)
                 start_time=timestamp_message("prescreen",start_time)
     
         # Create the custom database from the bugs list
@@ -1100,7 +1130,6 @@ def main():
     unaligned_reads_store.clear()
         
     # Compute or load in gene families
-    output_files=[]
     if args.input_format in ["fasta","fastq","sam","blastm8"]:
         # Compute the gene families
         message="Computing gene families ..."
@@ -1130,17 +1159,19 @@ def main():
     alignments.clear()
     
     # Identify reactions and then pathways from the alignments
-    message="Computing pathways abundance and coverage ..."
+    message="Computing reaction and pathway abundance ..."
     logger.info(message)
     print("\n"+message)
     pathways_and_reactions_store=modules.identify_reactions_and_pathways(
-        gene_scores, reactions_database, pathways_database)
+        gene_scores, reactions_database, pathways_database, unaligned_reads_count)
 
     # Compute pathway abundance and coverage
-    abundance_file, coverage_file=modules.compute_pathways_abundance_and_coverage(
+    abundance_file, coverage_file, reaction_file=modules.compute_pathways_abundance_and_coverage(
         gene_scores, reactions_database, pathways_and_reactions_store, pathways_database, unaligned_reads_count)
+    output_files.append(reaction_file)
     output_files.append(abundance_file)
-    output_files.append(coverage_file)
+    output_files.append(log_file)
+    #output_files.append(coverage_file)
 
     start_time=timestamp_message("computing pathways",start_time)
 

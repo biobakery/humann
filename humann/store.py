@@ -101,7 +101,12 @@ def normalized_gene_length(gene_length, read_length):
     if read_length < 1:
         read_length = 1
 
-    return (abs(gene_length - read_length)+1)/1000.0
+    if config.count_normalization == "RPKs":
+        new_gene_length=gene_length/1000.0
+    else:
+        new_gene_length=(abs(gene_length - read_length)+1)/1000.0
+
+    return new_gene_length
 
 class Alignments:
     """
@@ -250,12 +255,20 @@ class Alignments:
             # identify bug and gene families
             length=0
             gene=reference
+
             try:
                 full_taxonomy=reference_info[config.chocophlan_bug_index]
-                # Limit to species/genera
-                bug_info=full_taxonomy.split(".")
-                bug=".".join([bug_info[config.chocophlan_bug_genera_index],bug_info[config.chocophlan_bug_species_index]])
+                # Limit to species/genera unless sgb
+                if full_taxonomy.startswith("SGB"):
+                    # get the sgb to species mapping
+                    bug=config.sgb_to_species_mapping.get(full_taxonomy,"unclassified")+".t__"+full_taxonomy
+                else:
+                    bug_info=full_taxonomy.split(".")
+                    bug=".".join([bug_info[config.chocophlan_bug_genera_index],bug_info[config.chocophlan_bug_species_index]])
+            except (IndexError, ValueError):
+                bug="unclassified"
 
+            try:
                 # Join all genes selected
                 gene_set=[]
                 for index in config.chocophlan_gene_indexes:
@@ -265,7 +278,6 @@ class Alignments:
                 length=int(reference_info[config.chocophlan_length_index])
             except (IndexError, ValueError):
                 # try to find gene length if present
-                bug="unclassified"
                 # check for gene|gene_length|taxonomy
                 if (len(reference_info)==3 and re.search("^[0-9]+$",reference_info[1])
                     and not re.search("^[0-9]+$",reference_info[2])):
@@ -279,7 +291,7 @@ class Alignments:
                     elif re.search("^[0-9]+$",reference_info[0]):
                         length=int(reference_info[0])
                         gene=reference_info[1]
-                    
+
         return [gene,length,bug]
 
     def add_annotated(self, query, matches, annotated_reference, read_length=None):
@@ -331,7 +343,12 @@ class Alignments:
         
         # Store the scores by bug and gene
         normalized_reference_length=normalized_gene_length(reference_length, read_length)
-        normalized_score=1/normalized_reference_length
+
+        # Apply different normalization if set
+        normalized_score=1
+        if config.count_normalization != "Counts":
+            normalized_score=1/normalized_reference_length
+
         if bug in self.__scores_by_bug_gene:
             self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug].get(reference,0)+normalized_score
         else:
@@ -441,7 +458,7 @@ class Alignments:
         self.__scores_by_bug_gene[bug][reference]=self.__scores_by_bug_gene[bug][reference]-original_score+updated_score
         
     
-    def convert_alignments_to_gene_scores(self,gene_scores_store):
+    def convert_alignments_to_gene_scores(self,gene_scores_store,count_normalization):
         """
         Computes the scores for all genes per bug
         Add to the gene_scores store
@@ -473,13 +490,23 @@ class Alignments:
              
         # add all gene scores to structure
         gene_scores_store.add(all_gene_scores,"all")
-        
+       
+        # apply normalization if set
+        total_all_scores_normalization=1
+        if count_normalization == "Adjusted CPMs":
+            total_all_scores=0
+            for gene in gene_scores_store.gene_list_sorted_by_score("all"):
+                total_all_scores+=gene_scores_store.get_score("all",gene) 
+            total_all_scores_normalization=1/total_all_scores*1e6
+ 
         # print messages if in verbose mode
         message="\n".join(messages)
         message="Total gene families  : " +str(len(all_gene_scores))+"\n"+message
         if config.verbose:
             print(message)
         logger.info("\n"+message)
+
+        return total_all_scores_normalization
         
     def clear(self):
         """
@@ -749,7 +776,7 @@ class PathwaysAndReactions:
         """
         
         return len(self.__pathways.get(bug,{}).keys())
-    
+
 class Pathways:
     """
     Holds the pathways coverage or abundance data for a bug
@@ -870,6 +897,18 @@ class Pathways:
             
         return sorted_pathways_and_bugs
     
+class Reactions(Pathways):
+
+    def __init__(self):
+        self.unmapped=0
+        self.unintegrated_total=0
+        self.unintegrated={}
+
+        return super(Reactions, self).__init__()
+
+    def get_reactions_and_bugs_nonzero_sorted(self):
+        return super(Reactions, self).get_pathways_and_bugs_nonzero_sorted()
+
 class ReactionsDatabase:
     """
     Holds all of the genes/reactions data from the file provided

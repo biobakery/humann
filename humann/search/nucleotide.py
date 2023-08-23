@@ -89,7 +89,7 @@ def index(custom_database):
     exe="bowtie2-build"
     opts=config.bowtie2_build_opts
 
-    args=["-f",custom_database,index_name]
+    args=["-f",custom_database,index_name,"--threads",config.threads]
 
     outfiles=[index_name + ext for ext in config.bowtie2_index_ext_list] 
 
@@ -257,7 +257,7 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     while line:
         # ignore headers ^@ 
         unaligned_read=False
-        if not re.search("^@",line):
+        if line[0] != "@":
             info=line.split(config.sam_delimiter)
             # check flag to determine if unaligned
             if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:

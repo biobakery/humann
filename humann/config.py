@@ -77,6 +77,7 @@ def log_settings():
     lines.append("diamond options = " + str(" ".join(map(str,diamond_opts))))
     lines.append("evalue threshold = " + str(evalue_threshold))
     lines.append("prescreen threshold = " + str(prescreen_threshold))
+    lines.append("average read length = " + str(average_read_length))
     lines.append("translated subject coverage threshold = " + str(translated_subject_coverage_threshold))
     lines.append("translated query coverage threshold = " + str(translated_query_coverage_threshold))
     lines.append("nucleotide subject coverage threshold = " + str(nucleotide_subject_coverage_threshold))
@@ -92,6 +93,7 @@ def log_settings():
     lines.append("INPUT AND OUTPUT FORMATS")
     lines.append("input file format = " + input_format)
     lines.append("output file format = " + output_format)
+    lines.append("normalization mode = " + count_normalization)
     lines.append("output max decimals = " + str(output_max_decimals))
     lines.append("remove stratified output = " + str(remove_stratified_output))
     lines.append("remove column description output = " + str(remove_column_description_output))
@@ -219,6 +221,9 @@ def get_item(config_items, section, name, type=None):
         
     return value
 
+# set the version header
+version_header="HUMAnN v"
+
 # get the base settings from the user edit config file
 config_items=read_user_edit_config_file()
 
@@ -245,6 +250,9 @@ evalue_threshold=get_item(config_items, "alignment_settings", "evalue_threshold"
     
 # prescreen threshold
 prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_threshold", "float")
+
+# read length
+average_read_length=get_item(config_items, "alignment_settings", "average_read_length", "float")
 
 # nucletide search identity threshold
 nucleotide_identity_threshold = 0.0
@@ -322,6 +330,10 @@ minpath_toggle = "on"
 gap_fill_toggle = "on"
 pick_frames_toggle = "off"
 
+# normalization options
+count_normalization_choices=["Adjusted CPMs","Adjusted RPKs","RPKs","Counts"]
+count_normalization=count_normalization_choices[0]
+
 # file format
 output_format_choices=["tsv", "biom"]
 output_format=output_format_choices[0]
@@ -338,7 +350,6 @@ unnamed_temp_dir=""
 file_basename=""
 fasta_extension=".fa"
 
-bugs_list_name="_metaphlan_bugs_list.tsv"
 metaphlan_bowtie2_name="_metaphlan_bowtie2.txt"
 
 chocophlan_custom_database_name="_custom_chocophlan_database.ffn"
@@ -352,22 +363,25 @@ nucleotide_aligned_reads_name_tsv="_bowtie2_aligned.tsv"
 translated_alignment_name="_aligned.tsv"
 translated_unaligned_reads_name_no_ext="_unaligned"
 
-pathabundance_file="_pathabundance"
-pathcoverage_file="_pathcoverage"
-genefamilies_file="_genefamilies"
+pathabundance_file="_4_pathabundance"
+pathcoverage_file="_5_pathcoverage"
+reactions_file="_3_reactions"
+genefamilies_file="_2_genefamilies"
+profile_file="_1_metaphlan_profile"
 
 # metaphlan options
-metaphlan_opts=["-t","rel_ab"]
+metaphlan_opts=["-t","rel_ab_w_read_stats"]
+metaphlan_columns=["#clade_name","clade_taxid","relative_abundance","coverage","estimated_number_of_reads_from_the_clade"]
 metaphlan_version={
     "flag" : "--version",
-    "major" : 3,
+    "major" : 4,
     "minor" : 0,
     "line" : -1,
     "column" : 2}
 
-metaphlan_v3_db_version="v3"
 metaphlan_v4_db_version="vOct22"
-metaphlan_v3_db_matching_uniref="v201901_v31"
+metaphlan_v4_db_matching_uniref="SGB"
+sgb_to_species_mapping={}
 
 matching_uniref="201901b"
 
@@ -402,7 +416,7 @@ bowtie2_version={
     "column" : 2}
 
 bowtie2_build_opts=[]
-bowtie2_align_opts=["--very-sensitive"]
+bowtie2_align_opts=["--very-sensitive","--no-hd","--no-sq"]
 
 #set the locations of data in the sam file
 sam_read_name_index=0
@@ -513,9 +527,10 @@ default_reference_length=1000
 match_power=2
 
 # Output file tags
-unmapped_gene_name = "UNMAPPED"
+unmapped_gene_name = "READS_UNMAPPED"
 unmapped_pathway_name = "UNMAPPED"
 unintegrated_pathway_name = "UNINTEGRATED"
+ungrouped_reaction_name = "UNGROUPED"
 
 # Max arguments
 max_arguments=500
