@@ -1,6 +1,25 @@
 
 # HUMAnN History #
 
+## v3.8 (08-02-2023) ##
+
+* Add to SGB mapping file.
+* Allow for unaligned reads fasta file with length annotations as inputs.
+* Updated pathways file to include sub-reaction branches.
+
+## v3.7 (04-13-2023) ##
+
+* Updated mapping file to be compatible with the latest MetaPhlAn database (vOct22).
+
+## v3.6.1 (03-02-2023) ##
+
+* Added a new utility script to expand a UniRef90 gene family to all those included in its associated UniRef50 clusters.
+* Improve error message that checks MetaPhlAn version.
+
+## v3.6 (09-26-2022) ##
+
+* Updated to require diamond v2.0+.
+
 ## v3.5 (08-22-2022) ##
 
 * Updated to run with MetaPhlAn v4.0 (includes mapping of SGBs to species plus uses additional species column).
