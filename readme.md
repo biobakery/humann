@@ -398,7 +398,10 @@ $ humann --input $SAMPLE --output $OUTPUT_DIR
 4. `$OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv`
 5. `$OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv`
 
-where `$SAMPLENAME` is the basename of `$SAMPLE`
+where `$SAMPLENAME` is the basename of `$SAMPLE`. 
+
+In HUMAnN v3 the log file and the taxonomic profile are included in the intermediate temp folder. 
+Also in HUMAnN v3 the files do not include numbers in their names.
 
 *The gene families file will not be created if the input file type is a gene table.
 
@@ -510,7 +513,7 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_vu
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	22.0
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_stercoris	7.0
 ```
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_2_genefamilies.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_2_genefamilies.tsv `` ( `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv `` in HUMAnN v3 ) 
 *   This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
 *   Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance.
 *   HUMAnN uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
@@ -536,7 +539,7 @@ UNGROUPED|unclassified       5100980.1244789278
 2.7.13.3-RXN|unclassified       12529.4324849206
 ```
          
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv `` ( file not written in HUMAnN v3 )
 *   This file details the abundance of each reaction in the community from regrouping gene families to reactions. 
 *   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 
@@ -560,7 +563,7 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegol
 PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 ```
          
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv `` ( `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv `` in HUMAnN v3 )
 *   This file details the abundance of each pathway in the community as a function of the abundances of the pathway's component reactions, with each reaction's abundance computed as the sum over abundances of genes catalyzing the reaction. 
 *   Pathway abundance is computed once at the community level and again for each species (plus the "unclassified" stratum) using community- and species-level gene abundances along with the structure of the pathway.
 *   The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
@@ -591,7 +594,7 @@ k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales   2|22|333|5555   
 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae  2|11|111|1111|77777     51.32768
 ```
 
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_1_metaphlan_profile.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_1_metaphlan_profile.tsv `` ( `` $DIR/$SAMPLENAME_metaphlan_profile.tsv `` in HUMAnN v3)
 *   This file is the taxonomic profile output from MetaPhlAn.
 
 
@@ -770,7 +773,7 @@ nucleotide database folder = data/chocophlan_DEMO
 protein database folder = data/uniref_DEM
 ```
 
-*   File name: `` $SAMPLENAME_0.log ``
+*   File name: `` $SAMPLENAME_0.log `` ( `` $SAMPLENAME.log `` in HUMAnN v3)
 *   This file is a log of the run.
 *   Timestamps for each step in the flow are benchmarked in the log. Look for these as lines containing "TIMESTAMP".
 *   The percent unaligned reads after each alignment step is included in the log. Look for these as lines containing the phrase "Unaligned reads after". 
