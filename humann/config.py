@@ -255,7 +255,8 @@ prescreen_threshold=get_item(config_items, "alignment_settings", "prescreen_thre
 average_read_length=get_item(config_items, "alignment_settings", "average_read_length", "float")
 
 # nucletide search identity threshold
-nucleotide_identity_threshold = 0.0
+gene_list_nucleotide_identity_threshold = 0.0
+nucleotide_identity_threshold = 80.0
 
 # translated search identity threshold
 identity_threshold_uniref90_mode = 80.0
@@ -538,5 +539,5 @@ max_arguments=500
 # set the search mode options
 search_mode_uniref90="uniref90"
 search_mode_uniref50="uniref50"
-search_mode=search_mode_uniref90
+search_mode=search_mode_uniref50
 
