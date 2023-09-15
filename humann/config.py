@@ -384,7 +384,7 @@ metaphlan_v4_db_version="vOct22"
 metaphlan_v4_db_matching_uniref="SGB"
 sgb_to_species_mapping={}
 
-matching_uniref="201901b"
+matching_uniref="2019_06"
 
 # chocophlan formatting
 chocophlan_delimiter="|"
