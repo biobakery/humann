@@ -631,6 +631,7 @@ setuptools.setup(
             'data/misc/*',
             'data/uniref_DEMO/*',
             'data/chocophlan_DEMO/*',
+            'data/utility_DEMO/*',
             'tests/data/*.*',
             'tests/data/tooltest*/*',
             'quantify/MinPath/data/*',
