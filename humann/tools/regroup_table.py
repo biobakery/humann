@@ -30,9 +30,9 @@ p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
 Groups = namedtuple( "Groups", ["path", "start", "skip"] )
 c_default_groups = {
     "uniref90_rxn": Groups( 
-        os.path.join( p_root, "data", "pathways", "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
+        os.path.join( config.utility_mapping_database, "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
     "uniref50_rxn": Groups( 
-        os.path.join( p_root, "data", "pathways", "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
+        os.path.join( config.utility_mapping_database, "metacyc_reactions_level4ec_only.uniref.bz2" ), 0, [1] ),
     }
 
 # get a list of all available script mapping files
@@ -60,9 +60,10 @@ for mapping_file in all_larger_mapping_files:
 if not larger_mapping_files_found:
     description+="""
     
-For additional group mapping files, run the following command:
+For group mapping files, run the following command:
 $ humann_databases --download utility_mapping full $DIR
 Replacing, $DIR with the directory to download and install the databases."""
+    sys.exit("Mapping files not installed.\n"+description)
 
 c_protected = [util.c_unmapped, util.c_unintegrated]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}

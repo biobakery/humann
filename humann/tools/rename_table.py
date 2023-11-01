@@ -27,26 +27,26 @@ p_root = os.path.join( os.path.dirname( os.path.abspath(__file__) ), os.pardir )
 Names = namedtuple( "Names", ["path"] )
 c_default_names = {
     "kegg-orthology": Names(
-        os.path.join( p_root, "data", "misc", "map_ko_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_ko_name.txt.gz" ) ),
     "kegg-pathway": Names(
-        os.path.join( p_root, "data", "misc", "map_kegg-pwy_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_kegg-pwy_name.txt.gz" ) ),
     "kegg-module": Names(
-        os.path.join( p_root, "data", "misc", "map_kegg-mdl_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_kegg-mdl_name.txt.gz" ) ),
     "ec": Names(
-        os.path.join( p_root, "data", "misc", "map_level4ec_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_level4ec_name.txt.gz" ) ),
     "metacyc-rxn": Names(
-        os.path.join( p_root, "data", "misc", "map_metacyc-rxn_name.txt.gz" ) ),    
+        os.path.join( p_root, "data", "utility_DEMO", "map_metacyc-rxn_name.txt.gz" ) ),    
     "metacyc-pwy": Names(
-        os.path.join( p_root, "data", "misc", "map_metacyc-pwy_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_metacyc-pwy_name.txt.gz" ) ),
     "pfam": Names(
-        os.path.join( p_root, "data", "misc", "map_pfam_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_pfam_name.txt.gz" ) ),
     "eggnog": Names(
-        os.path.join( p_root, "data", "misc", "map_eggnog_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_eggnog_name.txt.gz" ) ),
     "go": Names(
-        os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) ),
+        os.path.join( p_root, "data", "utility_DEMO", "map_go_name.txt.gz" ) ),
     # infogo1000 is just a subset of go, but adding a separate entry for consistency
     "infogo1000": Names(
-        os.path.join( p_root, "data", "misc", "map_go_name.txt.gz" ) )}
+        os.path.join( p_root, "data", "utility_DEMO", "map_go_name.txt.gz" ) )}
 
 # get a list of all available script mapping files
 try:

@@ -51,20 +51,17 @@ from .. import utilities
 current_downloads={
     "chocophlan" : 
         {
-            "full" : "http://huttenhower.sph.harvard.edu/humann_data/chocophlan/full_chocophlan.v201901_v31.tar.gz",
-            "DEMO" : "http://huttenhower.sph.harvard.edu/humann_data/chocophlan/DEMO_chocophlan.v201901_v31.tar.gz"
+            "full" : "http://huttenhower.sph.harvard.edu/humann_data/chocophlan/chocophlan.v4_alpha.tar.gz",
+            "ec_filtered" : "http://huttenhower.sph.harvard.edu/humann_data/chocophlan/chocophlan_EC_FILTERED.v4_alpha.tar.gz"
         },
     "uniref" : 
         {
-            "uniref50_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_annotated/uniref50_annotated_v201901b_full.tar.gz",
-            "uniref90_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_annotated/uniref90_annotated_v201901b_full.tar.gz",
-            "uniref50_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_ec_filtered/uniref50_ec_filtered_201901b_subset.tar.gz",
-            "uniref90_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_ec_filtered/uniref90_ec_filtered_201901b_subset.tar.gz",
-            "DEMO_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_annotated/uniref90_DEMO_diamond_v201901b.tar.gz"
+            "uniref90_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_annotated/uniref90_annotated_v4_alpha.tar.gz",
+            "uniref90_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_ec_filtered/uniref90_annotated_v4_alpha_ec_filtered.tar.gz",
         },
     "utility_mapping" :
         {
-            "full" : "http://huttenhower.sph.harvard.edu/humann_data/full_mapping_v201901b.tar.gz"
+            "full" : "http://huttenhower.sph.harvard.edu/humann_data/full_mapping_v4_alpha.tar.gz"
          }
 }
 

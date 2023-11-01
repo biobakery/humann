@@ -286,6 +286,11 @@ def parse_arguments(args):
         default=config.count_normalization,
         choices=config.count_normalization_choices)
     gene_and_pathway.add_argument(
+        "--utility-database",
+        help="directory containing the utility database\n[DEFAULT: " 
+            + config.utility_database + "]", 
+        metavar="<utility_database>")
+    gene_and_pathway.add_argument(
         "--gap-fill",
         help="turn on/off the gap fill computation\n[DEFAULT: " + 
         config.gap_fill_toggle + "]",
@@ -508,7 +513,10 @@ def update_configuration(args):
     config.minpath_toggle=args.minpath
     config.gap_fill_toggle=args.gap_fill
     config.count_normalization=args.count_normalization
-    
+   
+    if args.utility_database:
+        config.utility_database=os.path.abspath(args.utility_database)
+
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):
         sys.exit("CRITICAL ERROR: Can not find input file selected: "+ args.input)
@@ -730,6 +738,22 @@ def check_requirements(args):
         except ImportError:
             sys.exit("Could not find the biom software."+
                 " This software is required since the output file is a biom file.")
+
+    if os.path.basename(config.utility_database) == "utility_DEMO":
+        # Check the input file is a demo input if running with demo database
+        try:
+            input_file_size=os.path.getsize(args.input)/1024**2
+        except EnvironmentError:
+            input_file_size=0
+        if input_file_size > MAX_SIZE_DEMO_INPUT_FILE:
+            sys.exit("ERROR: You are using the demo utility database with "
+                + "a non-demo input file. If you have not already done so, please "
+                + "run humann_databases to download the full utility database. "
+                + "If you have downloaded the full database, use the option "
+                + "--utility-database to provide the location. "
+                + "You can also run humann_config to update the default "
+                + "database location. For additional information, please "
+                + "see the HUMAnN User Manual.")
      
     # If the file is fasta/fastq check for requirements   
     if args.input_format in ["fasta","fastq"]:

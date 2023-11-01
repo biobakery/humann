@@ -279,16 +279,15 @@ remove_stratified_output=get_item(config_items, "output_format", "remove_stratif
 remove_column_description_output=get_item(config_items, "output_format", "remove_column_description_output", "bool")
 
 # pathways files
-humann_install_directory=os.path.dirname(os.path.abspath(__file__))
-metacyc_gene_to_reactions=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_reactions_level4ec_only.uniref.bz2"))
-metacyc_reactions_to_pathways=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","metacyc_pathways_structured_filtered_v24_subreactions"))
+metacyc_gene_to_reactions=os.path.abspath(os.path.join(utility_mapping_database,"metacyc_reactions_level4ec_only.uniref.bz2"))
+metacyc_reactions_to_pathways=os.path.abspath(os.path.join(utility_mapping_database,"metacyc_pathways_structured_filtered_v24_subreactions"))
     
-unipathway_database_part1=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","unipathway_uniprots.uniref.bz2"))
-unipathway_database_part2=os.path.abspath(os.path.join(humann_install_directory,"data","pathways","unipathway_pathways"))
+unipathway_database_part1=os.path.abspath(os.path.join(utility_mapping_database,"unipathway_uniprots.uniref.bz2"))
+unipathway_database_part2=os.path.abspath(os.path.join(utility_mapping_database,"unipathway_pathways"))
 
 # pathways and gene families name mapping files
-gene_family_name_mapping_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","map_uniref50_name.txt.bz2"))
-pathway_name_mapping_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","map_metacyc-pwy_name.txt.gz"))
+gene_family_name_mapping_file=os.path.abspath(os.path.join(utility_mapping_database,"map_uniref50_name.txt.bz2"))
+pathway_name_mapping_file=os.path.abspath(os.path.join(utility_mapping_database,"map_metacyc-pwy_name.txt.gz"))
 name_mapping_file_delimiter="\t"
 name_mapping_join=": "
 
@@ -310,7 +309,7 @@ pathway_OR=","
 pathway_reaction_optional="-"
 
 # sgb association file
-sgb_to_species_file=os.path.abspath(os.path.join(humann_install_directory,"data","misc","vOct22_SGB_mapping.tsv"))
+sgb_to_species_file=os.path.abspath(os.path.join(utility_mapping_database,"vOct22_SGB_mapping.tsv"))
 
 # query annotation
 query_length_annotation_delimiter="|"

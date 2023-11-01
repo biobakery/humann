@@ -29,7 +29,7 @@ import argparse
 #                                                                                            *
 #
 #  The program tries to read the Kegg translation table OrgId -->OrgName that is located in  *
-#  ../data/misc/KeggOrgId2OrgNameTable.txt                                                   *
+#  ../data/utility_DEMO/KeggOrgId2OrgNameTable.txt                                                   *
 #  And if that fails,  it tries to get that info from Kegg itself ( "http://www.genome.jp/kegg/catalog/org_list.html" )
 #                                                                                            *
 # Written by George Weingart  March 31, 2015   george.weingart@gmail.com                     *
@@ -119,7 +119,7 @@ def  ReadSequentialTranslationFile(CommonArea):
 		if  CommonArea['ikeggOrgId2OrgName'] is not None:
 			CommonArea['ikeggOrgId2OrgName_file'] = open(CommonArea['ikeggOrgId2OrgName'], "rt")
 		else:
-			FileLocation = os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir, "data/misc/KeggOrgId2OrgNameTable.txt")
+			FileLocation = os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir, "data/utility_DEMO/KeggOrgId2OrgNameTable.txt")
 			CommonArea['ikeggOrgId2OrgName_file'] = open(FileLocation, "rt")  
 			
 			
@@ -184,7 +184,7 @@ CommonArea['dOrgIdOrgName'] = dict()
 try:
 	CommonArea  =  ReadSequentialTranslationFile(CommonArea)   #First,  try to read the sequential file in our directory
 except:
-	print("Reading the Table OrgId--> Name in ../data/misc/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website")
+	print("Reading the Table OrgId--> Name in ../data/utility_DEMO/KeggOrgId2OrgNameTable.txt Failed - will try the kegg website")
 	CommonArea  =  ReadHtmlKegTable(CommonArea)   #But if that fails - try directly from Kegg
  
 Flagete2Installed = True
