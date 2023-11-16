@@ -650,7 +650,6 @@ setuptools.setup(
             'humann_rename_table = humann.tools.rename_table:main',
             'humann_renorm_table = humann.tools.renorm_table:main',
             'humann_regroup_table = humann.tools.regroup_table:main',
-            'humann_infer_taxonomy = humann.tools.infer_taxonomy:main',
             'humann_reduce_table = humann.tools.reduce_table:main',
             'humann_unpack_pathways = humann.tools.merge_abundance:main',
             'humann_test = humann.tests.humann_test:main',

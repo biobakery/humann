@@ -286,7 +286,7 @@ unipathway_database_part1=os.path.abspath(os.path.join(utility_mapping_database,
 unipathway_database_part2=os.path.abspath(os.path.join(utility_mapping_database,"unipathway_pathways"))
 
 # pathways and gene families name mapping files
-gene_family_name_mapping_file=os.path.abspath(os.path.join(utility_mapping_database,"map_uniref50_name.txt.bz2"))
+gene_family_name_mapping_file=os.path.abspath(os.path.join(utility_mapping_database,"map_uniref90_name.txt.bz2"))
 pathway_name_mapping_file=os.path.abspath(os.path.join(utility_mapping_database,"map_metacyc-pwy_name.txt.gz"))
 name_mapping_file_delimiter="\t"
 name_mapping_join=": "

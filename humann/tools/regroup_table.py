@@ -41,7 +41,6 @@ except EnvironmentError:
 
 # add larger mapping files if they have been downloaded
 all_larger_mapping_files=["map_go_uniref90.txt.gz",
-                          "map_infogo1000_uniref90.txt.gz",
                           "map_ko_uniref90.txt.gz",
                           "map_level4ec_uniclust90.txt.gz",
                           "map_pfam_uniref90.txt.gz",
