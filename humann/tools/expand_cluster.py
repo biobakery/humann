@@ -22,7 +22,7 @@ that cluster with the selected UniRef90 in a UniRef50 set.
 
 
 # path to the mapping file
-MAPPING_FILE = os.path.join(config.utility_mapping_database,"map_uniref50_uniref90.txt.gz")
+MAPPING_FILE = os.path.join(config.utility_mapping_database,"map_uniclust50_uniclust90.txt.gz")
 IDENTIFIER = "UniRef90_"
 
 def arg_parse():
