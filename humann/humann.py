@@ -68,7 +68,7 @@ logger=logging.getLogger(__name__)
 
 VERSION="4.0"
 
-MAX_SIZE_DEMO_INPUT_FILE=10
+MAX_SIZE_DEMO_INPUT_FILE=25
 
 def parse_arguments(args):
     """ 
