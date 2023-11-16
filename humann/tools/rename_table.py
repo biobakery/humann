@@ -56,9 +56,6 @@ except EnvironmentError:
 
 # add the options for the larger mapping files if they are present
 larger_mapping_files_found=False
-if "map_uniref50_name.txt.bz2" in all_mapping_files:
-    c_default_names["uniref50"]=Names(os.path.join(config.utility_mapping_database,"map_uniref50_name.txt.bz2"))
-    larger_mapping_files_found=True
 if "map_uniref90_name.txt.bz2" in all_mapping_files:
     c_default_names["uniref90"]=Names(os.path.join(config.utility_mapping_database,"map_uniref90_name.txt.bz2"))
     larger_mapping_files_found=True
