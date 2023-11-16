@@ -288,8 +288,8 @@ def parse_arguments(args):
     gene_and_pathway.add_argument(
         "--utility-database",
         help="directory containing the utility database\n[DEFAULT: " 
-            + config.utility_database + "]", 
-        metavar="<utility_database>")
+            + config.utility_mapping_database + "]", 
+        metavar="<utility_mapping_database>")
     gene_and_pathway.add_argument(
         "--gap-fill",
         help="turn on/off the gap fill computation\n[DEFAULT: " + 
@@ -515,7 +515,7 @@ def update_configuration(args):
     config.count_normalization=args.count_normalization
    
     if args.utility_database:
-        config.utility_database=os.path.abspath(args.utility_database)
+        config.utility_mapping_database=os.path.abspath(args.utility_database)
 
     # Check that the input file exists and is readable
     if not os.path.isfile(args.input):
@@ -739,7 +739,7 @@ def check_requirements(args):
             sys.exit("Could not find the biom software."+
                 " This software is required since the output file is a biom file.")
 
-    if os.path.basename(config.utility_database) == "utility_DEMO":
+    if os.path.basename(config.utility_mapping_database) == "utility_DEMO":
         # Check the input file is a demo input if running with demo database
         try:
             input_file_size=os.path.getsize(args.input)/1024**2
