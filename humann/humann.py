@@ -397,6 +397,7 @@ def update_configuration(args):
         config.metaphlan_opts=list(filter(None,args.metaphlan_options.split(" ")))
 
     # check for custom diamond options
+    config.diamond_opts=args.diamond_options
     if args.diamond_options and args.diamond_options != " ".join(config.diamond_opts_uniref50):
         config.diamond_options_custom = True
         config.diamond_opts=list(filter(None,args.diamond_options.split(" ")))
