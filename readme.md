@@ -209,10 +209,8 @@ When using the "--resume" option, the following steps will be bypassed if they h
 4. [Python](http://www.python.org/) (version >= 3.7)
 5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically installed)
 6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
-7. [Rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (only required if using rapsearch2 for translated search)
-8. [Usearch](http://www.drive5.com/usearch/) (version >= 7.0) (only required if using usearch for translated search)
-9. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
-10. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
+7. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
+8. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
 
 Please install the required software in a location in your `$PATH` or provide the location with an optional argument to HUMAnN 3.0. 
 For example, the location of the Bowtie2 install ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
@@ -344,8 +342,6 @@ Download a translated search database providing $INSTALL_LOCATION as the locatio
 
 **Note:** Please make sure that all the databases in the directory are of same version. Different versions of database must be separated in different directory. 
 
-**NOTE:** By default HUMAnN runs DIAMOND for translated alignment. If you would like to use RAPSearch2 for translated alignment, first download the RAPSearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
-
 ----
 
 ## Installation Update ##
@@ -433,7 +429,7 @@ Also in HUMAnN v3 the files do not include numbers in their names.
 
 ### Demo runs ###
 
-The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
+The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: diamond.
 
 To run the fasta demo:
 
@@ -606,7 +602,7 @@ Ten intermediate temp output files will be created where:
 ```
 $DIR = $OUTPUT_DIR/$SAMPLENAME_humann_temp/
 $SAMPLENAME = basename of the fastq/fasta input file named $SAMPLE
-$TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 or usearch)
+$TRANSLATEDALIGN = translated alignment software selected (diamond)
 ```
 
 **NOTE:** `$SAMPLENAME` can be set by the user with the option `--output-basename <$NEWNAME>`
@@ -792,7 +788,6 @@ chocophlan : DEMO = http://huttenhower.sph.harvard.edu/humann_data/chocophlan/DE
 chocophlan : full = http://huttenhower.sph.harvard.edu/humann_data/chocophlan/full_chocophlan.tar.gz
 uniref : DEMO_diamond = http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref50_GO_filtered/uniref50_DEMO_diamond.tar.gz
 uniref : diamond = http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_diamond.tar.gz
-uniref : rapsearch2 = http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_rapsearch2.tar.gz
 ```
 To download a database, run:
 ```sh
@@ -1359,12 +1354,11 @@ usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [--diamond <diamond>] [--diamond-options <diamond_options>]
               [--evalue <1.0>] [--pick-frames {on,off}]
               [--protein-database <protein_database>]
-              [--rapsearch <rapsearch>]
-              [--translated-alignment {usearch,rapsearch,diamond}]
-              [--translated-identity-threshold <Automatically: 50.0 or 80.0, Custom: 0.0-100.0>]
+              [--translated-alignment {diamond}]
+              [--translated-identity-threshold <50.0>]
               [--translated-query-coverage-threshold <90.0>]
               [--translated-subject-coverage-threshold <50.0>]
-              [--usearch <usearch>] [--gap-fill {on,off}] [--minpath {on,off}]
+              [--gap-fill {on,off}] [--minpath {on,off}]
               [--pathways {metacyc,unipathway}]
               [--pathways-database <pathways_database.tsv>] [--xipe {on,off}]
               [--annotation-gene-index <3>] [--id-mapping <id_mapping.tsv>]
@@ -1452,23 +1446,18 @@ optional arguments:
   --protein-database <protein_database>
                         directory containing the protein database
                         [DEFAULT: /home/ljmciver/miniconda3/envs/humann3/lib/python3.6/site-packages/humann/data/uniref_DEMO]
-  --rapsearch <rapsearch>
-                        directory containing the rapsearch executable
-                        [DEFAULT: $PATH]
-  --translated-alignment {usearch,rapsearch,diamond}
+  --translated-alignment {diamond}
                         software to use for translated alignment
                         [DEFAULT: diamond]
-  --translated-identity-threshold <Automatically: 50.0 or 80.0, Custom: 0.0-100.0>
+  --translated-identity-threshold <50.0>
                         identity threshold for translated alignments
-                        [DEFAULT: Tuned automatically (based on uniref mode) unless a custom value is specified]
+                        [DEFAULT: 50.0]
   --translated-query-coverage-threshold <90.0>
                         query coverage threshold for translated alignments
                         [DEFAULT: 90.0]
   --translated-subject-coverage-threshold <50.0>
                         subject coverage threshold for translated alignments
                         [DEFAULT: 50.0]
-  --usearch <usearch>   directory containing the usearch executable
-                        [DEFAULT: $PATH]
 
 [5] Gene and pathway quantification:
   --gap-fill {on,off}   turn on/off the gap fill computation

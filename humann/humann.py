@@ -236,10 +236,6 @@ def parse_arguments(args):
             + config.protein_database + "]", 
         metavar="<protein_database>")
     tier3_translated_search.add_argument(
-        "--rapsearch", 
-        help="directory containing the rapsearch executable\n[DEFAULT: $PATH]", 
-        metavar="<rapsearch>")
-    tier3_translated_search.add_argument(
         "--translated-alignment", 
         help="software to use for translated alignment\n[DEFAULT: " + 
             config.translated_alignment_selected + "]", 
@@ -266,10 +262,6 @@ def parse_arguments(args):
         metavar="<" + str(config.translated_subject_coverage_threshold) + ">", 
         type=float,
         default=config.translated_subject_coverage_threshold)
-    tier3_translated_search.add_argument(
-        "--usearch", 
-        help="directory containing the usearch executable\n[DEFAULT: $PATH]", 
-        metavar="<usearch>")
 
 
     gene_and_pathway=parser.add_argument_group("[5] Gene and pathway quantification")
@@ -397,12 +389,6 @@ def update_configuration(args):
     if args.bowtie2:
         utilities.add_exe_to_path(os.path.abspath(args.bowtie2))
     
-    if args.usearch:
-        utilities.add_exe_to_path(os.path.abspath(args.usearch))
-
-    if args.rapsearch:
-        utilities.add_exe_to_path(os.path.abspath(args.rapsearch))
-        
     if args.diamond:
         utilities.add_exe_to_path(os.path.abspath(args.diamond))
         

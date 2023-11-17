@@ -340,8 +340,8 @@ input_format_choices=["fastq","fastq.gz","fasta","fasta.gz","sam","bam","blastm8
 input_format=""
 
 # translated alignment options
-translated_alignment_choices = ["usearch","rapsearch","diamond"]
-translated_alignment_selected = translated_alignment_choices[2]
+translated_alignment_choices = ["diamond"]
+translated_alignment_selected = translated_alignment_choices[0]
 
 # file naming
 temp_dir=""
