@@ -223,7 +223,7 @@ def parse_arguments(args):
         "--diamond-options",
         help="options to be provided to the diamond software\n[DEFAULT: \"" + str(" ".join(config.diamond_opts_uniref50)) + "\"]",
         metavar="<diamond_options>",
-        default=" ".join(config.diamond_opts_uniref50))
+        default=config.diamond_opts_uniref50)
     tier3_translated_search.add_argument(
         "--evalue", 
         help="the evalue threshold to use with the translated search\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
@@ -398,7 +398,7 @@ def update_configuration(args):
 
     # check for custom diamond options
     config.diamond_opts=args.diamond_options
-    if args.diamond_options and args.diamond_options != " ".join(config.diamond_opts_uniref50):
+    if args.diamond_options and args.diamond_options != config.diamond_opts_uniref50:
         config.diamond_options_custom = True
         config.diamond_opts=list(filter(None,args.diamond_options.split(" ")))
 
