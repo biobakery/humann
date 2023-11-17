@@ -144,12 +144,6 @@ def parse_arguments(args):
         help="the format of the input file\n[DEFAULT: format identified by software]",
         choices=config.input_format_choices)
     workflow_refinement.add_argument(
-        "--search-mode",
-        help="search for uniref50 or uniref90 gene families\n" + 
-        "[DEFAULT: based on translated database selected]",
-        choices=[config.search_mode_uniref50, config.search_mode_uniref90],
-        default=None)
-    workflow_refinement.add_argument(
         "-v","--verbose", 
         help="additional output is printed\n", 
         action="store_true",
@@ -199,8 +193,9 @@ def parse_arguments(args):
         metavar="<nucleotide_database>")
     tier2_nucleotide_search.add_argument(
         "--nucleotide-identity-threshold",
-        help="identity threshold for nuclotide alignments\n[DEFAULT: " + str(config.nucleotide_identity_threshold) + "]",
+        help="identity threshold for nucleotide alignments\n[DEFAULT: " + str(config.nucleotide_identity_threshold) + "]",
         metavar="<" + str(config.nucleotide_identity_threshold) + ">",
+        default=config.nucleotide_identity_threshold,
         type=float)
     tier2_nucleotide_search.add_argument(
         "--nucleotide-query-coverage-threshold", 
@@ -226,9 +221,9 @@ def parse_arguments(args):
         metavar="<diamond>")
     tier3_translated_search.add_argument(
         "--diamond-options",
-        help="options to be provided to the diamond software\n[DEFAULT: \"" + str(" ".join(config.diamond_opts_uniref90)) + "\"]",
+        help="options to be provided to the diamond software\n[DEFAULT: \"" + str(" ".join(config.diamond_opts_uniref50)) + "\"]",
         metavar="<diamond_options>",
-        default=" ".join(config.diamond_opts_uniref90))
+        default=" ".join(config.diamond_opts_uniref50))
     tier3_translated_search.add_argument(
         "--evalue", 
         help="the evalue threshold to use with the translated search\n[DEFAULT: " + str(config.evalue_threshold) + "]", 
@@ -252,9 +247,9 @@ def parse_arguments(args):
         choices=config.translated_alignment_choices)
     tier3_translated_search.add_argument(
         "--translated-identity-threshold", 
-        help="identity threshold for translated alignments\n[DEFAULT: " 
-            + "Tuned automatically (based on uniref mode) unless a custom value is specified]", 
-        metavar="<Automatically: 50.0 or 80.0, Custom: 0.0-100.0>", 
+        help="identity threshold for translated alignments\n[DEFAULT: " + str(config.identity_threshold_uniref50_mode) + "]",
+        metavar="<" + str(config.identity_threshold_uniref50_mode) + ">",
+        default=config.identity_threshold_uniref50_mode,
         type=float,
         dest="identity_threshold") 
     tier3_translated_search.add_argument(
@@ -416,7 +411,7 @@ def update_configuration(args):
         config.metaphlan_opts=list(filter(None,args.metaphlan_options.split(" ")))
 
     # check for custom diamond options
-    if args.diamond_options and args.diamond_options != " ".join(config.diamond_opts_uniref90):
+    if args.diamond_options and args.diamond_options != " ".join(config.diamond_opts_uniref50):
         config.diamond_options_custom = True
         config.diamond_opts=list(filter(None,args.diamond_options.split(" ")))
 
@@ -868,15 +863,6 @@ def check_requirements(args):
                     config.translated_alignment_selected + " ). Please format these files so"
                     + " they are of the expected extension ( " + expected_database_extension +" ).")
                 
-            # if a search mode is not set by the user, then try to get mode based on translated search database
-            if not args.search_mode:
-                if config.search_mode_uniref90 in valid_format_database_files[0].lower():
-                    logger.info("Search mode set to uniref90 because a uniref90 translated search database is selected")
-                    config.search_mode=config.search_mode_uniref90
-                elif config.search_mode_uniref50 in valid_format_database_files[0].lower():
-                    logger.info("Search mode set to uniref50 because a uniref50 translated search database is selected")
-                    config.search_mode=config.search_mode_uniref50
-                
         # Check if running with the demo database
         if not config.bypass_translated_search:
             if os.path.basename(config.protein_database) == "uniref_DEMO":
@@ -914,46 +900,12 @@ def check_requirements(args):
 
     # parse the chocophlan gene index
     chocophlan_gene_indexes=parse_chocophlan_gene_indexes(args.annotation_gene_index)            
-        
-    # set the user provided search mode, if set
-    if args.search_mode:
-        config.search_mode = args.search_mode
-        
-    # set the values based on the search mode
-    if config.search_mode == config.search_mode_uniref90:
-        # only change identity threshold to default if user has not provided a specific setting
-        if args.identity_threshold is None:  
-            config.identity_threshold = config.identity_threshold_uniref90_mode
-        else:
-            config.identity_threshold = args.identity_threshold
-                
-        # only change chocophlan gene index if user has not provided a specific setting
-        if config.chocophlan_gene_indexes == chocophlan_gene_indexes:
-            config.chocophlan_gene_indexes = config.chocophlan_gene_indexes_uniref90_mode
-        else:
-            config.chocophlan_gene_indexes = chocophlan_gene_indexes
-                
-        # set the diamond options if custom options were not provided
-        if not config.diamond_options_custom:
-            config.diamond_opts = config.diamond_opts_uniref90
-    else:
-        # only change identity threshold to default if user has not provided a specific setting
-        if args.identity_threshold is None:  
-            config.identity_threshold = config.identity_threshold_uniref50_mode
-        else:
-            config.identity_threshold = args.identity_threshold                
+    config.chocophlan_gene_indexes = chocophlan_gene_indexes
 
-        # only change chocophlan gene index if user has not provided a specific setting
-        if config.chocophlan_gene_indexes == chocophlan_gene_indexes:
-            config.chocophlan_gene_indexes = config.chocophlan_gene_indexes_uniref50_mode
-        else:
-            config.chocophlan_gene_indexes = chocophlan_gene_indexes
-            
-        # set the diamond options if custom options were not provided
-        if not config.diamond_options_custom:
-            config.diamond_opts = config.diamond_opts_uniref50
+    # set the identity thresholds if provided by the user
+    config.nucleotide_identity_threshold=args.nucleotide_identity_threshold
+    config.identity_threshold=args.identity_threshold
 
-              
 def timestamp_message(task, start_time):
     """
     Print and log a message about the task completed and the time

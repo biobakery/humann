@@ -389,7 +389,7 @@ chocophlan_delimiter="|"
 chocophlan_bug_index=1
 chocophlan_bug_species_index=-1
 chocophlan_bug_genera_index=-2
-chocophlan_gene_indexes=[3]
+chocophlan_gene_indexes=[2]
 chocophlan_gene_indexes_uniref90_mode=[2]
 chocophlan_gene_indexes_uniref50_mode=[3]
 chocophlan_location_delimiter="-"
@@ -533,9 +533,4 @@ ungrouped_reaction_name = "UNGROUPED"
 
 # Max arguments
 max_arguments=500
-
-# set the search mode options
-search_mode_uniref90="uniref90"
-search_mode_uniref50="uniref50"
-search_mode=search_mode_uniref50
 

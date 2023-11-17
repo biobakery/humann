@@ -1054,16 +1054,6 @@ This utility will unpack the pathways to show the genes for each. It adds anothe
 
 HUMAnN uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
 
-HUMAnN can be configured to output gene family abundance at the resolution of UniRef90 clusters or UniRef50 clusters. The mode can be manually configured via the ``--search-mode`` flag. By default, the search mode is set based on your current translated search database. In addition to changing the resolution of the gene families output, the search mode optimizes HUMAnN for searching against UniRef90 versus UniRef50 during translated search (e.g. toggling the minimum allowed amino acid mapping identity between 90% and 50%, respectively).
-
-#### Should I pick UniRef90 or UniRef50? ####
-
-For most applications, **UniRef90 is a good default choice** because its clusters are more conserved and therefore more likely to be isofunctional. UniRef50 clusters can be very broad, and thus pose the risk that the cluster representative might not reflect the function of the homologous sequence(s) found in your sample. One drawback of UniRef90 (relative to UniRef50) is that a slightly higher fraction of coding sequences in pangenomes are not assignable to a UniRef90 cluster, resulting in an increase in abundance for the ``UniRef90_unknown`` feature.
-
-UniRef50 is preferable when dealing with very poorly characterized microbiomes. In such cases, requiring reads to map at 90% identity to UniRef90 may be too stringent, and so mapping at 50% identity to UniRef50 is expected to explain a larger portion of sample reads (albeit at reduced functional resolution).
-
-Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
-
 ----
 
 ### Selecting a scope for translated search ###
@@ -1358,7 +1348,6 @@ usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [--taxonomic-profile <taxonomic_profile.tsv>]
               [--memory-use {minimum,maximum}]
               [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
-              [--search-mode {uniref50,uniref90}] [-v]
               [--metaphlan <metaphlan>]
               [--metaphlan-options <metaphlan_options>]
               [--prescreen-threshold <0.5>] [--bowtie2 <bowtie2>]
@@ -1420,9 +1409,6 @@ optional arguments:
   --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
                         the format of the input file
                         [DEFAULT: format identified by software]
-  --search-mode {uniref50,uniref90}
-                        search for uniref50 or uniref90 gene families
-                        [DEFAULT: based on translated database selected]
   -v, --verbose         additional output is printed
 
 [2] Configure tier 1: prescreen:
