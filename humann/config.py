@@ -66,10 +66,9 @@ def log_settings():
     lines.append("threads = " + str(threads))
     lines.append("")
     
-    lines.append("SEARCH MODE")
-    lines.append("search mode = " + search_mode)
-    lines.append("nucleotide identity threshold = " + str(nucleotide_identity_threshold))
-    lines.append("translated identity threshold = " + str(identity_threshold))
+    lines.append("Identity thresholds")
+    lines.append("nucleotide = " + str(nucleotide_identity_threshold))
+    lines.append("translated = " + str(identity_threshold))
     lines.append("")
     
     lines.append("ALIGNMENT SETTINGS")
