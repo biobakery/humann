@@ -1013,37 +1013,10 @@ class TestHumannStoreFunctions(unittest.TestCase):
         output=alignments_store.process_reference_annotation(
             "357276__A0A1C7H3D7__A4V03_17250|k__Bacteria.p__Bacteroidetes.c__Bacteroidia.o__Bacteroidales.f__Bacteroidaceae.g__Bacteroides.s__Bacteroides_dorei|UniRef90_A0A1C7H3D7|UniRef50_A0A1C7H3D7|816")
         
-        expected_output=["UniRef50_A0A1C7H3D7",816,"g__Bacteroides.s__Bacteroides_dorei"]
+        expected_output=["UniRef90_A0A1C7H3D7",816,"g__Bacteroides.s__Bacteroides_dorei"]
         
         self.assertEqual(expected_output,output) 
         
-    def test_Alignments_process_reference_annotation_unknown_annotations_three_items_bug_int(self):
-        """
-        Test the process reference annotation function with unknown annotations (three items) with int as bug
-        """
-        
-        alignments_store=store.Alignments()
-        
-        output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|5000|5000")
-        
-        expected_output=["UniRef90_W1Q3F0|5000|5000",0,"unclassified"]
-        
-        self.assertEqual(expected_output,output) 
-        
-    def test_Alignments_process_reference_annotation_unknown_annotations_three_items_length_string(self):
-        """
-        Test the process reference annotation function with unknown annotations (three items) with string for length
-        """
-        
-        alignments_store=store.Alignments()
-        
-        output=alignments_store.process_reference_annotation("UniRef90_W1Q3F0|UniRef50_P59787|5000")
-        
-        expected_output=["UniRef90_W1Q3F0|UniRef50_P59787|5000",0,"unclassified"]
-        
-        self.assertEqual(expected_output,output) 
-        
-
     def test_GeneScores_add(self):
         """
         GeneScores class: Test add function

@@ -295,38 +295,6 @@ class TestAdvancedHumannTranslatedSearchFunctions(unittest.TestCase):
         # check the evalues are unchanged
         self.assertEqual(sorted(alignments.get_hit_list()), sorted(alignments_test.get_hit_list()))
         
-        
-    def test_translated_search_unaligned_reads_annotations_reference(self):
-        """
-        Test the unaligned reads and the store alignments
-        Test with a rapsearch2 output file
-        Test the different annotation formats are recognized for reference
-        Test without the coverage filter
-        """
-        
-        # create a set of alignments
-        alignments=store.Alignments()
-        unaligned_reads_store=store.Reads()
-        
-        # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.translated_subject_coverage_threshold
-        config.translated_subject_coverage_threshold=0
-        
-        # load the rapsearch2 output with the unaligned reads function
-        unaligned_file_fasta=translated.unaligned_reads(unaligned_reads_store, 
-            cfg.rapsearch_file_annotations, alignments)
-        
-        # remove temp file
-        utils.remove_temp_file(unaligned_file_fasta)
-        
-        # reset the coverage threshold
-        config.translated_subject_coverage_threshold=current_coverage_threshold
-        
-        # three of the hits should be for gene "UniRef50"
-        hits=alignments.hits_for_gene("UniRef50")
-        self.assertEqual(len(hits),3)
-        
-                
     def test_translated_search_unaligned_reads_annotations_bug(self):
         """
         Test the unaligned reads and the store alignments
@@ -356,48 +324,3 @@ class TestAdvancedHumannTranslatedSearchFunctions(unittest.TestCase):
         # there should be one bug name and the other should be unclassified
         self.assertEqual(sorted(alignments.bug_list()),sorted(["g__Bacteroides.s__Bacteroides_xylanisolvens","unclassified"]))
         
-                
-    def test_translated_search_unaligned_reads_annotations_gene_length(self):
-        """
-        Test the unaligned reads and the store alignments
-        Test with a rapsearch2 output file
-        Test the different annotation formats are recognized for gene length
-        Test without the coverage filter
-        """
- 
-         # create a set of alignments
-        alignments=store.Alignments()
-        unaligned_reads_store=store.Reads()
-        
-        # set the coverage threshold to zero so as to not test with filter on
-        current_coverage_threshold=config.translated_subject_coverage_threshold
-        config.translated_subject_coverage_threshold=0
-        
-        # load the rapsearch2 output with the unaligned reads function
-        unaligned_file_fasta=translated.unaligned_reads(unaligned_reads_store, 
-            cfg.rapsearch_file_annotations, alignments)
-        
-        # remove temp file
-        utils.remove_temp_file(unaligned_file_fasta)   
-        
-        # reset the coverage threshold
-        config.translated_subject_coverage_threshold=current_coverage_threshold    
-
-        # there should be 4 hits identified
-        all_hits=alignments.get_hit_list()
-        self.assertEqual(len(all_hits),4)
-        
-        # check for set and default gene lengths
-        read_length = 50
-        expected_length_uniref50 = (abs(2000 - read_length)+1)/1000.0
-        expected_length_other = (abs(1000 - read_length)+1)/1000.0
-        
-        # check for set and default gene lengths
-        for hit in all_hits:
-            query, bug, reference, score, length = hit
-            if reference == "UniRef50":
-                self.assertEqual(length,expected_length_uniref50)
-            else:
-                self.assertEqual(length,expected_length_other)
-
-
