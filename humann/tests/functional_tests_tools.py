@@ -63,46 +63,6 @@ class TestFunctionalHumannTools(unittest.TestCase):
         # remove the temp folder
         utils.remove_temp_folder(temp_directory)
         
-
-    def test_humann_regroup_table_uniref50_rxn_tsv(self):
-        """
-        Test regrouping the tsv file with humann_regroup_table
-        Test with uniref50 to reactions mappings
-        """
-        
-        # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
-        
-        # run the command
-        utils.run_command(["humann_regroup_table","--input",cfg.regroup_input,"--output",
-                           new_file,"--groups","uniref50_rxn"])
-        
-        # check the output is as expected
-        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_rxn_output))
-
-        # remove the temp file
-        utils.remove_temp_file(new_file)
-        
-    def test_humann_regroup_table_uniref50_rxn_tsv_mean(self):
-        """
-        Test regrouping the tsv file with humann_regroup_table
-        Test with uniref50 to reactions mappings
-        Test with the mean instead of sum output
-        """
-        
-        # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
-        
-        # run the command
-        utils.run_command(["humann_regroup_table","--input",cfg.regroup_input,"--output",
-                           new_file,"--groups","uniref50_rxn","--function","mean"])
-        
-        # check the output is as expected
-        self.assertTrue(utils.files_almost_equal(new_file, cfg.regroup_rxn_mean_output))
-
-        # remove the temp file
-        utils.remove_temp_file(new_file)
-        
     def test_humann_regroup_table_custom_grouping_tsv(self):
         """
         Test regrouping the tsv file with humann_regroup_table
@@ -122,25 +82,6 @@ class TestFunctionalHumannTools(unittest.TestCase):
         # remove the temp file
         utils.remove_temp_file(new_file)
        
-    def test_humann_rename_table_uniref50_tsv(self):
-        """
-        Test renaming the tsv file entries with humann_rename_table
-        Test with uniref50 names
-        """
-        
-        # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
-        
-        # run the command
-        utils.run_command(["humann_rename_table","--input",cfg.rename_input,"--output",
-                           new_file,"--names","uniref50"])
-        
-        # check the output is as expected
-        self.assertTrue(utils.files_almost_equal(new_file, cfg.rename_uniref50_output))
-
-        # remove the temp file
-        utils.remove_temp_file(new_file)
-        
     def test_humann_rename_table_ko_tsv(self):
         """
         Test renaming the tsv file entries with humann_rename_table

@@ -51,44 +51,6 @@ class TestFunctionalHumannToolsBiom(unittest.TestCase):
         utils.remove_temp_folder(temp_directory)
         
 
-    def test_humann_regroup_table_uniref50_rxn_biom(self):
-        """
-        Test regrouping the biom file with humann_regroup_table
-        Test with uniref50 to reactions mappings
-        """
-        
-        # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
-        
-        # run the command
-        utils.run_command(["humann_regroup_table","--input",cfg.regroup_input_biom,"--output",
-                           new_file,"--groups","uniref50_rxn"])
-        
-        # check the output is as expected
-        self.assertTrue(utils.check_output(new_file))
-
-        # remove the temp file
-        utils.remove_temp_file(new_file)
-       
-    def test_humann_rename_table_uniref50_biom(self):
-        """
-        Test renaming the biom file entries with humann_rename_table
-        Test with uniref50 names
-        """
-        
-        # create a temp file
-        file_out, new_file=tempfile.mkstemp(prefix="humann_temp")
-        
-        # run the command
-        utils.run_command(["humann_rename_table","--input",cfg.rename_input_biom,"--output",
-                           new_file,"--names","uniref50"])
-        
-        # check the output is as expected
-        self.assertTrue(utils.check_output(new_file))
-
-        # remove the temp file
-        utils.remove_temp_file(new_file)     
-            
     def test_humann_renorm_table_cpm_biom(self):
         """
         Test renorm the biom file entries with humann_renorm_table

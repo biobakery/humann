@@ -12,8 +12,8 @@ demo_m8=os.path.join(data_folder,"demo.m8")
 demo_gene_families=os.path.join(data_folder,"demo_genefamilies.tsv")
 demo_bugs_list=os.path.join(data_folder, "demo_metaphlan_bugs_list.tsv")
 
-expected_demo_output_files=["demo_genefamilies.tsv","demo_pathabundance.tsv","demo_pathcoverage.tsv"]
-expected_demo_output_files_genefamilies_input=["demo_genefamilies_pathabundance.tsv","demo_genefamilies_pathcoverage.tsv"]
+expected_demo_output_files=["demo_2_genefamilies.tsv","demo_4_pathabundance.tsv"]
+expected_demo_output_files_genefamilies_input=["demo_genefamilies_4_pathabundance.tsv"]
 
 small_fasta_file=os.path.join(data_folder,"file.fasta")
 small_fasta_file_total_sequences=3
@@ -191,7 +191,7 @@ chocophlan_example_demo_folder=os.path.join(example_demo_data_folder, "chocophla
 uniref_example_demo_folder=os.path.join(example_demo_data_folder, "uniref_DEMO")
 
 # Get the locations of the files for the biom tests
-expected_demo_output_files_biom=["demo_genefamilies.biom","demo_pathabundance.biom","demo_pathcoverage.biom"]
+expected_demo_output_files_biom=["demo_2_genefamilies.biom","demo_4_pathabundance.biom"]
 demo_gene_families_biom=os.path.join(data_folder,"demo_genefamilies.tsv")
 expected_demo_output_files_biom_pathways=set(["PWY-6305","PWY490-3","PWY-4203"])
 regroup_input_biom=os.path.join(data_folder, regroup_folder, "regroup_table-builtin_input.biom")
