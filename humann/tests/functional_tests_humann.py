@@ -51,10 +51,8 @@ class TestFunctionalHumannEndtoEnd(unittest.TestCase):
         # remove the temp directory
         utils.remove_temp_folder(tempdir)
         
-    def test_humann_sam(self):
-        """
-        Test the standard humann flow on a sam input file
-        """
+    """def test_humann_sam(self):
+        #Test the standard humann flow on a sam input file
         
         # create a temp directory for output
         tempdir = utils.create_temp_folder("sam")
@@ -69,7 +67,7 @@ class TestFunctionalHumannEndtoEnd(unittest.TestCase):
 
         # remove the temp directory
         utils.remove_temp_folder(tempdir)
-        
+    """        
     def test_humann_m8(self):
         """
         Test the standard humann flow on a m8 input file

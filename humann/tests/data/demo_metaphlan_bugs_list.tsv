@@ -1,14 +1,27 @@
-#v30_CHOCOPhlAn_201901
-#SampleID       Metaphlan2_Analysis
-#clade_name     NCBI_tax_id     relative_abundance
-UNKNOWN -1      51.49048
-k__Bacteria	1	100.0
-k__Bacteria|p__Bacteroidetes	1	100.0
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia	1	100.0
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	1	100.0
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	1	100.0
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides	1	100.0
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_stercoris	1	65.22463
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_thetaiotaomicron	1	34.77537
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_stercoris|t__Bacteroides_stercoris_unclassified	1	65.22463
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_thetaiotaomicron|t__Bacteroides_thetaiotaomicron_unclassified	1	34.77537
+#mpa_vOct22_CHOCOPhlAnSGB_202212
+#/n/huttenhower_lab/tools/metaphlan4/rocky8/v4.0.6/bin/metaphlan /net/fs-huttenhower01/srv/export/huttenhower_lab/share/tools/humann4/rocky8/humann/test_bypass_translated/demo_humann_temp/tmp8f8v80ut/tmp_uku4cgz -t rel_ab_w_read_stats -o /net/fs-huttenhower01/srv/export/huttenhower_lab/share/tools/humann4/rocky8/humann/test_bypass_translated/demo_1_metaphlan_profile.tsv --input_type fastq --bowtie2out /net/fs-huttenhower01/srv/export/huttenhower_lab/share/tools/humann4/rocky8/humann/test_bypass_translated/demo_humann_temp/demo_metaphlan_bowtie2.txt
+#136736 reads processed
+#SampleID	Metaphlan_Analysis
+#estimated_reads_mapped_to_known_clades:274613
+#clade_name	clade_taxid	relative_abundance	coverage	estimated_number_of_reads_from_the_clade
+k__Bacteria	2	100.0	0.06715	274613
+k__Bacteria|p__Actinobacteria	2|201174	52.85687	0.03549	92938
+k__Bacteria|p__Bacteroidetes	2|976	47.14313	0.03166	181675
+k__Bacteria|p__Actinobacteria|c__Actinomycetia	2|201174|1760	52.85687	0.03549	92938
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia	2|976|200643	47.14313	0.03166	181675
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	2|976|200643|171549	47.14313	0.03166	181675
+k__Bacteria|p__Actinobacteria|c__Actinomycetia|o__Corynebacteriales|f__Corynebacteriaceae	2|201174|1760|85007|1653	52.85687	0.03549	92938
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	2|976|200643|171549|815	34.9977	0.0235	156766
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae	2|976|200643|171549|171550	12.14543	0.00816	24909
+k__Bacteria|p__Actinobacteria|c__Actinomycetia|o__Corynebacteriales|f__Corynebacteriaceae|g__Corynebacterium	2|201174|1760|85007|1653|1716	52.85687	0.03549	92938
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides	2|976|200643|171549|815|816	34.6816	0.02329	155746
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes	2|976|200643|171549|171550|239759	12.14543	0.00816	24909
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Phocaeicola	2|976|200643|171549|815|909656	0.31609	0.00021	1020
+k__Bacteria|p__Actinobacteria|c__Actinomycetia|o__Corynebacteriales|f__Corynebacteriaceae|g__Corynebacterium|s__Corynebacterium_SGB2091	2|201174|1760|85007|1653|1716|	52.85687	0.03549	92938
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_ovatus	2|976|200643|171549|815|816|28116	34.6816	0.02329	155746
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes|s__Alistipes_finegoldii	2|976|200643|171549|171550|239759|214856	12.14543	0.00816	24909
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Phocaeicola|s__Phocaeicola_vulgatus	2|976|200643|171549|815|909656|821	0.31609	0.00021	1020
+k__Bacteria|p__Actinobacteria|c__Actinomycetia|o__Corynebacteriales|f__Corynebacteriaceae|g__Corynebacterium|s__Corynebacterium_SGB2091|t__SGB2091	2|201174|1760|85007|1653|1716||	52.85687	0.03549	92938
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_ovatus|t__SGB1871	2|976|200643|171549|815|816|28116|	34.6816	0.02329	155746
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes|s__Alistipes_finegoldii|t__SGB2301	2|976|200643|171549|171550|239759|214856|	12.14543	0.00816	24909
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Phocaeicola|s__Phocaeicola_vulgatus|t__SGB1814	2|976|200643|171549|815|909656|821|	0.31609	0.00021	1020
