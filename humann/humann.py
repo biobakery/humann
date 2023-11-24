@@ -213,7 +213,7 @@ def parse_arguments(args):
         default=config.nucleotide_subject_coverage_threshold)
 
 
-    tier3_translated_search=parser.add_argument_group("[3] Configure tier 2: translated search")
+    tier3_translated_search=parser.add_argument_group("[4] Configure tier 2: translated search")
 
     tier3_translated_search.add_argument(
         "--diamond", 
