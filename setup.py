@@ -69,7 +69,7 @@ import re
 import time
 
 
-VERSION = "3.8"
+VERSION = "3.9"
 
 AUTHOR = "HUMAnN Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
