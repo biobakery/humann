@@ -1,8 +1,14 @@
 
 # HUMAnN History #
 
-## v3.8 (TBD) ##
+## v3.9 (TBD) ##
 
+* Add compatibility for MetaPhlAn v4.1 with new vJun23 database.
+
+## v3.8 (08-02-2023) ##
+
+* Add to SGB mapping file.
+* Allow for unaligned reads fasta file with length annotations as inputs.
 * Updated pathways file to include sub-reaction branches.
 
 ## v3.7 (04-13-2023) ##
