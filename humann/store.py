@@ -497,7 +497,10 @@ class Alignments:
             total_all_scores=0
             for gene in gene_scores_store.gene_list_sorted_by_score("all"):
                 total_all_scores+=gene_scores_store.get_score("all",gene) 
-            total_all_scores_normalization=1/total_all_scores*1e6
+            try:
+                total_all_scores_normalization=1/total_all_scores*1e6
+            except ZeroDivisionError:
+                total_all_scores_normalization=0
  
         # print messages if in verbose mode
         message="\n".join(messages)
