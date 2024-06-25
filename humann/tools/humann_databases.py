@@ -56,7 +56,6 @@ current_downloads={
         },
     "uniref" : 
         {
-            "uniref90_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_annotated/uniref90_annotated_v4_alpha.tar.gz",
             "uniref90_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_ec_filtered/uniref90_annotated_v4_alpha_ec_filtered.tar.gz",
         },
     "utility_mapping" :
