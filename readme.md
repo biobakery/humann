@@ -4,14 +4,14 @@ Before opening a new issue here, please check the appropriate help channel on th
 
 ----
 
-# HUMAnN 3.0 User Manual 
+# HUMAnN User Manual 
 
-HUMAnN 3.0 is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
+HUMAnN is the next generation of HUMAnN (HMP Unified Metabolic Analysis Network).
 
 ----
 
 
-**If you use HUMAnN 3.0 in your work, please cite the HUMAnN 3.0 paper:**
+**If you use HUMAnN in your work, please cite the HUMAnN 3.0 paper:**
 
 Francesco Beghini<sup>1</sup> ,Lauren J McIver<sup>2</sup> ,Aitor Blanco-Mìguez<sup>1</sup> ,Leonard Dubois<sup>1</sup> ,Francesco Asnicar<sup>1</sup> ,Sagun Maharjan<sup>2,3</sup> ,Ana Mailyan<sup>2,3</sup> ,Andrew Maltez Thomas<sup>1</sup> ,Paolo Manghi<sup>1</sup> ,Mireia Valles-Colomer<sup>1</sup> ,George Weingart<sup>2,3</sup> ,Yancong Zhang<sup>2,3</sup> ,Moreno Zolfo<sup>1</sup> ,Curtis Huttenhower<sup>2,3</sup> ,Eric A Franzosa<sup>2,3</sup> ,Nicola Segata<sup>1,4</sup>
 
@@ -24,7 +24,7 @@ Francesco Beghini<sup>1</sup> ,Lauren J McIver<sup>2</sup> ,Aitor Blanco-Mìguez
 3 The Broad Institute of MIT and Harvard, Cambridge, MA, USA
 4 IEO, European Institute of Oncology IRCCS, Milan, Italy
 ```
-**And feel free to link to HUMAnN 3.0 in your Methods:**
+**And feel free to link to HUMAnN in your Methods:**
 
 [http://huttenhower.sph.harvard.edu/humann](http://huttenhower.sph.harvard.edu/humann)
 
@@ -63,8 +63,8 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Standard workflow](#standard-workflow)
 * [Output files](#output-files)
     1. [Gene families file](#1-gene-families-file)
-    2. [Pathway abundance file](#2-pathway-abundance-file)
-    3. [Pathway coverage file](#3-pathway-coverage-file)
+    2. [Reactions file](#2-reactions-file)
+    3. [Pathway abundance file](#3-pathway-abundance-file)
     4. [Intermediate temp output files](#4-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#2-bowtie2-reduced-alignment-results)
@@ -78,12 +78,11 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
         10. [Log](#10-log)    
 * [Databases](#databases)
 * [Configuration](#configuration)
-* [Guides to HUMAnN 3.0 utility scripts](#guides-to-humann-utility-scripts)
+* [Guides to HUMAnN utility scripts](#guides-to-humann-utility-scripts)
 	* [humann_barplot](#humann_barplot)
     * [humann_config](#humann_config)
 	* [humann_databases](#humann_databases)
 	* [humann_gene_families_genus_level](#humann_gene_families_genus_level)
-	* [humann_infer_taxonomy](#humann_infer_taxonomy)
     * [humann_join_tables](#humann_join_tables)
     * [humann_reduce_table](#humann_reduce_table)
     * [humann_regroup_table](#humann_regroup_table)
@@ -93,7 +92,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 	* [humann_split_table](#humann_split_table)
     * [humann_test](#humann_test)
     * [humann_unpack_pathways](#humann_unpack_pathways)
-* [Other HUMAnN 3.0 guides](#other-humann-guides)
+* [Other HUMAnN guides](#other-humann-guides)
     * [Selecting a level of gene family resolution](#selecting-a-level-of-gene-family-resolution)
     * [Selecting a scope for translated search](#selecting-a-scope-for-translated-search)
     * [Paired-end reads](#humann-and-paired-end-sequencing-data)
@@ -105,7 +104,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     * [Custom reference database annotations](#custom-reference-database-annotations)
     * [Custom pathways database](#custom-pathways-database)
     * [Core diversity analysis with QIIME](#core-diversity-analysis-with-qiime)
-	* [Metatranscriptome analysis with HUMAnN 3.0](#metatranscriptome-analysis-with-humann)
+	* [Metatranscriptome analysis with HUMAnN](#metatranscriptome-analysis-with-humann)
     * [Genus level gene families and pathways](#genus-level-gene-families-and-pathways)
 * [FAQs](#faqs)
 * [Complete option list](#complete-option-list)
@@ -144,7 +143,7 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
 
 ### Workflow by input file type ###
 
-There are four different types of files that can be provided as input to HUMAnN 3.0 . By default HUMAnN 3.0 will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN 3.0 will start the workflow. Files of type 2, 3, and 4 will begin the workflow after the alignment steps.
+There are four different types of files that can be provided as input to HUMAnN. By default HUMAnN will determine the type of the file. As shown in the figure below, the type of input file will determine where HUMAnN will start the workflow. Files of type 2, 3, and 4 will begin the workflow after the alignment steps.
 
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann_flow_by_file_type_reduced.png)
 
@@ -178,7 +177,7 @@ Bypass options:
     *   bypasses all of the alignment steps before the translated search
 *   --bypass-prescreen 
     *   bypasses the taxomonic profiling step and uses the full ChocoPhlAn database
-*   --taxonomic-profile bugs_list.tsv 
+*   --taxonomic-profile file.tsv 
     *   bypasses the taxomonic profiling step and creates a custom ChocoPhlAn database of the species included in the list provided
 *   --bypass-nucleotide-index
     *   starts the workflow with the nucleotide alignment step using the indexed database from "--nucleotide-database $DIR"
@@ -187,7 +186,7 @@ Bypass options:
 	
 ### Workflow of the resume option ###
 
-HUMAnN 3.0 includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
+HUMAnN includes a "--resume" option which will allow you to bypass alignment steps which have already been completed. For example, if you originally ran with a bypass option you can run just the step you bypassed with "--resume". This will only run the alignment step you bypassed and then recompute the gene families and pathways.
 
 ![](http://huttenhower.sph.harvard.edu/sites/default/files/humann_flow_resume_option_no_text.png)
 
@@ -204,21 +203,19 @@ When using the "--resume" option, the following steps will be bypassed if they h
 
 ### Software ###
 
-1. [MetaPhlAn 3.0](https://bitbucket.org/biobakery/metaphlan)
-2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2) (automatically installed)
+1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
+2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2.9) (automatically installed)
 3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.9.24) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 3.7)
 5. [MinPath](http://omics.informatics.indiana.edu/MinPath/) (automatically installed)
 6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
-7. [Rapsearch2](http://omics.informatics.indiana.edu/mg/RAPSearch2/) (version >= 2.21) (only required if using rapsearch2 for translated search)
-8. [Usearch](http://www.drive5.com/usearch/) (version >= 7.0) (only required if using usearch for translated search)
-9. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
-10. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
+7. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
+8. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
 
 Please install the required software in a location in your `$PATH` or provide the location with an optional argument to HUMAnN 3.0. 
 For example, the location of the Bowtie2 install ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
 
-Some of the required dependencies are installed automatically when installing HUMAnN 3.0 with pip. If these dependencies do not appear to be installed after installing HUMAnN 3.0 with pip, it might be that your environment is setup to use wheels instead of installing from source. HUMAnN 3.0 must be installed from source for it to also be able to install dependencies. To force pip to install HUMAnN 3.0 from source add one of the following options to your install command, "--no-use-wheel" or "--no-binary :all:".
+Some of the required dependencies are installed automatically when installing HUMAnN with pip. If these dependencies do not appear to be installed after installing HUMAnN with pip, it might be that your environment is setup to use wheels instead of installing from source. HUMAnN must be installed from source for it to also be able to install dependencies. To force pip to install HUMAnN from source add one of the following options to your install command, "--no-use-wheel" or "--no-binary :all:".
 
 If you always run with input files of type 2, 3, and 4 (for information on input file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
 MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)), 
@@ -237,12 +234,12 @@ less disk space is required.
 
 ## Initial Installation ##
 
-### 1. Download HUMAnN 3.0 ###
-You can download the latest HUMAnN 3.0 release or the development version. The source contains example files. If installing with pip, it is optional to first download the HUMAnN 3.0 source.
+### 1. Download HUMAnN ###
+You can download the latest HUMAnN release or the development version. The source contains example files. If installing with pip, it is optional to first download the HUMAnN source.
 
 Option 1: Latest Release (Recommended)
 
-* [humann.tar.gz](https://pypi.python.org/pypi/humann) and unpack the latest release of HUMAnN 3.0
+* [humann.tar.gz](https://pypi.python.org/pypi/humann) and unpack the latest release of HUMAnN 
 
 Option 2: Development Version
 
@@ -254,11 +251,11 @@ Option 2: Development Version
 
 ----	
 	
-### 2. Install HUMAnN 3.0 ###
+### 2. Install HUMAnN ###
 
 #### Installing with pip ####
 
-1. Install HUMAnN 3.0
+1. Install HUMAnN 
     * `` $ pip install humann ``
     * This command will automatically install MinPath (and a new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
     * To bypass the install of Bowtie2 and Diamond, add the option "--install-option='--bypass-dependencies-install'" to the install command.
@@ -270,11 +267,11 @@ Option 2: Development Version
 	
 #### Installing from source ####
 
-1. Move to the HUMAnN 3.0 directory
+1. Move to the HUMAnN directory
 
     * ``$ cd $HUMAnN_PATH `` 
 
-2. Install HUMAnN 3.0
+2. Install HUMAnN 
 
     * ``$ python setup.py install ``
     * This command will automatically install MinPath (and new version of glpk) along with Bowtie2 and Diamond (if they are not already installed).
@@ -288,13 +285,13 @@ Option 2: Development Version
 1. Test out the install with unit and functional tests
      * `` $ humann_test``
      * To also run tool tests, add the option "--run-functional-tests-tools".
-     * To also run end-to-end tests, add the option "-run-functional-tests-end-to-end". Please note these tests take about 20 minutes to run. Also they require all dependencies of HUMAnN 3.0 be installed in your PATH.
+     * To also run end-to-end tests, add the option "-run-functional-tests-end-to-end". Please note these tests take about 20 minutes to run. Also they require all dependencies of HUMAnN be installed in your PATH.
 
 ---- 
 	 
 ### 4. Try out a demo run ###
 
-With HUMAnN 3.0 installed you can try out a demo run using reduced versions of the databases. If installing from pip, please also download the source as it contains the demo examples.
+With HUMAnN installed you can try out a demo run using reduced versions of the databases. If installing from pip, please also download the source as it contains the demo examples.
 
 ``$ humann --input examples/demo.fastq --output $OUTPUT_DIR ``
 
@@ -345,20 +342,18 @@ Download a translated search database providing $INSTALL_LOCATION as the locatio
 
 **Note:** Please make sure that all the databases in the directory are of same version. Different versions of database must be separated in different directory. 
 
-**NOTE:** By default HUMAnN 3.0 runs DIAMOND for translated alignment. If you would like to use RAPSearch2 for translated alignment, first download the RAPSearch2 formatted database by running this command with the rapsearch2 formatted database selected. It is suggested that you install both databases in the same folder so this folder can be the default uniref database location. This will allow you to switch between alignment software without having to specify a different location for the database.
-
 ----
 
 ## Installation Update ##
 
-If you have already installed HUMAnN 3.0, using the [Initial Installation](#markdown-header-initial-installation) steps, and would like to upgrade your installed version to the latest version, please follow these steps.
+If you have already installed HUMAnN, using the [Initial Installation](#markdown-header-initial-installation) steps, and would like to upgrade your installed version to the latest version, please follow these steps.
 
-1. [Download HUMAnN 3.0](#markdown-header-1-download-humann)
-2. [Install HUMAnN 3.0](#markdown-header-2-install-humann)
+1. [Download HUMAnN](#markdown-header-1-download-humann)
+2. [Install HUMAnN](#markdown-header-2-install-humann)
 
-Since you have already downloaded the databases in the initial installation, you do not need to download the databases again unless there are new versions available. However, you will want to update your latest HUMAnN 3.0 install to point to the databases you have downloaded as by default the new install configuration will point to the demo databases.
+Since you have already downloaded the databases in the initial installation, you do not need to download the databases again unless there are new versions available. However, you will want to update your latest HUMAnN install to point to the databases you have downloaded as by default the new install configuration will point to the demo databases.
 
-To update your HUMAnN 3.0 configuration file to include the locations of your downloaded databases, please use the following steps.
+To update your HUMAnN configuration file to include the locations of your downloaded databases, please use the following steps.
 
 1. Update the location of the ChocoPhlAn database (replacing $DIR with the full path to the directory containing the ChocoPhlAn database)
 
@@ -370,7 +365,7 @@ To update your HUMAnN 3.0 configuration file to include the locations of your do
 
 Please note, after a new installation, all of the settings in the configuration file, like the database folders, will be reset to the defaults. If you have any additional settings that differ from the defaults, please update them at this time.
 
-For more information on the HUMAnN 3.0 configuration file, please see the [Configuration](#markdown-header-configuration) section.
+For more information on the HUMAnN configuration file, please see the [Configuration](#markdown-header-configuration) section.
 
 ----
 
@@ -390,13 +385,18 @@ $ humann --input $SAMPLE --output $OUTPUT_DIR
 
 `$OUTPUT_DIR` = the output directory
 
-**Three output files will be created:**
+**Five main output files will be created:**
 
-1. `$OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv`
-2. `$OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv`
-3. `$OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv`
+1. `$OUTPUT_DIR/$SAMPLENAME_0.log`
+2. `$OUTPUT_DIR/$SAMPLENAME_1_metaphlan_profile.tsv`
+3. `$OUTPUT_DIR/$SAMPLENAME_2_genefamilies.tsv`
+4. `$OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv`
+5. `$OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv`
 
-where `$SAMPLENAME` is the basename of `$SAMPLE`
+where `$SAMPLENAME` is the basename of `$SAMPLE`. 
+
+In HUMAnN v3 the log file and the taxonomic profile are included in the intermediate temp folder. 
+Also in HUMAnN v3 the files do not include numbers in their names.
 
 *The gene families file will not be created if the input file type is a gene table.
 
@@ -414,14 +414,10 @@ where `$SAMPLENAME` is the basename of `$SAMPLE`
 	* a custom chocophlan database of fasta sequences
 6. `$DIR/$SAMPLENAME_metaphlan_bowtie2.txt`
 	* the bowtie2 output from metaphlan
-7. `$DIR/$SAMPLENAME_metaphlan_bugs_list.tsv` 
-	* the bugs list output from metaphlan
-8. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv` 
+7. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_aligned.tsv` 
 	* the alignment results from the translated alignment step
-9. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa`
+8. `$DIR/$SAMPLENAME_$TRANSLATEDALIGN_unaligned.fa`
 	* a fasta file of unaligned reads after the translated alignment step
-10. `$DIR/$SAMPLENAME.log`
-	* a log of the run
 	
 * `$DIR=$OUTPUT_DIR/$SAMPLENAME_humann_temp/`
 * `$SAMPLENAME` is the basename of the fastq/fasta input file
@@ -433,7 +429,7 @@ where `$SAMPLENAME` is the basename of `$SAMPLE`
 
 ### Demo runs ###
 
-The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: rapsearch2, usearch, and blast.
+The examples folder contains four demo example input files. These files are of fasta, fastq, sam, and blastm8 format. Blastm8 format is created by the following software: diamond.
 
 To run the fasta demo:
 
@@ -453,54 +449,53 @@ To run the blastm8 demo:
 
 `$OUTPUT_DIR` is the output directory
 
-Since sam and blastm8 are mapping results, using these files as input to HUMAnN 3.0 will bypass both the nucleotide and translated mapping portions of the flow.
+Since sam and blastm8 are mapping results, using these files as input to HUMAnN will bypass both the nucleotide and translated mapping portions of the flow.
 
 ----
 
 ### Standard workflow ###
 
-The standard workflow involves running HUMAnN 3.0 on each filtered shotgun sequencing metagenome file, normalizing, and then merging the output files. 
+The standard workflow involves running HUMAnN on each filtered shotgun sequencing metagenome file, normalizing, and then merging the output files. 
 
 Prior to running the workflow, filter your shotgun sequencing metagenome file. We recommend using [KneadData](http://huttenhower.sph.harvard.edu/kneaddata) for metagenome quality control including removal of host reads.
 
 To run the standard workflow, follow these steps:
 
-1. Run HUMAnN 3.0 on each of your filtered fastq files in `$INPUT_DIR` placing the results in `$OUTPUT_DIR`
+1. Run HUMAnN on each of your filtered fastq files in `$INPUT_DIR` placing the results in `$OUTPUT_DIR`
     * for `$SAMPLE.fastq` in `$INPUT_DIR`
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR``
             * Replace `$SAMPLE.fastq` with the name of the fastq input file
             * Replace `$OUTPUT_DIR` with the full path to the folder to write output
         * If you have paired-end reads, please see the guide [Paired-end reads](#markdown-header-humann-and-paired-end-sequencing-data)
-    * The results will be three main output files for each input file named `$SAMPLE_genefamilies.tsv`, `$SAMPLE_pathabundance.tsv`, and `$SAMPLE_pathcoverage.tsv`. 
+    * The results will be three main output files for each input file named `$SAMPLE_2_genefamilies.tsv` and `$SAMPLE_4_pathabundance.tsv`. 
 
 2. Normalize the abundance output files
     * We recommend normalizing the abundance data based on the statistical tests you will perform.
     * Prior to nomalization, select the scheme to use (copies per million or relative abundance). For example, if using [MaAsLin](http://huttenhower.sph.harvard.edu/maaslin), select relative abundance.
-    * Use the HUMAnN 3.0 tool renorm table, to compute the normalized abundances (relative abundance is selected in the example command below)
-        * for `$SAMPLE_genefamilies.tsv` in `$OUTPUT_DIR`
-            * `` $ humann_renorm_table --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_relab.tsv --units relab ``
+    * Use the HUMAnN tool renorm table, to compute the normalized abundances (relative abundance is selected in the example command below)
+        * for `$SAMPLE_2_genefamilies.tsv` in `$OUTPUT_DIR`
+            * `` $ humann_renorm_table --input $SAMPLE_2_genefamilies.tsv --output $SAMPLE_2_genefamilies_relab.tsv --units relab ``
     * Please note, gene family abundance is reported in RPK (reads per kilobase). This is computed as the sum of the scores for all alignments for a gene family. An alignment score is based on the number of matches to the reference gene for a specific sequence. It is divided by the length of the reference gene in kilobases to normalize for gene length. Each alignment score is also normalized to account for alignments for a single sequence to multiple reference genes. Alignments are not considered if they do not pass the e-value, identity, and coverage thresholds.
     * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#markdown-header-10-log).
     * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the guide to [humann_regroup_table](#markdown-header-humann_regroup_table) for detailed information. 
     
-3. Join the output files (gene families, coverage, and abundance) from the HUMAnN 3.0 runs from all samples into three files
-    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_genefamilies.tsv --file_name genefamilies_relab ``
-    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_pathcoverage.tsv --file_name pathcoverage ``
-    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_pathabundance.tsv --file_name pathabundance_relab ``
-    * For each command, replace `$OUTPUT_DIR` with the full path to the folder containing the HUMAnN 3.0 output files.
-    * The resulting files from these commands are named `humann_genefamilies.tsv`, `humann_pathabundance.tsv`, and `humann_pathcoverage.tsv`.
+3. Join the output files (gene families and abundance) from the HUMAnN runs from all samples into three files
+    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_2_genefamilies.tsv --file_name genefamilies_relab ``
+    * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_4_pathabundance.tsv --file_name pathabundance_relab ``
+    * For each command, replace `$OUTPUT_DIR` with the full path to the folder containing the HUMAnN output files.
+    * The resulting files from these commands are named `humann_2_genefamilies.tsv` and `humann_4_pathabundance.tsv`.
 
 ----	
 	
 ## Output files ##
 
-When HUMAnN 3.0 is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
+When HUMAnN is run, three main output files will be created (where `` $SAMPLENAME = the basename of $SAMPLE ``):
 
 ### 1. Gene families file ###
 
 ``` 
 # Gene Family	$SAMPLENAME_Abundance-RPKs
-UNMAPPED        187.0
+READS_UNMAPPED        187.0
 UniRef50_unknown        150.0
 UniRef50_unknown|g__Bacteroides.s__Bacteroides_fragilis 150.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon	67.0
@@ -513,18 +508,38 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_vu
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_thetaiotaomicron	22.0
 UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_stercoris	7.0
 ```
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_2_genefamilies.tsv `` ( `` $OUTPUT_DIR/$SAMPLENAME_genefamilies.tsv `` in HUMAnN v3 ) 
 *   This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
 *   Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance.
-*   HUMAnN 3.0 uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
+*   HUMAnN uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
 *   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
 *   Please note the gene families file will not be created if the input file type is a gene table.
-*   The "UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+*   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
 * The UniRef50_unknown values represent the total abundance of reads which map to ChocoPhlAn nucleotide sequences which do not have a UniRef50 annotation.
 
 ----
 
-### 2. Pathway abundance file ###
+### 2. Reactions file ###
+
+```
+# Reaction      $SAMPLENAME_Abundance
+READS_UNMAPPED      7573721.0000000000
+UNGROUPED    22978726.4009404778
+UNGROUPED|g__Bacteroides.s__Bacteroides_vulgatus     1961355.5951347812
+UNGROUPED|g__Bacteroides.s__Bacteroides_uniformis    1579305.9455720731
+UNGROUPED|unclassified       5100980.1244789278
+2.7.13.3-RXN    75608.6164459985
+2.7.13.3-RXN|g__Bacteroides.s__Bacteroides_uniformis    7962.2303221576
+2.7.13.3-RXN|g__Faecalibacterium.s__Faecalibacterium_prausnitzii        5371.8462336209
+2.7.13.3-RXN|unclassified       12529.4324849206
+```
+         
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv `` ( file not written in HUMAnN v3 )
+*   This file details the abundance of each reaction in the community from regrouping gene families to reactions. 
+*   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+
+
+### 3. Pathway abundance file ###
 
 ```
 # Pathway	$SAMPLENAME_Abundance
@@ -543,60 +558,51 @@ PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegol
 PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 ```
          
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv ``
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_4_pathabundance.tsv `` ( `` $OUTPUT_DIR/$SAMPLENAME_pathabundance.tsv `` in HUMAnN v3 )
 *   This file details the abundance of each pathway in the community as a function of the abundances of the pathway's component reactions, with each reaction's abundance computed as the sum over abundances of genes catalyzing the reaction. 
 *   Pathway abundance is computed once at the community level and again for each species (plus the "unclassified" stratum) using community- and species-level gene abundances along with the structure of the pathway.
 *   The pathways are ordered by decreasing abundance with pathways for each species also sorted by decreasing abundance. Pathways with zero abundance are not included in the file.
 *   Pathway abundance is proportional to the number of complete "copies" of the pathway in the community. Thus, for a simple linear pathway RXN1â†’RXN2â†’RXN3â†’RXN4, if RXN1 is 10 times as abundant as RXNs 2-4, the pathway abundance will be driven by the abundances of RXNs 2-4.
-*   Unlike gene abundance, **a pathway's community-level abundance is not necessarily the sum of its stratified abundance values**. For example, continuing with the simple linear pathway example introduced above, if the abundances of RXNs 1-4 are [5, 5, 10, 10] in Species_A and [10, 10, 5, 5] in Species_B, HUMAnN 3.0 would report that Species_A and Species_B each contribute 5 complete copies of the pathway. However, at the community level, the reaction totals are [15, 15, 15, 15], and thus HUMAnN 3.0 would report 15 complete copies.
+*   Unlike gene abundance, **a pathway's community-level abundance is not necessarily the sum of its stratified abundance values**. For example, continuing with the simple linear pathway example introduced above, if the abundances of RXNs 1-4 are [5, 5, 10, 10] in Species_A and [10, 10, 5, 5] in Species_B, HUMAnN would report that Species_A and Species_B each contribute 5 complete copies of the pathway. However, at the community level, the reaction totals are [15, 15, 15, 15], and thus HUMAnN would report 15 complete copies.
 *   In greater detail, the abundance for each pathway is a recursive computation of abundances of sub-pathways with paths resolved to abundances based on the relationships and abundances of the reactions contained in each. Each path, the smallest portion of a pathway or sub-pathway which can't be broken down into sub-pathways, has an abundance that is the max or harmonic mean of the reaction abundances depending on the relationships of these reactions. Optional reactions are only added to the overall abundance if their abundance is greater than the harmonic mean of the required reactions.
 *   Gap filling allows for a single required reaction to have a zero abundance. For all pathways, the required reaction with the lowest abundance is replaced with the abundance of the required reaction with the second lowest abundance.
-*   By default, HUMAnN 3.0 uses MetaCyc pathway definitions and MinPath to identify a parsimonious set of pathways which explain observed reactions in the community.
-*   The user has the option to provide a custom pathways database to HUMAnN 3.0 and to use all pathways instead of the minimal pathways computed by MinPath.
+*   By default, HUMAnN uses MetaCyc pathway definitions and MinPath to identify a parsimonious set of pathways which explain observed reactions in the community.
+*   The user has the option to provide a custom pathways database to HUMAnN and to use all pathways instead of the minimal pathways computed by MinPath.
 *   To account for non-linearity in the conversion of gene copy number to pathway copy number, we define a "compression constant" (*k*) equal to the total pathway abundance divided by the total abundance of genes that contributed to pathways. The "UNMAPPED" value reported in the pathway abundance table is equal to the total number of unmapped reads scaled by *k* (making it more comparable with pathway abundance values). Similarly, we define an "UNINTEGRATED" abundance for 1) the community, 2) each identified species, and 3) the "unclassified" stratum equal to the total abundance of genes in that level that did not contribute to pathways (scaled by *k*).
 *   "UNINTEGRATED" does not appear for stratifications with no detected pathways.
 
 ----
 
-### 3. Pathway coverage file ###
+#### 4. MetaPhlAn profile ####
 
-``` 
-# Pathway	$SAMPLENAME_Coverage
-UNMAPPED	1.0
-UNINTEGRATED	1.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	1.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	1.0
-UNINTEGRATED|unclassified	1.0
-PWY0-1301: melibiose degradation	1.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	1.0
-PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	1.0
-PWY0-1301: melibiose degradation|unclassified	1.0
-PWY-5484: glycolysis II (from fructose-6P)	1.0
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_caccae	0.7
-PWY-5484: glycolysis II (from fructose-6P)|g__Bacteroides.s__Bacteroides_finegoldii	0.7
-PWY-5484: glycolysis II (from fructose-6P)|unclassified	0.3
+```
+#clade_name     NCBI_tax_id     relative_abundance      additional_species
+k__Bacteria     2       100.0
+k__Bacteria|p__Bacteroidetes    2|11    73.86802
+k__Bacteria|p__Firmicutes       2|22    26.13198
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia     2|11|111        73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia         2|22|222        15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes      2|22|333        10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales    2|11|111|1111   73.86802
+k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales        2|22|222|4444   15.60912
+k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales   2|22|333|5555   10.52286
+k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae  2|11|111|1111|77777     51.32768
 ```
 
-*   File name: `` $OUTPUT_DIR/$SAMPLENAME_pathcoverage.tsv ``
-*   Pathway coverage provides an alternative description of the presence (1) and absence (0) of pathways in a community, independent of their quantitative abundance.
-*   More specifically, HUMAnN 3.0 assigns a confidence score to each reaction detected in the community. Reactions with abundance greater than the median reaction abundance are considered to be more confidently detected than those below the median abundance.
-*   HUMAnN 3.0 then computes pathway coverage using the same algorithms described above in the context of pathway abundance, but substituting reaction confidence for reaction abundance.
-*   A pathway with coverage = 1 is considered to be confidently detected (independent of its abundance), as this implies that all of its member reactions were also confidently detected. A pathway with coverage = 0 is considered to less confidently detected (independent of its abundance), as this implies that some of its member reactions were not confidently detected.
-*   Like pathway abundance, pathway coverage is computed for the community as a whole, as well as for each detected species and the unclassified stratum.
-*   Much as community-level pathway abundance is not the strict sum of species-level contributions, **it is possible for a pathway to be confidently covered at the community level but never confidently detected from any single species**.
-*   Pathway coverage is reported for any non-zero pathway abundance computed at the community-level or for an individual stratum (species or "unclassified").
-*   The pathway coverage file follows the same order for pathways and species as the abundance file. Entries for "UNMAPPED" and "UNINTEGRATED" are included and set to 1.0 to further maintain this ordering, although the "coverage" of these features is not meaningful.
+*   File name: `` $OUTPUT_DIR/$SAMPLENAME_1_metaphlan_profile.tsv `` ( `` $DIR/$SAMPLENAME_metaphlan_profile.tsv `` in HUMAnN v3)
+*   This file is the taxonomic profile output from MetaPhlAn.
+
 
 ----
 
-### 4. Intermediate temp output files ###
+### 5. Intermediate temp output files ###
 
 Ten intermediate temp output files will be created where:
 
 ```
 $DIR = $OUTPUT_DIR/$SAMPLENAME_humann_temp/
 $SAMPLENAME = basename of the fastq/fasta input file named $SAMPLE
-$TRANSLATEDALIGN = translated alignment software selected (diamond, rapsearch2 or usearch)
+$TRANSLATEDALIGN = translated alignment software selected (diamond)
 ```
 
 **NOTE:** `$SAMPLENAME` can be set by the user with the option `--output-basename <$NEWNAME>`
@@ -709,27 +715,7 @@ r1086	gi|238922432|ref|NC_012781.1|:c1988048-1987140
 
 ----
 
-#### 7. MetaPhlAn bugs list ####
-
-```
-k__Bacteria	100.0
-k__Bacteria|p__Bacteroidetes	73.86802
-k__Bacteria|p__Firmicutes	26.13198
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales	73.86802
-k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales	15.60912
-k__Bacteria|p__Firmicutes|c__Negativicutes|o__Selenomonadales	10.52286
-k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae	51.32768
-```
-
-*   File name: `` $DIR/$SAMPLENAME_metaphlan_bugs_list.tsv ``
-*   This file is the bugs list output from MetaPhlAn.
-
-----
-
-#### 8. Translated alignment results ####
+#### 7. Translated alignment results ####
 
 ```
 r2805	UniRef50_E2ZJD8|627	37.50	48	30	0	147	4	152	199	5e-06	40.0
@@ -758,7 +744,7 @@ r3036	UniRef50_UPI00046A4B12|696	35.42	48	30	1	149	6	88	134	1e-05	38.9
 
 ----	
 	
-#### 9. Translated alignment unaligned reads ####
+#### 8. Translated alignment unaligned reads ####
 
 ```
 >r4370
@@ -772,7 +758,7 @@ TGCCCGGACAGGATCTTCTCTTTCGTACCGGGCATCATCTGCTCCATGATCTCCACGCCTCGCATGAACTTTTCAGAACG
 
 ----
 
-#### 10. Log ####
+#### 9. Log ####
 
 ```
 03/16/2015 01:09:52 PM - humann.utilities - INFO: File ( demo.fastq ) is of format:  fastq
@@ -782,7 +768,7 @@ nucleotide database folder = data/chocophlan_DEMO
 protein database folder = data/uniref_DEM
 ```
 
-*   File name: `` $DIR/$SAMPLENAME.log ``
+*   File name: `` $SAMPLENAME_0.log `` ( `` $SAMPLENAME.log `` in HUMAnN v3)
 *   This file is a log of the run.
 *   Timestamps for each step in the flow are benchmarked in the log. Look for these as lines containing "TIMESTAMP".
 *   The percent unaligned reads after each alignment step is included in the log. Look for these as lines containing the phrase "Unaligned reads after". 
@@ -792,7 +778,7 @@ protein database folder = data/uniref_DEM
 
 ## Databases ##
 
-HUMAnN 3.0 uses two databases for alignment, ChocoPhlAn and UniRef. There are different formats of these databases. The demo formats of both are included in the HUMAnN 3.0 install.
+HUMAnN uses two databases for alignment, ChocoPhlAn and UniRef. There are different formats of these databases. The demo formats of both are included in the HUMAnN install.
 
 To see which databases are currently available, run (with example output included below):
 ```sh
@@ -802,20 +788,19 @@ chocophlan : DEMO = http://huttenhower.sph.harvard.edu/humann_data/chocophlan/DE
 chocophlan : full = http://huttenhower.sph.harvard.edu/humann_data/chocophlan/full_chocophlan.tar.gz
 uniref : DEMO_diamond = http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref50_GO_filtered/uniref50_DEMO_diamond.tar.gz
 uniref : diamond = http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_diamond.tar.gz
-uniref : rapsearch2 = http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref50_GO_filtered/uniref50_GO_filtered_rapsearch2.tar.gz
 ```
 To download a database, run:
 ```sh
 $ humann_databases --download $DATABASE $BUILD $INSTALL_LOCATION
 ```
 
-This will automatically update the HUMAnN 3.0 configuration. If you do not have permissions to edit the config file run with the option `--update-config no` and then include the locations of the databases when running HUMAnN.
+This will automatically update the HUMAnN configuration. If you do not have permissions to edit the config file run with the option `--update-config no` and then include the locations of the databases when running HUMAnN.
 
 ----
 
 ## Configuration ##
 
-HUMAnN 3.0 uses a configuration file to store user configuration settings. This configuration file is automatically updated when a database is installed.
+HUMAnN uses a configuration file to store user configuration settings. This configuration file is automatically updated when a database is installed.
 
 To view the current settings of the configuration file, run (with example output included below):
 ```sh
@@ -823,7 +808,7 @@ $ humann_config --print
 HUMAnN Configuration ( Section : Name = Value )
 output_format : remove_stratified_output = False
 output_format : output_max_decimals = 10
-alignment_settings : prescreen_threshold = 0.01
+alignment_settings : prescreen_threshold = 0.5
 alignment_settings : evalue_threshold = 1.0
 alignment_settings : identity_threshold = 50.0
 database_folders : nucleotide = data/chocophlan_DEMO
@@ -867,7 +852,7 @@ threads = 4
 
 ALIGNMENT SETTINGS
 evalue threshold = 1.0
-prescreen threshold = 0.01
+prescreen threshold = 0.5
 identity threshold = 50.0
 
 PATHWAYS SETTINGS
@@ -884,19 +869,19 @@ log level = DEBUG
 
 ----
 
-## Guides to HUMAnN 3.0 utility scripts ##
+## Guides to HUMAnN utility scripts ##
 
 ### humann_barplot ###
 
 * **Basic usage:** `$ humann_barplot --input $TABLE.tsv --focal-feature $FEATURE --outfile $FIGURE`
-* `$TABLE.tsv` = a stratified HUMAnN 3.0 output file
+* `$TABLE.tsv` = a stratified HUMAnN output file
 * `$FEATURE` = Feature from the table to plot (defaults to first feature)
 * `$FIGURE` = Where to save the figure
 * Run with `-h` to see additional command line options
 
-`humann_barplot` produces plots of stratified HUMAnN 3.0 features. **Note**: unlike many other HUMAnN 3.0 utilities, `humann_barplot` requires the Python scientific stack (notably `matplotlib`) to operate. `humann_barplot` includes many options for sorting and scaling data, as detailed in the `--help` menu. `humann_barplot` is also explored in greater detail in the [HUMAnN 3.0](https://github.com/biobakery/biobakery/wiki/humann).
+`humann_barplot` produces plots of stratified HUMAnN features. **Note**: unlike many other HUMAnN utilities, `humann_barplot` requires the Python scientific stack (notably `matplotlib`) to operate. `humann_barplot` includes many options for sorting and scaling data, as detailed in the `--help` menu. `humann_barplot` is also explored in greater detail in the [HUMAnN](https://github.com/biobakery/biobakery/wiki/humann).
 
-Here is an example of a HUMAnN 3.0 barplot for a pathway (denitrification) that was preferentially enriched in Human Microbiome Project oral samples relative to other body sites. This figure uses many options from `humann_barplot`, including regrouping by genus, pseudolog scaling, and sorting samples by similarity and metadata:
+Here is an example of a HUMAnN barplot for a pathway (denitrification) that was preferentially enriched in Human Microbiome Project oral samples relative to other body sites. This figure uses many options from `humann_barplot`, including regrouping by genus, pseudolog scaling, and sorting samples by similarity and metadata:
 
 ![page_DENITRIFICATION-PWY.png](https://bitbucket.org/repo/bAAy6o/images/731303924-page_DENITRIFICATION-PWY.png)
 
@@ -904,83 +889,19 @@ Here is an example of a HUMAnN 3.0 barplot for a pathway (denitrification) that 
 
 ### humann_config ###
 
-Used for viewing and setting HUMAnN 3.0 defaults. See the [Configuration](#markdown-header-configuration) section above for details.
+Used for viewing and setting HUMAnN defaults. See the [Configuration](#markdown-header-configuration) section above for details.
 
 ----
 
 ### humann_databases ###
 
-Used for downloading ChocoPhlAn, translated search databases, and HUMAnN 3.0 utility mapping files. See the [Databases](#markdown-header-databases) section above for details.
+Used for downloading ChocoPhlAn, translated search databases, and HUMAnN utility mapping files. See the [Databases](#markdown-header-databases) section above for details.
 
 ----
 
 ### humann_gene_families_genus_level ###
 
 See the [Genus level gene families and pathways](#markdown-header-genus-level-gene-families-and-pathways) guide below.
-
-----
-
-### humann_infer_taxonomy ###
-
-* **Basic usage:** `$ humann_infer_taxonomy --input $INPUT_GENES.tsv --level $LEVEL --resolution $RES --output $OUTPUT.tsv`
-* `$INPUT_GENES.tsv` = a file containing gene families abundance data with unclassified strata (tsv format)
-* `$LEVEL` = desired taxonomic level for inference (default: Family)
-* `$RES` = UniRef resolution of the input file
-* `$OUTPUT.tsv` = the file to write the new merged abundance table (tsv format)
-* Run with `-h` to see additional command line options
-
-Relative to HUMAnN 3.0's pangenome mapping, we tend to be less confident about the taxonomic assignments made during translated search. For this reason, all translated search results are given as "taxonony=unclassified" by default (allowing the user to focus on functional assignments within these results). However, thanks to the structure of the UniRef50 and UniRef90 databases, it is possible to infer some degree of taxonomic information for unclassified hits when performing translated search against these databases.
-
-Each UniRef family is associated with one or more protein sequences of a given degree of sequence homology, out of which a single representative is selected. Consider the following UniRef50 family represented by sequence O67749:
-
-```
->UniRef50_O67749 GTPase Der n=10 Tax=Aquificaceae RepID=DER_AQUAE
-```
-
-This protein family contains 10 sequences (the `n=` field). All sequences derive from species belonging to the family-level clade Aquificaceae (the `tax=` field): the species' lowest common ancestor (LCA). If we observe translated hits to the UniRef50\_O67749 family, we can infer that the associated reads derive from species in Aquificaceae. This is not a guarantee, as the protein family may be distributed outside of the Aquificaceae, however no such sequences are known to UniRef. This method would not allow us to infer a _genus_ for reads mapping to UniRef50\_O67749 by translated search, as the 10 member sequences are heterogeneous at the genus level. However, clades above the LCA (e.g. kingdom=Bacteria) _can_ be inferred.
-
-Based on this method, the HUMAnN 3.0 utility `humann_infer_taxonomy` can be used to assign approximate taxonomic information to translated search results as summarized in HUMAnN 3.0's `genefamilies.tsv` output files. By default, assignments are attempted at the taxonomic family level, but other levels (kingdom through genus) can be selected. If an assignment cannot be made at the target level, the taxonomy is left as "unclassified." By default, assignments are made to the gene family totals. Alternative modes allow the user to carry through known taxonomic information from the pangenome search ("stratified" mode) or to focus on unclassified hits only ("unclassified" mode). Consider the following examples based on this input file:
-
-```
-# genefamilies.tsv
-UniRef50_O67749                                  50
-UniRef50_O67749|g__Aquifex.s__Aquifex_pyrophilus 25
-UniRef50_O67749|unclassified                     25
-```
-
-The command `humann_infer_taxonomy -i genefamilies.tsv -r uniref50` yields:
-
-```
-UniRef50_O67749                                  50
-UniRef50_O67749|f__Aquificaceae                  50
-```
-
-The command `humann_infer_taxonomy -i genefamilies.tsv -r uniref50 -l Genus` yields:
-
-```
-UniRef50_O67749                                  50
-UniRef50_O67749|unclassified                     50
-```
-
-The command `humann_infer_taxonomy -i genefamilies.tsv -r uniref50 -l Genus -m stratified` yields:
-
-```
-UniRef50_O67749                                  50
-UniRef50_O67749|g__Aquifex                       25
-UniRef50_O67749|unclassified                     25
-```
-
-In the last example, the LCA for the UniRef50\_O67749 family is insufficient to infer a genus, however the genus-level assignment from the pangenome search (i.e. to g\_\_Aquifex.s\_\_Aquifex_pyrophilus) is carried through.
-
-The modified gene families output files can then be reprocessed through HUMAnN 3.0 to compute pathway abundance/coverage using the inferred taxonomic stratifications.
-
-**Note:** ``humann_infer_taxonomy`` requires a data file to link UniRef families to LCAs and infer taxonomic relationships. Users can download these files using the HUMAnN 3.0 databases script:
-
-```
-$ humann_databases --download utility_mapping full $DIR
-```
-
-Where ``$DIR`` is the location where you'd like to store the mapping files. In addition to downloading the mapping files, this command also registers the mapping files with ``humann_infer_taxonomy``.
 
 ----
 
@@ -1010,9 +931,9 @@ Used for collapsing joined MetaPhlAn taxonomic profiles to a single joint profil
 * `$TABLE2` = regrouped gene/pathway table
 * Run with `-h` to see additional command line options
 
-HUMAnN 3.0 `genefamilies.tsv` output can contain a very large number of features depending on the complexity of your underlying sample. One way to explore this information in a simplified manner is via HUMAnN 3.0's own pathway coverage and abundance, which summarize the values of their member genes. However, this approach does not apply to gene families that are not associated with metabolic pathways.
+HUMAnN `genefamilies.tsv` output can contain a very large number of features depending on the complexity of your underlying sample. One way to explore this information in a simplified manner is via HUMAnN's own pathway abundance, which summarize the values of their member genes. However, this approach does not apply to gene families that are not associated with metabolic pathways.
 
-To further simplify the exploration of gene family abundance data, users can regroup gene families into other functional categories using `humann_regroup_table`. This script takes as arguments a gene family abundance table and a mapping (groups) file that indicates which gene families belong to which groups. Out of the box, HUMAnN 3.0 can regroup gene families to MetaCyc reactions (a step which is also used internally as part of MetaCyc pathway quantification). Users can download additional mapping files using the HUMAnN 3.0 databases script:
+To further simplify the exploration of gene family abundance data, users can regroup gene families into other functional categories using `humann_regroup_table`. This script takes as arguments a gene family abundance table and a mapping (groups) file that indicates which gene families belong to which groups. Out of the box, HUMAnN can regroup gene families to MetaCyc reactions (a step which is also used internally as part of MetaCyc pathway quantification). Users can download additional mapping files using the HUMAnN databases script:
 
 ```
 $ humann_databases --download utility_mapping full $DIR
@@ -1032,7 +953,7 @@ Mappings are available for both UniRef90 and UniRef50 gene families to the follo
 
 In most cases, mappings are directly inferred from the annotation of the corresponding UniRef centroid sequence in UniProt.
 
-One exception to this are the "informative GO" (`infogo1000`) maps: These are informative subsets of GO computed from UniProt's annotations and the structure of the GO hierarchy specifically for HUMAnN 3.0 (each informative GO term has >1,000 UniRef centroids annotated to it, but none of its progeny terms have >1,000 centroids so annotated).
+One exception to this are the "informative GO" (`infogo1000`) maps: These are informative subsets of GO computed from UniProt's annotations and the structure of the GO hierarchy specifically for HUMAnN (each informative GO term has >1,000 UniRef centroids annotated to it, but none of its progeny terms have >1,000 centroids so annotated).
 
 Users are free to create and use additional mapping files and pass them to `humann_regroup_table` via the `--custom` mapping flag. The format of a mapping file is:
 
@@ -1057,7 +978,7 @@ Some groups are not associated by default with human-readable names. To attach n
 * `$TABLE2` = gene/pathway table with new names attached
 * Run with `-h` to see additional command line options
 
-By default, larger HUMAnN 3.0 outputs do not attach names (glosses) to individual feature IDs to keep file sizes down. This script is used to attach those names. The most common use for this script is attaching gene names to UniRef90/UniRef50 features in the default `genefamilies.tsv` output files.
+By default, larger HUMAnN outputs do not attach names (glosses) to individual feature IDs to keep file sizes down. This script is used to attach those names. The most common use for this script is attaching gene names to UniRef90/UniRef50 features in the default `genefamilies.tsv` output files.
 
 Features without names (common for many UniRef90/50 families) are assigned the default name: `NO_NAME`.
 
@@ -1071,7 +992,7 @@ Features without names (common for many UniRef90/50 families) are assigned the d
 * `$TABLE2` = normalized gene/pathway table
 * Run with `-h` to see additional command line options
 
-HUMAnN 3.0 quantifies genes and pathways in units of RPKs (reads per kilobase). These account for gene length but not sample sequencing depth. While there are some applications, e.g. strain profiling, where RPK units are superior to depth-normalized units, most of the time a user will renormalize their samples prior to downstream analysis.
+HUMAnN quantifies genes and pathways in units of RPKs (reads per kilobase). These account for gene length but not sample sequencing depth. While there are some applications, e.g. strain profiling, where RPK units are superior to depth-normalized units, most of the time a user will renormalize their samples prior to downstream analysis.
 
 This script provides the choice to normalize to relative abundance or copies per million (CPM) units. Both of these represent "total sum scaling (TSS)"-style normalization: in the former case, each sample is constrained to sum to 1, whereas in the latter case (CPMs) samples are constrained to sum to 1 million. Units out of 1 million are often more convenient for tables with many, many features (such as `genefamilies.tsv` tables).
 
@@ -1105,7 +1026,7 @@ This utility will split a merged feature table (multiple samples) into one file 
 
 ### humann_test ###
 
-Utility for executing HUMAnN 3.0 tests. See [Test the install](#markdown-header-3-test-the-install) above for further details.
+Utility for executing HUMAnN tests. See [Test the install](#markdown-header-3-test-the-install) above for further details.
 
 ----
 
@@ -1122,27 +1043,17 @@ This utility will unpack the pathways to show the genes for each. It adds anothe
 
 ----
 
-## Other HUMAnN 3.0 guides ##
+## Other HUMAnN guides ##
 
 ### Selecting a level of gene family resolution ###
 
-HUMAnN 3.0 uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
-
-HUMAnN 3.0 can be configured to output gene family abundance at the resolution of UniRef90 clusters or UniRef50 clusters. The mode can be manually configured via the ``--search-mode`` flag. By default, the search mode is set based on your current translated search database. In addition to changing the resolution of the gene families output, the search mode optimizes HUMAnN 3.0 for searching against UniRef90 versus UniRef50 during translated search (e.g. toggling the minimum allowed amino acid mapping identity between 90% and 50%, respectively).
-
-#### Should I pick UniRef90 or UniRef50? ####
-
-For most applications, **UniRef90 is a good default choice** because its clusters are more conserved and therefore more likely to be isofunctional. UniRef50 clusters can be very broad, and thus pose the risk that the cluster representative might not reflect the function of the homologous sequence(s) found in your sample. One drawback of UniRef90 (relative to UniRef50) is that a slightly higher fraction of coding sequences in pangenomes are not assignable to a UniRef90 cluster, resulting in an increase in abundance for the ``UniRef90_unknown`` feature.
-
-UniRef50 is preferable when dealing with very poorly characterized microbiomes. In such cases, requiring reads to map at 90% identity to UniRef90 may be too stringent, and so mapping at 50% identity to UniRef50 is expected to explain a larger portion of sample reads (albeit at reduced functional resolution).
-
-Notably, performance is similar when mapping against UniRef90 versus UniRef50: while the former database is larger, the associated 90% percent identity alignment threshold results in fewer spurious seed events compared to aligning at 50% identity, which increases overall performance.
+HUMAnN uses UniRef protein clusters as a gene families system. UniRef clusters are constructed by clustering proteins from UniProt to remove redundancy (UniRef100), further clustering non-redundant proteins at 90% identity and selecting representative sequences (UniRef90), and further clustering UniRef90 representative sequences at 50% identity to produce broader clusters (UniRef50). The representative of a given UniRef cluster is generally the best-annotated member of the cluster (which may or may not be the true centroid of the cluster). Additional information about UniRef can be found [at the UniRef website](http://www.uniprot.org/help/uniref) and in the [original UniRef publication](http://www.ncbi.nlm.nih.gov/pubmed/17379688).
 
 ----
 
 ### Selecting a scope for translated search ###
 
-HUMAnN 3.0 falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
+HUMAnN falls back to translated search for reads that failed to align to a known pangenome. The scope of this translated search can be tuned, resulting in a balance between the fraction of unclassified reads mapped and performance. There are three possible modes:
 
 * **Bypass translated search** is selected via the ``--bypass-translated-search`` flag. In this mode, reads that failed to map to a pangenome are saved, but not otherwise searched at the protein level. There will be no ``unclassified`` strata in your output. 
 
@@ -1158,9 +1069,9 @@ For many users, **filtered translated search** will serve as a good default opti
 
 ----
 
-### HUMAnN 3.0 and paired-end sequencing data ###
+### HUMAnN and paired-end sequencing data ###
 
-End-pairing relationships are currently not taken into account during HUMAnN 3.0's alignment steps. This is due to the fact that HUMAnN 3.0 strictly aligns reads to isolated coding sequences: either at the nucleotide level or through translated search. As such, it will frequently be the case that one read (`READ1`) will map inside a given coding sequence while its mate-pair (`READ2`) will not.
+End-pairing relationships are currently not taken into account during HUMAnN's alignment steps. This is due to the fact that HUMAnN strictly aligns reads to isolated coding sequences: either at the nucleotide level or through translated search. As such, it will frequently be the case that one read (`READ1`) will map inside a given coding sequence while its mate-pair (`READ2`) will not.
 
 Example:
 ```
@@ -1168,19 +1079,19 @@ GENEGENEGENE
      READ1-------READ2
 ```
 
-Penalizing such cases would be overly strict: in the absence of a the gene's genomic context, this looks like a perfectly reasonable alignment (`READ2` may fall in a non-coding region and not align, or it may align to another [isolated] coding sequence). *As a result, the best way to use paired-end sequencing data with HUMAnN 3.0 is simply to concatenate all reads into a single FASTA or FASTQ file.*
+Penalizing such cases would be overly strict: in the absence of a the gene's genomic context, this looks like a perfectly reasonable alignment (`READ2` may fall in a non-coding region and not align, or it may align to another [isolated] coding sequence). *As a result, the best way to use paired-end sequencing data with HUMAnN is simply to concatenate all reads into a single FASTA or FASTQ file.*
 
-If you have paired-end Illumina sequencing data, processed by CASAVA v1.8+ the sequence identifiers for the pairs have the same id after truncating by space. To keep track of the individual reads throughout the HUMAnN 3.0 workflow, the software will initially remove the spaces from the identifiers. This prevents read pairs from having the same id after being processed by bowtie2 and diamond. If this is the case for your read set, you will see an informative message printed to the screen and the log file indicating the removal of spaces from the sequence identifiers.
+If you have paired-end Illumina sequencing data, processed by CASAVA v1.8+ the sequence identifiers for the pairs have the same id after truncating by space. To keep track of the individual reads throughout the HUMAnN workflow, the software will initially remove the spaces from the identifiers. This prevents read pairs from having the same id after being processed by bowtie2 and diamond. If this is the case for your read set, you will see an informative message printed to the screen and the log file indicating the removal of spaces from the sequence identifiers.
 
 ----
 
 ### PICRUSt output ###
 
-You can run HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) output from predict_metagenomes.py or metagenome_contributions.py as input. Output from metagenome_contributions.py can include taxonomy information which will be used by HUMAnN 3.0. The steps that follow are the same for output files from either PICRUSt script.
+You can run HUMAnN with [PICRUSt](http://picrust.github.io/picrust/) output from predict_metagenomes.py or metagenome_contributions.py as input. Output from metagenome_contributions.py can include taxonomy information which will be used by HUMAnN. The steps that follow are the same for output files from either PICRUSt script.
 
 For information on the PICRUSt software, please see the [project website](http://picrust.github.io/picrust/). For questions about PICRUSt, please contact the [PICRUSt user group](https://groups.google.com/forum/#!forum/picrust). The instructions that follow are for PICRUSt version 1.0.0-dev.
 
-If you are running HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
+If you are running HUMAnN with [PICRUSt](http://picrust.github.io/picrust/) output as input, please follow these steps:
 
 1. Download the legacy kegg databases included in [HUMAnN 1.0](https://github.com/biobakery/humann_legacy/archive/0.99b.tar.gz)
     * The databases will be referred to in steps that follow with the path "humann1/data/*".
@@ -1190,7 +1101,7 @@ If you are running HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) 
     * The option `` --taxonomy_index -1 `` can be added if taxonomy information is included in the biom input file with column -1 associated with K0s.
     * If using biom input files, biom version 2.1+ must be installed.
 
-3. Run HUMAnN 3.0 on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
+3. Run HUMAnN on each of the new files in $OUTPUT_DIR placing the results in $OUTPUT_DIR2
     * for $SAMPLE.biom in $OUTPUT_DIR
         * `` $ humann --input $SAMPLE.biom --output $OUTPUT_DIR2 --pathways-database humann1/data/keggc ``
     * The option ``--remove-stratified-output`` can be added if you do not want the data stratified by bug.
@@ -1198,10 +1109,8 @@ If you are running HUMAnN 3.0 with [PICRUSt](http://picrust.github.io/picrust/) 
     * To run with the kegg modules instead of kegg pathways provide the modules file ``--pathways-database humann1/data/modulec``.
     * The input file can be in biom or tsv format.
 
-4. Join the pathways data (coverage and abundance) files from the HUMAnN 3.0 runs from all samples into two files
-    * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_pathcoverage.tsv --file_name pathcoverage ``
-    * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_pathabundance.tsv --file_name pathabundance ``
-    * The resulting files from these commands are named humann_pathcoverage.tsv and humann_pathabundance.tsv .
+4. Join the pathways data files from the HUMAnN runs from all samples into two files
+    * `` $ humann_join_tables --input $OUTPUT_DIR2 --output humann_4_pathabundance.tsv --file_name pathabundance ``
     * If the files being joined in this step are biom format, the ouput file will also be in biom format.
 
 Please note the flag ``--verbose`` can be added to all commands.
@@ -1210,7 +1119,7 @@ Please note the flag ``--verbose`` can be added to all commands.
 
 ### Joint taxonomic profile ###
 
-A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN 3.0 runs, please use the steps that follow.
+A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN runs, please use the steps that follow.
 
 1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
 
@@ -1220,17 +1129,17 @@ A joint taxonomic profile can be created from all of the samples in your set. To
 3. Reduce this file into a taxonomic profile that represents the maximum abundances from all of the samples in your set
     * `` $ humann_reduce_table --input joined_taxonomic_profile.tsv --output max_taxonomic_profile.tsv --function max --sort-by level ``
 
-4. Run HUMAnN 3.0 on all of the samples in your set, providing the max taxonomic profile
+4. Run HUMAnN on all of the samples in your set, providing the max taxonomic profile
     * for $SAMPLE.fastq in samples
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
 
-An alterative to step 4, which will save computing time, is to first run a single sample with the taxonomic profile. The HUMAnN 3.0 temp output folder for this sample will contain the bowtie2 indexed custom ChocoPhlAn database that can be provided when running your remaining samples. This will save compute time as this database will only be created once. Please see the steps below for the alternative to step 4.
+An alterative to step 4, which will save computing time, is to first run a single sample with the taxonomic profile. The HUMAnN temp output folder for this sample will contain the bowtie2 indexed custom ChocoPhlAn database that can be provided when running your remaining samples. This will save compute time as this database will only be created once. Please see the steps below for the alternative to step 4.
     
-1. Run HUMAnN 3.0 on one of your samples ($SAMPLE_1.fastq) providing the max taxonomic profile to create the custom indexed ChocoPhlAn database
+1. Run HUMAnN on one of your samples ($SAMPLE_1.fastq) providing the max taxonomic profile to create the custom indexed ChocoPhlAn database
     * `` $ humann --input $SAMPLE_1.fastq --output $OUTPUT_DIR --taxonomic-profile max_taxonomic_profile.tsv ``
     * The folder $OUTPUT_DIR/$SAMPLE_1_humann_temp/ will contain the custom indexed ChocoPhlAn database files
     
-2. Run HUMAnN 3.0 on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann_temp/)
+2. Run HUMAnN on the rest of your samples providing the custom indexed ChocoPhlAn database ($OUTPUT_DIR/$SAMPLE_1_humann_temp/)
     * for $SAMPLE.fastq in samples
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR --nucleotide-database $OUTPUT_DIR/$SAMPLE_1_humann_temp/ --bypass-nucleotide-index ``
 
@@ -1238,7 +1147,7 @@ An alterative to step 4, which will save computing time, is to first run a singl
 
 ### Custom taxonomic profile ###
 
-A custom taxonomic profile can be created to specify the taxa included in your samples. This file is used by HUMAnN 3.0 to create the custom ChocoPhlAn database for your samples.
+A custom taxonomic profile can be created to specify the taxa included in your samples. This file is used by HUMAnN to create the custom ChocoPhlAn database for your samples.
 
 The custom taxonomic profile must be in a tab-demilited format and contain two columns (taxon, with both genus and species, and percent abundance). An example follows:
 ```
@@ -1249,33 +1158,33 @@ g__Dialister|s__Dialister_invisus	10.52286
 g__Bacteroides|s__Bacteroides_stercoris	10.42227
 ```
 
-HUMAnN 3.0 uses the taxonomic profile to select pangenomes for the custom ChocoPhlAn database from the full ChocoPhlAn database. For example, the first line in the example above will add the centriods from Bacteroides thetaiotaomicron to the custom ChocoPhlAn database. Please note the taxa in the custom taxonomic profile must match the naming convention used by the full ChocoPhlAn database (ignoring case). 
+HUMAnN uses the taxonomic profile to select pangenomes for the custom ChocoPhlAn database from the full ChocoPhlAn database. For example, the first line in the example above will add the centriods from Bacteroides thetaiotaomicron to the custom ChocoPhlAn database. Please note the taxa in the custom taxonomic profile must match the naming convention used by the full ChocoPhlAn database (ignoring case). 
 
-To run HUMAnN 3.0 with the custom taxonomic profile ($FILE), use the option "--taxonomic-profile $FILE". This will bypass running MetaPhlAn, which creates a taxonomic profile, and instead will use the custom taxonomic profile provided. From the custom taxonomic profile, only those taxa that have a percent abundance greater than the default prescreen threshold will be considered. To change the default setting for the prescreen threshold to $THRESHOLD, use the option "--prescreen-threshold $THRESHOLD".
+To run HUMAnN with the custom taxonomic profile ($FILE), use the option "--taxonomic-profile $FILE". This will bypass running MetaPhlAn, which creates a taxonomic profile, and instead will use the custom taxonomic profile provided. From the custom taxonomic profile, only those taxa that have a percent abundance greater than the default prescreen threshold will be considered. To change the default setting for the prescreen threshold to $THRESHOLD, use the option "--prescreen-threshold $THRESHOLD".
 
 ----
 
 ### Custom nucleotide reference database ###
 
-A custom nucleotide reference database can be provided to HUMAnN 3.0 
+A custom nucleotide reference database can be provided to HUMAnN 
 
 This custom database must be formatted as a bowtie2 index. 
 
-Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN 3.0 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
 
-To run HUMAnN 3.0 with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--nucleotide-database $DIR". If you would like to bypass the translated alignment portion of HUMAnN 3.0, add the option "--bypass-translated-search". 
+To run HUMAnN with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--nucleotide-database $DIR". If you would like to bypass the translated alignment portion of HUMAnN, add the option "--bypass-translated-search". 
 
 ----
 
 ### Custom protein reference database ###
 
-A custom protein reference database can be provided to HUMAnN 3.0 
+A custom protein reference database can be provided to HUMAnN 
 
 This custom database must be formatted to be used by the translated alignment software selected (the default is Diamond). 
 
-Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN 3.0 are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
 
-To run HUMAnN 3.0 with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN 3.0 will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN 3.0, add the option "--bypass-nucleotide-search".  
+To run HUMAnN with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN, add the option "--bypass-nucleotide-search".  
 
 **Note:** HUMAnN can work with a protein database that's been split into chunks for computational efficiency (mapping the reads to them serially). Therefore HUMAnN models a protein database as a folder with one or more database chunks in it (derived from the same input set of protein sequences). If you mix unrelated chunks in the same folder HUMAnN will (correctly) complain at you. Hence if you want to have two separate DBs, even if each is only represented by a single chunk, they should be in separate folders.
 
@@ -1290,7 +1199,7 @@ The annotations for sequences in a custom (nucleotide or protein) reference data
 3. gene_family|gene_length|taxonomy
 4. identifier
 
-For options 1 and 2, HUMAnN 3.0 defaults will be used. The default gene length is 1,000 bases and the default taxonomy is "unclassified".
+For options 1 and 2, HUMAnN defaults will be used. The default gene length is 1,000 bases and the default taxonomy is "unclassified".
 
 Option 4 should be used along with a custom reference database annotation file. The custom reference database annotation file maps the identifiers to annotations. This file must be in a tab-delimited format and contain at least two columns (identifier and gene family). At most four columns of information can be included to describe each reference sequence. These columns should be organized as identifier, gene family, gene length, and taxonomy. An example follows:
 ```
@@ -1301,15 +1210,15 @@ Option 4 should be used along with a custom reference database annotation file. 
 
 The first line of the example will use the gene family UniRef50_C9LQU5, gene length 147, and taxon ``g__Dialister.s__Dialister_invisus`` for any sequences in your reference databases with the identifier 256402719.
 
-To run HUMAnN 3.0 with the custom reference database annotations ($FILE), use the option "--id-mapping $FILE". 
+To run HUMAnN with the custom reference database annotations ($FILE), use the option "--id-mapping $FILE". 
 
 ----
 
 ### Custom pathways database ###
 
-The pathways databases included with HUMAnN 3.0 (from MetaCyc and UniProt) have been created to be used with alignments to UniRef gene families. A custom pathways database can be provided to HUMAnN 3.0, specifically made to work with your custom reference database(s).
+The pathways databases included with HUMAnN (from MetaCyc and UniProt) have been created to be used with alignments to UniRef gene families. A custom pathways database can be provided to HUMAnN, specifically made to work with your custom reference database(s).
 
-One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN 3.0 with the option "--pathways-database $FILE". If two files are provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of gene families to reactions while the second file maps reactions to pathways. 
+One or two pathways database files (in a comma-delimited list) can be provided to HUMAnN with the option "--pathways-database $FILE". If two files are provided, the first file provides a tab-delimited mapping while the second file provides the pathways mapping. For example, the first file could provide a mapping of gene families to reactions while the second file maps reactions to pathways. 
 
 The first file, which is optional, should be organized to include at least two columns per line. The first column is the item to be mapped to (ie reactions from the example) while the remaining columns in the row are the gene families which can be mapped to the item in the first column. An example follows:
 ```
@@ -1335,31 +1244,28 @@ PWY-4	A	B	C	D	E
 
 ### Core diversity analysis with QIIME ###
 
-HUMAnN 3.0 output files can be provided to [QIIME](http://qiime.org/) as input to run core diversity analysis. For information on the QIIME software, please see the [project website](http://qiime.org/). For questions about QIIME, please contact the [QIIME user group](https://groups.google.com/forum/#!forum/qiime-forum). The instructions that follow are for QIIME version 1.9.1.
+HUMAnN output files can be provided to [QIIME](http://qiime.org/) as input to run core diversity analysis. For information on the QIIME software, please see the [project website](http://qiime.org/). For questions about QIIME, please contact the [QIIME user group](https://groups.google.com/forum/#!forum/qiime-forum). The instructions that follow are for QIIME version 1.9.1.
 
 
 To run this analysis, run the following steps:
 
-1. Run HUMAnN 3.0 on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
+1. Run HUMAnN on each of the samples (replacing $OUTPUT_DIR with the full path to the folder to write the output)
     * For each $SAMPLE.fastq in the set of all samples
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR --output-format biom --remove-stratified-output --output-max-decimals 0 ``
-        * Each sample will have three main output files ($SAMPLE_genefamilies.tsv, $SAMPLE_pathabundance.tsv, and $SAMPLE_pathcoverage.tsv) in biom format.
+        * Each sample will have two main output files ($SAMPLE_2_genefamilies.tsv, $SAMPLE_4_pathabundance.tsv) in biom format.
 
 2. Merge the three output files for each sample into three output files for all samples using [QIIME's merge_otu_tables.py](http://qiime.org/scripts/merge_otu_tables.html)
     * For this example, assume there are 3 samples named $SAMPLE1.fastq, $SAMPLE2.fastq, and $SAMPLE3.fastq
-        * `` $ merge_otu_tables.py -i $SAMPLE1_genefamilies.biom,$SAMPLE2_genefamilies.biom,$SAMPLE3_genefamilies.biom -o genefamilies_all.biom ``
-        * `` $ merge_otu_tables.py -i $SAMPLE1_pathabundance.biom,$SAMPLE2_pathabundance.biom,$SAMPLE3_pathabundance.biom -o pathabundance_all.biom ``
-        * `` $ merge_otu_tables.py -i $SAMPLE1_pathcoverage.biom,$SAMPLE2_pathcoverage.biom,$SAMPLE3_pathcoverage.biom -o pathcoverage_all.biom ``
+        * `` $ merge_otu_tables.py -i $SAMPLE1_2_genefamilies.biom,$SAMPLE2_2_genefamilies.biom,$SAMPLE3_2_genefamilies.biom -o genefamilies_all.biom ``
+        * `` $ merge_otu_tables.py -i $SAMPLE1_4_pathabundance.biom,$SAMPLE2_4_pathabundance.biom,$SAMPLE3_4_pathabundance.biom -o pathabundance_all.biom ``
 
-3. For each of the three merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
+3. For each of the merged biom files, run [QIIME's biom summarize-table](http://biom-format.org/documentation/summarizing_biom_tables.html) to obtain the sampling depth (e-value) required as input for the next step.
     * `` $ biom summarize-table -i genefamilies_all.biom -o genefamilies_summary.txt ``
     * `` $ biom summarize-table -i pathabundance_all.biom -o pathabundance_summary.txt ``
-    * `` $ biom summarize-table -i pathcoverage_all.biom -o pathcoverage_summary.txt ``
 
 4. Next run each merged biom file through [QIIME's core_diversity_analyses.py](http://qiime.org/scripts/core_diversity_analyses.html), providing the e-value from the prior step (replacing $EVALUE for each input file) and the [QIIME mapping file](http://qiime.org/documentation/file_formats.html#mapping-file-overview) you created (replacing $MAPPING_FILE with the full path to the mapping file).
     * `` $ core_diversity_analyses.py -i genefamilies_all.biom -o core_diversity_genefamilies -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
     * `` $ core_diversity_analyses.py -i pathabundance_all.biom -o core_diversity_pathabundance -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
-    * `` $ core_diversity_analyses.py -i pathcoverage_all.biom -o core_diversity_pathcoverage -m $MAPPING_FILE --nonphylogenetic_diversity -e $EVALUE --suppress_taxa_summary ``
 
 The output of [QIIME's core_diversity_analyses.py](http://qiime.org/scripts/core_diversity_analyses.html) will include PCoA plots of beta diversity analyses which can be viewed in the beta diversity folder, in the bray_curtis_emperor_pcoa_plot folder. Click on index.html, which will open a web browser with the plot. Using the tools on the right side, it is possible to change the colors by which the samples are labeled. 
 
@@ -1372,33 +1278,33 @@ The more categories in your mapping file, the more options you have to see if yo
 
 ----
 
-### Metatranscriptome analysis with HUMAnN 3.0 ###
+### Metatranscriptome analysis with HUMAnN ###
 
-The recommended HUMAnN 3.0 metatranscriptome (RNA) analysis protocol differs depending on whether or not you have metagenomic (DNA) reads available from the same biological sample.
+The recommended HUMAnN metatranscriptome (RNA) analysis protocol differs depending on whether or not you have metagenomic (DNA) reads available from the same biological sample.
 
-**Analyzing a metatranscriptome with a paired metagenome.** In this case, we recommend analyzing the metagenome first. Then, rather than constructing a taxonomic profile directly from the metatranscriptome, use the taxonomic profile of the corresponding metagenome as an additional input to HUMAnN 3.0 via the ``--taxonomic-profile`` flag. This will guarantee that RNA reads are mapped to any species' pangenomes detected in the metagenome. RNA reads are otherwise provided as input to HUMAnN 3.0 just as DNA reads are. HUMAnN 3.0 RNA-level outputs (e.g. transcript family abundance) can then be normalized by corresponding DNA-level outputs to quantify microbial expression independent of gene copy number. **CAVEAT:** For low-abundance species, random sampling may lead to detection of transcripts for undetected genes. In these cases, we recommend smoothing DNA-level features to avoid divide-by-zero errors during normalization.
+**Analyzing a metatranscriptome with a paired metagenome.** In this case, we recommend analyzing the metagenome first. Then, rather than constructing a taxonomic profile directly from the metatranscriptome, use the taxonomic profile of the corresponding metagenome as an additional input to HUMAnN via the ``--taxonomic-profile`` flag. This will guarantee that RNA reads are mapped to any species' pangenomes detected in the metagenome. RNA reads are otherwise provided as input to HUMAnN just as DNA reads are. HUMAnN RNA-level outputs (e.g. transcript family abundance) can then be normalized by corresponding DNA-level outputs to quantify microbial expression independent of gene copy number. **CAVEAT:** For low-abundance species, random sampling may lead to detection of transcripts for undetected genes. In these cases, we recommend smoothing DNA-level features to avoid divide-by-zero errors during normalization.
 
-**Analyzing an isolated metatranscriptome (without a paired metagenome).** In this case, analyze RNA read data just as you would DNA data (provided as a fasta/fastq file). **CAVEAT 1:** Note that species are quantified in HUMAnN 3.0 based on recruitment of reads to species-specific marker genes. While each genome copy is assumed to donate ~1 copy of each marker to metagenome (DNA) data, the same assumption cannot be made for RNA data (markers may be more or less transcribed within a species compared to the species average). As long as a non-trivial fraction of a species' markers are expressed, HUMAnN 3.0 will still detect that species in the transcript pool. However, species relative abundance estimates from the taxonomic profile must be interpretted carefully: these values reflect species' relative contributions to the pool of species-specific transcripts, and not the overall transcript pool. **CAVEAT 2:** Transcript abundance inferred from a lone metatranscriptome is confounded with underlying gene copy number. For example, transcript X may be more abundant in sample A relative to sample B because (i) the same number of underlying X genes are more highly expressed in sample A relative to sample B or (ii) there are more copies of gene X in sample A relative to sample B (all of which are equally expressed). This is a general challenge in analyzing isolated metatranscriptomes (not specific to HUMAnN 3.0).
+**Analyzing an isolated metatranscriptome (without a paired metagenome).** In this case, analyze RNA read data just as you would DNA data (provided as a fasta/fastq file). **CAVEAT 1:** Note that species are quantified in HUMAnN based on recruitment of reads to species-specific marker genes. While each genome copy is assumed to donate ~1 copy of each marker to metagenome (DNA) data, the same assumption cannot be made for RNA data (markers may be more or less transcribed within a species compared to the species average). As long as a non-trivial fraction of a species' markers are expressed, HUMAnN will still detect that species in the transcript pool. However, species relative abundance estimates from the taxonomic profile must be interpretted carefully: these values reflect species' relative contributions to the pool of species-specific transcripts, and not the overall transcript pool. **CAVEAT 2:** Transcript abundance inferred from a lone metatranscriptome is confounded with underlying gene copy number. For example, transcript X may be more abundant in sample A relative to sample B because (i) the same number of underlying X genes are more highly expressed in sample A relative to sample B or (ii) there are more copies of gene X in sample A relative to sample B (all of which are equally expressed). This is a general challenge in analyzing isolated metatranscriptomes (not specific to HUMAnN).
 
 ----
 
 ### Genus level gene families and pathways ###
 
-By default, the gene families and pathways output files from HUMAnN 3.0 are species level. To obtain genus level gene families and pathways, follow these steps.
+By default, the gene families and pathways output files from HUMAnN are species level. To obtain genus level gene families and pathways, follow these steps.
 
 1. Create a genus level gene families file
-    * `` $ humann_gene_families_genus_level --input $SAMPLE_genefamilies.tsv --output $SAMPLE_genefamilies_genus_level.tsv ``
-    * In this command, replace ``$SAMPLE_genefamilies.tsv`` with the species level gene families file created by default by HUMAnN 3.0 and ``$SAMPLE_genefamilies_genus_level.tsv`` with the name of the gene families genus level file that will be created.
+    * `` $ humann_gene_families_genus_level --input $SAMPLE_2_genefamilies.tsv --output $SAMPLE_genefamilies_genus_level.tsv ``
+    * In this command, replace ``$SAMPLE_2_genefamilies.tsv`` with the species level gene families file created by default by HUMAnN and ``$SAMPLE_genefamilies_genus_level.tsv`` with the name of the gene families genus level file that will be created.
 
-2. Run HUMAnN 3.0, with the genus level gene families file as input, to get genus level pathways output files
+2. Run HUMAnN, with the genus level gene families file as input, to get genus level pathways output files
     * `` $ humann --input $SAMPLE_genefamilies_genus_level.tsv --output humann_genus_level_output ``
-    * This run will be much faster and require less memory than the original run as HUMAnN 3.0 is provided gene family abundances so it only needs to compute the pathways.
+    * This run will be much faster and require less memory than the original run as HUMAnN is provided gene family abundances so it only needs to compute the pathways.
 
 ----
 
 ## FAQs ##
 
-HUMAnN 3.0 frequently asked questions:
+HUMAnN frequently asked questions:
 
 1.  Is there a way to print more information to stdout during the run?
     *   Yes, add the ``--verbose`` flag
@@ -1410,8 +1316,8 @@ HUMAnN 3.0 frequently asked questions:
     *   Yes, use the ``--nucleotide-database $DIR`` option
 5.  Can I provide an alternative location for the UniRef database?
     *   Yes, use the ``--protein-database $DIR`` option
-6.  I already have MetaPhlAn output. Can I start HUMAnN 3.0 with the MetaPhlAn output?
-    *   Yes, use the ``--taxonomic-profile bugs_list.tsv`` option
+6.  I already have MetaPhlAn output. Can I start HUMAnN with the MetaPhlAn output?
+    *   Yes, use the ``--taxonomic-profile file.tsv`` option
 7.  Is there a way to change $SAMPLENAME in the output file names?
     *   Yes, use the ``--output-basename $NAME`` option
 8.  How do I remove the stratification by bug from the output files?
@@ -1437,10 +1343,9 @@ usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [--taxonomic-profile <taxonomic_profile.tsv>]
               [--memory-use {minimum,maximum}]
               [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
-              [--search-mode {uniref50,uniref90}] [-v]
               [--metaphlan <metaphlan>]
               [--metaphlan-options <metaphlan_options>]
-              [--prescreen-threshold <0.01>] [--bowtie2 <bowtie2>]
+              [--prescreen-threshold <0.5>] [--bowtie2 <bowtie2>]
               [--bowtie-options <bowtie_options>]
               [--nucleotide-database <nucleotide_database>]
               [--nucleotide-identity-threshold <0.0>]
@@ -1449,23 +1354,22 @@ usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [--diamond <diamond>] [--diamond-options <diamond_options>]
               [--evalue <1.0>] [--pick-frames {on,off}]
               [--protein-database <protein_database>]
-              [--rapsearch <rapsearch>]
-              [--translated-alignment {usearch,rapsearch,diamond}]
-              [--translated-identity-threshold <Automatically: 50.0 or 80.0, Custom: 0.0-100.0>]
+              [--translated-alignment {diamond}]
+              [--translated-identity-threshold <50.0>]
               [--translated-query-coverage-threshold <90.0>]
               [--translated-subject-coverage-threshold <50.0>]
-              [--usearch <usearch>] [--gap-fill {on,off}] [--minpath {on,off}]
+              [--gap-fill {on,off}] [--minpath {on,off}]
               [--pathways {metacyc,unipathway}]
               [--pathways-database <pathways_database.tsv>] [--xipe {on,off}]
               [--annotation-gene-index <3>] [--id-mapping <id_mapping.tsv>]
               [--remove-temp-output]
               [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-              [--o-log <sample.log>] [--output-basename <sample_name>]
+              [--o-log <sample_0.log>] [--output-basename <sample_name>]
               [--output-format {tsv,biom}] [--output-max-decimals <10>]
               [--remove-column-description-output]
               [--remove-stratified-output]
 
-HUMAnN : HMP Unified Metabolic Analysis Network 3
+HUMAnN : HMP Unified Metabolic Analysis Network 
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -1499,9 +1403,6 @@ optional arguments:
   --input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}
                         the format of the input file
                         [DEFAULT: format identified by software]
-  --search-mode {uniref50,uniref90}
-                        search for uniref50 or uniref90 gene families
-                        [DEFAULT: based on translated database selected]
   -v, --verbose         additional output is printed
 
 [2] Configure tier 1: prescreen:
@@ -1511,9 +1412,9 @@ optional arguments:
   --metaphlan-options <metaphlan_options>
                         options to be provided to the MetaPhlAn software
                         [DEFAULT: "-t rel_ab"]
-  --prescreen-threshold <0.01>
-                        minimum percentage of reads matching a species
-                        [DEFAULT: 0.01]
+  --prescreen-threshold <0.5>
+                        minimum estimated genome coverage for inclusion in pangenome search
+                        [DEFAULT: 0.5]
 
 [3] Configure tier 2: nucleotide search:
   --bowtie2 <bowtie2>   directory containing the bowtie2 executable
@@ -1545,23 +1446,18 @@ optional arguments:
   --protein-database <protein_database>
                         directory containing the protein database
                         [DEFAULT: /home/ljmciver/miniconda3/envs/humann3/lib/python3.6/site-packages/humann/data/uniref_DEMO]
-  --rapsearch <rapsearch>
-                        directory containing the rapsearch executable
-                        [DEFAULT: $PATH]
-  --translated-alignment {usearch,rapsearch,diamond}
+  --translated-alignment {diamond}
                         software to use for translated alignment
                         [DEFAULT: diamond]
-  --translated-identity-threshold <Automatically: 50.0 or 80.0, Custom: 0.0-100.0>
+  --translated-identity-threshold <50.0>
                         identity threshold for translated alignments
-                        [DEFAULT: Tuned automatically (based on uniref mode) unless a custom value is specified]
+                        [DEFAULT: 50.0]
   --translated-query-coverage-threshold <90.0>
                         query coverage threshold for translated alignments
                         [DEFAULT: 90.0]
   --translated-subject-coverage-threshold <50.0>
                         subject coverage threshold for translated alignments
                         [DEFAULT: 50.0]
-  --usearch <usearch>   directory containing the usearch executable
-                        [DEFAULT: $PATH]
 
 [5] Gene and pathway quantification:
   --gap-fill {on,off}   turn on/off the gap fill computation
@@ -1589,8 +1485,8 @@ optional arguments:
   --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         level of messages to display in log
                         [DEFAULT: DEBUG]
-  --o-log <sample.log>  log file
-                        [DEFAULT: temp/sample.log]
+  --o-log <sample_0.log>  log file
+                        [DEFAULT: sample_0.log]
   --output-basename <sample_name>
                         the basename for the output files
                         [DEFAULT: input file basename]
