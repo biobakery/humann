@@ -377,7 +377,7 @@ metaphlan_version={
     "line" : -1,
     "column" : 2}
 
-metaphlan_v4_db_version="vOct22"
+metaphlan_v4_db_version="vOct22_CHOCOPhlAnSGB_202403"
 metaphlan_v4_db_matching_uniref="SGB"
 sgb_to_species_mapping={}
 
