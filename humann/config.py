@@ -104,8 +104,9 @@ def log_settings():
 # User config file
 user_edit_config_file="humann.cfg"
 
-full_path_user_edit_config_file=os.path.join(os.path.dirname(os.path.abspath(__file__)),
-    user_edit_config_file)
+full_path_user_edit_config_file=os.getenv('HUMAnN_CONFIG',
+    os.path.join(os.path.dirname(os.path.abspath(__file__)),
+    user_edit_config_file))
 
 def update_user_edit_config_file_single_item(section,name,value):
     """
