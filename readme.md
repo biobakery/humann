@@ -203,7 +203,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 
 ### Software ###
 
-1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
+1. [MetaPhlAn](https://github.com/biobakery/MetaPhlAn)
 2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2.9) (automatically installed)
 3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.9.24) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 3.7)
