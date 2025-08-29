@@ -919,7 +919,7 @@ This will join (merge) multiple single-sample output files into a single table w
 
 ### humann_reduce_table ###
 
-Used for collapsing joined MetaPhlAn taxonomic profiles to a single joint profile. See the [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile) guide below.
+Used for collapsing joined MetaPhlAn taxonomic profiles to a single joint profile. See the [Joint taxonomic profile](#joint-taxonomic-profile) guide below.
 
 ----
 
@@ -1511,3 +1511,4 @@ Thanks go to these wonderful people:
  Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
  
  Additionally, Google user group: <humann-users@googlegroups.com> (Read only) is available.  
+
