@@ -51,7 +51,7 @@ def alignment(input):
     # outfile name
     bowtie2_out = utilities.name_temp_file(config.metaphlan_bowtie2_name) 
 
-    args=[input]+opts+["-o",config.profile_file,"--input_type",input_type, "--bowtie2out",bowtie2_out]
+    args=[input]+opts+["-o",config.profile_file,"--input_type",input_type, "--bowtie2out",bowtie2_out,"--offline"]
     
     if config.threads >1:
         args+=["--nproc",config.threads]

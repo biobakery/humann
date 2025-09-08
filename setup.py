@@ -68,6 +68,64 @@ import tempfile
 import re
 import time
 
+try:
+    from packaging.specifiers import SpecifierSet
+    from packaging.version import Version
+except Exception:
+    sys.exit("CRITICAL ERROR: The 'packaging' library is required. "
+             "Please install it (e.g., 'pip install packaging') and re-run.")
+
+# For getting the installed distribution version robustly on Py2/Py3.
+try:
+    import pkg_resources
+    def _get_dist_version(dist_name):
+        try:
+            return pkg_resources.get_distribution(dist_name).version
+        except Exception:
+            return None
+except Exception:
+    # Fallback: importlib.metadata (Py3.8+) or backport if present
+    try:
+        from importlib.metadata import version as _im_version
+    except Exception:
+        try:
+            from importlib_metadata import version as _im_version  # backport
+        except Exception:
+            _im_version = None
+
+    def _get_dist_version(dist_name):
+        try:
+            return _im_version(dist_name) if _im_version else None
+        except Exception:
+            return None
+        
+# ---- MetaPhlAn version requirement ----
+REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.0.6")
+REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.0.6"
+
+def check_metaphlan_version():
+    """
+    Ensures an installed MetaPhlAn satisfies REQUIRED_METAPHLAN_SPEC.
+    This catches incompatible pre-existing installs or post-install mismatches.
+    """
+    installed = _get_dist_version("metaphlan")
+    if installed is None:
+        # Not installed yet; pip resolver should install it via install_requires.
+        return
+    try:
+        if Version(installed) not in REQUIRED_METAPHLAN_SPEC:
+            sys.exit(
+                "CRITICAL ERROR: Incompatible MetaPhlAn detected (found v{found}).\n"
+                "HUMAnN requires MetaPhlAn in the range {spec}.\n"
+                "Please install a compatible version, e.g.:\n\n"
+                "    pip install '{pin}'\n".format(
+                    found=installed, spec=str(REQUIRED_METAPHLAN_SPEC), pin=REQUIRED_METAPHLAN_PIN
+                )
+            )
+    except Exception:
+        sys.exit("CRITICAL ERROR: Unable to parse installed MetaPhlAn version "
+                 "(got: {0}). Please reinstall MetaPhlAn within {1}.".format(installed, REQUIRED_METAPHLAN_SPEC))
+
 
 VERSION = "4.0.0.alpha.1"
 
@@ -542,11 +600,15 @@ class Install(_install):
         _install.finalize_options(self)
     
     def run(self):
-        
+        # verify MetaPhlAn version early 
+        check_metaphlan_version()
         # install minpath if not already installed
         install_minpath(replace_install=self.replace_dependencies_install)
         
         _install.run(self)
+
+        # verify MetaPhlAn version post installation
+        check_metaphlan_version()
         
         # find the current install folder
         current_install_folder=None
