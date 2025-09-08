@@ -68,6 +68,14 @@ import tempfile
 import re
 import time
 
+
+VERSION = "3.9"
+
+AUTHOR = "HUMAnN Development Team"
+AUTHOR_EMAIL = "humann-users@googlegroups.com"
+MAINTAINER = "Lauren McIver"
+MAINTAINER_EMAIL = "lauren.j.mciver@gmail.com"
+
 try:
     from packaging.specifiers import SpecifierSet
     from packaging.version import Version
@@ -77,6 +85,7 @@ except Exception:
 
 # For getting the installed distribution version robustly on Py2/Py3.
 try:
+    # pkg_resources works across many environments
     import pkg_resources
     def _get_dist_version(dist_name):
         try:
@@ -98,10 +107,10 @@ except Exception:
             return _im_version(dist_name) if _im_version else None
         except Exception:
             return None
-        
-# ---- MetaPhlAn version requirement ----
-REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.0.6")
-REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.0.6"
+
+# ---- MetaPhlAn version check----
+REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=3.0.1,<4.0.6")
+REQUIRED_METAPHLAN_PIN = "metaphlan>=3.0.1,<4.0.6"
 
 def check_metaphlan_version():
     """
@@ -126,13 +135,6 @@ def check_metaphlan_version():
         sys.exit("CRITICAL ERROR: Unable to parse installed MetaPhlAn version "
                  "(got: {0}). Please reinstall MetaPhlAn within {1}.".format(installed, REQUIRED_METAPHLAN_SPEC))
 
-
-VERSION = "4.0.0.alpha.1"
-
-AUTHOR = "HUMAnN Development Team"
-AUTHOR_EMAIL = "humann-users@googlegroups.com"
-MAINTAINER = "Lauren McIver"
-MAINTAINER_EMAIL = "lauren.j.mciver@gmail.com"
 
 def byte_to_megabyte(byte):
     """
@@ -527,15 +529,15 @@ def install_bowtie2(final_install_folder, mac_os, replace_install=None):
     
     if not bowtie2_installed or replace_install:
         bowtie2_exe="bowtie2"
-        bowtie2_file="bowtie2-2.2.9-linux-x86_64.zip"
-        bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/bowtie2-2.2.9-linux-x86_64.zip"
+        bowtie2_file="bowtie2-2.2.3-linux-x86_64.zip"
+        bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip"
 
         # if this is a MAC OS, select a different binary download
         if mac_os:
-            bowtie2_file="bowtie2-2.2.9-macos-x86_64.zip"
-            bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/bowtie2-2.2.9-macos-x86_64.zip"
+            bowtie2_file="bowtie2-2.2.3-macos-x86_64.zip"
+            bowtie2_url="http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip"
             
-        bowtie2_folder="bowtie2-2.2.9"
+        bowtie2_folder="bowtie2-2.2.3"
     
         humann_source_folder=os.path.dirname(os.path.abspath(__file__))
         tempfolder=tempfile.mkdtemp(prefix="bowtie2_download_",dir=humann_source_folder)
@@ -600,16 +602,12 @@ class Install(_install):
         _install.finalize_options(self)
     
     def run(self):
-        # verify MetaPhlAn version early 
         check_metaphlan_version()
         # install minpath if not already installed
         install_minpath(replace_install=self.replace_dependencies_install)
         
         _install.run(self)
-
-        # verify MetaPhlAn version post installation
         check_metaphlan_version()
-        
         # find the current install folder
         current_install_folder=None
         for item in os.listdir(self.install_lib):
@@ -693,7 +691,6 @@ setuptools.setup(
             'data/misc/*',
             'data/uniref_DEMO/*',
             'data/chocophlan_DEMO/*',
-            'data/utility_DEMO/*',
             'tests/data/*.*',
             'tests/data/tooltest*/*',
             'quantify/MinPath/data/*',
@@ -712,6 +709,7 @@ setuptools.setup(
             'humann_rename_table = humann.tools.rename_table:main',
             'humann_renorm_table = humann.tools.renorm_table:main',
             'humann_regroup_table = humann.tools.regroup_table:main',
+            'humann_infer_taxonomy = humann.tools.infer_taxonomy:main',
             'humann_reduce_table = humann.tools.reduce_table:main',
             'humann_unpack_pathways = humann.tools.merge_abundance:main',
             'humann_test = humann.tests.humann_test:main',
