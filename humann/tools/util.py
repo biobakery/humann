@@ -374,7 +374,7 @@ def fsplit( feature ):
         stratum = items[1]
     else:
         # possible names with "|"
-        sys.exit( "LETHAL ERROR: bad feature name: {}".format( f ) )
+        sys.exit( "LETHAL ERROR: bad feature name: {}".format( feature ) )
     # extract name
     items = code.split( c_name_delim )
     if len( items ) == 1:
