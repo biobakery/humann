@@ -30,9 +30,42 @@ import logging
 
 from .. import utilities
 from .. import config
+import subprocess
 
 # name global logging instance
 logger=logging.getLogger(__name__)
+
+def verify_metaphlan_db_version(expected_version, exe="metaphlan"):
+    """
+    Run 'metaphlan --version' and verify that the expected database version string
+    is present in its output. Exits with an error if not found.
+    """
+    try:
+        result = subprocess.run(
+            [exe, "--version"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        version_output = result.stdout + result.stderr
+
+        if expected_version not in version_output:
+            message = (
+                f"\nERROR: Expected MetaPhlAn database version "
+                f"'{expected_version}' not found in output.\n\n"
+                f"MetaPhlAn reported:\n{version_output}\n"
+                f"Please download or specify the correct database version."
+            )
+            logger.error(message)
+            sys.exit(message)
+        else:
+            logger.info(f"Verified MetaPhlAn DB version: {expected_version}")
+            print(f"\nVerified MetaPhlAn DB version: {expected_version}\n")
+
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        message = f"\nERROR: Unable to run '{exe} --version'. Ensure MetaPhlAn is installed and in PATH.\n{e}"
+        logger.error(message)
+        sys.exit(message)
 
 def alignment(input):
     """
@@ -41,6 +74,9 @@ def alignment(input):
    
     exe="metaphlan"
     opts=config.metaphlan_opts  
+
+    #Verify MetaPhlAn DB version during runtime
+    verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
 
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)
