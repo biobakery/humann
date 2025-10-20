@@ -31,41 +31,151 @@ import logging
 from .. import utilities
 from .. import config
 import subprocess
+from typing import Iterable
+from packaging.version import Version, InvalidVersion
+from packaging.specifiers import SpecifierSet, InvalidSpecifier
 
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def verify_metaphlan_db_version(expected_version, exe="metaphlan"):
+# e.g., 4, 4.0, 4.0.1, 202403, 2024.03.15
+NUM_TOKEN = re.compile(r'(?<![\d.])(\d+(?:\.\d+)*)(?![\d.])')
+# e.g., vOct22_CHOCOPhlAnSGB_202403 (common MetaPhlAn DB tag style)
+DB_TAG_LIKE = re.compile(r'v[A-Z][a-z]{2}\d{2}_[A-Za-z0-9]+_\d{6}')
+
+def db_lines(output: str) -> list[str]:
+    """Return lines likely mentioning the DB."""
+    lines = [ln.strip() for ln in output.splitlines()]
+    hits = [ln for ln in lines if re.search(r'\b(DB|database)\b', ln, re.IGNORECASE)]
+    return hits if hits else lines  # fall back to all lines if no explicit DB line
+
+def parse_db_numbers(lines: Iterable[str]) -> list[str]:
+    """Collect numeric tokens from DB-related lines (e.g., YYYYMM)."""
+    nums = []
+    seen = set()
+    for ln in lines:
+        for tok in NUM_TOKEN.findall(ln):
+            if tok not in seen:
+                nums.append(tok)
+                seen.add(tok)
+    return nums
+
+def parse_db_tags(lines: Iterable[str]) -> list[str]:
+    """Collect DB-tag-like tokens from DB-related lines."""
+    tags = []
+    seen = set()
+    for ln in lines:
+        for m in DB_TAG_LIKE.findall(ln):
+            if m not in seen:
+                tags.append(m)
+                seen.add(m)
+    return tags
+
+def looks_like_specifier(s: str) -> bool:
+    try:
+        SpecifierSet(s)  # will raise if invalid
+        return True
+    except InvalidSpecifier:
+        return False
+
+def ensure_iterable(obj) -> list[str]:
+    if obj is None:
+        return []
+    if isinstance(obj, (list, tuple, set)):
+        return list(obj)
+    return [str(obj)]
+
+def verify_metaphlan_db_version(expected_db, exe: str = "metaphlan"):
     """
-    Run 'metaphlan --version' and verify that the expected database version string
-    is present in its output. Exits with an error if not found.
+    Verify MetaPhlAn *database* version at runtime only.
+
+    `expected_db` can be:
+      - A PEP 440 specifier string (e.g., '>=202402,<=202405') applied to numeric
+        tokens found in the DB line(s) of `metaphlan --version` output.
+      - A string or a list/tuple/set of strings representing allowed DB tag(s),
+        matched via substring against the DB line(s).
+
+    Examples:
+      verify_metaphlan_db_version('>=202403,<=202506')
+      verify_metaphlan_db_version('vOct22_CHOCOPhlAnSGB_202403')
+      verify_metaphlan_db_version({'vOct22_CHOCOPhlAnSGB_202403', 'vJun25_CHOCOPhlAnSGB_202506'})
     """
     try:
-        result = subprocess.run(
+        proc = subprocess.run(
             [exe, "--version"],
             capture_output=True,
             text=True,
             check=True
         )
-        version_output = result.stdout + result.stderr
-
-        if expected_version not in version_output:
-            message = (
-                f"\nERROR: Expected MetaPhlAn database version "
-                f"'{expected_version}' not found in output.\n\n"
-                f"MetaPhlAn reported:\n{version_output}\n"
-                f"Please download or specify the correct database version."
-            )
-            logger.error(message)
-            sys.exit(message)
-        else:
-            logger.info(f"Verified MetaPhlAn DB version: {expected_version}")
-            print(f"\nVerified MetaPhlAn DB version: {expected_version}\n")
-
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        message = f"\nERROR: Unable to run '{exe} --version'. Ensure MetaPhlAn is installed and in PATH.\n{e}"
-        logger.error(message)
-        sys.exit(message)
+        msg = (
+            f"\nERROR: Unable to run '{exe} --version'. "
+            f"Ensure MetaPhlAn is installed and in PATH.\n{e}"
+        )
+        logger.error(msg)
+        sys.exit(msg)
+
+    version_output = (proc.stdout or "") + (proc.stderr or "")
+    lines = db_lines(version_output)
+
+    #specifier (numeric) check with packaging
+    if isinstance(expected_db, str) and looks_like_specifier(expected_db):
+        nums = parse_db_numbers(lines)
+        if not nums:
+            msg = (
+                "ERROR: Could not find any numeric tokens in MetaPhlAn DB output to "
+                f"evaluate against specifier '{expected_db}'.\n\nOutput:\n{version_output}"
+            )
+            logger.error(msg)
+            sys.exit(msg)
+
+        try:
+            spec = SpecifierSet(expected_db)
+        except InvalidSpecifier as e:
+            msg = f"ERROR: Invalid DB version specifier '{expected_db}': {e}"
+            logger.error(msg)
+            sys.exit(msg)
+
+        matched = None
+        for tok in nums:
+            try:
+                if Version(tok) in spec:
+                    matched = tok
+                    break
+            except InvalidVersion:
+                continue
+
+        if not matched:
+            msg = (
+                f"ERROR: No DB numeric token satisfies specifier '{expected_db}'.\n"
+                f"Found tokens: {', '.join(nums)}\n\nOutput:\n{version_output}"
+            )
+            logger.error(msg)
+            sys.exit(msg)
+
+        logger.info(f"Verified MetaPhlAn DB numeric token {matched} satisfies '{expected_db}'.")
+        print(f"\nVerified MetaPhlAn DB version (numeric) {matched} satisfies '{expected_db}'.\n")
+        return
+
+    #allowed tag(s) via substring match
+    allowed_tags = ensure_iterable(expected_db)
+    haystack = "\n".join(lines)
+    for tag in allowed_tags:
+        if tag and str(tag) in haystack:
+            logger.info(f"Verified MetaPhlAn DB tag: {tag}")
+            print(f"\nVerified MetaPhlAn DB tag: {tag}\n")
+            return
+
+    # As a helpful hint, surface any tag-like matches we detected
+    found_tags = parse_db_tags(lines)
+    msg = (
+        "ERROR: MetaPhlAn DB version check failed.\n"
+        f"Expected one of: {allowed_tags if allowed_tags else '[no tags provided]'}\n"
+        f"Detected tag-like strings: {found_tags if found_tags else '[none]'}\n\n"
+        f"Full output:\n{version_output}"
+    )
+    logger.error(msg)
+    sys.exit(msg)
 
 def alignment(input):
     """
@@ -74,6 +184,11 @@ def alignment(input):
    
     exe="metaphlan"
     opts=config.metaphlan_opts  
+
+    # Check ONLY the database version at runtime
+    expected_db = getattr(config, "metaphlan_db_spec", None) or getattr(config, "metaphlan_db_allowed", None)
+    if not expected_db:
+        sys.exit("ERROR: No expected MetaPhlAn DB version provided in humann config (metaphlan_db_spec or metaphlan_db_allowed).")
 
     #Verify MetaPhlAn DB version during runtime
     verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
