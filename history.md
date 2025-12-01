@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v4.0.0.alpha.2 (11-25-2025) ##
+
+* Add runtime metaphlan DB and version checks for compatibility 
+
 ## v3.8 (08-02-2023) ##
 
 * Add to SGB mapping file.

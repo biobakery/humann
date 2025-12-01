@@ -100,8 +100,8 @@ except Exception:
             return None
         
 # ---- MetaPhlAn version requirement ----
-REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.0.6")
-REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.0.6"
+REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.1.2")
+REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.1.2"
 
 def check_metaphlan_version():
     """
@@ -127,7 +127,7 @@ def check_metaphlan_version():
                  "(got: {0}). Please reinstall MetaPhlAn within {1}.".format(installed, REQUIRED_METAPHLAN_SPEC))
 
 
-VERSION = "4.0.0.alpha.1"
+VERSION = "4.0.0.alpha.2"
 
 AUTHOR = "HUMAnN Development Team"
 AUTHOR_EMAIL = "humann-users@googlegroups.com"
