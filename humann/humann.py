@@ -66,7 +66,7 @@ from .quantify import modules
 logger=logging.getLogger(__name__)
 
 
-VERSION="4.0.0.alpha.1"
+VERSION="4.0.0.alpha.2"
 
 MAX_SIZE_DEMO_INPUT_FILE=35
 
@@ -792,7 +792,7 @@ def check_requirements(args):
                     "Please check the install.")
 
             # Check the metaphlan2 version
-            utilities.check_software_version("metaphlan",config.metaphlan_version)
+            # utilities.check_software_version("metaphlan",config.metaphlan_version)
 
         # Check that the bowtie2 executable can be found
         if not config.bypass_nucleotide_search:

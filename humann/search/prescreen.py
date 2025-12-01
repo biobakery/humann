@@ -185,11 +185,6 @@ def alignment(input):
     exe="metaphlan"
     opts=config.metaphlan_opts  
 
-    # Check ONLY the database version at runtime
-    expected_db = getattr(config, "metaphlan_db_spec", None) or getattr(config, "metaphlan_db_allowed", None)
-    if not expected_db:
-        sys.exit("ERROR: No expected MetaPhlAn DB version provided in humann config (metaphlan_db_spec or metaphlan_db_allowed).")
-
     #Verify MetaPhlAn DB version during runtime
     verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
 
