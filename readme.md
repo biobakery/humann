@@ -65,17 +65,17 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     1. [Gene families file](#1-gene-families-file)
     2. [Reactions file](#2-reactions-file)
     3. [Pathway abundance file](#3-pathway-abundance-file)
-    4. [Intermediate temp output files](#4-intermediate-temp-output-files)
+    4. [MetaPhlAn profile](#4-metaphlan-profile)
+    5. [Intermediate temp output files](#5-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#2-bowtie2-reduced-alignment-results)
         3. [Bowtie2 index files](#3-bowtie2-index-files)
         4. [Unaligned reads after Bowtie2](#4-unaligned-reads-after-bowtie2)
         5. [Custom ChocoPhlAn database](#5-custom-chocophlan-database)
         6. [MetaPhlAn Bowtie2 output](#6-metaphlan-bowtie2-output)
-        7. [MetaPhlAn bugs list](#7-metaphlan-bugs-list)
-        8. [Translated alignment results](#8-translated-alignment-results)
-        9. [Translated alignment unaligned reads](#9-translated-alignment-unaligned-reads)
-        10. [Log](#10-log)    
+        7. [Translated alignment results](#7-translated-alignment-results)
+        8. [Translated alignment unaligned reads](#8-translated-alignment-unaligned-reads)
+        9. [Log](#9-log)
 * [Databases](#databases)
 * [Configuration](#configuration)
 * [Guides to HUMAnN utility scripts](#guides-to-humann-utility-scripts)
@@ -203,7 +203,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 
 ### Software ###
 
-1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
+1. [MetaPhlAn](https://github.com/biobakery/MetaPhlAn)
 2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2.9) (automatically installed)
 3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.9.24) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 3.7)
@@ -476,7 +476,7 @@ To run the standard workflow, follow these steps:
         * for `$SAMPLE_2_genefamilies.tsv` in `$OUTPUT_DIR`
             * `` $ humann_renorm_table --input $SAMPLE_2_genefamilies.tsv --output $SAMPLE_2_genefamilies_relab.tsv --units relab ``
     * Please note, gene family abundance is reported in RPK (reads per kilobase). This is computed as the sum of the scores for all alignments for a gene family. An alignment score is based on the number of matches to the reference gene for a specific sequence. It is divided by the length of the reference gene in kilobases to normalize for gene length. Each alignment score is also normalized to account for alignments for a single sequence to multiple reference genes. Alignments are not considered if they do not pass the e-value, identity, and coverage thresholds.
-    * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#10-log).
+    * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#9-log).
     * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the guide to [humann_regroup_table](#humann_regroup_table) for detailed information. 
     
 3. Join the output files (gene families and abundance) from the HUMAnN runs from all samples into three files
@@ -573,7 +573,7 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 
 ----
 
-#### 4. MetaPhlAn profile ####
+### 4. MetaPhlAn profile ###
 
 ```
 #clade_name     NCBI_tax_id     relative_abundance      additional_species
@@ -1121,7 +1121,7 @@ Please note the flag ``--verbose`` can be added to all commands.
 
 A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN runs, please use the steps that follow.
 
-1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
+1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn](https://github.com/biobakery/MetaPhlAn)
 
 2. Join all of the taxonomic profiles, located in directory $DIR, into a table of taxonomic profiles for all samples (joined_taxonomic_profile.tsv)
     * `` $ humann_join_tables --input $DIR --output joined_taxonomic_profile.tsv ``
@@ -1511,5 +1511,6 @@ Thanks go to these wonderful people:
  Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
  
  Additionally, Google user group: <humann-users@googlegroups.com> (Read only) is available.  
+
 
 
