@@ -65,17 +65,17 @@ HUMAnN is a pipeline for efficiently and accurately profiling the presence/absen
     1. [Gene families file](#1-gene-families-file)
     2. [Reactions file](#2-reactions-file)
     3. [Pathway abundance file](#3-pathway-abundance-file)
-    4. [Intermediate temp output files](#4-intermediate-temp-output-files)
+    4. [MetaPhlAn profile](#4-metaphlan-profile)
+    5. [Intermediate temp output files](#5-intermediate-temp-output-files)
         1. [Bowtie2 alignment results](#1-bowtie2-alignment-results)
         2. [Bowtie2 reduced alignment results](#2-bowtie2-reduced-alignment-results)
         3. [Bowtie2 index files](#3-bowtie2-index-files)
         4. [Unaligned reads after Bowtie2](#4-unaligned-reads-after-bowtie2)
         5. [Custom ChocoPhlAn database](#5-custom-chocophlan-database)
         6. [MetaPhlAn Bowtie2 output](#6-metaphlan-bowtie2-output)
-        7. [MetaPhlAn bugs list](#7-metaphlan-bugs-list)
-        8. [Translated alignment results](#8-translated-alignment-results)
-        9. [Translated alignment unaligned reads](#9-translated-alignment-unaligned-reads)
-        10. [Log](#10-log)    
+        7. [Translated alignment results](#7-translated-alignment-results)
+        8. [Translated alignment unaligned reads](#8-translated-alignment-unaligned-reads)
+        9. [Log](#9-log)
 * [Databases](#databases)
 * [Configuration](#configuration)
 * [Guides to HUMAnN utility scripts](#guides-to-humann-utility-scripts)
@@ -203,7 +203,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 
 ### Software ###
 
-1. [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
+1. [MetaPhlAn](https://github.com/biobakery/MetaPhlAn)
 2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2.9) (automatically installed)
 3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.9.24) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 3.7)
@@ -217,8 +217,8 @@ For example, the location of the Bowtie2 install ($BOWTIE2_DIR) can be provided 
 
 Some of the required dependencies are installed automatically when installing HUMAnN with pip. If these dependencies do not appear to be installed after installing HUMAnN with pip, it might be that your environment is setup to use wheels instead of installing from source. HUMAnN must be installed from source for it to also be able to install dependencies. To force pip to install HUMAnN from source add one of the following options to your install command, "--no-use-wheel" or "--no-binary :all:".
 
-If you always run with input files of type 2, 3, and 4 (for information on input file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
-MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#markdown-header-workflow-by-bypass-mode)), 
+If you always run with input files of type 2, 3, and 4 (for information on input file types, see section [Workflow by input file type](#workflow-by-input-file-type)),
+MetaPhlAn2, Bowtie2, and Diamond are not required. Also if you always run with one or more bypass options (for information on bypass options, see section [Workflow by bypass mode](#workflow-by-bypass-mode)), 
 the software required for the steps you bypass does not need to be installed.
 
 ### Other ###
@@ -227,7 +227,7 @@ the software required for the steps you bypass does not need to be installed.
 2. Disk space (>= 15 Gb [to accommodate comprehensive sequence databases])
 3. Operating system (Linux or Mac)
 
-If always running with files of type 2, 3, and 4 (for information on file types, see section [Workflow by input file type](#markdown-header-workflow-by-input-file-type)),
+If always running with files of type 2, 3, and 4 (for information on file types, see section [Workflow by input file type](#workflow-by-input-file-type)),
 less disk space is required. 
 
 ----
@@ -321,8 +321,8 @@ NOTE: The humann config file will be updated to point to this location for the d
 
 While there is only one ChocoPhlAn database, users have a choice of translated search databases which offer trade-offs between resolution, coverage, and performance. For help selecting a translated search database, see the following guides:
 
-* [Selecting a level of gene family resolution](#markdown-header-selecting-a-level-of-gene-family-resolution)
-* [Selecting a scope for translated search](#markdown-header-selecting-a-scope-for-translated-search)
+* [Selecting a level of gene family resolution](#selecting-a-level-of-gene-family-resolution)
+* [Selecting a scope for translated search](#selecting-a-scope-for-translated-search)
 
 Download a translated search database providing $INSTALL_LOCATION as the location to install the database:
 
@@ -346,10 +346,10 @@ Download a translated search database providing $INSTALL_LOCATION as the locatio
 
 ## Installation Update ##
 
-If you have already installed HUMAnN, using the [Initial Installation](#markdown-header-initial-installation) steps, and would like to upgrade your installed version to the latest version, please follow these steps.
+If you have already installed HUMAnN, using the [Initial Installation](#initial-installation) steps, and would like to upgrade your installed version to the latest version, please follow these steps.
 
-1. [Download HUMAnN](#markdown-header-1-download-humann)
-2. [Install HUMAnN](#markdown-header-2-install-humann)
+1. [Download HUMAnN](#1-download-humann)
+2. [Install HUMAnN](#2-install-humann)
 
 Since you have already downloaded the databases in the initial installation, you do not need to download the databases again unless there are new versions available. However, you will want to update your latest HUMAnN install to point to the databases you have downloaded as by default the new install configuration will point to the demo databases.
 
@@ -365,7 +365,7 @@ To update your HUMAnN configuration file to include the locations of your downlo
 
 Please note, after a new installation, all of the settings in the configuration file, like the database folders, will be reset to the defaults. If you have any additional settings that differ from the defaults, please update them at this time.
 
-For more information on the HUMAnN configuration file, please see the [Configuration](#markdown-header-configuration) section.
+For more information on the HUMAnN configuration file, please see the [Configuration](#configuration) section.
 
 ----
 
@@ -466,7 +466,7 @@ To run the standard workflow, follow these steps:
         * `` $ humann --input $SAMPLE.fastq --output $OUTPUT_DIR``
             * Replace `$SAMPLE.fastq` with the name of the fastq input file
             * Replace `$OUTPUT_DIR` with the full path to the folder to write output
-        * If you have paired-end reads, please see the guide [Paired-end reads](#markdown-header-humann-and-paired-end-sequencing-data)
+        * If you have paired-end reads, please see the guide [Paired-end reads](#humann-and-paired-end-sequencing-data)
     * The results will be three main output files for each input file named `$SAMPLE_2_genefamilies.tsv` and `$SAMPLE_4_pathabundance.tsv`. 
 
 2. Normalize the abundance output files
@@ -476,8 +476,8 @@ To run the standard workflow, follow these steps:
         * for `$SAMPLE_2_genefamilies.tsv` in `$OUTPUT_DIR`
             * `` $ humann_renorm_table --input $SAMPLE_2_genefamilies.tsv --output $SAMPLE_2_genefamilies_relab.tsv --units relab ``
     * Please note, gene family abundance is reported in RPK (reads per kilobase). This is computed as the sum of the scores for all alignments for a gene family. An alignment score is based on the number of matches to the reference gene for a specific sequence. It is divided by the length of the reference gene in kilobases to normalize for gene length. Each alignment score is also normalized to account for alignments for a single sequence to multiple reference genes. Alignments are not considered if they do not pass the e-value, identity, and coverage thresholds.
-    * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#markdown-header-10-log).
-    * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the guide to [humann_regroup_table](#markdown-header-humann_regroup_table) for detailed information. 
+    * If you would like to normalize using the number of reads aligned per input file, this count along with the total number of reads and the percent unaligned reads after each alignment step is included in the log file. For more information on what is included in the log file, see the Intermediate temp output file section [Log](#9-log).
+    * Alternatively, gene families can be regrouped to different functional categories prior to normalization. See the guide to [humann_regroup_table](#humann_regroup_table) for detailed information. 
     
 3. Join the output files (gene families and abundance) from the HUMAnN runs from all samples into three files
     * `` $ humann_join_tables --input $OUTPUT_DIR --output humann_2_genefamilies.tsv --file_name genefamilies_relab ``
@@ -573,7 +573,7 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 
 ----
 
-#### 4. MetaPhlAn profile ####
+### 4. MetaPhlAn profile ###
 
 ```
 #clade_name     NCBI_tax_id     relative_abundance      additional_species
@@ -889,19 +889,19 @@ Here is an example of a HUMAnN barplot for a pathway (denitrification) that was 
 
 ### humann_config ###
 
-Used for viewing and setting HUMAnN defaults. See the [Configuration](#markdown-header-configuration) section above for details.
+Used for viewing and setting HUMAnN defaults. See the [Configuration](#configuration) section above for details.
 
 ----
 
 ### humann_databases ###
 
-Used for downloading ChocoPhlAn, translated search databases, and HUMAnN utility mapping files. See the [Databases](#markdown-header-databases) section above for details.
+Used for downloading ChocoPhlAn, translated search databases, and HUMAnN utility mapping files. See the [Databases](#databases) section above for details.
 
 ----
 
 ### humann_gene_families_genus_level ###
 
-See the [Genus level gene families and pathways](#markdown-header-genus-level-gene-families-and-pathways) guide below.
+See the [Genus level gene families and pathways](#genus-level-gene-families-and-pathways) guide below.
 
 ----
 
@@ -919,7 +919,7 @@ This will join (merge) multiple single-sample output files into a single table w
 
 ### humann_reduce_table ###
 
-Used for collapsing joined MetaPhlAn taxonomic profiles to a single joint profile. See the [Joint taxonomic profile](#markdown-header-joint-taxonomic-profile) guide below.
+Used for collapsing joined MetaPhlAn taxonomic profiles to a single joint profile. See the [Joint taxonomic profile](#joint-taxonomic-profile) guide below.
 
 ----
 
@@ -1026,7 +1026,7 @@ This utility will split a merged feature table (multiple samples) into one file 
 
 ### humann_test ###
 
-Utility for executing HUMAnN tests. See [Test the install](#markdown-header-3-test-the-install) above for further details.
+Utility for executing HUMAnN tests. See [Test the install](#3-test-the-install) above for further details.
 
 ----
 
@@ -1061,7 +1061,7 @@ HUMAnN falls back to translated search for reads that failed to align to a known
 
 * **Comprehensive translated search** is selected by using a comprehensive protein database. These databases (which come in UniRef90 and UniRef50 flavors) have not been filtered, and are quite large (millions of sequences). Comprehensive search aims to explain as many sample reads as possible using reference-based approaches. Comprehensive search takes ~5x longer than filtered search [a difference of 5 versus 25 CPU-hours for a 10M read sample (using DIAMOND and UniRef50)]. Memory requirements are also larger for the larger database, though the increase is sublinear.
 
-See [above](#markdown-header-download-a-translated-search-database) for instructions on how to acquire a translated search database.
+See [above](#download-a-translated-search-database) for instructions on how to acquire a translated search database.
 
 #### Which translated search scope should I pick? ####
 
@@ -1121,7 +1121,7 @@ Please note the flag ``--verbose`` can be added to all commands.
 
 A joint taxonomic profile can be created from all of the samples in your set. To create this file and use it for your HUMAnN runs, please use the steps that follow.
 
-1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn](https://bitbucket.org/biobakery/metaphlan)
+1. Create taxonomic profiles for each of the samples in your set with [MetaPhlAn](https://github.com/biobakery/MetaPhlAn)
 
 2. Join all of the taxonomic profiles, located in directory $DIR, into a table of taxonomic profiles for all samples (joined_taxonomic_profile.tsv)
     * `` $ humann_join_tables --input $DIR --output joined_taxonomic_profile.tsv ``
@@ -1170,7 +1170,7 @@ A custom nucleotide reference database can be provided to HUMAnN
 
 This custom database must be formatted as a bowtie2 index. 
 
-Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+Please see the [Custom reference database annotations](#custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#custom-pathways-database) section for more information.
 
 To run HUMAnN with your custom nucleotide reference database (located in $DIR), use the option "--bypass-nucleotide-index" and provide the custom database as the ChocoPhlAn option with "--nucleotide-database $DIR". If you would like to bypass the translated alignment portion of HUMAnN, add the option "--bypass-translated-search". 
 
@@ -1182,7 +1182,7 @@ A custom protein reference database can be provided to HUMAnN
 
 This custom database must be formatted to be used by the translated alignment software selected (the default is Diamond). 
 
-Please see the [Custom reference database annotations](#markdown-header-custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#markdown-header-custom-pathways-database) section for more information.
+Please see the [Custom reference database annotations](#custom-reference-database-annotations) section for information on database annotations. Also please note, only alignments to genes included in the pathways databases will be considered in the pathways computations. The pathways databases included with HUMAnN are for alignments to UniRef gene families. If you would like to create custom pathways databases for a different set of gene families, please see the [Custom pathways database](#custom-pathways-database) section for more information.
 
 To run HUMAnN with your custom protein reference database (located in $DIR), provide the custom database as the UniRef option with "--protein-database $DIR". Please note, HUMAnN will run on all of the databases in this folder ($DIR) which have been formatted to be used by the translated alignment software selected. Also if you would like to bypass the nucleotide alignment portion of HUMAnN, add the option "--bypass-nucleotide-search".  
 
@@ -1511,3 +1511,6 @@ Thanks go to these wonderful people:
  Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
  
  Additionally, Google user group: <humann-users@googlegroups.com> (Read only) is available.  
+
+
+
