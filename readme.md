@@ -883,7 +883,7 @@ log level = DEBUG
 
 Here is an example of a HUMAnN barplot for a pathway (denitrification) that was preferentially enriched in Human Microbiome Project oral samples relative to other body sites. This figure uses many options from `humann_barplot`, including regrouping by genus, pseudolog scaling, and sorting samples by similarity and metadata:
 
-![page_DENITRIFICATION-PWY.png](https://bitbucket.org/repo/bAAy6o/images/731303924-page_DENITRIFICATION-PWY.png)
+![page_DENITRIFICATION-PWY.png](https://raw.githubusercontent.com/biobakery/biobakery/master/images/humann3demo-plot1-2021.png)
 
 ----
 
