@@ -51,16 +51,16 @@ from .. import utilities
 current_downloads={
     "chocophlan" : 
         {
-            "full" : "http://huttenhower.sph.harvard.edu/humann_data/chocophlan/chocophlan.v4_alpha.tar.gz",
-            "ec_filtered" : "http://huttenhower.sph.harvard.edu/humann_data/chocophlan/chocophlan_EC_FILTERED.v4_alpha.tar.gz"
+            "full" : "https://huttenhower.sph.harvard.edu/humann_data/chocophlan/chocophlan.v4_alpha.tar.gz",
+            "ec_filtered" : "https://huttenhower.sph.harvard.edu/humann_data/chocophlan/chocophlan_EC_FILTERED.v4_alpha.tar.gz"
         },
     "uniref" : 
         {
-            "uniref90_ec_filtered_diamond" : "http://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_ec_filtered/uniref90_annotated_v4_alpha_ec_filtered.tar.gz",
+            "uniref90_ec_filtered_diamond" : "https://huttenhower.sph.harvard.edu/humann_data/uniprot/uniref_ec_filtered/uniref90_annotated_v4_alpha_ec_filtered.tar.gz",
         },
     "utility_mapping" :
         {
-            "full" : "http://huttenhower.sph.harvard.edu/humann_data/full_mapping_v4_alpha.tar.gz"
+            "full" : "https://huttenhower.sph.harvard.edu/humann_data/full_mapping_v4_alpha.tar.gz"
          }
 }
 
