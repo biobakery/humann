@@ -23,6 +23,7 @@ c_special = [
     util.c_unmapped, 
     util.c_unintegrated, 
     util.c_ungrouped,
+    util.c_reads_unmapped,
     ]
 
 # ---------------------------------------------------------------
