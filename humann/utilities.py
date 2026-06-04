@@ -233,29 +233,48 @@ def gunzip_file(gzip_file):
     """
     Return a new copy of the file that is not gzipped
     The new file will be placed in the unnamed temp folder
+
+    Uses pigz (parallel gzip) for decompression when available, which is
+    substantially faster on multi-core nodes than Python's single-threaded
+    gzip module; falls back to the gzip module otherwise.
     """
-    
+
     message="Decompressing gzipped file ..."
     print(message+"\n")
-    logger.info(message)    
-    
+    logger.info(message)
+
+    # create an unnamed temp file for the decompressed output
+    new_file=unnamed_temp_file()
+
+    # prefer parallel decompression with pigz (or unpigz) if on the PATH
+    pigz_exe=shutil.which("pigz") or shutil.which("unpigz")
+    if pigz_exe:
+        try:
+            threads=str(config.threads) if getattr(config,"threads",0) else "1"
+            with open(new_file,"wb") as file_handle:
+                subprocess.check_call(
+                    [pigz_exe,"-d","-c","-p",threads,gzip_file],
+                    stdout=file_handle)
+            logger.debug("Decompressed input with %s using %s threads", pigz_exe, threads)
+            return new_file
+        except (EnvironmentError, subprocess.CalledProcessError) as e:
+            # fall back to the Python gzip module below
+            logger.debug("pigz decompression failed (%s); falling back to gzip module", e)
+
     try:
         file_handle_gzip=gzip.open(gzip_file,"rt")
-        
-        # create a unnamed temp file
-        new_file=unnamed_temp_file()
-        
+
         # write the gunzipped file
         file_handle=open(new_file,"wt")
         shutil.copyfileobj(file_handle_gzip, file_handle)
-        
+
     except EnvironmentError:
         print("Critical Error: Unable to unzip input file: " + gzip_file)
         new_file=""
     finally:
         file_handle.close()
         file_handle_gzip.close()
-        
+
     return new_file
 
 def double_sort(pathways_dictionary):
