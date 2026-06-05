@@ -209,7 +209,7 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
             utilities.execute_command(exe, shard_args, [input_database], [], raise_error=True)
             return temp_out + ".gz"  # diamond appends .gz when --compress 1 is used
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=n_shards) as pool:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, n_shards)) as pool:
             gz_out_files=list(pool.map(_align_shard, databases))
 
         # decompress and merge all shards into the final output file
