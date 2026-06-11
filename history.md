@@ -1,6 +1,10 @@
 
 # HUMAnN History #
 
+## v4.0.0.alpha.2.TBD (06-11-2026)
+
+* Updated utility scripts to work with the new header READS_UNMAPPED.
+
 ## v4.0.0.alpha.2 (11-25-2025) ##
 
 * Add runtime metaphlan DB and version checks for compatibility 

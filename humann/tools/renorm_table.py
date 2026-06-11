@@ -57,7 +57,7 @@ def get_args ():
         "-s", "--special", 
         choices=["y", "n"],
         default="y",
-        help="Include the special features UNMAPPED, UNINTEGRATED, and UNGROUPED; default=[y]",
+        help="Include the special features UNMAPPED, READS_UNMAPPED, UNINTEGRATED, and UNGROUPED; default=[y]",
         )
     parser.add_argument( 
         "-p", "--update-snames", 
