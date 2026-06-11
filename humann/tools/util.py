@@ -121,6 +121,7 @@ c_multiname_delim = ";"
 c_str_unknown     = "NO_NAME"
 c_ungrouped       = "UNGROUPED"
 c_unmapped        = "UNMAPPED"
+c_reads_unmapped  = "READS_UNMAPPED"
 c_unintegrated    = "UNINTEGRATED"
 c_many_bytes      = 1e8
 c_zip_multiplier  = 10
@@ -131,6 +132,7 @@ c_topsort = {
     c_unintegrated:2,
     "UniRef50_unknown":3,
     "UniRef90_unknown":4,
+    c_reads_unmapped:5,
 }
 
 # ---------------------------------------------------------------

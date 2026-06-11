@@ -62,7 +62,7 @@ $ humann_databases --download utility_mapping full $DIR
 Replacing, $DIR with the directory to download and install the databases."""
     sys.exit("Mapping files not installed.\n"+description)
 
-c_protected = [util.c_unmapped, util.c_unintegrated]
+c_protected = [util.c_unmapped, util.c_unintegrated, util.c_reads_unmapped]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
 # ---------------------------------------------------------------

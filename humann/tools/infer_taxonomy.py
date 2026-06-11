@@ -273,7 +273,7 @@ def main( ):
         feature, name, stratum = util.fsplit( rowhead )
         new_rowhead = tax_connect( rowhead, taxmap )
         # unmapped is never stratified
-        if feature == util.c_unmapped:
+        if feature == util.c_unmapped or feature == util.c_reads_unmapped:
             index.setdefault( rowhead, [] ).append( i )
         # outside of unclassified mode, keep totals
         elif stratum is None and args.mode != c_umode:
