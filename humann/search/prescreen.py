@@ -265,14 +265,14 @@ def create_custom_database(chocophlan_dir, profile_file):
         while line:
 
 
-            if line.startswith("#") and config.metaphlan_v4_db_version in line:
+            if line.startswith("#") and (config.metaphlan_v4_db_version in line or line.startswith("#mpa_v")):
                 version_found = True
 
             if line.startswith("#") and line.startswith("\t".join(config.metaphlan_columns)):
                 columns_found = True
 
             # look for SGBs
-            if re.search("t__", line) and re.search("s__", line):
+            if not line.startswith("#") and re.search("t__", line) and re.search("s__", line):
                 # check threshold
                 read_percent, coverage=get_abundance_coverage(line)
 
