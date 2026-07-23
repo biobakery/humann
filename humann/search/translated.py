@@ -29,6 +29,7 @@ import numbers
 import logging
 import math
 import traceback
+import concurrent.futures
 
 from .. import utilities
 from .. import config
@@ -174,7 +175,7 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
     opts=config.diamond_opts
 
     args+=["--query",unaligned_reads_file_fasta,"--evalue",config.evalue_threshold]
-    args+=["--threads",config.threads]
+    # --threads is set per-shard below so the total CPU usage stays within config.threads
 
     message="Running " + exe + " ........"
     logger.info(message)
@@ -182,32 +183,40 @@ def diamond_alignment(alignment_file,uniref, unaligned_reads_file_fasta):
 
     if not bypass:
         args+=opts
-        temp_out_files=[]
-        for database in os.listdir(uniref):          
-            # ignore any files that are not the database files
-            if database.endswith(config.diamond_database_extension):
-                # Provide the database name without the extension
-                input_database=os.path.join(uniref,database)
-                message="Aligning to reference database: " + database
-                logger.info(message)
-                print("\n"+message+"\n")  
-                input_database_extension_removed=re.sub(config.diamond_database_extension
-                    +"$","",input_database)
-                full_args=args+["--db",input_database_extension_removed]
-    
-                # create temp output file
-                temp_out_file=utilities.unnamed_temp_file("diamond_m8_")
-                utilities.remove_file(temp_out_file)
-                
-                temp_out_files.append(temp_out_file)
-    
-                full_args+=["--out",temp_out_file,"--tmpdir",os.path.dirname(temp_out_file)]
-    
-                utilities.execute_command(exe,full_args,[input_database],[])
-        
-        # merge the temp output files
-        utilities.execute_command("cat",temp_out_files,temp_out_files,[alignment_file],
+
+        databases=[db for db in os.listdir(uniref)
+                   if db.endswith(config.diamond_database_extension)]
+        n_shards=len(databases)
+        threads_per_shard=max(1, int(config.threads) // n_shards) if n_shards > 1 else int(config.threads)
+
+        def _align_shard(database):
+            input_database=os.path.join(uniref,database)
+            message="Aligning to reference database: " + database
+            logger.info(message)
+            print("\n"+message+"\n")
+
+            db_stem=re.sub(config.diamond_database_extension+"$","",input_database)
+            temp_out=utilities.unnamed_temp_file("diamond_m8_")
+            utilities.remove_file(temp_out)
+
+            shard_args=list(args)+[
+                "--threads", threads_per_shard,
+                "--db", db_stem,
+                "--out", temp_out,
+                "--tmpdir", os.path.dirname(temp_out),
+                "--compress", "1",
+            ]
+            utilities.execute_command(exe, shard_args, [input_database], [], raise_error=True)
+            return temp_out + ".gz"  # diamond appends .gz when --compress 1 is used
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, n_shards)) as pool:
+            gz_out_files=list(pool.map(_align_shard, databases))
+
+        # decompress and merge all shards into the final output file
+        utilities.execute_command("zcat", gz_out_files, gz_out_files, [alignment_file],
             alignment_file)
+        for f in gz_out_files:
+            utilities.remove_file(f)
 
     else:
         message="Bypass"
