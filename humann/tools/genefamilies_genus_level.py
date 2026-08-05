@@ -47,7 +47,7 @@ def create_table(input,output):
                         if all_values:
                             file_handle_write.write(all_values)
                             # write genus values for gene, if present
-                            for gene_taxonomy, values in genus_values.iteritems():
+                            for gene_taxonomy, values in genus_values.items():
                                 file_handle_write.write(TABLE_DELIMITER.join([gene_taxonomy]+[str(x) for x in values])+"\n")
                             genus_values={}
                         all_values=line

@@ -185,6 +185,11 @@ merge_abundance_pathways_input=os.path.join(data_folder, merge_abundance_folder,
 merge_abundance_output=os.path.join(data_folder, merge_abundance_folder, "merge_output.tsv")
 merge_abundance_remove_taxonomy_output=os.path.join(data_folder, merge_abundance_folder, "merge_output_remove_taxonomy.tsv")
 
+# Files for creating genefamilies genus level
+genefamilies_genus_level_folder="tooltest-genefamilies_genus_level"
+genefamilies_genus_level_input=os.path.join(data_folder, genefamilies_genus_level_folder, "demo_genefamilies.tsv")
+genefamilies_genus_level_output=os.path.join(data_folder, genefamilies_genus_level_folder, "genus_level_genefamilies.tsv")
+
 # Get the locations of the demo chocophlan and uniref databases
 example_demo_data_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir,"data")
 chocophlan_example_demo_folder=os.path.join(example_demo_data_folder, "chocophlan_DEMO")
@@ -202,3 +207,4 @@ renorm_cpm_output_biom=os.path.join(data_folder, renorm_folder, "renorm_table-cp
 multi_sample_genefamilies_biom = os.path.join(data_folder, "multi_sample_genefamilies.biom")
 multi_sample_genefamilies_split_basename_biom="multi_sample_biom_genefamilies_"
 multi_sample_split_files_biom=["multi_sample_genefamilies_sample1.biom","multi_sample_genefamilies_sample2.biom"]
+
