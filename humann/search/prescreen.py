@@ -46,7 +46,7 @@ DB_TAG_LIKE = re.compile(r'v[A-Z][a-z]{2}\d{2}_[A-Za-z0-9]+_\d{6}')
 def db_lines(output: str) -> list[str]:
     """Return lines likely mentioning the DB."""
     lines = [ln.strip() for ln in output.splitlines()]
-    hits = [ln for ln in lines if re.search(r'\b(DB|database)\b', ln, re.IGNORECASE)]
+    hits = [ln for ln in lines if re.search(r'\b(DB|databases?)\b', ln, re.IGNORECASE)]
     return hits if hits else lines  # fall back to all lines if no explicit DB line
 
 def parse_db_numbers(lines: Iterable[str]) -> list[str]:
@@ -166,12 +166,27 @@ def verify_metaphlan_db_version(expected_db, exe: str = "metaphlan"):
             print(f"\nVerified MetaPhlAn DB tag: {tag}\n")
             return
 
-    # As a helpful hint, surface any tag-like matches we detected
     found_tags = parse_db_tags(lines)
+
+    # Only MetaPhlAn 4.1.2 and 4.2.4+ report their installed databases; earlier
+    # releases print the version alone. Treating silence as a mismatch would
+    # reject every MetaPhlAn this HUMAnN supports apart from 4.1.2, so warn and
+    # continue instead. The run is still pinned, because alignment() passes
+    # --index and MetaPhlAn fails on its own if that database is missing.
+    if not found_tags:
+        msg = (
+            "This version of MetaPhlAn does not report its installed databases, "
+            f"so the HUMAnN requirement of {allowed_tags} could not be confirmed. "
+            "MetaPhlAn will be asked for this database by name."
+        )
+        logger.warning(msg)
+        print("\nWARNING: " + msg + "\n")
+        return
+
     msg = (
         "ERROR: MetaPhlAn DB version check failed.\n"
         f"Expected one of: {allowed_tags if allowed_tags else '[no tags provided]'}\n"
-        f"Detected tag-like strings: {found_tags if found_tags else '[none]'}\n\n"
+        f"Detected tag-like strings: {found_tags}\n\n"
         f"Full output:\n{version_output}"
     )
     logger.error(msg)
@@ -198,7 +213,14 @@ def alignment(input):
     bowtie2_out = utilities.name_temp_file(config.metaphlan_bowtie2_name) 
 
     args=[input]+opts+["-o",config.profile_file,"--input_type",input_type, "--bowtie2out",bowtie2_out,"--offline"]
-    
+
+    # Pin the database. MetaPhlAn defaults to "--index latest", which under
+    # --offline resolves to whichever database is newest on disk -- not
+    # necessarily the one ChocoPhlAn was built against. Skip if the user named
+    # an index themselves through --metaphlan-options.
+    if not set(["-x","--index"]).intersection(opts):
+        args+=["--index",config.metaphlan_v4_db_index]
+
     if config.threads >1:
         args+=["--nproc",config.threads]
 
