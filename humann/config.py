@@ -378,6 +378,8 @@ metaphlan_version={
     "column" : 2}
 
 metaphlan_v4_db_version="vOct22_CHOCOPhlAnSGB_202403"
+# the name MetaPhlAn knows this database by, as passed to its --index option
+metaphlan_v4_db_index="mpa_"+metaphlan_v4_db_version
 metaphlan_v4_db_matching_uniref="SGB"
 sgb_to_species_mapping={}
 
