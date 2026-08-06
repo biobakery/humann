@@ -1,0 +1,15 @@
+#mpa_vJan25_CHOCOPhlAnSGB_202503
+#/usr/local/bin/metaphlan demo.fastq -t rel_ab_w_read_stats -o demo_1_metaphlan_profile.tsv --input_type fastq --mapout demo_metaphlan_bowtie2.txt --offline
+#136736 reads processed
+#SampleID	demo
+#Estimated reads mapped to known clades: 274613
+#clade_name	clade_taxid	relative_abundance	coverage	estimated_number_of_reads_from_the_clade
+UNCLASSIFIED	-1	12.5	-	17092
+k__Bacteria	2	43.9	0.05878	248684
+k__Bacteria|p__Bacteroidota	2|976	30.4	0.02329	155746
+k__Bacteria|p__Bacteroidota|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_ovatus	2|976|200643|171549|815|816|28116	30.4	0.02329	155746
+k__Bacteria|p__Bacteroidota|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_ovatus|t__SGB1871	2|976|200643|171549|815|816|28116|	30.4	0.02329	155746
+k__Bacteria|p__Bacteroidota|c__Bacteroidia|o__Bacteroidales|f__Muribaculaceae|g__GGB1511|s__GGB1511_SGB2091|t__SGB2091	2|976|200643|171549|2005525|||	46.2	0.03549	92938
+k__Bacteria|p__Bacteroidota|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes|s__Alistipes_finegoldii|t__SGB2301	2|976|200643|171549|171550|239759|214856|	0.4	0.00001	31
+k__Bacteria|p__Bacillota|c__Clostridia|o__Lachnospirales|f__Lachnospiraceae|g__GGB9999|s__GGB9999_SGB99999|t__SGB99999	2|1239|186801|186802|186803|||	9.8	0.01500	48211
+k__Eukaryota|p__Oomycota|c__Oomycota_unclassified|o__Saprolegniales|f__Saprolegniaceae|g__Aphanomyces|s__Aphanomyces_euteiches|t__EUK100861	2759|4762|||4777|4778|100861|	0.7	0.00900	4102

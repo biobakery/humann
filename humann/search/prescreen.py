@@ -242,6 +242,39 @@ def get_species_name(line, sgb=False):
 
     return species                        
 
+# ponytail: cap the names listed in the warning; the count and abundance carry
+# the signal, and a mismatched database can strand tens of thousands of taxa
+MAX_REPORTED_MISSING_TAXA=10
+
+def report_taxa_without_pangenomes(missing, selected, abundances):
+    """
+    Report taxa that passed the prescreen but have no ChocoPhlAn pangenome
+
+    These contribute nothing to the nucleotide search. Left unreported, a run
+    against a taxonomic profile built from a different MetaPhlAn database than
+    this ChocoPhlAn looks identical to a correct one.
+    """
+
+    if not missing:
+        return
+
+    missing_abundance=sum(abundances.get(taxon,0) for taxon in missing)
+
+    names=", ".join(missing[:MAX_REPORTED_MISSING_TAXA])
+    if len(missing) > MAX_REPORTED_MISSING_TAXA:
+        names+=" and "+str(len(missing)-MAX_REPORTED_MISSING_TAXA)+" more"
+
+    message="WARNING: "+str(len(missing))+" of the "+str(len(selected))+\
+        " taxa selected from the prescreen have no pangenome in the ChocoPhlAn "+\
+        "database and will not contribute to the nucleotide search: "+names+"\n"+\
+        "These taxa account for "+"{:.2f}".format(missing_abundance)+\
+        "% of predicted community composition.\n"+\
+        "If this fraction is large, the taxonomic profile was most likely built "+\
+        "with a MetaPhlAn database that does not match this ChocoPhlAn database."
+
+    logger.warning(message)
+    print("\n"+message+"\n")
+
 def create_custom_database(chocophlan_dir, profile_file):
     """
     Using ChocoPhlAn creates a custom database based on the profile_file
@@ -327,13 +360,20 @@ def create_custom_database(chocophlan_dir, profile_file):
     # identify the files to be used from the ChocoPhlAn database
     species_file_list = []
     if not config.bypass_prescreen:
+        matched_species = set()
         for species_file in os.listdir(chocophlan_dir):
             for species in sgb_species_found:
                 # match the exact genus and species from the MetaPhlAn (or custom) list
-                new_database_file=os.path.join(chocophlan_dir,species_file)
-                if re.search(species.lower()+"_", species_file.lower()) and not new_database_file in species_file_list: 
-                    species_file_list.append(new_database_file)
-                    logger.debug("Adding file to database: " + species_file)   
+                if re.search(species.lower()+"_", species_file.lower()):
+                    matched_species.add(species)
+                    new_database_file=os.path.join(chocophlan_dir,species_file)
+                    if not new_database_file in species_file_list:
+                        species_file_list.append(new_database_file)
+                        logger.debug("Adding file to database: " + species_file)
+
+        report_taxa_without_pangenomes(
+            [species for species in sgb_species_found if species not in matched_species],
+            sgb_species_found, sgb_abundances)
     else:
         for species_file in os.listdir(chocophlan_dir):
             species_file_list.append(os.path.join(chocophlan_dir,species_file))

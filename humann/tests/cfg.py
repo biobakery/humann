@@ -202,3 +202,7 @@ renorm_cpm_output_biom=os.path.join(data_folder, renorm_folder, "renorm_table-cp
 multi_sample_genefamilies_biom = os.path.join(data_folder, "multi_sample_genefamilies.biom")
 multi_sample_genefamilies_split_basename_biom="multi_sample_biom_genefamilies_"
 multi_sample_split_files_biom=["multi_sample_genefamilies_sample1.biom","multi_sample_genefamilies_sample2.biom"]
+
+# MetaPhlAn 4.2 / vJan25_CHOCOPhlAnSGB_202503 profile fixture
+metaphlan_profile_vJan25=os.path.join(data_folder, "metaphlan_profile_vJan25.tsv")
+demo_chocophlan_dir=os.path.join(os.path.dirname(data_folder), os.pardir, "data", "chocophlan_DEMO")
