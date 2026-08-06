@@ -203,7 +203,7 @@ When using the "--resume" option, the following steps will be bypassed if they h
 
 ### Software ###
 
-1. [MetaPhlAn](https://github.com/biobakery/MetaPhlAn)
+1. [MetaPhlAn](https://github.com/biobakery/MetaPhlAn) (version >= 4.0.0, <= 4.1.2)
 2. [Bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/) (version >= 2.2.9) (automatically installed)
 3. [Diamond](http://ab.inf.uni-tuebingen.de/software/diamond/) (version >= 0.9.24) (automatically installed)
 4. [Python](http://www.python.org/) (version >= 3.7)
@@ -211,6 +211,12 @@ When using the "--resume" option, the following steps will be bypassed if they h
 6. [Xipe](https://edwards.sdsu.edu/cgi-bin/xipe.cgi) (optional / included)
 7. [SAMtools](http://samtools.sourceforge.net/) (only required if bam input files are provided)
 8. [Biom-format](http://biom-format.org/) (only required if input or output files are in biom format)
+
+The MetaPhlAn range is enforced during install. MetaPhlAn 4.2 and later changed
+their command line and default database and are not yet supported. To install
+against an unsupported MetaPhlAn anyway, for example to test compatibility with
+a newer release, set `HUMANN_ALLOW_UNSUPPORTED_METAPHLAN=1`. HUMAnN is not
+expected to work in that configuration.
 
 Please install the required software in a location in your `$PATH` or provide the location with an optional argument to HUMAnN 3.0. 
 For example, the location of the Bowtie2 install ($BOWTIE2_DIR) can be provided with "--bowtie2 $BOWTIE2_DIR".
