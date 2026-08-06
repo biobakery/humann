@@ -102,6 +102,10 @@ except Exception:
 # ---- MetaPhlAn version requirement ----
 REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.1.2")
 REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.1.2"
+# Set to install against a MetaPhlAn outside the supported range. Intended for
+# testing HUMAnN against newer MetaPhlAn releases, which is otherwise only
+# possible by editing this file.
+OVERRIDE_ENV_VAR = "HUMANN_ALLOW_UNSUPPORTED_METAPHLAN"
 
 def check_metaphlan_version():
     """
@@ -110,21 +114,39 @@ def check_metaphlan_version():
     """
     installed = _get_dist_version("metaphlan")
     if installed is None:
-        # Not installed yet; pip resolver should install it via install_requires.
+        # MetaPhlAn is not declared as a dependency, so it may legitimately be
+        # absent here and installed separately (conda, module system, manually).
         return
+
     try:
-        if Version(installed) not in REQUIRED_METAPHLAN_SPEC:
-            sys.exit(
-                "CRITICAL ERROR: Incompatible MetaPhlAn detected (found v{found}).\n"
-                "HUMAnN requires MetaPhlAn in the range {spec}.\n"
-                "Please install a compatible version, e.g.:\n\n"
-                "    pip install '{pin}'\n".format(
-                    found=installed, spec=str(REQUIRED_METAPHLAN_SPEC), pin=REQUIRED_METAPHLAN_PIN
-                )
-            )
+        supported = Version(installed) in REQUIRED_METAPHLAN_SPEC
     except Exception:
-        sys.exit("CRITICAL ERROR: Unable to parse installed MetaPhlAn version "
-                 "(got: {0}). Please reinstall MetaPhlAn within {1}.".format(installed, REQUIRED_METAPHLAN_SPEC))
+        _reject("CRITICAL ERROR: Unable to parse installed MetaPhlAn version "
+                "(got: {0}). Please reinstall MetaPhlAn within {1}.".format(
+                    installed, REQUIRED_METAPHLAN_SPEC))
+        return
+
+    if not supported:
+        _reject(
+            "CRITICAL ERROR: Incompatible MetaPhlAn detected (found v{found}).\n"
+            "HUMAnN requires MetaPhlAn in the range {spec}.\n"
+            "Please install a compatible version, e.g.:\n\n"
+            "    pip install '{pin}'\n".format(
+                found=installed, spec=str(REQUIRED_METAPHLAN_SPEC), pin=REQUIRED_METAPHLAN_PIN
+            )
+        )
+
+def _reject(message):
+    """
+    Abort the install, unless the user asked to proceed anyway
+    """
+    if os.environ.get(OVERRIDE_ENV_VAR):
+        sys.stderr.write(
+            message.replace("CRITICAL ERROR", "WARNING", 1) +
+            "\nProceeding because {0} is set. HUMAnN is not expected to work "
+            "with this MetaPhlAn.\n".format(OVERRIDE_ENV_VAR))
+        return
+    sys.exit(message)
 
 
 VERSION = "4.0.0.alpha.2"
