@@ -196,8 +196,15 @@ def alignment(input):
     
     # outfile name
     bowtie2_out = utilities.name_temp_file(config.metaphlan_bowtie2_name) 
-
-    args=[input]+opts+["-o",config.profile_file,"--input_type",input_type, "--bowtie2out",bowtie2_out,"--offline"]
+    
+    #check metaphlan version to get parameters for bowtie2out.
+    metaphlan_version=check_metaphlan_version()
+    if(utilities.is_greater_version(metaphlan_version)):
+        bowtie2_call="--mapout"
+    else:
+        bowtie2_call="--bowtie2out"
+        
+    args=[input]+opts+["-o",config.profile_file,"--input_type",input_type, bowtie2_call,bowtie2_out,"--offline"]
     
     if config.threads >1:
         args+=["--nproc",config.threads]
@@ -241,6 +248,40 @@ def get_species_name(line, sgb=False):
         logger.debug("Unable to process species: " + line)
 
     return species                        
+
+def check_metaphlan_version(exe: str = "metaphlan"):
+    """
+    Checks to see what metaphlan verison is being run (not database verison). Returns the verison number.
+    """
+
+    #call metaphlan verison to get the verison number
+    try:
+        proc = subprocess.run(
+                [exe, "--version"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        msg = (
+            f"\nERROR: Unable to run '{exe} --version'. "
+            f"Ensure MetaPhlAn is installed and in PATH.\n{e}"
+        )
+        logger.error(msg)
+        sys.exit(msg)
+
+    version_output = (proc.stdout or "") + (proc.stderr or "")
+    match=re.search(r"version\s+([0-9.]+)", version_output)
+
+    if(match):
+        version = match.group(1)
+    else:
+        message="could not identify metaphlan version when called metaphlan --version"
+        logger.error(message)
+        sys.exit("\n\nERROR: "+message)
+    return(version)
+
+    
 
 def create_custom_database(chocophlan_dir, profile_file):
     """

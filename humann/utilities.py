@@ -1441,4 +1441,10 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
                      str(small_identity_count))
         logger.debug("Total alignments not included based on small query coverage: " + 
                      str(small_query_coverage_count))
-    
+
+#checks if the current verison return is greater than or equal to the  minimum
+def is_greater_version(version, minimum="4.2.0"):
+    version_tuple = tuple(map(int, version.split(".")))
+    minimum_tuple = tuple(map(int, minimum.split(".")))
+
+    return version_tuple >= minimum_tuple
