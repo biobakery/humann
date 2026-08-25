@@ -100,8 +100,8 @@ except Exception:
             return None
         
 # ---- MetaPhlAn version requirement ----
-REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.1.2")
-REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.1.2"
+REQUIRED_METAPHLAN_SPEC = SpecifierSet(">=4.0.0,<=4.2.0")
+REQUIRED_METAPHLAN_PIN = "metaphlan>=4.0.0,<=4.2.0"
 
 def check_metaphlan_version():
     """
