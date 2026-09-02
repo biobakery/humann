@@ -4,6 +4,11 @@
 ## v4.0.0.alpha.2.TBD (06-11-2026)
 
 * Updated utility scripts to work with the new header READS_UNMAPPED.
+* Fixed the subject coverage computation to use the length of each reference sequence. Coverage was tracked by gene family, so when the same gene family was present in more than one species pangenome an arbitrary one of the sequence lengths was used to normalize and the hit positions of the unrelated sequences were merged.
+* Fixed the count of unaligned reads after the nucleotide search to be counted per read instead of per alignment. A read with more than one alignment in the sam file was written to the unaligned reads file once per filtered alignment, and a read with one alignment kept and another filtered was counted as both aligned and unaligned.
+* Added the breakdown of the reads left unaligned after the nucleotide and the translated search to the log: reads that never mapped, reads with all of their alignments filtered, and reads without an alignment to a well covered reference sequence.
+* Removed the unused option of get_filtered_translated_alignments to remove a read from the unaligned reads store when one of its alignments is filtered, which would have counted a read as aligned when none of its alignments was kept.
+* Added a warning when the input includes reads that do not have a unique name, since reads are tracked by name and reads that share a name are counted as a single read.
 
 ## v4.0.0.alpha.2 (11-25-2025) ##
 

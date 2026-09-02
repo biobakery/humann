@@ -123,6 +123,126 @@ class TestAdvancedHumannNucleotideSearchFunctions(unittest.TestCase):
         # check the aligned reads count
         self.assertEqual(len(alignments.get_hit_list()),cfg.sam_file_unaligned_reads_total_aligned_subject_coverage)
         
+    def test_nucleotide_search_unaligned_reads_subject_coverage_repeated_gene_family(self):
+        """
+        Test the unaligned reads and the store alignments
+        Test with a bowtie2/sam output file with the same gene family in two species
+        Test that subject coverage is computed with the length of each reference sequence
+        so the alignment to the poorly covered species is filtered
+        """
+
+        # create a set of alignments
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads()
+
+        # turn off query filtering and require half of the reference to be covered
+        config.nucleotide_query_coverage_threshold = 0
+        config.nucleotide_subject_coverage_threshold = 50.0
+
+        # read in the aligned and unaligned reads
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+            cfg.sam_file_two_species_same_gene_family, alignments, unaligned_reads_store, keep_sam=True)
+
+        # reset the filtering thresholds
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+
+        # remove temp files
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+
+        # only the alignment to the sequence that is covered should be stored
+        hits=alignments.get_hit_list()
+        self.assertEqual(len(hits),1)
+        [query, bug, reference, score, length]=hits[0]
+        self.assertEqual(bug,cfg.sam_file_two_species_same_gene_family_covered_bug)
+
+        # the alignment to the other copy of the gene family is treated as unaligned
+        self.assertEqual(unaligned_reads_store.count_reads(),1)
+
+    def test_nucleotide_search_unaligned_reads_multiple_alignments_per_read(self):
+        """
+        Test the unaligned reads and the store alignments
+        Test with a sam file where reads have more than one alignment
+        Test a read with a single alignment kept is not also reported as unaligned
+        Test a read with all of its alignments filtered is only written out once
+        """
+
+        # create a set of alignments
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads()
+
+        # turn off query filtering and require half of the reference to be covered
+        config.nucleotide_query_coverage_threshold = 0
+        config.nucleotide_subject_coverage_threshold = 50.0
+
+        # read in the aligned and unaligned reads
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+            cfg.sam_file_multiple_alignments_per_read, alignments, unaligned_reads_store, keep_sam=True)
+
+        # reset the filtering thresholds
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+
+        # count the reads written to the unaligned reads file
+        unaligned_ids=[line.rstrip()[1:] for line in open(unaligned_reads_file_fasta)
+            if line.startswith(">")]
+
+        # remove temp files
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+
+        # the read with one alignment to a well covered reference sequence is aligned
+        hits=alignments.get_hit_list()
+        self.assertEqual(len(hits),cfg.sam_file_multiple_alignments_per_read_total_aligned)
+
+        # the total number of reads is counted once per read and not once per alignment
+        self.assertEqual(unaligned_reads_store.get_initial_read_count(),
+            cfg.sam_file_multiple_alignments_per_read_total_reads)
+
+        # the aligned read is not also counted as unaligned
+        self.assertEqual(unaligned_reads_store.count_reads(),
+            cfg.sam_file_multiple_alignments_per_read_total_unaligned)
+
+        # each unaligned read is written to the unaligned reads file exactly once, so
+        # the file matches the number of unaligned reads stored
+        self.assertEqual(len(unaligned_ids),
+            cfg.sam_file_multiple_alignments_per_read_total_unaligned)
+        self.assertEqual(len(set(unaligned_ids)),len(unaligned_ids))
+
+        # the read that is aligned is not included in the unaligned reads
+        self.assertEqual(sorted(unaligned_reads_store.id_list()),["r2","r3"])
+
+    def test_nucleotide_search_unaligned_reads_duplicate_read_names(self):
+        """
+        Test the unaligned reads and the store alignments
+        Test with a sam file where two reads share a name
+        Test a warning is written since the read counts reported will be too small
+        """
+
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads()
+
+        config.nucleotide_query_coverage_threshold = 0
+        config.nucleotide_subject_coverage_threshold = 50.0
+
+        with self.assertLogs("humann.search.nucleotide", level="WARNING") as logged:
+            [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+                cfg.sam_file_duplicate_read_names, alignments, unaligned_reads_store, keep_sam=True)
+
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+
+        # the two reads that share a name are tracked as a single read
+        self.assertEqual(unaligned_reads_store.get_initial_read_count(),1)
+
+        # the warning names the number of reads that could not be tracked
+        self.assertTrue(any("1 read(s) with a name that is not unique" in message
+            for message in logged.output))
+
     def test_nucleotide_search_unaligned_reads_read_count_aligned_query_coverage(self):
         """
         Test the unaligned reads and the store alignments

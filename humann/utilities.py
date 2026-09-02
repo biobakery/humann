@@ -1303,12 +1303,11 @@ def filter_based_on_query_coverage(query_length, query_start_index, query_stop_i
     return filter
  
 def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_filter=None,
-                            log_filter=None, unaligned_reads_store=None,
+                            log_filter=None,
                             query_coverage_threshold=config.translated_query_coverage_threshold, identity_threshold=None):
     """
     Read through the alignment file, yielding filtered alignments
     Filter based on identity threshold, evalue, and coverage threshold
-    Remove from unaligned reads store if set
     """
 
     # if identity threshold is not set, use the config default
@@ -1397,9 +1396,12 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
             matches=identity/100.0*alignment_length
             
             # get the protein alignment information
+            # the reference name is the full annotation for the database sequence and
+            # is unique per sequence (unlike the gene family name which can repeat)
+            reference_name=alignment_info[config.blast_reference_index]
             protein_name, gene_length, bug = alignments.process_reference_annotation(
-                alignment_info[config.blast_reference_index])
-            
+                reference_name)
+
             # check if percent identity is less then threshold
             filter=False
             if identity < identity_threshold:
@@ -1418,14 +1420,13 @@ def get_filtered_translated_alignments(alignment_file_tsv, alignments, apply_fil
                 
             if apply_filter:
                 if not filter:
-                    yield ( protein_name, gene_length, queryid, matches, bug, 
-                            alignment_length, subject_start_index, subject_stop_index )
-                elif unaligned_reads_store:
-                    # remove the read from the unaligned reads store
-                    unaligned_reads_store.remove_id(queryid)
+                    yield ( protein_name, gene_length, queryid, matches, bug,
+                            alignment_length, subject_start_index, subject_stop_index,
+                            reference_name )
             else:
-                yield ( protein_name, gene_length, queryid, matches, bug, 
-                        alignment_length, subject_start_index, subject_stop_index )
+                yield ( protein_name, gene_length, queryid, matches, bug,
+                        alignment_length, subject_start_index, subject_stop_index,
+                        reference_name )
             
         line=file_handle.readline()
         
