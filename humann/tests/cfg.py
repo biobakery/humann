@@ -61,6 +61,24 @@ sam_file_unaligned_reads_total_aligned_subject_coverage=2
 sam_file_unaligned_reads_total_aligned_query_coverage=2
 sam_file_unaligned_reads_total_unaligned=3
 
+# two alignments to the same gene family (UniRef90_X) in two different species, where the
+# two reference sequences have different lengths so only one meets the coverage threshold
+sam_file_two_species_same_gene_family=os.path.join(data_folder,"two_species_same_gene_family.sam")
+sam_file_two_species_same_gene_family_covered_bug="g__Bacteroides.s__Bacteroides_dorei"
+
+# three reads, two of which have two alignments each; r1 has one alignment to a well
+# covered reference sequence and one to a poorly covered one (so the read is aligned),
+# r2 has two alignments to poorly covered reference sequences (so the read is unaligned)
+# and r3 was never mapped by the aligner
+sam_file_multiple_alignments_per_read=os.path.join(data_folder,"multiple_alignments_per_read.sam")
+sam_file_multiple_alignments_per_read_total_reads=3
+sam_file_multiple_alignments_per_read_total_aligned=1
+sam_file_multiple_alignments_per_read_total_unaligned=2
+
+# two reads that share a name, one aligned and one never mapped, so the input has two
+# reads but humann can only track a single read
+sam_file_duplicate_read_names=os.path.join(data_folder,"duplicate_read_names.sam")
+
 bam_file=os.path.join(data_folder,"file.bam")
 
 biom_file=os.path.join(data_folder,"genefamilies.biom")

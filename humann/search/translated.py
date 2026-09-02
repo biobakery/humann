@@ -38,6 +38,26 @@ from ..search import blastx_coverage
 # name global logging instance
 logger=logging.getLogger(__name__)
 
+# The outcome of the translated search for a read that has at least one alignment,
+# ordered from the least to the most likely to be kept, so the outcome for a read with
+# more than one alignment is the largest of the outcomes of its alignments
+QUERY_ALIGNMENTS_FILTERED=0
+QUERY_SUBJECT_NOT_COVERED=1
+QUERY_ALIGNED=2
+
+def get_query_ids(alignment_file_tsv):
+    """
+    Yield the query id of every alignment in the tabulated blast format file
+    """
+
+    file_handle=open(alignment_file_tsv,"rt")
+    for line in file_handle:
+        if not line.startswith("#"):
+            queryid, query_length = utilities.get_length_annotation(
+                line.split(config.blast_delimiter)[config.blast_query_index])
+            yield queryid
+    file_handle.close()
+
 def usearch_alignment(alignment_file, uniref, unaligned_reads_file_fasta):
     """
     Run usearch alignment with memory management
@@ -286,31 +306,61 @@ def unaligned_reads(unaligned_reads_store, alignment_file_tsv, alignments):
         print(message)
         return unaligned_file_fasta
         
-    # get the list of proteins from the alignment that meet the coverage threshold
-    allowed_proteins = blastx_coverage.blastx_coverage(alignment_file_tsv,
+    # get the list of reference sequences from the alignment that meet the coverage threshold
+    # NOTE: these are the full reference annotations, not the protein family names, since
+    # coverage is computed per reference sequence (see blastx_coverage)
+    allowed_references = blastx_coverage.blastx_coverage(alignment_file_tsv,
         config.translated_subject_coverage_threshold, alignments, log_messages=True, apply_filter=True,
         query_coverage_threshold=config.translated_query_coverage_threshold,
         identity_threshold = config.identity_threshold)
+
+    # the reads that were unaligned after the nucleotide search are the reads searched here
+    total_reads=unaligned_reads_store.count_reads()
+
+    # record the outcome of the search for each read that has at least one alignment, so
+    # the reads, and not just the alignments, that remain unaligned can be reported
+    query_status=dict((queryid,QUERY_ALIGNMENTS_FILTERED)
+        for queryid in get_query_ids(alignment_file_tsv))
 
     # run through final filter of alignment by allowed proteins
     small_coverage_count=0
     for alignment_info in utilities.get_filtered_translated_alignments(alignment_file_tsv, alignments,
                                                   apply_filter=True, log_filter=True, identity_threshold=config.identity_threshold):
         (protein_name, gene_length, queryid, matches, bug, alignment_length,
-         subject_start_index, subject_stop_index) = alignment_info
-        # check the protein matches one allowed
-        if protein_name in allowed_proteins:
+         subject_start_index, subject_stop_index, reference_name) = alignment_info
+        # check the reference sequence matches one allowed
+        if reference_name in allowed_references:
             # if matches allowed, then add alignment
-            alignments.add(protein_name, gene_length, queryid, matches, 
+            alignments.add(protein_name, gene_length, queryid, matches,
                            bug, alignment_length)
-                        
+
             # remove the id of the alignment from the unaligned reads store
             unaligned_reads_store.remove_id(queryid)
+            query_status[queryid]=QUERY_ALIGNED
         else:
             small_coverage_count+=1
+            query_status[queryid]=max(query_status.get(queryid,QUERY_ALIGNMENTS_FILTERED),
+                QUERY_SUBJECT_NOT_COVERED)
 
-    logger.debug("Total translated alignments not included based on small subject coverage value: " + 
+    logger.debug("Total translated alignments not included based on small subject coverage value: " +
         str(small_coverage_count))
+
+    # report the reads, rather than the alignments, that are unaligned after this search
+    status_counts={status:0 for status in
+        [QUERY_ALIGNMENTS_FILTERED, QUERY_SUBJECT_NOT_COVERED, QUERY_ALIGNED]}
+    for status in query_status.values():
+        status_counts[status]+=1
+    total_unaligned=unaligned_reads_store.count_reads()
+
+    message="Total reads searched: "+str(total_reads)
+    message+="\nTotal reads aligned after translated search: "+str(status_counts[QUERY_ALIGNED])
+    message+="\nTotal reads unaligned after translated search: "+str(total_unaligned)
+    # the store is empty when the alignment results are the input to the run, so only
+    # the reads with alignments are known
+    message+="\n  never mapped to the database: "+str(max(total_reads-len(query_status),0))
+    message+="\n  mapped but all alignments filtered: "+str(status_counts[QUERY_ALIGNMENTS_FILTERED])
+    message+="\n  mapped but no reference sequence hit was well covered: "+str(status_counts[QUERY_SUBJECT_NOT_COVERED])
+    logger.info(message)
 
     # create unaligned file using list of remaining unaligned stored data
     file_handle_write=open(unaligned_file_fasta,"w")

@@ -38,6 +38,14 @@ from ..search import blastx_coverage
 # name global logging instance
 logger=logging.getLogger(__name__)
 
+# The outcome of a single alignment for a read, ordered from the least to the most
+# likely to be kept, so the outcome for a read with more than one alignment is the
+# largest of the outcomes of its alignments
+READ_NOT_MAPPED=0
+READ_ALIGNMENT_FILTERED=1
+READ_SUBJECT_NOT_COVERED=2
+READ_ALIGNED=3
+
 def find_index(directory):
     """
     Search through the directory for the name of the bowtie2 index files
@@ -286,32 +294,46 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
     file_handle_read.close()
     file_handle_write_aligned.close()
 
-    # process alignments to determine genes for filtering
-    allowed_genes = blastx_coverage.blastx_coverage(reduced_aligned_reads_file,
+    # process alignments to determine the reference sequences for filtering
+    # NOTE: these are the full reference annotations, not the gene family names, since
+    # coverage is computed per reference sequence (see blastx_coverage)
+    allowed_references = blastx_coverage.blastx_coverage(reduced_aligned_reads_file,
         config.nucleotide_subject_coverage_threshold, alignments, log_messages=True, apply_filter=True,
         nucleotide=True, query_coverage_threshold=config.nucleotide_query_coverage_threshold,
         identity_threshold = config.nucleotide_identity_threshold)
 
     file_handle_read=open(sam_alignment_file, "rt")
-    file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
 
-    # read through the file line by line
-    # capture alignments and also write out unaligned reads for next step in processing
-    line = file_handle_read.readline()
-    query_ids=set()
+    # A read can have more than one alignment in the sam file (for example when the
+    # aligner is run with "-k" or reports secondary alignments), so the aligned or
+    # unaligned decision has to be made per read and not per alignment. Track the best
+    # outcome seen for each read: a read is only unaligned when none of its alignments
+    # is kept, and the status recorded for an unaligned read is the one closest to being
+    # kept, which gives the breakdown of why reads are unaligned after this search.
+    read_status={}
+    primary_alignment_count=0
     no_frames_found_count=0
     small_identity_count=0
     filtered_genes_count=0
     query_coverage_count=0
+
+    # read through the file line by line to capture the alignments
+    line = file_handle_read.readline()
     while line:
-        # ignore headers ^@ 
-        unaligned_read=False
+        # ignore headers ^@
         if not re.search("^@",line):
             info=line.split(config.sam_delimiter)
-            query_ids.add(info[config.blast_query_index])
+            query=info[config.sam_read_name_index]
+            flag=int(info[config.sam_flag_index])
+
+            # every read has exactly one primary alignment, so counting them gives the
+            # number of reads in the input even when reads have more than one alignment
+            if flag & (config.sam_secondary_alignment_flag|config.sam_supplementary_alignment_flag) == 0:
+                primary_alignment_count+=1
+
             # check flag to determine if unaligned
-            if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
-                unaligned_read=True
+            if flag & config.sam_unmapped_flag != 0:
+                status=READ_NOT_MAPPED
             else:
                 # convert the cigar string and md field to percent identity
                 cigar_string=info[config.sam_cigar_index]
@@ -320,36 +342,74 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
 
                 # only store alignments with identity greater than threshold
                 # and with genes included in the filtered list
-                query=info[config.sam_read_name_index]
+                status=READ_ALIGNED
 
-                gene_name, gene_length, bug = alignments.process_reference_annotation(
-                info[config.sam_reference_index])
-
-                if not gene_name in allowed_genes:
+                if not info[config.sam_reference_index] in allowed_references:
                     filtered_genes_count+=1
-                    unaligned_read=True
+                    status=READ_SUBJECT_NOT_COVERED
 
                 query_start_index=0
                 query_stop_index=alignment_length-1
                 if utilities.filter_based_on_query_coverage(alignment_length, query_start_index, query_stop_index, config.nucleotide_query_coverage_threshold):
                     query_coverage_count+=1
-                    unaligned_read=True
+                    status=min(status,READ_ALIGNMENT_FILTERED)
 
                 if identity > config.nucleotide_identity_threshold:
                     matches=identity/100.0*alignment_length
-                    if not unaligned_read:
+                    if status == READ_ALIGNED:
                         alignments.add_annotated(query,matches,info[config.sam_reference_index],
                             alignment_length)
                 else:
                     small_identity_count+=1
-                    unaligned_read=True
+                    status=min(status,READ_ALIGNMENT_FILTERED)
 
-            if unaligned_read:
-                annotated_sam_read_name=utilities.add_length_annotation(info[config.sam_read_name_index],
+            read_status[query]=max(read_status.get(query,READ_NOT_MAPPED),status)
+
+        line=file_handle_read.readline()
+
+    file_handle_read.close()
+    file_handle_write_aligned.close()
+
+    # count the reads in each category before writing out the unaligned reads, since the
+    # statuses are removed as they are written
+    total_reads=len(read_status)
+
+    # reads are tracked by name, so reads that share a name are counted as a single read
+    # and only the sequence of the first is searched in the translated search
+    if primary_alignment_count > total_reads:
+        message="WARNING: The input includes "+str(primary_alignment_count-total_reads)+\
+            " read(s) with a name that is not unique. Reads with the same name are "+\
+            "counted as a single read, so the read counts reported will be smaller "+\
+            "than the number of reads in the input."
+        logger.warning(message)
+        print("\n"+message+"\n")
+
+    status_counts={status:0 for status in
+        [READ_NOT_MAPPED, READ_ALIGNMENT_FILTERED, READ_SUBJECT_NOT_COVERED, READ_ALIGNED]}
+    for status in read_status.values():
+        status_counts[status]+=1
+    total_unaligned=total_reads-status_counts[READ_ALIGNED]
+
+    # read through the file a second time to write out each unaligned read once, for the
+    # next step in processing
+    file_handle_read=open(sam_alignment_file, "rt")
+    file_handle_write_unaligned=open(unaligned_reads_file_fasta, "w")
+
+    line = file_handle_read.readline()
+    while line:
+        # ignore headers ^@
+        if not re.search("^@",line):
+            info=line.split(config.sam_delimiter)
+            query=info[config.sam_read_name_index]
+
+            # remove the status so each read is only written once, which also releases
+            # the statuses as the file is processed
+            if read_status.pop(query,READ_ALIGNED) != READ_ALIGNED:
+                annotated_sam_read_name=utilities.add_length_annotation(query,
                                                                     len(info[config.sam_read_index]))
                 file_handle_write_unaligned.write(">"+annotated_sam_read_name+"\n")
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
-                
+
                 # find the frames for the sequence and write to file
                 if write_picked_frames:
                     picked_frames=pick_frames.pick_frames(info[config.sam_read_index])
@@ -359,11 +419,10 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                         file_handle_write_unaligned_frames.write(">"+
                             annotated_sam_read_name+"\n")
                         file_handle_write_unaligned_frames.write(frame+"\n")
-                
+
                 # store the unaligned reads data
-                unaligned_reads_store.add(info[config.sam_read_name_index], 
-                    info[config.sam_read_index])
-                    
+                unaligned_reads_store.add(query, info[config.sam_read_index])
+
         line=file_handle_read.readline()
 
     if write_picked_frames:
@@ -374,14 +433,22 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
         str(small_identity_count))
     logger.debug("Total nucleotide alignments not included based on query coverage threshold: " +
         str(query_coverage_count))
-    
+
+    # report the reads, rather than the alignments, that are unaligned after this search
+    message="Total reads: "+str(total_reads)
+    message+="\nTotal reads aligned after nucleotide search: "+str(status_counts[READ_ALIGNED])
+    message+="\nTotal reads unaligned after nucleotide search: "+str(total_unaligned)
+    message+="\n  never mapped to the database: "+str(status_counts[READ_NOT_MAPPED])
+    message+="\n  mapped but all alignments filtered: "+str(status_counts[READ_ALIGNMENT_FILTERED])
+    message+="\n  mapped but no reference sequence hit was well covered: "+str(status_counts[READ_SUBJECT_NOT_COVERED])
+    logger.info(message)
+
     file_handle_read.close()
-    file_handle_write_unaligned.close()   
-    file_handle_write_aligned.close()
-    
+    file_handle_write_unaligned.close()
+
     # set the total number of queries
-    unaligned_reads_store.set_initial_read_count(len(query_ids))
-    
+    unaligned_reads_store.set_initial_read_count(total_reads)
+
     # set the unaligned reads file to read sequences from
     unaligned_reads_store.set_file(unaligned_reads_file_fasta)
     

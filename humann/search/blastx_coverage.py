@@ -3,9 +3,9 @@
 """
 This is a HUMAnN utility function
 * Do a first pass on blastx output
-* Identify proteins that were well-covered by reads
-* Return them as a dict
-* When processing blastx output in HUMAnN, consider only these proteins
+* Identify reference sequences that were well-covered by reads
+* Return their annotations as a set
+* When processing blastx output in HUMAnN, consider only these reference sequences
 ===============================================
 Author: Eric Franzosa (eric.franzosa@gmail.com)
 """
@@ -28,37 +28,45 @@ def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None
     if alignments is None:
         alignments=store.Alignments()
     
-    # store protein lengths
-    protein_lengths = {}
-    # store unique positions hit in each protein as sets
-    protein_hits = defaultdict( str )
-    # track proteins with sufficient coverage
+    # Coverage is tracked per reference sequence rather than per gene family.
+    # A gene family (ie a UniRef90 id) appears once per species pangenome in the
+    # nucleotide database, and each of those copies has its own sequence length. It can
+    # also appear more than once within a pangenome, for the unknown gene family and when
+    # running in UniRef50 mode. Keying on the gene family alone would normalize by an
+    # arbitrary one of those lengths and would also merge the hit positions of unrelated
+    # sequences. The full reference annotation is unique per database sequence (it
+    # includes the species and the gene family id) so it is used as the key here.
+    # store reference sequence lengths
+    reference_lengths = {}
+    # store unique positions hit in each reference sequence as sets
+    reference_hits = defaultdict( str )
+    # track reference sequences with sufficient coverage
     allowed = set()
     # track alignments unable to compute coverage
     no_coverage=0
     # parse blast6out file, applying filtering as selected
     for alignment_info in utilities.get_filtered_translated_alignments(blast6out, alignments, apply_filter=apply_filter, log_filter = log_messages, query_coverage_threshold = query_coverage_threshold, identity_threshold = identity_threshold):
         ( protein_name, gene_length, queryid, matches, bug, alignment_length,
-          subject_start_index, subject_stop_index) = alignment_info
-          
+          subject_start_index, subject_stop_index, reference_name) = alignment_info
+
         # divide the gene length by 3 to get protein length from nucleotide length
         if not nucleotide:
             gene_length = gene_length / 3
-                    
-        # store the protein length
-        protein_lengths[protein_name] = gene_length
-        
-        # add the range of the alignment to the protein hits
-        protein_range=range(subject_start_index, subject_stop_index)
-        if protein_range:
-            # keep track of unique hit positions in this protein
-            protein_hits[protein_name]+="{0}-{1};".format(subject_start_index, subject_stop_index)
+
+        # store the length of this specific reference sequence
+        reference_lengths[reference_name] = gene_length
+
+        # add the range of the alignment to the reference sequence hits
+        reference_range=range(subject_start_index, subject_stop_index)
+        if reference_range:
+            # keep track of unique hit positions in this reference sequence
+            reference_hits[reference_name]+="{0}-{1};".format(subject_start_index, subject_stop_index)
         else:
             no_coverage+=1
-    # track proteins without lengths
+    # track reference sequences without lengths
     no_length=0
     # compute coverage
-    for protein_name, hit_positions in protein_hits.items():
+    for reference_name, hit_positions in reference_hits.items():
 
         # compile the hit positions
         range_hit_positions = set()
@@ -68,20 +76,20 @@ def blastx_coverage( blast6out, min_coverage, alignments=None, log_messages=None
              range_hit_positions.update(new_range)
 
         try:
-            # compute coverage, with 50 indicating that 50% of the protein is covered
-            coverage = len( range_hit_positions ) / float( protein_lengths[protein_name] ) * 100
+            # compute coverage, with 50 indicating that 50% of the sequence is covered
+            coverage = len( range_hit_positions ) / float( reference_lengths[reference_name] ) * 100
         except ZeroDivisionError:
             coverage = 0
             no_length+=1
-        
+
         if coverage >= min_coverage:
-            allowed.add(protein_name)
+            allowed.add(reference_name)
 
     output_messages=["Total alignments without coverage information: "+str(no_coverage)]
-    output_messages+=["Total proteins in blastx output: "+str(len( protein_lengths ))]
-    output_messages+=["Total proteins without lengths: "+str(no_length)]
-    output_messages+=["Proteins with coverage greater than threshold ("+str(min_coverage)+"): "+str(len( allowed ))]
-    
+    output_messages+=["Total reference sequences in blastx output: "+str(len( reference_lengths ))]
+    output_messages+=["Total reference sequences without lengths: "+str(no_length)]
+    output_messages+=["Reference sequences with coverage greater than threshold ("+str(min_coverage)+"): "+str(len( allowed ))]
+
     # write out informational messages to log or stdout, depending on input parameters
     if log_messages:
         for message in output_messages:
@@ -110,7 +118,7 @@ def parse_arguments(args):
     parser.add_argument(
         "--print-protein-list",
         action="store_true",
-        help="print the list of proteins that meet the coverage threshold")
+        help="print the list of reference sequences that meet the coverage threshold")
     
     return parser.parse_args()
     
