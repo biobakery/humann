@@ -185,8 +185,9 @@ def alignment(input):
     exe="metaphlan"
     opts=config.metaphlan_opts  
 
-    #Verify MetaPhlAn DB version during runtime
-    verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
+    #Verify MetaPhlAn DB version during runtime (unless using a custom database)
+    if not config.use_custom_database:
+        verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
 
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)
@@ -295,9 +296,10 @@ def create_custom_database(chocophlan_dir, profile_file):
 
             line = file_handle.readline()
    
-        if not version_found:
+        if not version_found and not config.use_custom_database:
             message="The MetaPhlAn taxonomic profile provided does not contain the database version "+\
-                config.metaphlan_v4_db_version+" in any of its header lines."
+                config.metaphlan_v4_db_version+" in any of its header lines. To use a custom database, "+\
+                "add the option --use-custom-database."
             logger.error(message)
             sys.exit("\n\nERROR: "+message)
 

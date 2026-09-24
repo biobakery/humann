@@ -130,6 +130,12 @@ def parse_arguments(args):
         action="store_true",
         default=config.bypass_translated_search)
     workflow_refinement.add_argument(
+        "--use-custom-database", 
+        help="skip the database version checks to allow for custom nucleotide,\n" +
+        "protein, and MetaPhlAn databases\n", 
+        action="store_true",
+        default=config.use_custom_database)
+    workflow_refinement.add_argument(
         "--taxonomic-profile", 
         help="a taxonomic profile (the output file created by metaphlan)\n[DEFAULT: file will be created]", 
         metavar="<taxonomic_profile.tsv>")
@@ -448,6 +454,10 @@ def update_configuration(args):
     if args.bypass_prescreen:
         config.bypass_prescreen=True  
     
+    # if set, skip the database version checks
+    if args.use_custom_database:
+        config.use_custom_database=True
+
     # if set, update the config run mode to bypass nucleotide index step
     if args.bypass_nucleotide_index:
         config.bypass_nucleotide_index=True  
@@ -758,14 +768,21 @@ def check_requirements(args):
                 if re.search("^SGB",file): 
                     valid_format_count+=1
 
-                if not config.metaphlan_v4_db_matching_uniref in file:
+                if not config.use_custom_database and not config.metaphlan_v4_db_matching_uniref in file:
                     sys.exit("\n\nCRITICAL ERROR: The directory provided for ChocoPhlAn contains files ( "+file+" )"+\
                         " that are not of the expected version. Please install the latest version"+\
-                        " of the database: "+config.metaphlan_v4_db_matching_uniref)
+                        " of the database: "+config.metaphlan_v4_db_matching_uniref+\
+                        ". To use a custom database, add the option --use-custom-database.")
 
             if valid_format_count == 0:
-                sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
-                    + "contain files of the expected format (ie \'^SGB\').")
+                if config.use_custom_database:
+                    message=("The directory provided for ChocoPhlAn does not contain files of the "
+                        + "expected format (ie \'^SGB\'). Continuing with the custom database.")
+                    logger.warning(message)
+                    print("WARNING: "+message)
+                else:
+                    sys.exit("CRITICAL ERROR: The directory provided for ChocoPhlAn does not "
+                        + "contain files of the expected format (ie \'^SGB\').")
                 
         # Check if running with the demo database
         if not config.bypass_nucleotide_index:
@@ -827,10 +844,11 @@ def check_requirements(args):
             database_files=os.listdir(config.protein_database)
             valid_format_database_files=[]
             for file in database_files:
-                if not config.matching_uniref in file:
+                if not config.use_custom_database and not config.matching_uniref in file:
                     sys.exit("\n\nCRITICAL ERROR: The directory provided for the translated database contains files ( "+file+" )"+\
                         " that are not of the expected version. Please install the latest version"+\
-                        " of the database: "+config.matching_uniref)
+                        " of the database: "+config.matching_uniref+\
+                        ". To use a custom database, add the option --use-custom-database.")
                 
                 if file.endswith(expected_database_extension):
                     # if rapsearch check for the second database file

@@ -182,6 +182,11 @@ Bypass options:
 *   --bypass-nucleotide-index
     *   starts the workflow with the nucleotide alignment step using the indexed database from "--nucleotide-database $DIR"
 
+Custom database option:
+
+*   --use-custom-database
+    *   skips the database version checks (ChocoPhlAn and UniRef file names, MetaPhlAn database version, and the database version in the taxonomic profile header) so HUMAnN will profile against whatever nucleotide, protein, and MetaPhlAn databases are provided, without renaming files to match the expected versions
+
 ----	
 	
 ### Workflow of the resume option ###
@@ -1340,6 +1345,7 @@ HUMAnN frequently asked questions:
 usage: humann [-h] -i <input.fastq> -o <output> [--threads <1>] [--version]
               [-r] [--bypass-nucleotide-index] [--bypass-nucleotide-search]
               [--bypass-prescreen] [--bypass-translated-search]
+              [--use-custom-database]
               [--taxonomic-profile <taxonomic_profile.tsv>]
               [--memory-use {minimum,maximum}]
               [--input-format {fastq,fastq.gz,fasta,fasta.gz,sam,bam,blastm8,genetable,biom}]
@@ -1394,6 +1400,9 @@ optional arguments:
   --bypass-prescreen    bypass the prescreen step and run on the full ChocoPhlAn database
   --bypass-translated-search
                         bypass the translated search step
+  --use-custom-database
+                        skip the database version checks to allow for custom nucleotide,
+                        protein, and MetaPhlAn databases
   --taxonomic-profile <taxonomic_profile.tsv>
                         a taxonomic profile (the output file created by metaphlan)
                         [DEFAULT: file will be created]
