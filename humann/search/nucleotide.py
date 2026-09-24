@@ -345,13 +345,14 @@ def unaligned_reads(sam_alignment_file, alignments, unaligned_reads_store, keep_
                     unaligned_read=True
 
             if unaligned_read:
-                annotated_sam_read_name=utilities.add_length_annotation(info[config.sam_read_name_index],
-                                                                    len(info[config.sam_read_index]))
-                file_handle_write_unaligned.write(">"+annotated_sam_read_name+"\n")
+                # write the original read ids (lengths are added to the translated search input)
+                file_handle_write_unaligned.write(">"+info[config.sam_read_name_index]+"\n")
                 file_handle_write_unaligned.write(info[config.sam_read_index]+"\n")
                 
                 # find the frames for the sequence and write to file
                 if write_picked_frames:
+                    annotated_sam_read_name=utilities.add_length_annotation(info[config.sam_read_name_index],
+                                                                        len(info[config.sam_read_index]))
                     picked_frames=pick_frames.pick_frames(info[config.sam_read_index])
                     if not picked_frames:
                         no_frames_found_count+=1

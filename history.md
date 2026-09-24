@@ -4,6 +4,8 @@
 ## v4.0.0.alpha.2.TBD (06-11-2026)
 
 * Updated utility scripts to work with the new header READS_UNMAPPED.
+* The unaligned reads file from nucleotide search (*_bowtie2_unaligned.fa) now contains the original read ids. Read lengths are only added to the temporary translated search input.
+* Fixed unaligned read counts when the input is a fasta file with length annotations (e.g. a *_bowtie2_unaligned.fa file from a prior HUMAnN run).
 
 ## v4.0.0.alpha.2 (11-25-2025) ##
 

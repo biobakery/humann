@@ -443,6 +443,25 @@ class TestHumannUtilitiesFunctions(unittest.TestCase):
         
         self.assertFalse(utilities.space_in_identifier(cfg.small_fastq_no_spaces_file))  
         
+    def test_add_length_annotation_round_trip(self):
+        """
+        Test adding and then getting the length annotation returns the original id
+        """
+        
+        annotated_id=utilities.add_length_annotation("read1 extra_info",100)
+        self.assertEqual("read1|100",annotated_id)
+        self.assertEqual(("read1",100),utilities.get_length_annotation(annotated_id))
+        
+    def test_add_length_annotation_round_trip_already_annotated(self):
+        """
+        Test adding and then getting the length annotation returns the original id
+        Test with an id that already ends with a length annotation
+        """
+        
+        annotated_id=utilities.add_length_annotation("read1|100",100)
+        self.assertEqual("read1|100|100",annotated_id)
+        self.assertEqual(("read1|100",100),utilities.get_length_annotation(annotated_id))
+        
     def test_remove_spaces_from_file(self):  
         """
         Test the remove spaces from file function

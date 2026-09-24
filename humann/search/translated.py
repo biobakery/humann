@@ -237,7 +237,7 @@ def alignment(uniref, unaligned_reads_file):
             input_fasta=utilities.fastq_to_fasta(unaligned_reads_file, length_annotation=True)
         # set the file as a temp to be removed later
         temp_file=input_fasta
-    elif unaligned_reads_file_format == "fasta" and config.bypass_nucleotide_search:
+    elif unaligned_reads_file_format == "fasta" and (config.bypass_nucleotide_search or config.pick_frames_toggle != "on"):
         if config.pick_frames_toggle == "on":
             # Process the fasta file to pick frames
             logger.debug("Applying pick frames")

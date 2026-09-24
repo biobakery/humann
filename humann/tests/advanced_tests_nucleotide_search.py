@@ -63,6 +63,48 @@ class TestAdvancedHumannNucleotideSearchFunctions(unittest.TestCase):
         utils.remove_temp_file(unaligned_reads_file_fasta)
         utils.remove_temp_file(reduced_aligned_reads_file)
 
+    def test_nucleotide_search_unaligned_reads_output_original_ids(self):
+        """
+        Test the unaligned reads
+        Test with a bowtie2/sam output file
+        Test the output file contains the original read ids (without length annotations)
+        """
+        
+        # create a set of alignments
+        alignments=store.Alignments()
+        unaligned_reads_store=store.Reads()
+       
+        # turn off query/subject filtering
+        config.nucleotide_subject_coverage_threshold = 0
+        config.nucleotide_query_coverage_threshold = 0
+ 
+        # read in the aligned and unaligned reads
+        [unaligned_reads_file_fasta, reduced_aligned_reads_file] = nucleotide.unaligned_reads(
+            cfg.sam_file_unaligned_reads, alignments, unaligned_reads_store, keep_sam=True) 
+        
+        # reset query/subject filtering
+        config.nucleotide_subject_coverage_threshold = self.default_nucleotide_subject_coverage_threshold
+        config.nucleotide_query_coverage_threshold = self.default_nucleotide_query_coverage_threshold
+
+        # get the unaligned read ids from the sam file
+        expected_ids=[]
+        with open(cfg.sam_file_unaligned_reads) as file_handle:
+            for line in file_handle:
+                if not line.startswith("@"):
+                    info=line.split(config.sam_delimiter)
+                    if int(info[config.sam_flag_index]) & config.sam_unmapped_flag != 0:
+                        expected_ids.append(info[config.sam_read_name_index])
+
+        with open(unaligned_reads_file_fasta) as file_handle:
+            fasta_ids=[line.rstrip()[1:] for line in file_handle if line.startswith(">")]
+        
+        # remove temp files
+        utils.remove_temp_file(unaligned_reads_file_fasta)
+        utils.remove_temp_file(reduced_aligned_reads_file)
+
+        self.assertTrue(expected_ids)
+        self.assertEqual(sorted(expected_ids),sorted(fasta_ids))
+
 
     def test_nucleotide_search_unaligned_reads_read_count_aligned(self):
         """
