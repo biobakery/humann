@@ -383,6 +383,9 @@ sgb_to_species_mapping={}
 
 matching_uniref="2019_06"
 
+# if set, skip the database version checks (for custom databases)
+use_custom_database=False
+
 # chocophlan formatting
 chocophlan_delimiter="|"
 chocophlan_bug_index=1

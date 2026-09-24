@@ -4,6 +4,7 @@
 ## v4.0.0.alpha.2.TBD (06-11-2026)
 
 * Updated utility scripts to work with the new header READS_UNMAPPED.
+* Added the option --use-custom-database to skip the database version checks when running with custom databases.
 
 ## v4.0.0.alpha.2 (11-25-2025) ##
 
