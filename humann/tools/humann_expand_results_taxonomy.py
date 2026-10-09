@@ -2,6 +2,8 @@
 import sys,string
 import sys, os
 import argparse
+from humann.tools import util
+from humann import accounting
 try:
 	from ete2 import NCBITaxa
 	ncbi = NCBITaxa()
@@ -117,9 +119,14 @@ CommonArea['ifile'] = results.i
 CommonArea['oFile'] = results.o
 OutputFile = open(CommonArea['oFile'],'w')
 CommonArea['InputFile'] = open(CommonArea['ifile'], "rt")
+legacy_warning = accounting.LegacyProfileWarning(CommonArea['ifile'])
  
 for sLine in CommonArea['InputFile']: 
+	legacy_warning.check(sLine)
 
+	if util.is_special(sLine.split('\t')[0]):
+		OutputFile.write(sLine)
+		continue
 	sLineBrokenByPipe = sLine.split('|')
 	if len(sLineBrokenByPipe) == 1: 	 #If  it does not contain pipe - Just write the record and continue
 		OutputFile.write(sLine)
