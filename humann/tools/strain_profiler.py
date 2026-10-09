@@ -13,6 +13,7 @@ HUMAnN utility for making strain profiles
 Based on the principle of detecting variable 
 presence and absence of gene families within a species
 that is otherwise well-covered in multiple samples.
+Accounting categories are excluded from gene counts, filters, and profiles.
 """
 
 # ---------------------------------------------------------------
@@ -94,6 +95,8 @@ def partition_table( table, m, n, pinterval ):
     # first build the partitions
     partitions = {}
     for i, rowhead in enumerate( table.rowheads ):
+        if util.is_special(rowhead):
+            continue
         table.data[i] = list(map( float, table.data[i] ))
         if util.c_strat_delim in rowhead:
             gene, species = rowhead.split( util.c_strat_delim )
