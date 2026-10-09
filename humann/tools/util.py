@@ -2,10 +2,12 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 import os
 import sys
 import re
-import subprocess
 import csv
 import gzip
 import bz2
+
+from humann import config
+from humann import accounting
 
 # ---------------------------------------------------------------
 # utilities used by the split and join tables scripts
@@ -34,40 +36,17 @@ def find_exe_in_path(exe):
     return False
 
 def biom_to_tsv(biom_file, new_tsv_file, taxonomy=None):
-    """
-    Convert from a biom to tsv file
-    """
+    """Convert BIOM while retaining raw counts in sample metadata."""
+    with open(new_tsv_file, "w") as handle:
+        handle.write("\n".join(read_biom_table(biom_file, taxonomy=taxonomy)) + "\n")
 
-    cmd=["biom","convert","-i",biom_file,"-o",new_tsv_file,"--to-tsv"]
 
-    # check if taxonomy is set (can be set to zero)
-    if taxonomy != None:
-        cmd+=["--header-key","taxonomy"]
-    
-    try:
-        if os.path.isfile(new_tsv_file):
-            os.unlink(new_tsv_file)
-        p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except (EnvironmentError, subprocess.CalledProcessError):
-        command=" ".join(cmd)
-        sys.exit("Unable to convert biom file to tsv"+"\n"+command)
-        
 def tsv_to_biom(tsv_file, biom_file):
-    """
-    Convert from a biom to tsv file
-    """
-    
-    cmd=["biom","convert","-i",tsv_file,"-o",biom_file,"--table-type","Gene table","--to-hdf5"]
+    """Convert TSV while retaining raw count comments as sample metadata."""
+    table = Table(tsv_file)
+    write_biom(biom_file, table.write_rows(), table_type="Gene table")
 
-    try:
-        if os.path.isfile(biom_file):
-            os.unlink(biom_file)
-        p_out = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except (EnvironmentError, subprocess.CalledProcessError):
-        command=" ".join(cmd)
-        sys.exit("Unable to convert tsv file to biom"+"\n"+command)
-        
-def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
+def process_gene_table_with_header(gene_table, allow_for_missing_header=None, read_counts=None):
     """
     Process through the header portion of the gene table file
     """
@@ -75,6 +54,9 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
     # try to open the file
     try:
         lines=gzip_bzip2_biom_open_readlines( gene_table )
+        # BIOM ingestion already checks observation identifiers in read_biom_table.
+        if not gene_table.endswith(BIOM_FILE_EXTENSION):
+            lines=accounting.warn_legacy_profile(lines, gene_table)
     except EnvironmentError:
         sys.exit("Unable to read file: " + gene_table)
             
@@ -82,6 +64,13 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
     header=""
     first_data_line=""
     for line in lines:
+        if not line:
+            continue
+        summary=accounting.parse_line(line)
+        if summary is not None:
+            if read_counts is not None:
+                read_counts[summary[0]]=summary[1]
+            continue
         if line[0] == GENE_TABLE_COMMENT_LINE:
             header = line
         else:
@@ -98,7 +87,8 @@ def process_gene_table_with_header(gene_table, allow_for_missing_header=None):
         yield header
     
     # provide the first data line
-    yield first_data_line
+    if first_data_line:
+        yield first_data_line
     
     # now provide the remaining lines
     for line in lines:
@@ -154,15 +144,23 @@ class Table ( ):
         self.rowheads = []
         self.data = []
         self.is_stratified = False
+        self.read_counts = {}
+        stdin_warning = accounting.LegacyProfileWarning("<STDIN>") if path is None else None
         if path is None:
             rows = csv.reader( sys.stdin, dialect='excel-tab' )
             path = "STDIN"
             print( "Loading table from: <STDIN>", file=sys.stderr )
         else:
-            rows = [line.split("\t") for line in process_gene_table_with_header( path, True )]
+            rows = [line.split("\t") for line in process_gene_table_with_header( path, True, self.read_counts )]
             print( "Loading table from:", path, file=sys.stderr )
             size_warn( path )
         for row in rows:
+            if stdin_warning is not None:
+                stdin_warning.check("\t".join(row))
+            summary=accounting.parse_line("\t".join(row))
+            if summary is not None:
+                self.read_counts[summary[0]]=summary[1]
+                continue
             try:
                 if self.anchor is None:
                     self.anchor = row[0]
@@ -199,10 +197,12 @@ class Table ( ):
         
     def write_rows(self, unfloat=False):
         """ Yield the values to write to the output file """
+        for line in accounting.comment_lines(getattr(self,"read_counts",{})):
+            yield line.split("\t")
         yield [self.anchor] + self.colheads
         for i in range( len( self.rowheads ) ):
             values = self.data[i][:]
-            if unfloat:
+            if unfloat and not is_special(self.rowheads[i]):
                 values = list( map( lambda x: "%.6g" % ( x ), values ))
             yield [self.rowheads[i]] + values
 
@@ -213,8 +213,10 @@ def write_tsv( path, rows ):
 
     for row in rows:
         writer.writerow(row)
+    if path is not None:
+        fh.close()
             
-def write_biom( path, rows ):
+def write_biom( path, rows, table_type="humann utility script" ):
     """ Write the file in biom format """
         
     try:
@@ -236,18 +238,28 @@ def write_biom( path, rows ):
             " This software is required since the input file is a biom file.")
             
     # reformat the rows into a biom table
-    samples=next(rows)[1:]
+    read_counts={}
+    for row in rows:
+        summary=accounting.parse_line("\t".join(map(str,row)))
+        if summary is None:
+            samples=row[1:]
+            break
+        read_counts[summary[0]]=summary[1]
     ids=[]
     data=[]
     for row in rows:
         ids.append(row[0])
         data.append(row[1:])
             
-    table=biom.Table(numpy.array(data), ids, samples)
+    matrix=numpy.array(data,dtype=float).reshape((len(ids),len(samples)))
+    table=biom.Table(matrix, ids, samples)
+    if read_counts:
+        table.add_metadata({sample: {key: values[i] for key,values in read_counts.items()}
+                            for i,sample in enumerate(samples)}, axis="sample")
         
     # write a h5py biom table
     with h5py.File(path, 'w') as file_handle:
-        table.to_hdf5(file_handle, "humann utility script")
+        table.to_hdf5(file_handle, table_type)
         
 
 class Ticker( ):
@@ -281,7 +293,7 @@ def try_zip_open( path, write=None ):
 
     # set the open mode
     if write:
-        open_mode = "w"
+        open_mode = "wt"
     elif path.endswith(".bz2"):
         open_mode = "rt"
     else:
@@ -298,7 +310,7 @@ def try_zip_open( path, write=None ):
         sys.exit( "Problem opening file: " + path)
     return fh
 
-def read_biom_table( path ):
+def read_biom_table( path, taxonomy=None ):
     """
     return the lines in the biom file
     """
@@ -310,7 +322,15 @@ def read_biom_table( path ):
             " This software is required since the input file is a biom file.")
         
     try:
-        tsv_table = biom.load_table( path ).to_tsv().split("\n")
+        table = biom.load_table(path)
+        read_counts={}
+        metadata=[table.metadata(sample,axis="sample") or {}
+                  for sample in table.ids(axis="sample")]
+        for key in config.read_count_names:
+            if any(key in item for item in metadata):
+                read_counts[key]=[item.get(key,config.read_count_unavailable) for item in metadata]
+        tsv_table = list(accounting.comment_lines(read_counts))+table.to_tsv(header_key="taxonomy" if taxonomy is not None else None).split("\n")
+        tsv_table = list(accounting.warn_legacy_profile(tsv_table, path))
     except (EnvironmentError, TypeError):
         sys.exit("ERROR: Unable to read biom input file.")
         
@@ -393,6 +413,18 @@ def fsplit( feature ):
         name = c_name_delim.join( items[1:] )
     return code, name, stratum
 
+def feature_id( rowhead ):
+    """Read the base identifier without interpreting names or nested strata."""
+    return rowhead.split(c_strat_delim, 1)[0].split(c_name_delim, 1)[0]
+
+def is_special( rowhead ):
+    """Recognize accounting categories, including named and stratified rows."""
+    return feature_id(rowhead) in config.special_feature_names
+
+def is_ungrouped( rowhead ):
+    """Recognize the canonical ungrouped abundance category."""
+    return feature_id(rowhead) == config.ungrouped_reaction_name
+
 def fjoin( feature, name=None, stratum=None ):
     if name is not None:
         feature = c_name_delim.join( [feature, name] )
@@ -405,7 +437,7 @@ def fsort( features ):
     features = sorted( features, key=lambda f: f.split( c_strat_delim ) )
     # force special features to the top (defined above)
     default = 1 + max( c_topsort.values() )
-    features = sorted( features, key=lambda f: c_topsort.get( fsplit( f )[0], default ) )
+    features = sorted( features, key=lambda f: c_topsort.get( feature_id(f), default ) )
     return features
 
 # ---------------------------------------------------------------
