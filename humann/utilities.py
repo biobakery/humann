@@ -1123,23 +1123,12 @@ def tsv_to_biom(tsv_file, biom_file, table_type):
         sys.exit("Could not find the h5py software."+
             " This software is required since the output file is a biom file.")
             
-    # read the tsv file
-    ids=[]
-    data=[]
-    with open(tsv_file) as file_handle:
-        samples=file_handle.readline().rstrip().split("\t")[1:]
-        for line in file_handle:
-            row=line.rstrip().split("\t")
-            ids.append(row[0])
-            data.append(row[1:])
-            
-    # reformat the rows into a biom table
-    table=biom.Table(numpy.array(data), ids, samples)
-        
-    # write a h5py biom table
-    with h5py.File(biom_file, 'w') as file_handle:
-        table.to_hdf5(file_handle, table_type)
+    # Shared reader keeps raw count comments out of biological rows.
+    from .tools import util
+    table=util.Table(tsv_file)
+    util.write_biom(biom_file, table.write_rows(), table_type=table_type)
     
+
 def biom_to_tsv(biom_file):
     """
     Convert from a biom to tsv file
@@ -1148,13 +1137,9 @@ def biom_to_tsv(biom_file):
     # create a unnamed temp file
     new_tsv_file=unnamed_temp_file()
 
-    exe="biom"
-    args=["convert","-i",biom_file,"-o",new_tsv_file,"--to-tsv"]
-    
-    message="Converting biom file to tsv ..."
-    logger.info(message)
-    
-    execute_command(exe, args, [biom_file], [new_tsv_file])
+    from .tools import util
+    logger.info("Converting biom file to tsv ...")
+    util.Table(biom_file).write(new_tsv_file)
     
     return new_tsv_file
     
