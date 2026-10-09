@@ -15,6 +15,7 @@ import sys
 import os
 
 from humann.tools import util
+from humann import config, accounting
 
 TABLE_DELIMITER="\t"
 LEVEL_DELIMITER="|"
@@ -47,7 +48,9 @@ def reduce_table(function,input,output,verbose,sort_by):
         print("Reading file: " + input)
         print("Using function: " + function)
         
-    lines=util.process_gene_table_with_header(input, allow_for_missing_header=True)
+    read_counts={}
+    lines=util.process_gene_table_with_header(input, allow_for_missing_header=True,
+                                            read_counts=read_counts)
     header=next(lines)
     
     if verbose:
@@ -63,6 +66,11 @@ def reduce_table(function,input,output,verbose,sort_by):
     if header:
         header_start=header.split(TABLE_DELIMITER)[0]
     
+    # A summary across samples has no single read library; do not invent counts.
+    reduced_counts={name: values if len(values) == 1 else [config.read_count_unavailable]
+                    for name,values in read_counts.items()}
+    for line in accounting.comment_lines(reduced_counts):
+        file_handle_out.write(line+"\n")
     file_handle_out.write(header_start+TABLE_DELIMITER+function+"\n")
     
     store_data={}

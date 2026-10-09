@@ -107,19 +107,22 @@ def rename ( table, polymap ):
         items = rowhead.split( util.c_strat_delim )
         # account for previously renamed features
         old_name = items[0].split( util.c_name_delim )[0]
+        # Accounting categories are not candidates for biological naming.
+        if util.is_special(rowhead):
+            continue
         seen[old_name] = False
         if old_name in polymap:
             new_name = util.c_multiname_delim.join( polymap[old_name].keys() )
             seen[old_name] = True
         else:
             new_name = util.c_str_unknown
-        # don't touch special features like UNMAPPED
-        if old_name not in util.c_topsort:
+        # Unknown UniRef entries also keep their original labels.
+        if old_name not in util.c_unknown_features:
             items[0] = util.c_name_delim.join( [old_name, new_name] )
         table.rowheads[i] = util.c_strat_delim.join( items )
     tcount = list(seen.values()).count( True )
     print( "Renamed %d of %d entries (%.2f%%)" \
-           % ( tcount, len( seen ), 100 * tcount / float( len( seen ) ) ), 
+           % ( tcount, len( seen ), 100 * tcount / float( len( seen ) or 1 ) ),
            file=sys.stderr )
 
 # ---------------------------------------------------------------

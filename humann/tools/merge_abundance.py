@@ -18,6 +18,7 @@ import bz2
 import re
 
 from humann.tools import util
+from humann import accounting
 
 TABLE_DELIMITER="\t"
 BUG_DELIMITER="|"
@@ -35,7 +36,9 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     Write the merged abundances
     """
     
-    lines=util.process_gene_table_with_header(input_pathways, allow_for_missing_header=True)
+    read_counts={}
+    lines=util.process_gene_table_with_header(input_pathways, allow_for_missing_header=True,
+                                            read_counts=read_counts)
     header=next(lines)
     
     # open the output file
@@ -44,6 +47,8 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     except EnvironmentError:
         sys.exit("ERROR: Unable to write to output file: " + output)
         
+    for line in accounting.comment_lines(read_counts):
+        write_file_handle.write(line+"\n")
     if header:
         write_file_handle.write(header+"\n")
         
@@ -52,12 +57,20 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
     pathways={}
     pathways_by_bug={}
     pathway_names={}
+    accounting_rows=[]
     for line in lines:
         data=line.split(TABLE_DELIMITER)
         bug=""
         pathway=data[0]
         if BUG_DELIMITER in line:
             pathway,bug=data[0].split(BUG_DELIMITER)
+
+        # Accounting is not a pathway to unpack. Keep zeros, original values,
+        # and even standalone strata, while honoring explicit taxonomy removal.
+        if util.is_special(data[0]):
+            if not remove_taxonomy or not bug:
+                accounting_rows.append(line)
+            continue
         
         # remove pathway name if present
         if GENE_NAME_DELIMITER in pathway:
@@ -77,6 +90,9 @@ def merge_abundances(gene_table,pathways_to_genes,input_pathways,output,addition
                 pathways_by_bug[pathway].append([bug,data[-1]])
             else:
                 pathways[pathway]=data[-1]
+
+    for line in accounting_rows:
+        write_file_handle.write(line+"\n")
 
     for pathway in sorted(pathways):
         # check if the name should be added to the pathway
