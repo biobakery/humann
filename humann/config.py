@@ -59,6 +59,7 @@ def log_settings():
     lines.append("resume = " + str(resume))
     lines.append("verbose = " + str(verbose))
     lines.append("bypass prescreen = " + str(bypass_prescreen))
+    lines.append("override metaphlan check = " + str(override_metaphlan_check))
     lines.append("bypass nucleotide index = " + str(bypass_nucleotide_index))
     lines.append("bypass nucleotide search = " + str(bypass_nucleotide_search))
     lines.append("bypass translated search = " + str(bypass_translated_search))
@@ -237,6 +238,13 @@ utility_mapping_database=get_item(config_items, "database_folders", "utility_map
 resume=get_item(config_items, "run_modes", "resume", "bool")
 verbose=get_item(config_items, "run_modes", "verbose", "bool")
 bypass_prescreen=get_item(config_items, "run_modes", "bypass_prescreen", "bool")
+override_metaphlan_check=False
+metaphlan_check_override_warning=(
+    "EXPERIMENTAL: --override-metaphlan-check is enabled; MetaPhlAn version "
+    "checks are disabled. Use this only if you understand the compatibility "
+    "risks and validate your profile and databases. Use at your own risk; "
+    "HUMAnN developers take no responsibility for failures or incorrect "
+    "results caused by this override.")
 bypass_nucleotide_index=get_item(config_items, "run_modes", "bypass_nucleotide_index", "bool")
 bypass_nucleotide_search=get_item(config_items, "run_modes", "bypass_nucleotide_search", "bool")
 bypass_translated_search=get_item(config_items, "run_modes", "bypass_translated_search", "bool")
