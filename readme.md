@@ -493,9 +493,12 @@ When HUMAnN is run, three main output files will be created (where `` $SAMPLENAM
 
 ### 1. Gene families file ###
 
+The abundance numbers below illustrate older RPK tables. Current default outputs use mapped-only Adjusted CPMs; raw counts are comments in all three output types.
+
 ``` 
+# READS_INITIAL	NA
+# READS_UNMAPPED	187.0
 # Gene Family	$SAMPLENAME_Abundance-RPKs
-READS_UNMAPPED        187.0
 UniRef50_unknown        150.0
 UniRef50_unknown|g__Bacteroides.s__Bacteroides_fragilis 150.0
 UniRef50_A6L0N6: Conserved protein found in conjugate transposon	67.0
@@ -512,9 +515,9 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 *   This file details the abundance of each gene family in the community. Gene families are groups of evolutionarily-related protein-coding sequences that often perform similar functions.
 *   Gene family abundance at the community level is stratified to show the contributions from known and unknown species. Individual species' abundance contributions sum to the community total abundance.
 *   HUMAnN uses the MetaPhlAn2 software along with the ChocoPhlAn database and translated search database for this computation.
-*   Gene family abundance is reported in RPK (reads per kilobase) units to normalize for gene length; RPK units reflect relative gene (or transcript) copy number in the community. RPK values can be further sum-normalized to adjust for differences in sequencing depth across samples.
+*   By default, gene families are quantified as Adjusted RPKs and normalized to Adjusted CPMs using only mapped gene-family abundance as the denominator. Community gene-family CPMs sum to one million when mapped abundance is nonzero; species contributions use the same normalization factor. Reactions and pathways are computed from these CPMs without another total-sum normalization. Other `--count-normalization` modes remain available.
 *   Please note the gene families file will not be created if the input file type is a gene table.
-*   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+*   Raw read counts are retained separately as `# READS_INITIAL` and `# READS_UNMAPPED` comments, and recorded in the log. These values do not enter the CPM denominator. `NA` denotes counts unavailable from precomputed input. See [accounting categories](docs/accounting-categories.md) for legacy compatibility and utility behavior.
 * The UniRef50_unknown values represent the total abundance of reads which map to ChocoPhlAn nucleotide sequences which do not have a UniRef50 annotation.
 
 ----
@@ -522,8 +525,9 @@ UniRef50_O83668: Fructose-bisphosphate aldolase|g__Bacteroides.s__Bacteroides_st
 ### 2. Reactions file ###
 
 ```
+# READS_INITIAL	NA
+# READS_UNMAPPED	7573721.0000000000
 # Reaction      $SAMPLENAME_Abundance
-READS_UNMAPPED      7573721.0000000000
 UNGROUPED    22978726.4009404778
 UNGROUPED|g__Bacteroides.s__Bacteroides_vulgatus     1961355.5951347812
 UNGROUPED|g__Bacteroides.s__Bacteroides_uniformis    1579305.9455720731
@@ -536,18 +540,15 @@ UNGROUPED|unclassified       5100980.1244789278
          
 *   File name: `` $OUTPUT_DIR/$SAMPLENAME_3_reactions.tsv `` ( file not written in HUMAnN v3 )
 *   This file details the abundance of each reaction in the community from regrouping gene families to reactions. 
-*   The "READS_UNMAPPED" value is the total number of reads which remain unmapped after both alignment steps (nucleotide and translated search). Since other gene features in the table are quantified in RPK units, "READS_UNMAPPED" can be interpreted as a single unknown gene of length 1 kilobase recruiting all reads that failed to map to known sequences.
+*   Raw read counts are retained separately as `# READS_INITIAL` and `# READS_UNMAPPED` comments, and recorded in the log. These values do not enter the CPM denominator. `NA` denotes counts unavailable from precomputed input. See [accounting categories](docs/accounting-categories.md) for legacy compatibility and utility behavior.
 
 
 ### 3. Pathway abundance file ###
 
 ```
+# READS_INITIAL	NA
+# READS_UNMAPPED	NA
 # Pathway	$SAMPLENAME_Abundance
-UNMAPPED	140.0
-UNINTEGRATED	87.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_caccae	23.0
-UNINTEGRATED|g__Bacteroides.s__Bacteroides_finegoldii	20.0
-UNINTEGRATED|unclassified	12.0
 PWY0-1301: melibiose degradation	57.5
 PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_caccae	32.5
 PWY0-1301: melibiose degradation|g__Bacteroides.s__Bacteroides_finegoldii	4.5
@@ -568,10 +569,13 @@ PWY-5484: glycolysis II (from fructose-6P)|unclassified	6.0
 *   Gap filling allows for a single required reaction to have a zero abundance. For all pathways, the required reaction with the lowest abundance is replaced with the abundance of the required reaction with the second lowest abundance.
 *   By default, HUMAnN uses MetaCyc pathway definitions and MinPath to identify a parsimonious set of pathways which explain observed reactions in the community.
 *   The user has the option to provide a custom pathways database to HUMAnN and to use all pathways instead of the minimal pathways computed by MinPath.
-*   To account for non-linearity in the conversion of gene copy number to pathway copy number, we define a "compression constant" (*k*) equal to the total pathway abundance divided by the total abundance of genes that contributed to pathways. The "UNMAPPED" value reported in the pathway abundance table is equal to the total number of unmapped reads scaled by *k* (making it more comparable with pathway abundance values). Similarly, we define an "UNINTEGRATED" abundance for 1) the community, 2) each identified species, and 3) the "unclassified" stratum equal to the total abundance of genes in that level that did not contribute to pathways (scaled by *k*).
-*   "UNINTEGRATED" does not appear for stratifications with no detected pathways.
+*   New pathway outputs omit the deprecated `UNMAPPED` and `UNINTEGRATED` abundance rows. Raw read counts are carried in comments. Utilities continue to recognize and protect these rows when reading historical tables.
 
 ----
+
+### Experimental MetaPhlAn version-check override
+
+`--override-metaphlan-check` skips runtime MetaPhlAn version probing and logs a CRITICAL experimental warning. A precomputed `--taxonomic-profile` can be used without the MetaPhlAn executable; profile header validation remains enabled. The installer also accepts `--override-metaphlan-check` to skip its two version checks. See [override details](docs/metaphlan-check-override.md).
 
 ### 4. MetaPhlAn profile ###
 
@@ -964,7 +968,7 @@ group2  uniref1  uniref5  ...
 
 Where spaces between items above denote `TABS`. Mapping files can be gzip- or bzip2-compressed and will still be readable by `humann_regroup_table`. By default, feature abundances (such as gene families) are summed to produce group abundances.
 
-If the "UNMAPPED" gene abundance feature is included in a user's input to ``humann_regroup_table``, it will automatically be carried forward to the final output. In addition, genes that do not group with a non-trivial feature are combined as an "UNGROUPED" group. By default, UNGROUPED reflects the total abundance of genes that did not belong to another group (similar in spirit to the "UNINTEGRATED" value reported in the pathway abundance file).
+Protected accounting rows, including historical `UNMAPPED` and `UNINTEGRATED`, retain their names and values when regrouping by default. Raw-count comments also carry forward. Genes without a group contribute to `UNGROUPED`; this residual is summed even when biological groups use `--function mean`. A gene assigned to several groups contributes to each, so grouped totals need not sum to one million.
 
 Some groups are not associated by default with human-readable names. To attach names to a regrouped table, use the `humann_rename_table` script. (The "GO" name map can be used for both raw GO and informative GO.)
 
@@ -992,13 +996,13 @@ Features without names (common for many UniRef90/50 families) are assigned the d
 * `$TABLE2` = normalized gene/pathway table
 * Run with `-h` to see additional command line options
 
-HUMAnN quantifies genes and pathways in units of RPKs (reads per kilobase). These account for gene length but not sample sequencing depth. While there are some applications, e.g. strain profiling, where RPK units are superior to depth-normalized units, most of the time a user will renormalize their samples prior to downstream analysis.
+HUMAnN defaults to mapped-only Adjusted CPMs and computes downstream reactions and pathways from them. `humann_renorm_table` remains available for existing tables and alternative units; it is not needed to convert the default gene-family output to CPMs.
 
 This script provides the choice to normalize to relative abundance or copies per million (CPM) units. Both of these represent "total sum scaling (TSS)"-style normalization: in the former case, each sample is constrained to sum to 1, whereas in the latter case (CPMs) samples are constrained to sum to 1 million. Units out of 1 million are often more convenient for tables with many, many features (such as `genefamilies.tsv` tables).
 
 **Note:** CPM as used here does *not* refer to unnormalized COUNTS per million, but rather copies per million. CPMs as used here are a generic analog of the TPM (transcript per million) unit in RNA-seq. You may wish to use the abbreviation CoPM for added clarity.
 
-By default, this script normalizes all stratification levels to the sum of all community feature totals, but other options (such as level-wise normalization) are supported. "Special" features (such as UNMAPPED) can be included or excluded in the normalization process.
+By default, this script normalizes all biological stratification levels to the sum of biological community totals; level-wise normalization is also supported. Protected accounting rows are excluded from the denominator and retained unchanged. `--special n` removes those rows; raw-count comments remain sample metadata.
 
 ----
 
@@ -1511,6 +1515,5 @@ Thanks go to these wonderful people:
  Please sign up for the [HUMAnN category in bioBakery Forum](https://forum.biobakery.org/c/Microbial-community-profiling/HUMAnN) if any questions or concerns.   
  
  Additionally, Google user group: <humann-users@googlegroups.com> (Read only) is available.  
-
 
 
