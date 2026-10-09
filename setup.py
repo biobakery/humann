@@ -6,6 +6,7 @@ To run: python setup.py install
 """
 
 import sys
+import logging
 
 # required python versions (2.7+ or 3.0+)
 required_python_version_major = [2,3]
@@ -586,29 +587,40 @@ class Install(_install):
     Custom setuptools install command, set executable permissions for glpk
     """
     
-    _install.user_options=_install.user_options+[('bypass-dependencies-install', 
+    user_options=_install.user_options+[('bypass-dependencies-install',
         None, 'bypass install of dependencies'),('build-diamond',None,'build diamond'),
-        ('replace-dependencies-install',None,'replace dependencies already installed')]
+        ('replace-dependencies-install',None,'replace dependencies already installed'),
+        ('override-metaphlan-check',None,'EXPERIMENTAL: skip MetaPhlAn version checks; use at your own risk')]
+    boolean_options=_install.boolean_options+['override-metaphlan-check']
     
     def initialize_options(self):
         self.bypass_dependencies_install=False
         self.build_diamond=False
         self.replace_dependencies_install=False
+        self.override_metaphlan_check=False
         _install.initialize_options(self)
     
     def finalize_options(self):
         _install.finalize_options(self)
     
     def run(self):
-        # verify MetaPhlAn version early 
-        check_metaphlan_version()
+        if self.override_metaphlan_check:
+            logging.getLogger(__name__).critical(
+                "EXPERIMENTAL: --override-metaphlan-check is enabled; both installation "
+                "MetaPhlAn version checks are disabled. Use this only if you understand "
+                "the compatibility risks. Use at your own risk; HUMAnN developers take "
+                "no responsibility for failures or incorrect results caused by this override.")
+        else:
+            # verify MetaPhlAn version early
+            check_metaphlan_version()
         # install minpath if not already installed
         install_minpath(replace_install=self.replace_dependencies_install)
         
         _install.run(self)
 
         # verify MetaPhlAn version post installation
-        check_metaphlan_version()
+        if not self.override_metaphlan_check:
+            check_metaphlan_version()
         
         # find the current install folder
         current_install_folder=None
