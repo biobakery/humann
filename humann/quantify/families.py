@@ -30,11 +30,12 @@ import math
 from .. import config
 from .. import utilities
 from .. import store
+from .. import accounting
 
 # name global logging instance
 logger=logging.getLogger(__name__)
 
-def gene_families(alignments,gene_scores,unaligned_reads_count):
+def gene_families(alignments,gene_scores,unaligned_reads_count,initial_read_count=None):
     """
     Compute the gene families from the alignments
     """
@@ -43,6 +44,10 @@ def gene_families(alignments,gene_scores,unaligned_reads_count):
     
     # Compute scores for each gene family for each bug set
     total_all_scores_normalization=alignments.convert_alignments_to_gene_scores(gene_scores,config.count_normalization)
+    gene_scores.scale(total_all_scores_normalization)
+    gene_scores.read_counts={config.initial_reads_name: initial_read_count,
+                            config.unmapped_gene_name: unaligned_reads_count}
+    accounting.log_counts(gene_scores.read_counts)
         
     delimiter=config.output_file_column_delimiter
     category_delimiter=config.output_file_category_delimiter     
@@ -53,12 +58,12 @@ def gene_families(alignments,gene_scores,unaligned_reads_count):
         column_name=config.file_basename
     tsv_output=["# Gene Family "+config.version_header+" "+config.count_normalization+delimiter+column_name]
     
-    # Add the unaligned reads count
-    tsv_output.append(config.unmapped_gene_name+delimiter+utilities.format_float_to_string(unaligned_reads_count))  
+    # Raw counts are metadata; only mapped genes enter the abundance denominator.
+    tsv_output=list(accounting.comment_lines(gene_scores.read_counts))+tsv_output
 
     # Print out the gene families with those with the highest scores first
     for gene in gene_scores.gene_list_sorted_by_score("all"):
-        all_score=gene_scores.get_score("all",gene)*total_all_scores_normalization
+        all_score=gene_scores.get_score("all",gene)
         if all_score>0:
             # Print the computation of all bugs for gene family
             tsv_output.append(gene+delimiter+utilities.format_float_to_string(all_score))
@@ -69,7 +74,7 @@ def gene_families(alignments,gene_scores,unaligned_reads_count):
                 for bug in utilities.double_sort(scores_by_bug):
                     if scores_by_bug[bug]>0:
                         tsv_output.append(gene+category_delimiter+bug+delimiter
-                            +utilities.format_float_to_string(scores_by_bug[bug]*total_all_scores_normalization))       
+                            +utilities.format_float_to_string(scores_by_bug[bug]))
         
     if config.output_format=="biom":
         # Open a temp file if a conversion to biom is selected
