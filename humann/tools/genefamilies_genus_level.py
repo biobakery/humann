@@ -14,6 +14,8 @@ import argparse
 import sys
 import os
 
+from humann.tools import util
+
 TABLE_DELIMITER="\t"
 TAXONOMY_DELIMITER="|"
 GENUS_DELIMITER="."
@@ -23,34 +25,21 @@ def create_table(input,output):
     Create a gene families table with genus level taxonomy
     """
     
-    # read the input gene table
-    genus_values={}
-    all_values=""
-    with open(input, "rt") as file_handle:
-        with open(output, "w") as file_handle_write:
-            # write the header to the new file
-            header=file_handle.readline()
-            file_handle_write.write(header)
-            
-            for line in file_handle:
-                if TAXONOMY_DELIMITER in line:
-                    # remove the species from the gene/taxonomy
-                    data=line.rstrip().split(TABLE_DELIMITER)
-                    gene_taxonomy=data[0].split(GENUS_DELIMITER)[0]
-                    if gene_taxonomy in genus_values:
-                        genus_values[gene_taxonomy]=[float(x) + y for x,y in zip(data[1:], genus_values[gene_taxonomy])]
-                    else:
-                        genus_values[gene_taxonomy]=[float(x) for x in data[1:]]
-                else:
-                    # check for empty lines
-                    if TABLE_DELIMITER in line:
-                        if all_values:
-                            file_handle_write.write(all_values)
-                            # write genus values for gene, if present
-                            for gene_taxonomy, values in genus_values.iteritems():
-                                file_handle_write.write(TABLE_DELIMITER.join([gene_taxonomy]+[str(x) for x in values])+"\n")
-                            genus_values={}
-                        all_values=line
+    table = util.Table(input)
+    values = {}
+    for rowhead, row in zip(table.rowheads, table.data):
+        if not util.is_special(rowhead):
+            feature, name, stratum = util.fsplit(rowhead)
+            if stratum is not None:
+                stratum = stratum.split(GENUS_DELIMITER)[0]
+                rowhead = util.fjoin(feature, name, stratum)
+        if rowhead in values:
+            values[rowhead] = [float(a) + float(b) for a, b in zip(values[rowhead], row)]
+        else:
+            values[rowhead] = row[:]
+    table.rowheads = util.fsort(values)
+    table.data = [[str(value) for value in values[h]] for h in table.rowheads]
+    table.write(output)
 
 def parse_arguments(args):
     """ 
