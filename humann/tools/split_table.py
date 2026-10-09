@@ -20,6 +20,7 @@ import re
 import shutil
 
 from humann.tools import util
+from humann import accounting
 
 GENE_TABLE_DELIMITER="\t"
 GENE_TABLE_COMMENT_LINE="^#"
@@ -47,8 +48,12 @@ def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None,
             
     # find the headers
     header_flag=False
+    read_counts={}
     header=line
     while re.match(GENE_TABLE_COMMENT_LINE, line):
+        summary=accounting.parse_line(line)
+        if summary is not None:
+            read_counts[summary[0]]=summary[1]
         header_flag=True
         header = line
         line = file_handle.readline()
@@ -61,7 +66,8 @@ def split_gene_table(gene_table,output_dir, verbose=None, taxonomy_index=None,
     if re.search(PICRUST_METAGENOME_HEADER,header):
         new_file_names=split_table_sample_rows(file_handle, line, output_dir, verbose, taxonomy_level)
     else:
-        new_file_names=split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index, verbose)
+        new_file_names=split_table_sample_columns(file_handle, header, line, output_dir,
+                                                 taxonomy_index, verbose, read_counts)
         
     return new_file_names
 
@@ -79,7 +85,9 @@ def split_table_sample_rows(file_handle, line, output_dir, verbose, taxonomy_lev
     taxonomy_index=taxonomy_options.index(taxonomy_level)-len(taxonomy_options)
     
     gene_table_data_by_sample_bug={}
+    legacy_warning=accounting.LegacyProfileWarning(getattr(file_handle, "name", "<input>"))
     while line:
+        legacy_warning.check(line)
         # read in each line of data
         data=line.rstrip().split(GENE_TABLE_DELIMITER)        
         gene=data[PICRUST_METAGENOME_GENE_COLUMN]
@@ -153,7 +161,8 @@ def split_table_sample_rows(file_handle, line, output_dir, verbose, taxonomy_lev
     
     
 
-def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index, verbose):
+def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_index, verbose,
+                               read_counts=None):
     """
     Split a table where the abundances of genes are organized by sample in columns
     """
@@ -166,7 +175,9 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
         header_taxonomy=samples.pop()
     
     gene_table_data={}
+    legacy_warning=accounting.LegacyProfileWarning(getattr(file_handle, "name", "<input>"))
     while line:
+        legacy_warning.check(line)
         # write the data to each of the new files
         data=line.rstrip().split(GENE_TABLE_DELIMITER)        
         gene=data.pop(0)
@@ -219,6 +230,9 @@ def split_table_sample_columns(file_handle, header, line, output_dir, taxonomy_i
                 print("Creating file: " + new_file_name)
             
             new_file_handle=open(new_file_name,"w")
+            for summary in accounting.comment_lines({key: [values[i]]
+                                                       for key,values in (read_counts or {}).items()}):
+                new_file_handle.write(summary+"\n")
             
             # write the header
             new_file_handle.write(GENE_TABLE_DELIMITER.join([subheader,sample])+"\n")

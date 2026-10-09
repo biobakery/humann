@@ -15,6 +15,7 @@ import sys
 import os
 
 from humann.tools import util
+from humann import accounting
 
 STRATIFICATION_DELIMITER="|"
 COLUMN_DELIMITER="\t"
@@ -64,13 +65,22 @@ def split_table(input,output):
             sys.exit("Unable to open output file for writing: " + output_unstratified)
     
     # read the input file
-    readlines=util.gzip_bzip2_biom_open_readlines(input)    
+    read_counts={}
+    readlines=util.process_gene_table_with_header(input,read_counts=read_counts)
     header=next(readlines)
     
     # if this is a biom file, there could be a comment line before the header
     if "Constructed from biom file" in header:
         header=next(readlines)
         
+    # Keep sample accounting metadata separate from both sets of feature rows.
+    for line in accounting.comment_lines(read_counts):
+        if biom:
+            output_stratified_rows.append(split_line(line))
+            output_unstratified_rows.append(split_line(line))
+        else:
+            output_stratified_handle.write(line+"\n")
+            output_unstratified_handle.write(line+"\n")
     # write the header to both output files
     if biom:
         output_stratified_rows.append(split_line(header))
@@ -80,7 +90,7 @@ def split_table(input,output):
         output_unstratified_handle.write(header+"\n")
         
     for line in readlines:
-        if STRATIFICATION_DELIMITER in line:
+        if STRATIFICATION_DELIMITER in split_line(line)[0]:
             if biom:
                 output_stratified_rows.append(split_line(line))
             else:
