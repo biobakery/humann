@@ -14,6 +14,7 @@ except ImportError:
 
 try:
     from humann import config
+    from humann import accounting
     from humann.tools import util
 except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN python package." +
@@ -153,8 +154,10 @@ def main( ):
     mname, mvalues = None, []
     fnames, fvalues = [], []
     adding = False
+    legacy_warning = accounting.LegacyProfileWarning(args.input)
     with open( args.input , "rt" ) as fh:
         for row in csv.reader( fh, csv.excel_tab ):
+            legacy_warning.check("\t".join(row))
             header, values = row[0], row[1:]
             if header == args.focal_metadatum:
                 mname, mvalues = header, values
@@ -162,6 +165,8 @@ def main( ):
                 adding = True
                 continue
             if adding and "|" not in header:
+                if util.is_special(header):
+                    continue
                 fnames.append( header )
                 fvalues.append( list(map( float, values ) ) )
     # tests
