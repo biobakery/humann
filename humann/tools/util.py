@@ -119,20 +119,23 @@ c_taxon_delim     = "."
 c_name_delim      = ": "
 c_multiname_delim = ";"
 c_str_unknown     = "NO_NAME"
-c_ungrouped       = "UNGROUPED"
-c_unmapped        = "UNMAPPED"
-c_reads_unmapped  = "READS_UNMAPPED"
-c_unintegrated    = "UNINTEGRATED"
+c_ungrouped       = config.ungrouped_reaction_name
+c_unmapped        = config.unmapped_pathway_name
+c_reads_unmapped  = config.unmapped_gene_name
+c_unintegrated    = config.unintegrated_pathway_name
 c_many_bytes      = 1e8
 c_zip_multiplier  = 10
+
+c_unknown_features = ("UniRef50_unknown", "UniRef90_unknown")
 
 c_topsort = {
     c_unmapped:0,
     c_ungrouped:1,
     c_unintegrated:2,
-    "UniRef50_unknown":3,
-    "UniRef90_unknown":4,
+    c_unknown_features[0]:3,
+    c_unknown_features[1]:4,
     c_reads_unmapped:5,
+    config.initial_reads_name:6,
 }
 
 # ---------------------------------------------------------------
