@@ -9,7 +9,8 @@ import os
 
 from humann.quantify import modules
 from humann import store
-from humann import config
+from humann import config, accounting
+from humann.tools import util
 from humann.quantify import chi2cdf
 
 class TestHumannQuantifyModulesFunctions(unittest.TestCase):
@@ -570,7 +571,7 @@ class TestHumannQuantifyModulesFunctions(unittest.TestCase):
     #    Test the pathways coverage computation (xipe and minpath are off)
     #    Test the pathways print function
     #    Test the pathways mapping to names
-    #    Test the unmapped and unintegrated values are printed
+    #    Test that deprecated pathway residuals are omitted and counts are metadata
     #    """
     #    
     #    # update the max decimals to allow for rounding
@@ -624,9 +625,13 @@ class TestHumannQuantifyModulesFunctions(unittest.TestCase):
         Test the pathways abundance computation (xipe and minpath are off)
         Test the pathways print function
         Test the pathways mapping to names
-        Test the unmapped and unintegrated values are printed
+        Test that deprecated pathway residuals are omitted and counts are metadata
         """
         
+        basename_original=config.file_basename
+        self.addCleanup(setattr, config, "file_basename", basename_original)
+        config.file_basename="HUMAnN_test"
+
         # update the max decimals to allow for rounding
         config.output_max_decimals=7
         
@@ -645,6 +650,13 @@ class TestHumannQuantifyModulesFunctions(unittest.TestCase):
         xipe_toggle_original=config.xipe_toggle
         config.xipe_toggle="off"
         
+        reactions_file_original=config.reactions_file
+        file_out, reactions_file=tempfile.mkstemp()
+        os.close(file_out)
+        config.reactions_file=reactions_file
+        self.addCleanup(setattr, config, "reactions_file", reactions_file_original)
+        self.addCleanup(utils.remove_temp_file, reactions_file)
+
         pathways_and_reactions_store=modules.identify_reactions_and_pathways(
         gene_scores, reactions_database, pathways_database,100)
         
@@ -667,8 +679,16 @@ class TestHumannQuantifyModulesFunctions(unittest.TestCase):
         config.xipe_toggle=xipe_toggle_original
         
         # check the output is as expected
-        self.assertTrue(filecmp.cmp(abundance_file,
-            cfg.demo_pathabundance_file, shallow=False))
+        # Existing biological pathway values stay identical to the legacy fixture.
+        with open(cfg.demo_pathabundance_file) as expected_handle:
+            expected=[line.rstrip() for line in expected_handle
+                      if not util.is_special(line.split("\t")[0])]
+        with open(abundance_file) as actual_handle:
+            actual=[line.rstrip() for line in actual_handle
+                    if accounting.parse_line(line) is None]
+        self.assertEqual(actual, expected)
+        self.assertEqual(util.Table(abundance_file).read_counts,
+                         {name: [config.read_count_unavailable] for name in config.read_count_names})
         
         utils.remove_temp_file(abundance_file)
         utils.remove_temp_file(coverage_file)
