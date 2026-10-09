@@ -532,11 +532,21 @@ xipe_bin=1
 default_reference_length=1000
 match_power=2
 
-# Output file tags
+# Output file tags: canonical names for all accounting categories.
+initial_reads_name = "READS_INITIAL"
 unmapped_gene_name = "READS_UNMAPPED"
+ungrouped_reaction_name = "UNGROUPED"
+# Historical feature rows remain protected on input; never emit pathway residuals.
 unmapped_pathway_name = "UNMAPPED"
 unintegrated_pathway_name = "UNINTEGRATED"
-ungrouped_reaction_name = "UNGROUPED"
+legacy_pathway_feature_names = (unmapped_pathway_name, unintegrated_pathway_name)
+special_feature_names = (initial_reads_name, unmapped_gene_name,
+                         unmapped_pathway_name, unintegrated_pathway_name, ungrouped_reaction_name)
+
+# Only these two raw-count fields are emitted as commented sample metadata.
+read_count_names = (initial_reads_name, unmapped_gene_name)
+read_count_comment_prefix = "# "
+read_count_unavailable = "NA"
 
 # Max arguments
 max_arguments=500
