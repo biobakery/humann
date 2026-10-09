@@ -256,7 +256,8 @@ def main( ):
         p_datafile = databases[args.database]
     else:
         sys.exit( "Must specify a valid database (from utility mapping or --devdb)" )
-    taxmap = build_taxmap( T.rowheads, args.level, args.lca_choice, p_datafile )
+    taxmap = build_taxmap( [h for h in T.rowheads if not util.is_special(h)],
+                          args.level, args.lca_choice, p_datafile )
 
     # refine the taxmap (remove rare taxa)
     counts = Counter( taxmap.values( ) )
@@ -270,13 +271,14 @@ def main( ):
     index = {}
     for i, rowhead in enumerate( T.rowheads ):
         ticker.tick( )
+        # Accounting never enters taxonomy inference, including nested strata.
+        if util.is_special(rowhead):
+            index.setdefault( rowhead, [] ).append( i )
+            continue
         feature, name, stratum = util.fsplit( rowhead )
         new_rowhead = tax_connect( rowhead, taxmap )
-        # unmapped is never stratified
-        if feature == util.c_unmapped or feature == util.c_reads_unmapped:
-            index.setdefault( rowhead, [] ).append( i )
         # outside of unclassified mode, keep totals
-        elif stratum is None and args.mode != c_umode:
+        if stratum is None and args.mode != c_umode:
             index.setdefault( rowhead, [] ).append( i )
             # in totals mode, guess at taxonomy from uniref name
             if args.mode == c_tmode:
@@ -310,6 +312,8 @@ def main( ):
     # report on performance
     success, total = 0, 0
     for rowhead in T.rowheads:
+        if util.is_special(rowhead):
+            continue
         feature, name, stratum = util.fsplit( rowhead )
         if stratum is not None:
             total += 1
@@ -319,7 +323,7 @@ def main( ):
             TOTAL=total, 
             SUCCESS=success, 
             TARGET=args.level, 
-            PERCENT=round( 100 * success / float( total ), 1 ),
+            PERCENT=round( 100 * success / float( total or 1 ), 1 ),
             ), file=sys.stderr,
            )
 
