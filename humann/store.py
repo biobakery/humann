@@ -531,6 +531,13 @@ class GeneScores:
     
     def __init__(self):
         self.__scores={}
+        self.read_counts={}
+
+    def scale(self, factor):
+        """Apply the mapped-only normalization before downstream grouping."""
+        for scores in self.__scores.values():
+            for gene in scores:
+                scores[gene]*=factor
         
     def add(self,gene_scores,bug):
         """ 
@@ -630,7 +637,10 @@ class GeneScores:
         if id_mapping_file:
             id_mapping=store_id_mapping(id_mapping_file)
             
-        unaligned_reads_count=0
+        from . import accounting
+        from .tools import util
+        unaligned_reads_count=None
+        legacy_warning=accounting.LegacyProfileWarning(file)
         
         # Check the file exists and is readable
         utilities.file_exists_readable(file)
@@ -639,11 +649,18 @@ class GeneScores:
          
         line=file_handle.readline()
         while line:
+            legacy_warning.check(line)
+            count=accounting.parse_line(line)
+            if count is not None and count[1]:
+                self.read_counts[count[0]]=(None if count[1][0] == config.read_count_unavailable
+                                            else float(count[1][0]))
             # Ignore comment lines
             if not re.search(config.gene_table_comment_indicator,line):
                 data=line.rstrip().split(config.gene_table_delimiter)
                 gene=""
                 bug="all"
+                original_feature=util.feature_id(data[config.gene_table_gene_index])
+                protected=util.is_special(data[config.gene_table_gene_index])
                 
                 # Use id mapping if present
                 if id_mapping:
@@ -671,15 +688,22 @@ class GeneScores:
                     if line.rstrip():
                         logger.debug("Unable to convert gene table value to float: %s",
                             line.rstrip())
-                if gene == config.unmapped_gene_name:
-                    unaligned_reads_count = value
+                if protected or util.is_special(gene):
+                    # Historical accounting rows never become biological assignments.
+                    if (original_feature == config.unmapped_gene_name and
+                            config.gene_table_category_delimiter not in data[config.gene_table_gene_index]):
+                        unaligned_reads_count=value
                 else:
                     self.add_single_score(bug,gene,value)
             line=file_handle.readline()
 
         file_handle.close()
+
+        self.read_counts.setdefault(config.initial_reads_name,None)
+        self.read_counts.setdefault(config.unmapped_gene_name,unaligned_reads_count)
+        accounting.log_counts(self.read_counts)
         
-        return unaligned_reads_count
+        return self.read_counts[config.unmapped_gene_name]
     
 class PathwaysAndReactions:
     """

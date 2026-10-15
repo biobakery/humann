@@ -156,6 +156,12 @@ def parse_arguments(args):
         help="directory containing the MetaPhlAn software\n[DEFAULT: $PATH]", 
         metavar="<metaphlan>")
     tier1_prescreen.add_argument(
+        "--override-metaphlan-check",
+        action="store_true",
+        default=False,
+        help="skip MetaPhlAn runtime version probing (EXPERIMENTAL, use at your own risk); "
+             "supplied taxonomic profiles still undergo header validation")
+    tier1_prescreen.add_argument(
         "--metaphlan-options",
         help="options to be provided to the MetaPhlAn software\n[DEFAULT: \"" + str(" ".join(config.metaphlan_opts)) + "\"]",
         metavar="<metaphlan_options>",
@@ -378,6 +384,7 @@ def update_configuration(args):
     
     # Use the full path to the input file
     args.input=os.path.abspath(args.input)
+    config.override_metaphlan_check=args.override_metaphlan_check
 
     # set the version header
     config.version_header=config.version_header+VERSION
@@ -587,6 +594,10 @@ def update_configuration(args):
     # configure the logger
     logging.basicConfig(filename=log_file,format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
         level=getattr(logging,args.log_level), filemode='w', datefmt='%m/%d/%Y %I:%M:%S %p')
+
+    if config.override_metaphlan_check:
+        logger.critical(config.metaphlan_check_override_warning)
+        print("CRITICAL: " + config.metaphlan_check_override_warning, file=sys.stderr)
     
     # write the version of the software to the log
     logger.info("Running humann v"+VERSION)
@@ -786,7 +797,8 @@ def check_requirements(args):
                         + "see the HUMAnN User Manual.")
                 
         # Check that the metaphlan2 executable can be found
-        if not config.bypass_prescreen and not config.bypass_nucleotide_index:
+        if (not args.taxonomic_profile and not config.bypass_prescreen
+                and not config.bypass_nucleotide_index):
             if not utilities.find_exe_in_path("metaphlan"): 
                 sys.exit("CRITICAL ERROR: The metaphlan executable can not be found. "  
                     "Please check the install.")
@@ -1087,7 +1099,10 @@ def main():
         start_time=timestamp_message("alignment post-processing",start_time)
         
     # Get the number of remaining unaligned reads
-    unaligned_reads_count=unaligned_reads_store.count_reads()
+    unaligned_reads_count=(unaligned_reads_store.count_reads()
+                           if args.input_format != "blastm8" else None)
+    initial_read_count=(unaligned_reads_store.get_initial_read_count()
+                        if args.input_format in ["fasta", "fastq", "sam"] else None)
     
     # Clear all of the unaligned reads as they are no longer needed
     unaligned_reads_store.clear()
@@ -1099,7 +1114,8 @@ def main():
         logger.info(message)
         print("\n"+message)
         
-        families_file=families.gene_families(alignments,gene_scores,unaligned_reads_count)
+        families_file=families.gene_families(alignments,gene_scores,unaligned_reads_count,
+                                           initial_read_count=initial_read_count)
         output_files.append(families_file)
     
         start_time=timestamp_message("computing gene families",start_time)

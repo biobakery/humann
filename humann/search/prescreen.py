@@ -186,7 +186,8 @@ def alignment(input):
     opts=config.metaphlan_opts  
 
     #Verify MetaPhlAn DB version during runtime
-    verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
+    if not config.override_metaphlan_check:
+        verify_metaphlan_db_version(config.metaphlan_v4_db_version, exe)
 
     # find the location of the metaphlan dir
     metaphlan_dir=utilities.return_exe_path(exe)

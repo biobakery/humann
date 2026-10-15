@@ -20,6 +20,7 @@ import shutil
 import re
 
 from humann.tools import util
+from humann import config, accounting
 
 GENE_TABLE_DELIMITER="\t"
         
@@ -33,12 +34,15 @@ def join_gene_tables(gene_tables,output,verbose=None):
     samples=[]
     file_basenames=[]
     index=0
+    joined_read_counts={}
     for gene_table in gene_tables:
         
         if verbose:
             print("Reading file: " + gene_table)
         
-        lines=util.process_gene_table_with_header(gene_table, allow_for_missing_header=True)
+        read_counts={}
+        lines=util.process_gene_table_with_header(gene_table, allow_for_missing_header=True,
+                                                  read_counts=read_counts)
         header=next(lines)
         
         # get the basename of the file
@@ -83,6 +87,9 @@ def join_gene_tables(gene_tables,output,verbose=None):
                     # add data point to end of list
                     gene_table_data[gene] = current_data + GENE_TABLE_DELIMITER.join(data_points) + GENE_TABLE_DELIMITER
             
+        for key in set(joined_read_counts).union(read_counts):
+            joined_read_counts.setdefault(key,[config.read_count_unavailable]*index)
+            joined_read_counts[key].extend(read_counts.get(key,[config.read_count_unavailable]*len(sample_names)))
         samples+=sample_names
         index+=len(sample_names)
     # if all of the header names for the files are the same
@@ -98,6 +105,8 @@ def join_gene_tables(gene_tables,output,verbose=None):
     sorted_gene_list=util.fsort(list(gene_table_data))
     try:
         file_handle=open(output,"w")
+        for line in accounting.comment_lines(joined_read_counts):
+            file_handle.write(line+"\n")
         file_handle.write(GENE_TABLE_DELIMITER.join(sample_header)+"\n")
     except EnvironmentError:
         sys.exit("Unable to write file: " + output)  

@@ -62,7 +62,6 @@ $ humann_databases --download utility_mapping full $DIR
 Replacing, $DIR with the directory to download and install the databases."""
     sys.exit("Mapping files not installed.\n"+description)
 
-c_protected = [util.c_unmapped, util.c_unintegrated, util.c_reads_unmapped]
 c_funcmap = {"sum":sum, "mean":lambda row: sum( row ) / float( len( row ) )}
 
 # ---------------------------------------------------------------
@@ -100,7 +99,7 @@ def get_args( ):
         "-f", "--function", 
         choices=c_funcmap.keys(),
         default="sum",
-        help="How to combine grouped features; default=sum",
+        help="How to combine biological groups; residual accounting abundance is always summed; default=sum",
         )
     parser.add_argument( 
         "-e", "--precision",
@@ -112,13 +111,14 @@ def get_args( ):
         "-u", "--ungrouped",
         default="Y",
         choices=["Y", "N"],
-        help="Include an 'UNGROUPED' group to capture features that did not belong to other groups? default=Y",
+        help="Collect newly ungroupable features into " + config.ungrouped_reaction_name
+             + "? Existing protected accounting rows are retained independently; default=Y",
         )
     parser.add_argument( 
         "-p", "--protected",
         default="Y",
         choices=["Y", "N"],
-        help="Carry through protected features, such as 'UNMAPPED'? default=Y",
+        help="Preserve accounting rows and bypass custom mappings for them; default=Y",
         )
     parser.add_argument( 
         "-o", "--output", 
@@ -132,7 +132,7 @@ def get_args( ):
 # regrouping function
 # ---------------------------------------------------------------
 
-def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
+def regroup( table, map_feature_groups, function, precision, ungrouped=False, protected=True ):
     
     function = c_funcmap[function]
     seen_before = {}
@@ -141,8 +141,13 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
     mapping = {}
 
     for i, rowhead in enumerate( table.rowheads ):
+        special = util.is_special(rowhead)
+        # Protected input categories must not leak into custom biological groups.
+        if protected and special:
+            mapping.setdefault(rowhead, []).append(i)
+            continue
         feature, name, stratum = util.fsplit( rowhead )
-        if feature not in feature_counts:
+        if not special and feature not in feature_counts:
             feature_counts[feature] = 0
         # decide which groups to use
         if feature in map_feature_groups:
@@ -153,7 +158,9 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
             groups = []
         # track grouping
         for group in groups:
-            if feature not in seen_before and group != util.c_ungrouped:
+            if protected and util.is_special(group) and not util.is_ungrouped(group):
+                raise ValueError("Custom groups cannot assign biological features to protected category " + group)
+            if not special and feature not in seen_before and not util.is_special(group):
                 feature_counts[feature] += 1
             # account for stratified feature
             groupname = group 
@@ -176,8 +183,11 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
                 except ( IndexError, ValueError ):
                     print("WARNING: Unexpected truncated input file")
         # collapse groups
-        newrow = [function( block ) for block in newrow]
-        if precision is not None:
+        aggregate = sum if util.is_special(groupname) else function
+        newrow = [aggregate( block ) for block in newrow]
+        if protected and util.is_special(groupname) and len(oldrow_index) == 1 and util.is_special(table.rowheads[oldrow_index[0]]):
+            newrow=table.data[oldrow_index[0]][:]
+        if precision is not None and not (protected and util.is_special(groupname)):
             newrow = [round( k, precision ) for k in newrow]
         groupdata.append( newrow )
     table.rowheads = groupnames
@@ -191,9 +201,9 @@ def regroup( table, map_feature_groups, function, precision, ungrouped=False ):
     print( "Original Feature Count: %d; Grouped 1+ times: %d (%.1f%%); Grouped 2+ times: %d (%.1f%%)" % \
            ( n,
              grouped_total,
-             100 * grouped_total / float( n ),
+             100 * grouped_total / float( n or 1 ),
              grouped_multi,
-             100 * grouped_multi / float( n ),
+             100 * grouped_multi / float( n or 1 ),
          ), file=sys.stderr )
 
 # ---------------------------------------------------------------
@@ -226,12 +236,9 @@ def main( ):
                 map_feature_groups.setdefault( feature, {} )[group] = 1
     else:
         map_feature_groups = map_group_features
-    # add protected cases to mapping?
-    if args.protected == "Y":
-        for feature in c_protected:
-            map_feature_groups.setdefault( feature, {} )[feature] = 1
     # perform the table regrouping
-    regroup( table, map_feature_groups, args.function, args.precision, ungrouped=args.ungrouped=="Y" )
+    regroup( table, map_feature_groups, args.function, args.precision,
+             ungrouped=args.ungrouped=="Y", protected=args.protected=="Y" )
     table.write( args.output )
 
 if __name__ == "__main__":

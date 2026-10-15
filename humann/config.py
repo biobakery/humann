@@ -59,6 +59,7 @@ def log_settings():
     lines.append("resume = " + str(resume))
     lines.append("verbose = " + str(verbose))
     lines.append("bypass prescreen = " + str(bypass_prescreen))
+    lines.append("override metaphlan check = " + str(override_metaphlan_check))
     lines.append("bypass nucleotide index = " + str(bypass_nucleotide_index))
     lines.append("bypass nucleotide search = " + str(bypass_nucleotide_search))
     lines.append("bypass translated search = " + str(bypass_translated_search))
@@ -237,6 +238,13 @@ utility_mapping_database=get_item(config_items, "database_folders", "utility_map
 resume=get_item(config_items, "run_modes", "resume", "bool")
 verbose=get_item(config_items, "run_modes", "verbose", "bool")
 bypass_prescreen=get_item(config_items, "run_modes", "bypass_prescreen", "bool")
+override_metaphlan_check=False
+metaphlan_check_override_warning=(
+    "EXPERIMENTAL: --override-metaphlan-check is enabled; MetaPhlAn version "
+    "checks are disabled. Use this only if you understand the compatibility "
+    "risks and validate your profile and databases. Use at your own risk; "
+    "HUMAnN developers take no responsibility for failures or incorrect "
+    "results caused by this override.")
 bypass_nucleotide_index=get_item(config_items, "run_modes", "bypass_nucleotide_index", "bool")
 bypass_nucleotide_search=get_item(config_items, "run_modes", "bypass_nucleotide_search", "bool")
 bypass_translated_search=get_item(config_items, "run_modes", "bypass_translated_search", "bool")
@@ -524,11 +532,21 @@ xipe_bin=1
 default_reference_length=1000
 match_power=2
 
-# Output file tags
+# Output file tags: canonical names for all accounting categories.
+initial_reads_name = "READS_INITIAL"
 unmapped_gene_name = "READS_UNMAPPED"
+ungrouped_reaction_name = "UNGROUPED"
+# Historical feature rows remain protected on input; never emit pathway residuals.
 unmapped_pathway_name = "UNMAPPED"
 unintegrated_pathway_name = "UNINTEGRATED"
-ungrouped_reaction_name = "UNGROUPED"
+legacy_pathway_feature_names = (unmapped_pathway_name, unintegrated_pathway_name)
+special_feature_names = (initial_reads_name, unmapped_gene_name,
+                         unmapped_pathway_name, unintegrated_pathway_name, ungrouped_reaction_name)
+
+# Only these two raw-count fields are emitted as commented sample metadata.
+read_count_names = (initial_reads_name, unmapped_gene_name)
+read_count_comment_prefix = "# "
+read_count_unavailable = "NA"
 
 # Max arguments
 max_arguments=500

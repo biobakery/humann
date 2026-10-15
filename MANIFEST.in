@@ -1,6 +1,8 @@
 include history.md
 include LICENSE
 include readme.md
+include docs/accounting-categories.md
+include docs/metaphlan-check-override.md
 include setup.py
 
 include examples/demo.fasta.gz

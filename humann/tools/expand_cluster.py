@@ -7,6 +7,7 @@ import gzip
 
 try:
     from humann import config
+    from humann import accounting
     from humann.tools import util
 except ImportError:
     sys.exit("CRITICAL ERROR: Unable to find the HUMAnN python package." +
@@ -18,6 +19,7 @@ HUMAnN utility for expanding clustered table features
 Given a table of UniRef90 values and a specific UniRef90,
 create a table subset that includes all of the UniRef90s
 that cluster with the selected UniRef90 in a UniRef50 set.
+Sample accounting is preserved without assigning it to the selected cluster.
 """
 
 
@@ -93,21 +95,23 @@ def write_genes(uniref50s, mapping, input_file, output_file, verbose):
 
     open_function=open
     if input_file.endswith(".gz"):
-        open_function=open.gzip
+        open_function=gzip.open
 
     if verbose:
         print("Writing output file")
 
     header=""
-    for line in open_function(input_file):
-         if not header:
-             header=line
-             file_handle.write(header)
-         else:
-             uniref90=line.split("\t")[0].split("|")[0]
-             if match_uniref50s(uniref50s, uniref90, mapping):
-                 file_handle.write(line)
-
+    legacy_warning=accounting.LegacyProfileWarning(input_file)
+    with open_function(input_file, "rt") as input_handle:
+        for line in input_handle:
+             legacy_warning.check(line)
+             if not header or line.startswith("#") or util.is_special(line.split("\t")[0]):
+                 header=line
+                 file_handle.write(header)
+             else:
+                 uniref90=line.split("\t")[0].split("|")[0]
+                 if match_uniref50s(uniref50s, uniref90, mapping):
+                     file_handle.write(line)
     file_handle.close()
 
 def main( ):

@@ -4,6 +4,9 @@
 ## v4.0.0.alpha.2.TBD (06-11-2026)
 
 * Updated utility scripts to work with the new header READS_UNMAPPED.
+* Centralize protected accounting in config.py, preserve raw READS_INITIAL/READS_UNMAPPED count comments, derive downstream abundances from mapped-only CPMs, and retire new pathway UNMAPPED/UNINTEGRATED rows while preserving historical inputs.
+* Warn once per profile ingestion when deprecated pathway UNMAPPED or UNINTEGRATED fractions are present, while retaining legacy input compatibility.
+* Add an experimental --override-metaphlan-check option for installation and runtime version checks, with CRITICAL logging and precomputed-profile support.
 
 ## v4.0.0.alpha.2 (11-25-2025) ##
 

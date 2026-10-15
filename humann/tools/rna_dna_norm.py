@@ -4,6 +4,7 @@ from __future__ import print_function # PYTHON 2.7+ REQUIRED
 from math import log
 import argparse
 import sys
+import copy
 
 from humann.tools import util
 
@@ -21,6 +22,9 @@ the pseudocount is the sample-specific minimum non-zero value.
 
 -- If working with stratified data, smoothing is carried out on the
 stratified values and then community totals are recomputed.
+
+-- Accounting rows and count comments retain their input values. They are
+excluded from smoothing, depth scaling, and expression ratios.
 """
 
 # ---------------------------------------------------------------
@@ -74,6 +78,17 @@ def get_args ():
     args = parser.parse_args()
     return args
 
+def extract_accounting( table ):
+    """Separate raw accounting rows before any biological transformations."""
+    accounting = copy.copy(table)
+    selected = [util.is_special(rowhead) for rowhead in table.rowheads]
+    accounting.rowheads = [h for h, keep in zip(table.rowheads, selected) if keep]
+    accounting.data = [row[:] for row, keep in zip(table.data, selected) if keep]
+    table.rowheads = [h for h, keep in zip(table.rowheads, selected) if not keep]
+    table.data = [row for row, keep in zip(table.data, selected) if not keep]
+    table.is_stratified = any(util.fsplit(h)[2] is not None for h in table.rowheads)
+    return accounting
+
 def remove_totals( table ):
     rowheads2, data2 = [], []
     for i, rowhead in enumerate( table.rowheads ):
@@ -83,7 +98,7 @@ def remove_totals( table ):
     table.rowheads, table.data = rowheads2, data2
 
 def laplace( table, all_features ):
-    alphas = [None for i in table.data[0]]
+    alphas = [None for i in table.colheads]
     for i, row in enumerate( table.data ):
         # float table here
         table.data[i] = list(map( float, row ))
@@ -91,6 +106,8 @@ def laplace( table, all_features ):
             if value > 0:
                 if alphas[j] is None or value < alphas[j]:
                     alphas[j] = value
+    if any(alpha is None for alpha in alphas):
+        raise ValueError("Smoothing requires positive biological abundance in every sample; accounting rows are excluded.")
     # compute quick index for table
     rowmap = {rowhead:i for i, rowhead in enumerate( table.rowheads )}
     # rebuild table data
@@ -114,14 +131,16 @@ def laplace( table, all_features ):
     table.colsums = colsums
 
 def witten_bell( table, all_features ):
-    nonzero = [0 for i in table.data[0]]
-    colsums = [0 for i in table.data[0]]
+    nonzero = [0 for i in table.colheads]
+    colsums = [0 for i in table.colheads]
     for i, row in enumerate( table.data ):
         # float table here
         table.data[i] = list(map( float, row ))
         for j, value in enumerate( table.data[i] ):
             nonzero[j] += 1 if value > 0 else 0
             colsums[j] += value
+    if any(total <= 0 for total in colsums):
+        raise ValueError("Smoothing requires positive biological abundance in every sample; accounting rows are excluded.")
     # save colsums in table object
     table.colsums = colsums
     # compute epsilons/norms
@@ -183,6 +202,8 @@ def main ( ):
     args = get_args()
     dna = util.Table( args.input_dna )
     rna = util.Table( args.input_rna )
+    dna_accounting = extract_accounting(dna)
+    rna_accounting = extract_accounting(rna)
     method = {"laplace":laplace, "witten_bell":witten_bell}[args.method]
     assert dna.is_stratified == rna.is_stratified, \
         "FAILED: Tables have nonequal stratification status."
@@ -192,15 +213,23 @@ def main ( ):
         if strat_mode:
             remove_totals( t )
             all_features = [k for k in all_features if util.c_strat_delim in k]
-        method( t, all_features )
+        if all_features:
+            method( t, all_features )
+        else:
+            # Accounting-only inputs produce header-only biological outputs.
+            t.colsums = [1.0 for k in t.colheads]
         if strat_mode:
             hsum( t )
-    # write out dna/rna
+    # Restore source accounting without including it in biological calculations.
+    biological_rows=len(dna.data)
+    for t, original in ((dna,dna_accounting),(rna,rna_accounting)):
+        t.rowheads+=original.rowheads
+        t.data+=original.data
     dna.write( args.output_basename+c_new_dna_extension, unfloat=True )
     rna.write( args.output_basename+c_new_rna_extension, unfloat=True )
     # normalize rna by dna (account for seq depth [scale]), then write
     scale = [d / r for r, d in zip( rna.colsums, dna.colsums )]
-    for i in range( len( dna.data ) ):
+    for i in range(biological_rows):
         rna.data[i] = [s * r / d for s, r, d in zip( scale, rna.data[i], dna.data[i] )]
         if args.log_transform:
             divisor = log( args.log_base )

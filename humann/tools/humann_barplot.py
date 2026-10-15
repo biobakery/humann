@@ -15,6 +15,7 @@ from collections import Counter
 
 try:
     from humann.tools import util
+    from humann import accounting
 except ImportError:
     sys.exit( "CRITICAL ERROR: Unable to find the HUMAnN python package." +
               " Please check your install." )
@@ -301,9 +302,13 @@ class BarplotTable:
         self.metarow = None
         self.focus_name = None
         IN_FEATURES = False
+        legacy_warning = accounting.LegacyProfileWarning(path)
         
         # pull relevant rows from input table
         for row in tsv_reader( path ):
+            legacy_warning.check("\t".join(row))
+            if accounting.parse_line("\t".join(row)) is not None:
+                continue
             rowhead, values = row[0], row[1:]
             if self.colheads is None:
                 self.colheads = values

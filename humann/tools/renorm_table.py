@@ -6,6 +6,7 @@ import sys
 import re
 
 from humann.tools import util
+from humann import config
 
 description = """
 HUMAnN utility for renormalizing TSV files
@@ -19,12 +20,7 @@ normalized using the desired scheme.
 # ---------------------------------------------------------------
 
 c_default_suffix = "-RPKs"
-c_special = [
-    util.c_unmapped, 
-    util.c_unintegrated, 
-    util.c_ungrouped,
-    util.c_reads_unmapped,
-    ]
+c_special = config.special_feature_names
 
 # ---------------------------------------------------------------
 # utilities
@@ -57,7 +53,7 @@ def get_args ():
         "-s", "--special", 
         choices=["y", "n"],
         default="y",
-        help="Include the special features UNMAPPED, READS_UNMAPPED, UNINTEGRATED, and UNGROUPED; default=[y]",
+        help="Retain protected accounting rows unchanged: " + ", ".join(config.special_feature_names) + "; default=[y]",
         )
     parser.add_argument( 
         "-p", "--update-snames", 
@@ -76,7 +72,7 @@ def normalize ( table, cpm=True, levelwise=False, special=True ):
     divisor = 1e-6 if cpm else 1.0
     # remove special features?
     if not special:
-        test = [rowhead.split( util.c_strat_delim )[0] not in c_special for rowhead in table.rowheads]
+        test = [not util.is_special(rowhead) for rowhead in table.rowheads]
         for flag, rowhead in zip( test, table.rowheads ):
             if not flag:
                 print( "Excluding special feature:", rowhead, file=sys.stderr )
@@ -85,6 +81,8 @@ def normalize ( table, cpm=True, levelwise=False, special=True ):
     # compute totals by delim level
     totals_by_level = {}
     for i, row in enumerate( table.data ):
+        if util.is_special(table.rowheads[i]):
+            continue
         level = len( table.rowheads[i].split( util.c_strat_delim ) )
         if level not in totals_by_level:
             totals_by_level[level] = [0 for k in range( len( table.colheads ) )]
@@ -100,6 +98,8 @@ def normalize ( table, cpm=True, levelwise=False, special=True ):
                         j+1, table.colheads[j], level ), file=sys.stderr )               
     # normalize
     for i, row in enumerate( table.data ):
+        if util.is_special(table.rowheads[i]):
+            continue
         level = len( table.rowheads[i].split( util.c_strat_delim ) )
         # level=1 corresponds to the community level (no strata)
         totals = totals_by_level[level] if levelwise else totals_by_level[1]
